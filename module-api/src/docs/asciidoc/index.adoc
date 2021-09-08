@@ -1,0 +1,21 @@
+== 인사하기
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+=== Request
+
+CURL:
+include::{snippets}/join-member/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/join-member/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/join-member/http-request.adoc[]
+
+=== Response
+Response:
+include::{snippets}/join-member/http-response.adoc[]
+

@@ -1,0 +1,53 @@
+# woomool-market [![Java CI with Gradle](https://github.com/Ryu-JeongMoon/woomool-market/actions/workflows/gradle.yml/badge.svg)](https://github.com/Ryu-JeongMoon/woomool-market/actions/workflows/gradle.yml) [![Build Status](https://travis-ci.com/Ryu-JeongMoon/woomool-market.svg?branch=master)](https://travis-ci.com/Ryu-JeongMoon/woomool-market)
+
+### 기술 스택
+<hr>
+
+### Java
+- openjdk 11
+
+### Spring
+- Web MVC (tomcat)
+- WebFlux (netty)
+- Security by JWT
+- Validation
+- OAuth2
+- Data-JPA & QueryDSL
+- Data-Redis
+- HATEOAS
+- Restdocs
+- Batch
+- Cloud
+- Test (Junit5)
+
+### View
+- Client Side Rendering - Vue.js
+- Server Side Rendering - thymeleaf
+<hr>
+
+### DevOps
+
+### Build
+- Gradle
+- Docker
+- Kubernetes - TBD
+
+### CI & CD
+- Travis CI by web-hook
+- GitHub Action
+- Slack for Alarm
+
+### AWS
+- EC2
+- RDS - MariaDB
+- S3
+
+### Messaging
+- Apache Kafka
+
+### Monitoring
+- Prometheus
+- Grafana
+- Zipkin
+- Sleuth
+

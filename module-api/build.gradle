@@ -1,0 +1,60 @@
+plugins {
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+	id "org.asciidoctor.jvm.convert"
+	id "com.github.node-gradle.node"
+	id 'java'
+}
+
+configurations {
+	asciidoctorExtensions
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+dependencies {
+	implementation "io.springfox:springfox-boot-starter:3.0.0"
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+test {
+	outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor {
+	configurations 'asciidoctorExtensions'
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	// 소스 코드에 html파일을 복사
+	from "${asciidoctor.outputDir}"
+	into 'src/main/resources/static/docs'
+}
+
+jar {
+	enabled = true
+
+	dependsOn copyDocument
+
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'src/main/resources/static/docs'
+	}
+}
+
+bootJar {
+	enabled = false
+}

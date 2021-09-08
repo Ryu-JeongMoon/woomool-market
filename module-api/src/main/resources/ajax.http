@@ -1,0 +1,8 @@
+GET http://localhost:8090/api/members/6
+Content-Type: application/json
+
+###
+# Send API call
+GET http://localhost:8090/api/members
+Content-Type: application/json
+
