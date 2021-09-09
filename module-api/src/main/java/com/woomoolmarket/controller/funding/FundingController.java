@@ -9,4 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/funding", produces = MediaTypes.HAL_JSON_VALUE)
 public class FundingController {
+
 }

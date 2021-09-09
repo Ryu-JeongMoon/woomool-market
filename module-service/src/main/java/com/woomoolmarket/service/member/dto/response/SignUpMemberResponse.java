@@ -1,7 +1,11 @@
 package com.woomoolmarket.service.member.dto.response;
 
 import com.woomoolmarket.entity.member.entity.Address;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

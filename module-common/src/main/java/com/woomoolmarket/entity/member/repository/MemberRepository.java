@@ -1,9 +1,8 @@
 package com.woomoolmarket.entity.member.repository;
 
 import com.woomoolmarket.entity.member.entity.Member;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 

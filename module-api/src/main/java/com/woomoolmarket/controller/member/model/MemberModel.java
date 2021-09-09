@@ -1,14 +1,15 @@
 package com.woomoolmarket.controller.member.model;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import com.woomoolmarket.controller.member.MemberController;
 import com.woomoolmarket.entity.member.entity.Member;
 import com.woomoolmarket.service.member.dto.response.SignUpMemberResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 public class MemberModel extends EntityModel<Member> {
+
     public MemberModel(Member member, Link... links) {
         super(member, links);
         add(linkTo(MemberController.class).slash(member.getId()).withSelfRel());

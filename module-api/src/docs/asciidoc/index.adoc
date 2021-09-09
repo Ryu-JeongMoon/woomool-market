@@ -16,6 +16,7 @@ Request HTTP Example:
 include::{snippets}/join-member/http-request.adoc[]
 
 === Response
+
 Response:
 include::{snippets}/join-member/http-response.adoc[]
 

@@ -1,11 +1,13 @@
 package com.woomoolmarket.service.member.dto.request;
 
 import com.woomoolmarket.entity.member.entity.Address;
-import lombok.*;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

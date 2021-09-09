@@ -2,9 +2,18 @@ package com.woomoolmarket.entity.purchase.product.entity;
 
 import com.woomoolmarket.common.BaseTimeEntity;
 import com.woomoolmarket.common.Region;
-import lombok.*;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -36,7 +45,8 @@ public class Product extends BaseTimeEntity {
     private Region region;
 
     @Builder
-    public Product(String seller, String name, Integer price, Integer stock, String description, String productImg, Category category, Region region) {
+    public Product(String seller, String name, Integer price, Integer stock, String description, String productImg,
+        Category category, Region region) {
         this.seller = seller;
         this.name = name;
         this.price = price;
