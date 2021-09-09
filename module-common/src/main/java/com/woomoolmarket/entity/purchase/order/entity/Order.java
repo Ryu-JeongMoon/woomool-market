@@ -1,14 +1,22 @@
 package com.woomoolmarket.entity.purchase.order.entity;
 
+import static javax.persistence.FetchType.LAZY;
+
 import com.woomoolmarket.common.BaseEntity;
 import com.woomoolmarket.entity.member.entity.Member;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-
-import static javax.persistence.FetchType.*;
 
 @Getter
 @Entity

@@ -2,10 +2,19 @@ package com.woomoolmarket.entity.funding.entity;
 
 import com.woomoolmarket.common.BaseTimeEntity;
 import com.woomoolmarket.common.Region;
-import lombok.*;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
@@ -39,7 +48,8 @@ public class Funding extends BaseTimeEntity {
     private Region region;
 
     @Builder
-    public Funding(String name, String description, String image, LocalDateTime deadline, int price, int targetMoney, int currentMoney, FundingStatus status, Region region) {
+    public Funding(String name, String description, String image, LocalDateTime deadline, int price, int targetMoney,
+        int currentMoney, FundingStatus status, Region region) {
         this.name = name;
         this.description = description;
         this.image = image;

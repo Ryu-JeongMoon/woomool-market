@@ -6,4 +6,6 @@ import com.woomoolmarket.service.member.dto.response.SignUpMemberResponse;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface SignUpMemberResponseMapper extends GenericMapper<SignUpMemberResponse, Member> {}
+public interface SignUpMemberResponseMapper extends GenericMapper<SignUpMemberResponse, Member> {
+
+}

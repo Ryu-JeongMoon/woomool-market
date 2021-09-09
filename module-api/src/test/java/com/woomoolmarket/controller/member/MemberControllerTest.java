@@ -44,8 +44,12 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
-@SpringBootTest(classes = {ModuleApiApplication.class, ModuleCommonApplication.class,
-    ModuleServiceApplication.class})
+@SpringBootTest(
+    classes = {
+        ModuleApiApplication.class,
+        ModuleCommonApplication.class,
+        ModuleServiceApplication.class
+    })
 class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Autowired
@@ -62,28 +66,33 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
         JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-            .apply(documentationConfiguration(restDocumentation))
-            .build();
+        this.mockMvc =
+            MockMvcBuilders.webAppContextSetup(this.context)
+                .apply(documentationConfiguration(restDocumentation))
+                .build();
     }
 
     @Test
     @DisplayName("Normal Test")
     public void joinMember() throws Exception {
 
-        Member member = Member.builder()
-            .email("rj@gogo.com")
-            .userId("panda")
-            .nickname("horagin")
-            .password("123456")
-            .age("15")
-            .memberStatus(MemberStatus.ACTIVE)
-            .address(new Address("seoul", "yeonhui", "1234"))
-            .build();
+        Member member =
+            Member.builder()
+                .email("rj@gogo.com")
+                .userId("panda")
+                .nickname("horagin")
+                .password("123456")
+                .age("15")
+                .memberStatus(MemberStatus.ACTIVE)
+                .address(new Address("seoul", "yeonhui", "1234"))
+                .build();
 
-        mockMvc.perform(post("/api/members").contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))))
+        mockMvc
+            .perform(
+                post("/api/members")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaTypes.HAL_JSON)
+                    .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(header().exists(HttpHeaders.LOCATION))
@@ -98,35 +107,38 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     public void statusTest() {
-        Member member = Member.builder()
-            .email("rjrj")
-            .nickname("nick")
-            .password("1234")
-            .memberStatus(MemberStatus.INACTIVE)
-            .build();
+        Member member =
+            Member.builder()
+                .email("rjrj")
+                .nickname("nick")
+                .password("1234")
+                .memberStatus(MemberStatus.INACTIVE)
+                .build();
 
         assertThat(member.getMemberStatus()).isEqualTo(MemberStatus.INACTIVE);
     }
 
     @Test
     public void joinMemberTest() {
-        Member member = Member.builder()
-            .email("panda@naver.com")
-            .nickname("nick")
-            .password("1234")
-            .memberStatus(MemberStatus.INACTIVE)
-            .build();
+        Member member =
+            Member.builder()
+                .email("panda@naver.com")
+                .nickname("nick")
+                .password("1234")
+                .memberStatus(MemberStatus.INACTIVE)
+                .build();
     }
 
     @Test
     public void mapperTest() {
-        Member member = Member.builder()
-            .email("panda@naver.com")
-            .nickname("nick")
-            .password("1234")
-            .address(new Address("seoul", "yeonhui", "1234"))
-            .memberStatus(MemberStatus.INACTIVE)
-            .build();
+        Member member =
+            Member.builder()
+                .email("panda@naver.com")
+                .nickname("nick")
+                .password("1234")
+                .address(new Address("seoul", "yeonhui", "1234"))
+                .memberStatus(MemberStatus.INACTIVE)
+                .build();
 
         SignUpMemberRequest signUpMemberRequest = signUpRequestMapper.toDto(member);
         System.out.println("signUpMemberRequest = " + signUpMemberRequest);
@@ -134,21 +146,27 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     void getMemberTest() throws Exception {
-        Member member = Member.builder()
-            .email("panda@naver.com")
-            .nickname("nick")
-            .userId("ponda")
-            .password("1234")
-            .address(new Address("seoul", "yeonhui", "1234"))
-            .memberStatus(MemberStatus.ACTIVE)
-            .build();
+        Member member =
+            Member.builder()
+                .email("panda@naver.com")
+                .nickname("nick")
+                .userId("ponda")
+                .password("1234")
+                .address(new Address("seoul", "yeonhui", "1234"))
+                .memberStatus(MemberStatus.ACTIVE)
+                .build();
 
-        mockMvc.perform(post("/api/members").contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaTypes.HAL_JSON)
-            .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))));
+        mockMvc.perform(
+            post("/api/members")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))));
 
-        mockMvc.perform(get("/api/members/1").contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaTypes.HAL_JSON))
+        mockMvc
+            .perform(
+                get("/api/members/1")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaTypes.HAL_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(header().exists(HttpHeaders.LOCATION))

@@ -6,4 +6,6 @@ import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface ModifyMemberRequestMapper extends GenericMapper<ModifyMemberRequest, Member> {}
+public interface ModifyMemberRequestMapper extends GenericMapper<ModifyMemberRequest, Member> {
+
+}

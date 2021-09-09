@@ -3,13 +3,12 @@ package com.woomoolmarket.service.board.dto.response;
 import com.woomoolmarket.entity.board.entity.BoardCategory;
 import com.woomoolmarket.entity.member.entity.Member;
 import com.woomoolmarket.entity.reply.entity.Reply;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder
