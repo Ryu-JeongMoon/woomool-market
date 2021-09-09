@@ -1,16 +1,15 @@
 package com.woomoolmarket.entity.member.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.woomoolmarket.ModuleCommonApplication;
 import com.woomoolmarket.entity.member.entity.Member;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Log4j2
 @Transactional
@@ -23,10 +22,10 @@ class MemberRepositoryTest {
     @Test
     void joinTest() {
         Member member = Member.builder()
-                              .email("rjrj")
-                              .nickname("dldld")
-                              .password("1234")
-                              .build();
+            .email("rjrj")
+            .nickname("dldld")
+            .password("1234")
+            .build();
 
         Member savedMember = memberRepository.save(member);
 
@@ -37,10 +36,10 @@ class MemberRepositoryTest {
     @Test
     void deleteTest() {
         Member member = Member.builder()
-                              .email("rjrj")
-                              .nickname("dldld")
-                              .password("1234")
-                              .build();
+            .email("rjrj")
+            .nickname("dldld")
+            .password("1234")
+            .build();
 
         Member savedMember = memberRepository.save(member);
 
@@ -54,23 +53,23 @@ class MemberRepositoryTest {
         memberRepository.delete(savedMember);
 
         assertThrows(RuntimeException.class, () -> memberRepository.findByEmail(member.getEmail())
-                                                                   .orElseThrow(() -> new RuntimeException("x")));
+            .orElseThrow(() -> new RuntimeException("x")));
     }
 
     @Test
     void findPreviousIdTest() {
         for (int i = 0; i < 5; i++) {
             Member member = Member.builder()
-                                  .email("rjrj" + i)
-                                  .nickname("dldld" + i)
-                                  .password("1234" + i)
-                                  .build();
+                .email("rjrj" + i)
+                .nickname("dldld" + i)
+                .password("1234" + i)
+                .build();
             memberRepository.save(member);
         }
 
         Long id = 3L;
         Long previousId = memberRepository.findPreviousId(id)
-                                          .orElseThrow(() -> new RuntimeException("전 회원 없음?!"));
+            .orElseThrow(() -> new RuntimeException("전 회원 없음?!"));
 
         assertThat(previousId).isEqualTo(2L);
     }

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title th:text="#{label.woomool}">Chatting Room</title>
-    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/main.css"/>
 </head>
 <body>
 
@@ -17,7 +17,8 @@
         <h1 class="title" th:text="#{label.member.id}">아이디</h1>
         <form id="usernameForm" name="usernameForm">
             <div class="form-group">
-                <input type="text" style="text-align: center" th:field="${loginId}" th:placeholder="${loginId}" autocomplete="off" class="form-control" disabled/>
+                <input type="text" style="text-align: center" th:field="${loginId}" th:placeholder="${loginId}"
+                       autocomplete="off" class="form-control" disabled/>
                 <input type="text" id="name" th:value="${loginId}" hidden="">
             </div>
             <div class="form-group">
@@ -41,7 +42,8 @@
         <form id="messageForm" name="messageForm">
             <div class="form-group">
                 <div class="input-group clearfix">
-                    <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
+                    <input type="text" id="message" placeholder="Type a message..." autocomplete="off"
+                           class="form-control"/>
                     <button type="submit" class="primary" th:text="#{button.send}">보내기</button>
                 </div>
             </div>

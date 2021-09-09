@@ -1,6 +1,23 @@
 package com.woomoolmarket.entity.member.entity;
 
+import static javax.persistence.FetchType.LAZY;
+
 import com.woomoolmarket.common.BaseEntity;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,20 +26,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static javax.persistence.FetchType.LAZY;
-
 @Getter
 @Entity
 @NoArgsConstructor
-@EqualsAndHashCode(of = { "member_id", "email" })
+@EqualsAndHashCode(of = {"member_id", "email"})
 public class Member extends BaseEntity implements UserDetails, Serializable {
 
     @Id
@@ -63,7 +70,9 @@ public class Member extends BaseEntity implements UserDetails, Serializable {
     private MemberStatus memberStatus;
 
     @Builder
-    public Member(String userId, String email, String nickname, String password, String age, String profileImage, String phone, String license, Address address, List<Role> roles, Social social, MemberStatus memberStatus, LocalDateTime leaveDate) {
+    public Member(String userId, String email, String nickname, String password, String age, String profileImage,
+        String phone, String license, Address address, List<Role> roles, Social social, MemberStatus memberStatus,
+        LocalDateTime leaveDate) {
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
@@ -85,8 +94,8 @@ public class Member extends BaseEntity implements UserDetails, Serializable {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-                         .map(role -> new SimpleGrantedAuthority(role.toString()))
-                         .collect(Collectors.toList());
+            .map(role -> new SimpleGrantedAuthority(role.toString()))
+            .collect(Collectors.toList());
     }
 
     @Override

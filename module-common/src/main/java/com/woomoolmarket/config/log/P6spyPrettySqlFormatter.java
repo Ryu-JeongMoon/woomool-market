@@ -31,7 +31,8 @@ public class P6spyPrettySqlFormatter implements MessageFormattingStrategy {
             .append("\n\tExecution Time: ").append(elapsed).append(" ms\n")
             .append("\n\tCall Stack (number 1 is entry point): ").append(callStackBuilder)
             .append("\n")
-            .append("\n----------------------------------------------------------------------------------------------------")
+            .append(
+                "\n----------------------------------------------------------------------------------------------------")
             .toString();
 
         return sqlFormat(sql, category, message);

@@ -4,10 +4,13 @@ import com.woomoolmarket.common.BaseTimeEntity;
 import com.woomoolmarket.entity.member.entity.Address;
 import com.woomoolmarket.entity.member.entity.MemberStatus;
 import com.woomoolmarket.entity.member.entity.Social;
-import lombok.*;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

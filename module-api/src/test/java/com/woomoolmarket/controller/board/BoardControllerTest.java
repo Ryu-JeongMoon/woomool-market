@@ -18,12 +18,15 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
-@SpringBootTest(classes = { ModuleApiApplication.class, ModuleServiceApplication.class, ModuleCommonApplication.class })
+@SpringBootTest(classes = {ModuleApiApplication.class, ModuleServiceApplication.class, ModuleCommonApplication.class})
 class BoardControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired WebApplicationContext context;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    WebApplicationContext context;
+    @Autowired
+    ObjectMapper objectMapper;
 
 
 }

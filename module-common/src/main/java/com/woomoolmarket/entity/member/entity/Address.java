@@ -1,10 +1,10 @@
 package com.woomoolmarket.entity.member.entity;
 
+import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.persistence.Embeddable;
 
 @Data
 @Builder

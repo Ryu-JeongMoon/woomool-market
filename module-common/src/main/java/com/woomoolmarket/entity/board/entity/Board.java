@@ -1,17 +1,30 @@
 package com.woomoolmarket.entity.board.entity;
 
+import static javax.persistence.FetchType.LAZY;
+
 import com.woomoolmarket.common.BaseEntity;
 import com.woomoolmarket.entity.member.entity.Member;
 import com.woomoolmarket.entity.reply.entity.Reply;
-import lombok.*;
-
-import javax.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.FetchType.LAZY;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
