@@ -1,5 +1,6 @@
 package com.woomoolmarket.controller.board;
 
+import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.controller.board.model.BoardModel;
 import com.woomoolmarket.service.board.dto.request.RegisterBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
@@ -17,6 +18,7 @@ import java.net.URI;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
+@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/boards",
                 produces = MediaTypes.HAL_JSON_VALUE)
