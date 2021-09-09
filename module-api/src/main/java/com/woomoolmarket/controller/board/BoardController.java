@@ -1,29 +1,27 @@
 package com.woomoolmarket.controller.board;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
+import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.controller.board.model.BoardModel;
 import com.woomoolmarket.service.board.dto.request.RegisterBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.service.BoardService;
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
+@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/boards",
-    produces = MediaTypes.HAL_JSON_VALUE)
+                produces = MediaTypes.HAL_JSON_VALUE)
 public class BoardController {
 
     private final BoardService boardService;
@@ -34,12 +32,10 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity registerBoard(@Validated @RequestBody RegisterBoardRequest registerBoardRequest,
-        BindingResult bindingResult) {
+    public ResponseEntity registerBoard(@Validated @RequestBody RegisterBoardRequest registerBoardRequest, BindingResult bindingResult) {
         /* TODO error 잡히면 error response 보내줍시당 */
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors())
             return null;
-        }
 
         BoardResponse boardResponse = boardService.registerBoard(registerBoardRequest);
 
@@ -48,7 +44,7 @@ public class BoardController {
         BoardModel boardModel = new BoardModel(boardResponse);
 
         return ResponseEntity.created(createdUri)
-            .body(boardModel);
+                             .body(boardModel);
     }
 
     @GetMapping("/{id}")

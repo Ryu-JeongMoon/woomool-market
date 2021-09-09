@@ -12,16 +12,15 @@ import org.springframework.util.StopWatch;
 @Component
 public class LogAspect {
 
-    @Around("@annotation(LogExecutionTime)")
+    @Around("@within(com.woomoolmarket.aop.time.LogExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        StopWatch stopWatch = new StopWatch();
 
+        StopWatch stopWatch = new StopWatch();
         stopWatch.start(String.valueOf(joinPoint.getSignature()));
         Object proceed = joinPoint.proceed();
         stopWatch.stop();
-
+        
         log.info(stopWatch.prettyPrint());
-
         return proceed;
     }
 }
