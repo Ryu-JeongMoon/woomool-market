@@ -1,5 +1,6 @@
 package com.woomoolmarket.controller.auth;
 
+import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.TokenProvider;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@LogExecutionTime
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
