@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.member.dto.request;
 
-import com.woomoolmarket.entity.member.entity.Address;
+import com.woomoolmarket.model.member.entity.Address;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;

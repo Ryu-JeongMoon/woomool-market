@@ -2,11 +2,10 @@ package com.woomoolmarket.service.member.service;
 
 import static java.util.stream.Collectors.toList;
 
-import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.util.LocalDateTimeUtil;
-import com.woomoolmarket.entity.member.entity.Member;
-import com.woomoolmarket.entity.member.entity.MemberStatus;
-import com.woomoolmarket.entity.member.repository.MemberRepository;
+import com.woomoolmarket.model.member.entity.Member;
+import com.woomoolmarket.model.member.entity.MemberStatus;
+import com.woomoolmarket.model.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
@@ -18,26 +17,27 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final MemberResponseMapper memberResponseMapper;
     private final SignUpMemberRequestMapper signUpRequestMapper;
     private final ModifyMemberRequestMapper modifyMemberRequestMapper;
 
     // TODO 앞뒤번호 찾기 -> refactoring 필요 뭔가 아쉽네
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findPreviousId",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findPreviousId", unless = "#result==null")
     public MemberResponse findPreviousId(MemberResponse memberResponse) {
         return memberRepository.findAll()
             .stream()
@@ -49,10 +49,7 @@ public class MemberService {
             .orElseGet(() -> memberResponse);
     }
 
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findNextId",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findNextId", unless = "#result==null")
     public MemberResponse findNextId(MemberResponse memberResponse) {
         return memberRepository.findAll()
             .stream()
@@ -62,18 +59,12 @@ public class MemberService {
             .orElseGet(() -> memberResponse);
     }
 
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findNextIdByLong",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findNextIdByLong", unless = "#result==null")
     public Optional<Long> findPreviousId(Long id) {
         return memberRepository.findPreviousId(id);
     }
 
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findNextIdByLong",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findNextIdByLong", unless = "#result==null")
     public Optional<Long> findNextId(Long id) {
         return memberRepository.findNextId(id);
     }
@@ -86,9 +77,7 @@ public class MemberService {
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다")));
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findAllMembers",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllMembers", unless = "#result==null")
     public List<MemberResponse> findAllMembers() {
         return memberRepository.findAll()
             .stream()
@@ -96,9 +85,7 @@ public class MemberService {
             .collect(toList());
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findAllInactiveMembers",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllInactiveMembers", unless = "#result==null")
     public List<MemberResponse> findAllInactiveMembers() {
         return memberRepository.findAll()
             .stream()
@@ -107,9 +94,7 @@ public class MemberService {
             .collect(toList());
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findAllActiveMembers",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null")
     public List<MemberResponse> findAllActiveMembers() {
         return memberRepository.findAll()
             .stream()
@@ -127,6 +112,8 @@ public class MemberService {
     @Transactional
     public Long join(SignUpMemberRequest signUpRequest) {
         Member member = signUpRequestMapper.toEntity(signUpRequest);
+        member.encodePassword(passwordEncoder.encode(member.getPassword()));
+        log.info("passwordEncoder = {}", passwordEncoder.getClass());
         return memberRepository.save(member).getId();
     }
 
@@ -134,7 +121,7 @@ public class MemberService {
     public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .changeMember(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
+            .changeMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
     }
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */

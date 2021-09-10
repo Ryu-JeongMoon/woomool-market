@@ -16,10 +16,10 @@ import com.woomoolmarket.ModuleApiApplication;
 import com.woomoolmarket.ModuleCommonApplication;
 import com.woomoolmarket.ModuleServiceApplication;
 import com.woomoolmarket.common.RestDocsConfiguration;
-import com.woomoolmarket.entity.member.entity.Address;
-import com.woomoolmarket.entity.member.entity.Member;
-import com.woomoolmarket.entity.member.entity.MemberStatus;
-import com.woomoolmarket.entity.member.repository.MemberRepository;
+import com.woomoolmarket.model.member.entity.Address;
+import com.woomoolmarket.model.member.entity.Member;
+import com.woomoolmarket.model.member.entity.MemberStatus;
+import com.woomoolmarket.model.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +82,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .userId("panda")
                 .nickname("horagin")
                 .password("123456")
-                .age("15")
                 .memberStatus(MemberStatus.ACTIVE)
                 .address(new Address("seoul", "yeonhui", "1234"))
                 .build();

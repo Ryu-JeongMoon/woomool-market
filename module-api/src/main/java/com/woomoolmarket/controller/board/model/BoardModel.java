@@ -3,7 +3,7 @@ package com.woomoolmarket.controller.board.model;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import com.woomoolmarket.controller.board.BoardController;
-import com.woomoolmarket.entity.board.entity.Board;
+import com.woomoolmarket.model.board.entity.Board;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
