@@ -26,10 +26,10 @@ class SingUpMapperTest {
 
     @Test
     void mapperTest() {
-        List<Authority> roles = new ArrayList<>();
-        roles.add(Authority.ROLE_USER);
-        Member member = new Member("1234", "yaho@", "nick", "1234", "25", "profile", "0101234", "1324",
-            new Address("seoul", "str", "zip"), roles, Social.LOCAL, MemberStatus.ACTIVE, null);
+        List<Authority> authorities = new ArrayList<>();
+        authorities.add(Authority.ROLE_USER);
+        Member member = new Member("1234", "yaho@", "nick", "1234", "profile", "0101234", "1324",
+            new Address("seoul", "str", "zip"), authorities, Social.LOCAL, MemberStatus.ACTIVE, null);
 
         SignUpMemberRequest signUpRequest = signUpRequestMapper.toDto(member);
 

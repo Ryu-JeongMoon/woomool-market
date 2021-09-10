@@ -27,7 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"member_id", "email"})
-public class Member extends BaseEntity implements UserDetails, Serializable {
+public class Member extends BaseEntity implements Serializable {
 
     @Id
     @Column(name = "member_id")
@@ -54,7 +54,7 @@ public class Member extends BaseEntity implements UserDetails, Serializable {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private List<Authority> authorities = new ArrayList<>();
+    private Authority authority;
 
     @Enumerated(EnumType.STRING)
     private Social social;
@@ -64,7 +64,7 @@ public class Member extends BaseEntity implements UserDetails, Serializable {
 
     @Builder
     public Member(String userId, String email, String nickname, String password, String profileImage,
-        String phone, String license, Address address, List<Authority> authorities, Social social, MemberStatus memberStatus,
+        String phone, String license, Address address, Authority authority, Social social, MemberStatus memberStatus,
         LocalDateTime leaveDate) {
         this.userId = userId;
         this.email = email;
@@ -74,45 +74,10 @@ public class Member extends BaseEntity implements UserDetails, Serializable {
         this.phone = phone;
         this.license = license;
         this.address = address;
-        this.authorities = authorities;
+        this.authority = authority;
         this.social = social;
         this.memberStatus = memberStatus;
         this.leaveDate = leaveDate;
-    }
-
-    /**
-     * TODO Enum -> String 으로 바꾸긴 했는데 더 좋은 방법이 있으려나?
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities.stream()
-            .map(role -> new SimpleGrantedAuthority(role.toString()))
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getUsername() {
-        return this.getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     public void encodePassword(String password) {

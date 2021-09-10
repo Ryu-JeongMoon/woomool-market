@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new RuntimeException(member.getEmail() + " -> 탈퇴한 회원입니다.");
         }
 
-        List<GrantedAuthority> grantedAuthorities = member.getAuthorities().stream()
+        List<GrantedAuthority> grantedAuthorities = member.getAuthority().stream()
             .map(authority -> new SimpleGrantedAuthority(authority.toString()))
             .collect(Collectors.toList());
 

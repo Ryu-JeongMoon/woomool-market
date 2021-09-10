@@ -1,12 +1,14 @@
-package com.woomoolmarket.security.dto;
+package com.woomoolmarket.service.member.dto.request;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequest {
 
@@ -17,4 +19,8 @@ public class LoginRequest {
     @NotBlank
     @Size(min = 4, max = 100)
     private String password;
+
+    public UsernamePasswordAuthenticationToken toAuthentication() {
+        return new UsernamePasswordAuthenticationToken(email, password);
+    }
 }

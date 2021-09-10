@@ -82,7 +82,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .userId("panda")
                 .nickname("horagin")
                 .password("123456")
-                .age("15")
                 .memberStatus(MemberStatus.ACTIVE)
                 .address(new Address("seoul", "yeonhui", "1234"))
                 .build();
