@@ -1,6 +1,7 @@
 package com.woomoolmarket.service.member.dto.request;
 
-import com.woomoolmarket.model.member.entity.Address;
+import com.woomoolmarket.domain.member.entity.Address;
+import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpMemberRequest {
+public class SignUpMemberRequest implements Serializable {
 
     @Email
     @NotEmpty

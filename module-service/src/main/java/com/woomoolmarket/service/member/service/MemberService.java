@@ -3,9 +3,10 @@ package com.woomoolmarket.service.member.service;
 import static java.util.stream.Collectors.toList;
 
 import com.woomoolmarket.common.util.LocalDateTimeUtil;
-import com.woomoolmarket.model.member.entity.Member;
-import com.woomoolmarket.model.member.entity.MemberStatus;
-import com.woomoolmarket.model.member.repository.MemberRepository;
+import com.woomoolmarket.domain.member.entity.Authority;
+import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
@@ -69,8 +70,6 @@ public class MemberService {
         return memberRepository.findNextId(id);
     }
 
-    // Service 파일의 한 메소드. 여기서 직접 캐싱하도록 지정한다.
-    // @Cacheable 붙여주면 캐쉬가 없으면 넣고 있으면 조회하는 방식으로 작동한다.
     @Cacheable(key = "#id", value = "findMember")
     public MemberResponse findMember(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
@@ -111,8 +110,11 @@ public class MemberService {
 
     @Transactional
     public Long join(SignUpMemberRequest signUpRequest) {
+
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
+        member.registerAuthority(Authority.ROLE_USER);
+
         log.info("passwordEncoder = {}", passwordEncoder.getClass());
         return memberRepository.save(member).getId();
     }

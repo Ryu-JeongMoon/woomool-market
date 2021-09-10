@@ -1,10 +1,10 @@
 package com.woomoolmarket.security.service;
 
-import com.woomoolmarket.model.member.entity.Member;
-import com.woomoolmarket.model.member.entity.MemberStatus;
-import com.woomoolmarket.model.member.repository.MemberRepository;
+import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.domain.member.repository.MemberRepository;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String email) {
-        return memberRepository.findWithAuthoritiesByUsername(email)
+        return memberRepository.findByEmail(email)
             .map(this::createUserDetails)
             .orElseThrow(() -> new UsernameNotFoundException(email + " -> 존재하지 않는 회원 이름입니다."));
     }
@@ -34,9 +34,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new RuntimeException(member.getEmail() + " -> 탈퇴한 회원입니다.");
         }
 
-        List<GrantedAuthority> grantedAuthorities = member.getAuthority().stream()
-            .map(authority -> new SimpleGrantedAuthority(authority.toString()))
-            .collect(Collectors.toList());
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(member.getAuthority().toString()));
+
+//            member.getAuthority().stream()
+//            .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+//            .collect(Collectors.toList());
 
         return new User(member.getEmail(), member.getPassword(), grantedAuthorities);
     }

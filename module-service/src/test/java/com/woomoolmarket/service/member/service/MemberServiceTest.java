@@ -3,10 +3,10 @@ package com.woomoolmarket.service.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.ModuleServiceApplication;
-import com.woomoolmarket.model.member.entity.Address;
-import com.woomoolmarket.model.member.entity.Member;
-import com.woomoolmarket.model.member.entity.MemberStatus;
-import com.woomoolmarket.model.member.repository.MemberRepository;
+import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import java.time.LocalDateTime;

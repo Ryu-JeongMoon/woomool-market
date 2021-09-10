@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,8 +54,7 @@ public class MemberController {
 
         MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
 
-        URI createdUri = linkTo(MemberController.class).slash(memberResponse.getId())
-            .toUri();
+        URI createdUri = linkTo(MemberController.class).slash(memberResponse.getId()).toUri();
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
         memberResponseModel.add(linkTo(MemberController.class).withRel("modify-member"));
         memberResponseModel.add(linkTo(MemberController.class).withRel("leave-member"));
@@ -75,10 +75,8 @@ public class MemberController {
         URI defaultURI = linkTo(MemberController.class).slash(memberResponse.getId())
             .toUri();
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId())
-            .withRel("modify-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId())
-            .withRel("leave-member"));
+        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
+        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
 
         return ResponseEntity.ok()
             .location(defaultURI)
@@ -123,19 +121,16 @@ public class MemberController {
             .getId();
 
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
-        memberResponseModel.add(linkTo(MemberController.class).slash(previousId)
-            .withRel("previous-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(nextId)
-            .withRel("next-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId())
-            .withRel("modify-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId())
-            .withRel("leave-member"));
+        memberResponseModel.add(linkTo(MemberController.class).slash(previousId).withRel("previous-member"));
+        memberResponseModel.add(linkTo(MemberController.class).slash(nextId).withRel("next-member"));
+        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
+        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
 
         return ResponseEntity.ok()
             .body(memberResponseModel);
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
     public ResponseEntity<List<MemberResponse>> getAllMembers() {
         return ResponseEntity.ok(memberService.findAllMembers());
@@ -143,11 +138,13 @@ public class MemberController {
 
     /* TODO 얘는 뭔가 중복스러운데 관리자를 위해 남겨두어야 할까?
      *  화면단에서 보여줘야 하는게 다르면 내비두장 */
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/active")
     public ResponseEntity<List<MemberResponse>> getAllActiveMembers() {
         return ResponseEntity.ok(memberService.findAllActiveMembers());
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/inactive")
     public ResponseEntity<List<MemberResponse>> getAllInactiveMembers() {
         return ResponseEntity.ok(memberService.findAllInactiveMembers());
