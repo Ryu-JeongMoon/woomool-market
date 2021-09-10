@@ -2,9 +2,9 @@ package com.woomoolmarket.service.board.service;
 
 import static java.util.stream.Collectors.toList;
 
-import com.woomoolmarket.model.board.entity.Board;
-import com.woomoolmarket.model.board.entity.BoardStatus;
-import com.woomoolmarket.model.board.repository.BoardRepository;
+import com.woomoolmarket.domain.board.entity.Board;
+import com.woomoolmarket.domain.board.entity.BoardStatus;
+import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.request.RegisterBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;

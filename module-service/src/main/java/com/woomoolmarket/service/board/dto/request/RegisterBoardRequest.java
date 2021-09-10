@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.board.dto.request;
 
-import com.woomoolmarket.model.board.entity.BoardCategory;
-import com.woomoolmarket.model.member.entity.Member;
+import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

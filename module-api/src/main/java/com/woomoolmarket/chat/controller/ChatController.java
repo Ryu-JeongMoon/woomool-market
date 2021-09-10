@@ -1,7 +1,7 @@
 package com.woomoolmarket.chat.controller;
 
 import com.woomoolmarket.chat.model.ChatMessage;
-import com.woomoolmarket.model.member.entity.Member;
+import com.woomoolmarket.domain.member.entity.Member;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;

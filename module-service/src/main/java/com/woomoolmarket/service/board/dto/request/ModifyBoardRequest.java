@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.board.dto.request;
 
-import com.woomoolmarket.model.board.entity.BoardCategory;
+import com.woomoolmarket.domain.board.entity.BoardCategory;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

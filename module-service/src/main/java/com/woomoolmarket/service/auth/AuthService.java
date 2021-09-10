@@ -1,8 +1,8 @@
 package com.woomoolmarket.service.auth;
 
-import com.woomoolmarket.model.member.repository.MemberRepository;
-import com.woomoolmarket.model.token.RefreshToken;
-import com.woomoolmarket.model.token.repository.RefreshTokenRepository;
+import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.token.RefreshToken;
+import com.woomoolmarket.domain.token.repository.RefreshTokenRepository;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.TokenProvider;
@@ -26,9 +26,9 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenResponse login(LoginRequest loginMemberRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = loginMemberRequest.toAuthentication();
+        UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
 
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨

@@ -1,8 +1,8 @@
 package com.woomoolmarket.service.board.dto.response;
 
-import com.woomoolmarket.model.board.entity.BoardCategory;
-import com.woomoolmarket.model.member.entity.Member;
-import com.woomoolmarket.model.reply.entity.Reply;
+import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.reply.entity.Reply;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;

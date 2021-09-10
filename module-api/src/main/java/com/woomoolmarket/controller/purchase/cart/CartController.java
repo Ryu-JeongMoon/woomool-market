@@ -1,6 +1,6 @@
 package com.woomoolmarket.controller.purchase.cart;
 
-import com.woomoolmarket.model.purchase.cart.repository.CartRepository;
+import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.web.bind.annotation.RequestMapping;

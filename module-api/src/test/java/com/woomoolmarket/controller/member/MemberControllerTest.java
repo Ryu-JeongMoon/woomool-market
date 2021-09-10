@@ -16,16 +16,19 @@ import com.woomoolmarket.ModuleApiApplication;
 import com.woomoolmarket.ModuleCommonApplication;
 import com.woomoolmarket.ModuleServiceApplication;
 import com.woomoolmarket.common.RestDocsConfiguration;
-import com.woomoolmarket.model.member.entity.Address;
-import com.woomoolmarket.model.member.entity.Member;
-import com.woomoolmarket.model.member.entity.MemberStatus;
-import com.woomoolmarket.model.member.repository.MemberRepository;
+import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.security.dto.TokenResponse;
+import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,6 +39,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -161,11 +165,25 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))));
 
+        LoginRequest loginRequest = new LoginRequest(member.getEmail(), member.getPassword());
+
+        MvcResult mvcResult = mockMvc.perform(
+            post("/api/login")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+        ).andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        TokenResponse tokenResponse = objectMapper.readValue(contentAsString, TokenResponse.class);
+        String accessToken = tokenResponse.getAccessToken();
+
         mockMvc
             .perform(
                 get("/api/members/1")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaTypes.HAL_JSON))
+                    .accept(MediaTypes.HAL_JSON)
+                    .header("Authorization", accessToken))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(header().exists(HttpHeaders.LOCATION))
