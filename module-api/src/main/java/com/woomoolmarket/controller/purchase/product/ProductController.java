@@ -1,6 +1,6 @@
 package com.woomoolmarket.controller.purchase.product;
 
-import com.woomoolmarket.entity.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.model.purchase.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.web.bind.annotation.RequestMapping;

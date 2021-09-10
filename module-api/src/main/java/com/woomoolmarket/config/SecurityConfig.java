@@ -2,7 +2,7 @@ package com.woomoolmarket.config;
 
 
 import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
-import com.woomoolmarket.security.jwt.JwtTokenProvider;
+import com.woomoolmarket.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider jwtTokenProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

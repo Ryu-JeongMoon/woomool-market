@@ -1,9 +1,9 @@
 package com.woomoolmarket.service.member.dto.response;
 
 import com.woomoolmarket.common.BaseTimeEntity;
-import com.woomoolmarket.entity.member.entity.Address;
-import com.woomoolmarket.entity.member.entity.MemberStatus;
-import com.woomoolmarket.entity.member.entity.Social;
+import com.woomoolmarket.model.member.entity.Address;
+import com.woomoolmarket.model.member.entity.MemberStatus;
+import com.woomoolmarket.model.member.entity.Social;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;

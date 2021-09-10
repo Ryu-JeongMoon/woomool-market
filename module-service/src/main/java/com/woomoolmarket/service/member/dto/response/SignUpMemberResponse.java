@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.member.dto.response;
 
-import com.woomoolmarket.entity.member.entity.Address;
+import com.woomoolmarket.model.member.entity.Address;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

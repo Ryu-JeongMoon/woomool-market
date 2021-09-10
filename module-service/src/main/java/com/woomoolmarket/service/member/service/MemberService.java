@@ -2,11 +2,10 @@ package com.woomoolmarket.service.member.service;
 
 import static java.util.stream.Collectors.toList;
 
-import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.util.LocalDateTimeUtil;
-import com.woomoolmarket.entity.member.entity.Member;
-import com.woomoolmarket.entity.member.entity.MemberStatus;
-import com.woomoolmarket.entity.member.repository.MemberRepository;
+import com.woomoolmarket.model.member.entity.Member;
+import com.woomoolmarket.model.member.entity.MemberStatus;
+import com.woomoolmarket.model.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Service
-@LogExecutionTime
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
@@ -123,7 +121,7 @@ public class MemberService {
     public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .changeMember(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
+            .changeMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
     }
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */

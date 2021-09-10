@@ -1,7 +1,7 @@
 package com.woomoolmarket.controller.purchase.order;
 
 
-import com.woomoolmarket.entity.purchase.order.repository.OrderRepository;
+import com.woomoolmarket.model.purchase.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.web.bind.annotation.RequestMapping;
