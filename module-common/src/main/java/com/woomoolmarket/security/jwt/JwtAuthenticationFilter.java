@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.jwt;
+package com.woomoolmarket.security.jwt;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;

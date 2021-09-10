@@ -18,26 +18,28 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Log4j2
 @Service
+@LogExecutionTime
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final MemberResponseMapper memberResponseMapper;
     private final SignUpMemberRequestMapper signUpRequestMapper;
     private final ModifyMemberRequestMapper modifyMemberRequestMapper;
 
     // TODO 앞뒤번호 찾기 -> refactoring 필요 뭔가 아쉽네
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findPreviousId",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findPreviousId", unless = "#result==null")
     public MemberResponse findPreviousId(MemberResponse memberResponse) {
         return memberRepository.findAll()
             .stream()
@@ -49,10 +51,7 @@ public class MemberService {
             .orElseGet(() -> memberResponse);
     }
 
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findNextId",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findNextId", unless = "#result==null")
     public MemberResponse findNextId(MemberResponse memberResponse) {
         return memberRepository.findAll()
             .stream()
@@ -62,18 +61,12 @@ public class MemberService {
             .orElseGet(() -> memberResponse);
     }
 
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findNextIdByLong",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findNextIdByLong", unless = "#result==null")
     public Optional<Long> findPreviousId(Long id) {
         return memberRepository.findPreviousId(id);
     }
 
-    @LogExecutionTime
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findNextIdByLong",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findNextIdByLong", unless = "#result==null")
     public Optional<Long> findNextId(Long id) {
         return memberRepository.findNextId(id);
     }
@@ -86,9 +79,7 @@ public class MemberService {
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다")));
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findAllMembers",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllMembers", unless = "#result==null")
     public List<MemberResponse> findAllMembers() {
         return memberRepository.findAll()
             .stream()
@@ -96,9 +87,7 @@ public class MemberService {
             .collect(toList());
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findAllInactiveMembers",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllInactiveMembers", unless = "#result==null")
     public List<MemberResponse> findAllInactiveMembers() {
         return memberRepository.findAll()
             .stream()
@@ -107,9 +96,7 @@ public class MemberService {
             .collect(toList());
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator",
-        value = "findAllActiveMembers",
-        unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null")
     public List<MemberResponse> findAllActiveMembers() {
         return memberRepository.findAll()
             .stream()
@@ -127,6 +114,8 @@ public class MemberService {
     @Transactional
     public Long join(SignUpMemberRequest signUpRequest) {
         Member member = signUpRequestMapper.toEntity(signUpRequest);
+        member.encodePassword(passwordEncoder.encode(member.getPassword()));
+        log.info("passwordEncoder = {}", passwordEncoder.getClass());
         return memberRepository.save(member).getId();
     }
 

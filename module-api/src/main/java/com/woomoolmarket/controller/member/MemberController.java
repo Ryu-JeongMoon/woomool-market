@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/members",
     produces = MediaTypes.HAL_JSON_VALUE)
@@ -37,11 +36,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @LogExecutionTime
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getMembers() {
         return ResponseEntity.ok(memberService.findAllActiveMembers());
     }
 
+    @LogExecutionTime
     @PostMapping
     public ResponseEntity joinMember(@RequestBody @Validated SignUpMemberRequest signUpMemberRequest,
         BindingResult bindingResult) throws JsonProcessingException {
@@ -68,6 +69,7 @@ public class MemberController {
      * 어떤 자료를 보여줄 것인고?
      * 수정 페이지
      */
+    @LogExecutionTime
     @GetMapping("/{id}")
     public ResponseEntity getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
@@ -85,6 +87,7 @@ public class MemberController {
             .body(memberResponseModel);
     }
 
+    @LogExecutionTime
     @PatchMapping("/{id}")
     public ResponseEntity editMemberInfo(@PathVariable Long id,
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
@@ -105,6 +108,7 @@ public class MemberController {
             .body(memberResponseModel);
     }
 
+    @LogExecutionTime
     /* TODO 탈퇴한 회원에겐 무엇을 보여줘야 하남?? */
     @DeleteMapping("/{id}")
     public ResponseEntity leaveMember(@PathVariable Long id) {
@@ -115,6 +119,7 @@ public class MemberController {
 
     /* FOR ADMIN */
     @GetMapping("/admin-only/{id}")
+    @LogExecutionTime
     public ResponseEntity getMemberByAdmin(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
@@ -138,6 +143,7 @@ public class MemberController {
     }
 
     @GetMapping("/admin-only/all")
+    @LogExecutionTime
     public ResponseEntity<List<MemberResponse>> getAllMembers() {
         return ResponseEntity.ok(memberService.findAllMembers());
     }
@@ -145,11 +151,13 @@ public class MemberController {
     /* TODO 얘는 뭔가 중복스러운데 관리자를 위해 남겨두어야 할까?
      *  화면단에서 보여줘야 하는게 다르면 내비두장 */
     @GetMapping("/admin-only/active")
+    @LogExecutionTime
     public ResponseEntity<List<MemberResponse>> getAllActiveMembers() {
         return ResponseEntity.ok(memberService.findAllActiveMembers());
     }
 
     @GetMapping("/admin-only/inactive")
+    @LogExecutionTime
     public ResponseEntity<List<MemberResponse>> getAllInactiveMembers() {
         return ResponseEntity.ok(memberService.findAllInactiveMembers());
     }

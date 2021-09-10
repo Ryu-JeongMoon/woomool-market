@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.jwt;
+package com.woomoolmarket.security.jwt;
 
 import com.woomoolmarket.entity.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

@@ -123,6 +123,10 @@ public class Member extends BaseEntity implements UserDetails, Serializable {
         return true;
     }
 
+    public void encodePassword(String password) {
+        this.password = password;
+    }
+
     public void changeStatus(MemberStatus memberStatus, LocalDateTime leaveDate) {
         this.memberStatus = memberStatus;
         this.leaveDate = leaveDate;

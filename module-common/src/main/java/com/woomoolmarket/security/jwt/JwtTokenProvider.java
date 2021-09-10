@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.jwt;
+package com.woomoolmarket.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

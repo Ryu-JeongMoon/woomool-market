@@ -1,8 +1,8 @@
-package com.woomoolmarket.config;
+package com.woomoolmarket.security;
 
 
-import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
-import com.woomoolmarket.security.jwt.JwtTokenProvider;
+import com.woomoolmarket.config.jwt.JwtAuthenticationFilter;
+import com.woomoolmarket.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
