@@ -59,6 +59,7 @@ class MemberRepositoryTest {
             .orElseThrow(() -> new RuntimeException("x")));
     }
 
+    /** Q-file 없어서 CI할 때 에러 생기나 봄.. */
     @Test
     void findPreviousIdTest() {
         for (int i = 0; i < 5; i++) {
@@ -69,9 +70,6 @@ class MemberRepositoryTest {
                 .build();
             memberRepository.save(member);
         }
-
-        em.flush();
-        em.clear();
 
         Long id = 3L;
         Long previousId = memberRepository.findPreviousId(id)
