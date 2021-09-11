@@ -9,6 +9,14 @@ spring:
   cache:
     type: none
 
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        ddl-auto: create
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
   jackson:
     deserialization:
       fail-on-unknown-properties: true
@@ -22,4 +30,4 @@ logging:
 
 jwt:
   header: Authorization
-  secret: c3ByaW5nLWJvb3QtcGFuZGEtYmVhci1uZXN0ZWQtZXhjZXB0aW9uLWp3dC13ZWFrLWtleS1mdWNrLWl0Cg==
+  secret: c3ByaW5nLWJvb3QtcGFuZGEtYmVhci1uZXN0ZWQtZXhjZXB0aW9uLWp3dC13ZWFrLWtleS1mdWNrLWl0Cg==cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==

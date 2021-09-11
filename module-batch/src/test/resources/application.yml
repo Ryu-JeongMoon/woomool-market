@@ -3,11 +3,23 @@ spring:
     active: test
 
   redis:
-    port: 6380
+    port: 6379
     host: localhost
 
+  test:
+    database:
+      replace: none
+
   cache:
-    type: none
+    type: redis
+
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        ddl-auto: create
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
 
   jackson:
     deserialization:

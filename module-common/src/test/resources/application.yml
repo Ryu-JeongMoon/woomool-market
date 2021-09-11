@@ -4,11 +4,22 @@ spring:
 
   jpa:
     generate-ddl: true
-
     properties:
       hibernate:
+        ddl-auto: create
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
+
+  redis:
+    port: 6379
+    host: localhost
+
+  test:
+    database:
+      replace: none
+
+  cache:
+    type: redis
 
   jackson:
     deserialization:
@@ -20,4 +31,4 @@ logging:
 
 jwt:
   header: Authorization
-  secret: cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==
+  secret: cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==
