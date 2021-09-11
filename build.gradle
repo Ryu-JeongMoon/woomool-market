@@ -29,17 +29,17 @@ configurations {
     }
 }
 
+group = 'com.woomool-market'
+version = '1.0'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'org.asciidoctor.jvm.convert'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-
-    group = 'com.woomool-market'
-    version = '1.0'
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
 
     repositories {
         mavenCentral()
@@ -54,6 +54,10 @@ subprojects {
         }
     }
 
+    ext {
+        set('springCloudVersion', "2020.0.3")
+    }
+
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -66,6 +70,8 @@ subprojects {
         implementation 'com.googlecode.json-simple:json-simple:1.1.1'
         implementation 'org.mapstruct:mapstruct:1.4.1.Final'
         implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
+        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
         implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
         implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
@@ -92,6 +98,12 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.2'
         testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
     }
 
     test {
