@@ -1,0 +1,35 @@
+spring:
+  profiles:
+    active: test
+
+  redis:
+    port: 6380
+    host: localhost
+
+  test:
+    database:
+      replace: none
+
+  cache:
+    type: redis
+
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show_sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+jwt:
+  header: Authorization
+  secret: cGFuZGEK=

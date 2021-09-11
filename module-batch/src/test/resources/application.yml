@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: test
+
+  redis:
+    port: 6380
+    host: localhost
+
+  cache:
+    type: none
+
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+    serialization:
+      fail-on-empty-beans: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+

@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: test
+
+  jpa:
+    generate-ddl: true
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+jwt:
+  header: Authorization
+  secret: cGFuZGEK=
