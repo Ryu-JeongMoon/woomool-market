@@ -20,4 +20,4 @@ logging:
 
 jwt:
   header: Authorization
-  secret: cGFuZGEK=
+  secret: cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==
