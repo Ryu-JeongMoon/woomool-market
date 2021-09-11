@@ -1,4 +1,4 @@
-# woomool-market [![Java CI with Gradle](https://github.com/Ryu-JeongMoon/woomool-market/actions/workflows/gradle.yml/badge.svg)](https://github.com/Ryu-JeongMoon/woomool-market/actions/workflows/gradle.yml) [![Build Status](https://travis-ci.com/Ryu-JeongMoon/woomool-market.svg?branch=master)](https://travis-ci.com/Ryu-JeongMoon/woomool-market)
+# woomool-market [![Java CI with Gradle](https://github.com/Ryu-JeongMoon/woomool-market/actions/workflows/gradle.yml/badge.svg)](https://github.com/Ryu-JeongMoon/woomool-market/actions/workflows/gradle.yml) [![Build Status](https://app.travis-ci.com/Ryu-JeongMoon/woomool-market.svg?branch=develop)](https://app.travis-ci.com/Ryu-JeongMoon/woomool-market)
 
 ### 기술 스택
 <hr>
