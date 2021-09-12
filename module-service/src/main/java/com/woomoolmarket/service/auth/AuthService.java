@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.auth;
 
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.token.RefreshToken;
+import com.woomoolmarket.domain.token.entiy.RefreshToken;
 import com.woomoolmarket.domain.token.repository.RefreshTokenRepository;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
