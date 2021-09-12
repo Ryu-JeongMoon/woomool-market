@@ -1,15 +1,20 @@
 package com.woomoolmarket.domain.member.repository;
 
+import static com.woomoolmarket.domain.member.entity.QMember.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.ModuleCommonApplication;
 import com.woomoolmarket.domain.member.entity.Member;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
@@ -21,6 +26,8 @@ class MemberRepositoryTest {
     EntityManager em;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    JPAQueryFactory queryFactory;
 
     @Test
     void joinTest() {
@@ -59,8 +66,8 @@ class MemberRepositoryTest {
             .orElseThrow(() -> new RuntimeException("x")));
     }
 
-    /** Q-file 없어서 CI할 때 에러 생기나 봄.. */
-    //    @Test
+    // TODO - test for Local
+    //@Test
     void findPreviousIdTest() {
         for (int i = 0; i < 5; i++) {
             Member member = Member.builder()
@@ -72,6 +79,7 @@ class MemberRepositoryTest {
         }
 
         Long id = 3L;
+
         Long previousId = memberRepository.findPreviousId(id)
             .orElseThrow(() -> new RuntimeException("전 회원 없음?!"));
 

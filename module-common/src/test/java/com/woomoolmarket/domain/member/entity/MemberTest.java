@@ -83,7 +83,6 @@ class MemberTest {
     }
 
     @Test
-    @Rollback
     void passwordTest() {
 
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
