@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.woomoolmarket.ModuleCommonApplication;
+import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = ModuleCommonApplication.class)
+@SpringBootTest(classes = ModuleCoreApplication.class)
 @Transactional
 @Rollback
 class MemberTest {

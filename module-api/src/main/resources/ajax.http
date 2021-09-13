@@ -1,10 +1,13 @@
-GET http://localhost:8090/api/members/1
+GET https://localhost:8443/api/members/1
 Content-Type: application/json
 
 ###
 # Send API call
-GET http://localhost:8090/api/members
+GET https://localhost:8443/api/members
 Content-Type: application/json
 
 ###
-GET http://localhost:8090/api/members
+GET https://localhost:8443/api/members
+
+###
+GET https://localhost:8443/xss
