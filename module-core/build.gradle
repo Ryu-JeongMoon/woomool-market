@@ -18,8 +18,7 @@ configure('module-common') {
     apply plugin: "io.spring.dependency-management"
 
     dependencies {
-        implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '2.1.1'
-        implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.61'
+        implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 
         implementation "com.querydsl:querydsl-core"
         implementation "com.querydsl:querydsl-jpa"

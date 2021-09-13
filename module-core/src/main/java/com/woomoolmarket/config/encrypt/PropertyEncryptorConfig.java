@@ -15,7 +15,7 @@ public class PropertyEncryptorConfig {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         encryptor.setProvider(new BouncyCastleProvider());
         encryptor.setPoolSize(2);
-        encryptor.setPassword("secret-key");
+        encryptor.setPassword("panda-bear");
         encryptor.setAlgorithm("PBEWithSHA256And128BitAES-CBC-BC");
         return encryptor;
     }
