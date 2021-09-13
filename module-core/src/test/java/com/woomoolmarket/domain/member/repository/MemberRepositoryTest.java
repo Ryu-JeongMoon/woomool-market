@@ -1,25 +1,21 @@
 package com.woomoolmarket.domain.member.repository;
 
-import static com.woomoolmarket.domain.member.entity.QMember.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woomoolmarket.ModuleCommonApplication;
+import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.domain.member.entity.Member;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Transactional
-@SpringBootTest(classes = ModuleCommonApplication.class)
+@SpringBootTest(classes = ModuleCoreApplication.class)
 class MemberRepositoryTest {
 
     @Autowired

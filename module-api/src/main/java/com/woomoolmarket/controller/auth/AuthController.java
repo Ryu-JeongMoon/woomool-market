@@ -5,6 +5,8 @@ import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,20 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        TokenResponse tokenResponse = authService.login(loginRequest);
+        Cookie cookie = prepareCookie(tokenResponse);
+        response.addCookie(cookie);
+        return ResponseEntity.ok(tokenResponse);
+    }
 
-        return ResponseEntity.ok(authService.login(loginRequest));
+    private Cookie prepareCookie(TokenResponse tokenResponse) {
+        Cookie cookie = new Cookie("refreshToken", tokenResponse.getRefreshToken());
+        cookie.setMaxAge(24 * 60 * 60);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        return cookie;
     }
 
     @PostMapping("/reissue")

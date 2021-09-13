@@ -14,10 +14,13 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa'
 }
 
-configure('module-common') {
+configure('module-core') {
     apply plugin: "io.spring.dependency-management"
 
     dependencies {
+        implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+        implementation 'org.apache.commons:commons-text:1.9'
+
         implementation "com.querydsl:querydsl-core"
         implementation "com.querydsl:querydsl-jpa"
 

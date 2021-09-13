@@ -1,2 +1,2 @@
 rootProject.name = 'woomool-market'
-include 'module-api', 'module-common', 'module-service', 'module-batch'
+include 'module-api', 'module-core', 'module-service', 'module-batch'
