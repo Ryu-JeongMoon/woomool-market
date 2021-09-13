@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
-            .antMatchers("/h2-console/**", "/favicon.ico", "/error");
+            .antMatchers("/h2-console/**", "/favicon.ico", "/error", "/xss");
     }
 
     @Override
@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/h2-console/**").permitAll()
+            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/h2-console/**", "/xss")
+            .permitAll()
             .anyRequest().authenticated()
 
             .and()
