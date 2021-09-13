@@ -135,7 +135,7 @@ processResources.dependsOn 'buildVue'
 
 project(':module-api') {
     dependencies {
-        implementation project(':module-common')
+        implementation project(':module-core')
     }
 }
 project(':module-api') {
@@ -145,17 +145,7 @@ project(':module-api') {
 }
 project(':module-service') {
     dependencies {
-        implementation project(':module-common')
-    }
-}
-project(':module-batch') {
-    dependencies {
-        implementation project(':module-common')
-    }
-}
-project(':module-batch') {
-    dependencies {
-        implementation project(':module-service')
+        implementation project(':module-core')
     }
 }
 

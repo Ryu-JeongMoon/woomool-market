@@ -2,7 +2,7 @@ package com.woomoolmarket.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.ModuleApiApplication;
-import com.woomoolmarket.ModuleCommonApplication;
+import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.ModuleServiceApplication;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
-@SpringBootTest(classes = {ModuleApiApplication.class, ModuleServiceApplication.class, ModuleCommonApplication.class})
+@SpringBootTest(classes = {ModuleApiApplication.class, ModuleServiceApplication.class, ModuleCoreApplication.class})
 class BoardControllerTest {
 
     @Autowired

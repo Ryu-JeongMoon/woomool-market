@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.ModuleApiApplication;
-import com.woomoolmarket.ModuleCommonApplication;
+import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.ModuleServiceApplication;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import com.woomoolmarket.domain.member.entity.Address;
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -51,7 +50,7 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest(
     classes = {
         ModuleApiApplication.class,
-        ModuleCommonApplication.class,
+        ModuleCoreApplication.class,
         ModuleServiceApplication.class
     })
 class MemberControllerTest implements BeforeTestExecutionCallback {
