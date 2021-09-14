@@ -1,15 +1,16 @@
-package com.woomoolmarket.redis.config;
+package com.woomoolmarket.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.ModuleServiceApplication;
+import com.woomoolmarket.ModuleCoreApplication;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest(classes = ModuleServiceApplication.class)
+@Log4j2
+@SpringBootTest(classes = ModuleCoreApplication.class)
 class RedisConfigTest {
 
     @Autowired
@@ -21,9 +22,8 @@ class RedisConfigTest {
     void envTest() {
         int port = Integer.parseInt(env.getProperty("spring.redis.port"));
         String host = env.getProperty("spring.redis.host");
-
-        System.out.println("host = " + host);
-        System.out.println("port = " + port);
+        log.info("host = {}", host);
+        log.info("port = {}", port);
     }
 
 }

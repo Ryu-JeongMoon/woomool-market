@@ -70,7 +70,7 @@ public class MemberService {
         return memberRepository.findNextId(id);
     }
 
-    @Cacheable(key = "#id", value = "findMember")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findMember", unless = "#result==null")
     public MemberResponse findMember(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다")));

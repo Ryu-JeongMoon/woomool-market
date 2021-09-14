@@ -2,7 +2,6 @@ package com.woomoolmarket.controller.member;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.controller.member.model.MemberResponseModel;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
@@ -32,8 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @LogExecutionTime
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/members",
-    produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/api/members", produces = MediaTypes.HAL_JSON_VALUE)
 public class MemberController {
 
     private final MemberService memberService;
@@ -44,12 +42,11 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity joinMember(@RequestBody @Validated SignUpMemberRequest signUpMemberRequest,
-        BindingResult bindingResult) throws JsonProcessingException {
+    public ResponseEntity joinMember(@Validated @RequestBody SignUpMemberRequest signUpMemberRequest,
+        BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest()
-                .body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
 
         MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
@@ -59,8 +56,7 @@ public class MemberController {
         memberResponseModel.add(linkTo(MemberController.class).withRel("modify-member"));
         memberResponseModel.add(linkTo(MemberController.class).withRel("leave-member"));
 
-        return ResponseEntity.created(createdUri)
-            .body(memberResponseModel);
+        return ResponseEntity.created(createdUri).body(memberResponseModel);
     }
 
     /**
@@ -72,15 +68,12 @@ public class MemberController {
     public ResponseEntity getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
-        URI defaultURI = linkTo(MemberController.class).slash(memberResponse.getId())
-            .toUri();
+        URI defaultURI = linkTo(MemberController.class).slash(memberResponse.getId()).toUri();
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
         memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
         memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
 
-        return ResponseEntity.ok()
-            .location(defaultURI)
-            .body(memberResponseModel);
+        return ResponseEntity.ok().location(defaultURI).body(memberResponseModel);
     }
 
     @PatchMapping("/{id}")
@@ -88,8 +81,7 @@ public class MemberController {
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest()
-                .body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
@@ -99,8 +91,7 @@ public class MemberController {
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
         memberResponseModel.add(linkTo(MemberController.class).withRel("delete"));
 
-        return ResponseEntity.created(createdURI)
-            .body(memberResponseModel);
+        return ResponseEntity.created(createdURI).body(memberResponseModel);
     }
 
     @DeleteMapping("/{id}")
@@ -115,10 +106,8 @@ public class MemberController {
     public ResponseEntity getMemberByAdmin(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
-        Long previousId = memberService.findPreviousId(memberResponse)
-            .getId();
-        Long nextId = memberService.findNextId(memberResponse)
-            .getId();
+        Long previousId = memberService.findPreviousId(memberResponse).getId();
+        Long nextId = memberService.findNextId(memberResponse).getId();
 
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
         memberResponseModel.add(linkTo(MemberController.class).slash(previousId).withRel("previous-member"));
@@ -126,8 +115,7 @@ public class MemberController {
         memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
         memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
 
-        return ResponseEntity.ok()
-            .body(memberResponseModel);
+        return ResponseEntity.ok().body(memberResponseModel);
     }
 
     @Secured("ROLE_ADMIN")
