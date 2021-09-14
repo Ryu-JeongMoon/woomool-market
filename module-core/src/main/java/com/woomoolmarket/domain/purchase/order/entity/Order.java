@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name = "ORDERS")
-@EqualsAndHashCode(of = "order_id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Order extends BaseEntity {
 
     @Id

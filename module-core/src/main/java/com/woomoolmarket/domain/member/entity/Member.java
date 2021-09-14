@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"member_id", "email"})
+@EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
 public class Member extends BaseEntity implements Serializable {
 
     @Id
