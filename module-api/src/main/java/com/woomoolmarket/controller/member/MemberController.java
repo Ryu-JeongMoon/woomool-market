@@ -10,8 +10,11 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.service.MemberService;
 import java.net.URI;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,12 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @Data
+    @AllArgsConstructor
+    public class Result<T> {
+        private T data;
+    }
+
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getMembers() {
         return ResponseEntity.ok(memberService.findAllActiveMembers());
@@ -58,31 +67,30 @@ public class MemberController {
 
         return ResponseEntity.created(createdUri).body(memberResponseModel);
     }
-
     /**
      * TODO 고민해봅시당
      * 어떤 자료를 보여줄 것인고?
      * 수정 페이지
      */
     @GetMapping("/{id}")
-    public ResponseEntity getMember(@PathVariable Long id) {
+    public Result getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
         URI defaultURI = linkTo(MemberController.class).slash(memberResponse.getId()).toUri();
-        MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
+        EntityModel<MemberResponse> memberResponseEntityModel = new MemberResponseModel(memberResponse);
+        memberResponseEntityModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
+        memberResponseEntityModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
 
-        return ResponseEntity.ok().location(defaultURI).body(memberResponseModel);
+        return new Result(memberResponseEntityModel);
     }
+
 
     @PatchMapping("/{id}")
     public ResponseEntity editMemberInfo(@PathVariable Long id,
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors())
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
 

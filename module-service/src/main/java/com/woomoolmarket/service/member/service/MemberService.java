@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -123,15 +124,16 @@ public class MemberService {
     public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .changeMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
+            .editMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
     }
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "findMember")
     @Transactional
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .changeStatus(MemberStatus.INACTIVE, LocalDateTime.now());
+            .leave(MemberStatus.INACTIVE, LocalDateTime.now());
     }
 
     /* TODO Batch Job 으로 돌릴 것 */

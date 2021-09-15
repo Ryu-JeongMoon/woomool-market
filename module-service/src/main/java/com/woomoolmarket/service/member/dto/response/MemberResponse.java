@@ -1,5 +1,6 @@
 package com.woomoolmarket.service.member.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.MemberStatus;
 import com.woomoolmarket.domain.member.entity.Social;
