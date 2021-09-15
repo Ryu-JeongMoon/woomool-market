@@ -2,7 +2,6 @@ package com.woomoolmarket.service.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.ModuleServiceApplication;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Transactional
-@SpringBootTest(classes = ModuleServiceApplication.class)
+@SpringBootTest
 class MemberServiceTest {
 
     @Autowired

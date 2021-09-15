@@ -22,7 +22,6 @@ class CacheConfigTest {
         Member panda = Member.builder()
             .userId("panda")
             .password("1234")
-            .leaveDate(LocalDateTime.now())
             .address(new Address("seoul", "jeonju", "busan"))
             .build();
 

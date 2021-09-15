@@ -2,16 +2,12 @@ package com.woomoolmarket.redis;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.ModuleCoreApplication;
 import lombok.extern.log4j.Log4j2;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @SpringBootTest

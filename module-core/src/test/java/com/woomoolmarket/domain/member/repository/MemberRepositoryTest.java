@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.domain.member.entity.Member;
-import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

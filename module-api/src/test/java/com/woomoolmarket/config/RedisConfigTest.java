@@ -10,15 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@AutoConfigureMockMvc
-@SpringBootTest(classes = ModuleApiApplication.class)
 class RedisConfigTest {
 
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    SignUpMemberRequestMapper signUpMemberRequestMapper;
 
 }
