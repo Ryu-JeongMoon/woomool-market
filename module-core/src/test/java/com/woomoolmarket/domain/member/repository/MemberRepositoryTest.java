@@ -15,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Transactional
-@SpringBootTest(classes = ModuleCoreApplication.class)
+@SpringBootTest
 class MemberRepositoryTest {
 
-    @Autowired
-    EntityManager em;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -63,7 +61,7 @@ class MemberRepositoryTest {
     }
 
     // TODO - test for Local
-    //@Test
+    @Test
     void findPreviousIdTest() {
         for (int i = 0; i < 5; i++) {
             Member member = Member.builder()

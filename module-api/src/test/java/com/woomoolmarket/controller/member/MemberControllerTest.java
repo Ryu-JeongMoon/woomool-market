@@ -4,7 +4,6 @@ package com.woomoolmarket.controller.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -20,10 +19,10 @@ import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.entity.MemberStatus;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
@@ -47,12 +46,7 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
-@SpringBootTest(
-    classes = {
-        ModuleApiApplication.class,
-        ModuleCoreApplication.class,
-        ModuleServiceApplication.class
-    })
+@SpringBootTest
 class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Autowired
@@ -77,7 +71,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("Normal Test")
-    public void joinMember() throws Exception {
+    public void signUpSuccessTest() throws Exception {
 
         Member member =
             Member.builder()
@@ -85,12 +79,10 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .userId("panda")
                 .nickname("horagin")
                 .password("123456")
-                .memberStatus(MemberStatus.ACTIVE)
                 .address(new Address("seoul", "yeonhui", "1234"))
                 .build();
 
-        mockMvc
-            .perform(
+        mockMvc.perform(
                 post("/api/members")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
@@ -114,21 +106,11 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .email("rjrj")
                 .nickname("nick")
                 .password("1234")
-                .memberStatus(MemberStatus.INACTIVE)
                 .build();
 
-        assertThat(member.getMemberStatus()).isEqualTo(MemberStatus.INACTIVE);
-    }
+        Member findResult = memberRepository.save(member);
 
-    @Test
-    public void joinMemberTest() {
-        Member member =
-            Member.builder()
-                .email("panda@naver.com")
-                .nickname("nick")
-                .password("1234")
-                .memberStatus(MemberStatus.INACTIVE)
-                .build();
+        assertThat(findResult.getMemberStatus()).isEqualTo(MemberStatus.ACTIVE);
     }
 
     @Test
@@ -139,52 +121,42 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .nickname("nick")
                 .password("1234")
                 .address(new Address("seoul", "yeonhui", "1234"))
-                .memberStatus(MemberStatus.INACTIVE)
                 .build();
 
         SignUpMemberRequest signUpMemberRequest = signUpRequestMapper.toDto(member);
-        System.out.println("signUpMemberRequest = " + signUpMemberRequest);
+
+        Assertions.assertThat(member.getEmail()).isEqualTo(signUpMemberRequest.getEmail());
+        Assertions.assertThat(member.getNickname()).isEqualTo(signUpMemberRequest.getNickname());
+        Assertions.assertThat(member.getPassword()).isEqualTo(signUpMemberRequest.getPassword());
+        Assertions.assertThat(member.getAddress()).isEqualTo(signUpMemberRequest.getAddress());
     }
 
     @Test
-    void getMemberTest() throws Exception {
-        Member member =
-            Member.builder()
-                .email("panda@naver.com")
-                .nickname("nick")
-                .userId("ponda")
-                .password("1234")
-                .address(new Address("seoul", "yeonhui", "1234"))
-                .memberStatus(MemberStatus.ACTIVE)
-                .build();
+    void signUpFailureTest() throws Exception {
+        Member member = Member.builder()
+            .email("panda@naver.com")
+            .nickname("nick")
+            .userId("ponda")
+            .password("12345")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
 
-        mockMvc.perform(
-            post("/api/members")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))));
+        SignUpMemberRequest signUpMemberRequest = signUpRequestMapper.toDto(member);
 
-        LoginRequest loginRequest = new LoginRequest(member.getEmail(), member.getPassword());
+        mockMvc.perform(post("/api/members")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaTypes.HAL_JSON)
+            .content(objectMapper.writeValueAsString(signUpMemberRequest)))
+            .andExpect(status().isBadRequest());
 
-        MvcResult mvcResult = mockMvc.perform(
-            post("/api/login")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-        ).andReturn();
-
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        TokenResponse tokenResponse = objectMapper.readValue(contentAsString, TokenResponse.class);
-        String accessToken = tokenResponse.getAccessToken();
-
-        mockMvc
-            .perform(
-                get("/api/members/1")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaTypes.HAL_JSON)
-                    .header("Authorization", accessToken))
-            .andDo(print())
-            .andExpect(status().isUnauthorized());
+//        mockMvc
+//            .perform(
+//                post("/api/members")
+//                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                    .accept(MediaTypes.HAL_JSON)
+//                    .header("Authorization", accessToken))
+//            .andDo(print())
+//            .andExpect(status().isUnauthorized());
 //            .andExpect(header().exists(HttpHeaders.LOCATION))
 //            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
 //            .andExpect(jsonPath("email").value("panda@naver.com"))
@@ -193,5 +165,26 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 //            .andExpect(jsonPath("_links.modify-member").exists())
 //            .andExpect(jsonPath("_links.leave-member").exists())
 //            .andDo(document("get-member"));
+    }
+
+    @Test
+    void loginTest() throws Exception {
+
+        Member member = Member.builder()
+            .email("panda@naver.com")
+            .nickname("nick")
+            .userId("ponda")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        LoginRequest loginRequest = new LoginRequest(member.getEmail(), member.getPassword());
+
+        mockMvc.perform(
+            post("/api/login")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+        ).andExpect(status().isOk());
     }
 }
