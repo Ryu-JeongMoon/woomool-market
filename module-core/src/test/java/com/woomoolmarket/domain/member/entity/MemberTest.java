@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -15,10 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+@SpringBootTest(classes = ModuleCoreApplication.class)
 @Transactional
-@SpringBootTest
+@Rollback
 class MemberTest {
 
     @Autowired
@@ -33,8 +36,10 @@ class MemberTest {
     @BeforeEach
     void initialize() {
         memberRepository.deleteAll();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1")
+            .executeUpdate();
+        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1")
+            .executeUpdate();
     }
 
     @Test
@@ -71,7 +76,7 @@ class MemberTest {
             .password("5678")
             .build();
 
-        Member savedMember = member.editMemberInfo(newMember);
+        Member savedMember = member.changeMemberInfo(newMember);
 
         assertThat(savedMember.getPassword()).isEqualTo(member.getPassword());
         assertThat(savedMember.getNickname()).isEqualTo(member.getNickname());

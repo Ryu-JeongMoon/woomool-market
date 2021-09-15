@@ -3,7 +3,7 @@ Content-Type: application/json
 
 ###
 # Send API call
-GET https://localhost:8443/api/members/admin-only/all
+GET https://localhost:8443/api/members
 Content-Type: application/json
 
 ###
@@ -11,19 +11,3 @@ GET https://localhost:8443/api/members
 
 ###
 GET https://localhost:8443/xss
-
-###
-POST https://localhost:8443/api/members
-Content-Type: application/json
-
-{
-  "email": "panda123456@gmail.com",
-  "userId" : "pandabear",
-  "nickname": "pandagom",
-  "password": "1234",
-  "address" : {
-      "city": "seoul",
-      "street": "yeonhui-ro",
-      "zipcode": "13392"
-  }
-}

@@ -44,11 +44,8 @@ task copyDocument(type: Copy) {
 }
 
 jar {
-    enabled = false
-}
-
-bootJar {
     enabled = true
+
     dependsOn copyDocument
 
     dependsOn asciidoctor
@@ -56,4 +53,8 @@ bootJar {
         from "${asciidoctor.outputDir}"
         into 'src/main/resources/static/docs'
     }
+}
+
+bootJar {
+    enabled = false
 }
