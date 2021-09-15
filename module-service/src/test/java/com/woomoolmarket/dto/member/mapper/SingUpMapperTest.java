@@ -6,23 +6,14 @@ import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.entity.Social;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
-import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapperImpl;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @Log4j2
 class SingUpMapperTest {
 
-    @Autowired
-    private SignUpMemberRequestMapperImpl signUpMemberRequestMapper;
+    private final SignUpMemberRequestMapperImpl signUpMemberRequestMapper = new SignUpMemberRequestMapperImpl();
 
     @Test
     void mapperTest() {

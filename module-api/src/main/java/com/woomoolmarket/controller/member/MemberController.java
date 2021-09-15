@@ -4,14 +4,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.controller.member.model.MemberResponseModel;
+import com.woomoolmarket.controller.wrapper.Result;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.service.MemberService;
 import java.net.URI;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
@@ -39,23 +38,17 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @Data
-    @AllArgsConstructor
-    public class Result<T> {
-        private T data;
-    }
-
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getMembers() {
         return ResponseEntity.ok(memberService.findAllActiveMembers());
     }
 
     @PostMapping
-    public ResponseEntity joinMember(@Validated @RequestBody SignUpMemberRequest signUpMemberRequest,
+    public Result<ResponseEntity> joinMember(@Validated @RequestBody SignUpMemberRequest signUpMemberRequest,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
+            return new Result<>(ResponseEntity.badRequest().body(bindingResult.getFieldErrors()));
         }
 
         MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
@@ -65,23 +58,26 @@ public class MemberController {
         memberResponseModel.add(linkTo(MemberController.class).withRel("modify-member"));
         memberResponseModel.add(linkTo(MemberController.class).withRel("leave-member"));
 
-        return ResponseEntity.created(createdUri).body(memberResponseModel);
+        return new Result<>(ResponseEntity.created(createdUri).body(memberResponseModel));
     }
+
     /**
      * TODO 고민해봅시당
      * 어떤 자료를 보여줄 것인고?
      * 수정 페이지
      */
     @GetMapping("/{id}")
-    public Result getMember(@PathVariable Long id) {
+    public Result<ResponseEntity> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
         URI defaultURI = linkTo(MemberController.class).slash(memberResponse.getId()).toUri();
         EntityModel<MemberResponse> memberResponseEntityModel = new MemberResponseModel(memberResponse);
-        memberResponseEntityModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
-        memberResponseEntityModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
+        memberResponseEntityModel.add(
+            linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
+        memberResponseEntityModel.add(
+            linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
 
-        return new Result(memberResponseEntityModel);
+        return new Result(ResponseEntity.ok().body(memberResponseEntityModel));
     }
 
 
@@ -89,8 +85,9 @@ public class MemberController {
     public ResponseEntity editMemberInfo(@PathVariable Long id,
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
 
