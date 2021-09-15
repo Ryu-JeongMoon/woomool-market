@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.woomoolmarket.ModuleServiceApplication;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.entity.MemberStatus;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
@@ -31,7 +32,8 @@ class MemberServiceTest {
     @Test
     void dateCompareTest() {
         LocalDateTime septemberFirst = LocalDateTime.of(2021, 9, 1, 8, 15, 50);
-        System.out.println(LocalDateTime.now().compareTo(septemberFirst));
+        System.out.println(LocalDateTime.now()
+            .compareTo(septemberFirst));
     }
 
     // TODO - test for Local
@@ -44,6 +46,7 @@ class MemberServiceTest {
                 .userId("ponda1" + i)
                 .password("123456")
                 .address(new Address("seoul", "yeonhui", "1234"))
+                .memberStatus(MemberStatus.ACTIVE)
                 .build();
 
             memberRepository.save(member);
@@ -53,8 +56,10 @@ class MemberServiceTest {
         Member member2 = memberRepository.findByEmail("panda@naver.com10").get();
         Member member3 = memberRepository.findByEmail("panda@naver.com11").get();
 
-        Long nextId = memberService.findNextId(memberResponseMapper.toDto(member2)).getId();
-        Long previousId = memberService.findPreviousId(memberResponseMapper.toDto(member2)).getId();
+        Long nextId = memberService.findNextId(memberResponseMapper.toDto(member2))
+            .getId();
+        Long previousId = memberService.findPreviousId(memberResponseMapper.toDto(member2))
+            .getId();
 
         log.info("member1.id = {}", member1.getId());
         log.info("member2.id = {}", member2.getId());

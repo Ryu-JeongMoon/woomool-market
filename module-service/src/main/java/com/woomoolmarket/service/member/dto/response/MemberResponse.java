@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.member.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.woomoolmarket.common.BaseTimeEntity;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.MemberStatus;
 import com.woomoolmarket.domain.member.entity.Social;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class MemberResponse implements Serializable {
+public class MemberResponse extends BaseTimeEntity implements Serializable {
 
     private Long id;
 
@@ -30,8 +30,6 @@ public class MemberResponse implements Serializable {
     private String phone;
     private String license;
 
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
     private LocalDateTime leaveDate;
 
     private Address address;

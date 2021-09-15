@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.validation.BindingResult;
 
-@Log4j2
 @JsonComponent
 public class ErrorSerializer extends JsonSerializer<BindingResult> {
 
@@ -30,8 +28,8 @@ public class ErrorSerializer extends JsonSerializer<BindingResult> {
                 }
 
                 gen.writeEndObject();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
 
@@ -42,8 +40,8 @@ public class ErrorSerializer extends JsonSerializer<BindingResult> {
                 gen.writeStringField("code", e.getCode());
                 gen.writeStringField("defaultMessage", e.getDefaultMessage());
                 gen.writeEndObject();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
         gen.writeEndArray();

@@ -47,17 +47,18 @@ public class Member extends BaseEntity implements Serializable {
     private Address address;
 
     @Enumerated(EnumType.STRING)
+    private Authority authority;
+
+    @Enumerated(EnumType.STRING)
     private Social social;
 
     @Enumerated(EnumType.STRING)
-    private Authority authority = Authority.ROLE_USER;
-
-    @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus = MemberStatus.ACTIVE;
+    private MemberStatus memberStatus;
 
     @Builder
     public Member(String userId, String email, String nickname, String password, String profileImage,
-        String phone, String license, Address address, Social social) {
+        String phone, String license, Address address, Authority authority, Social social, MemberStatus memberStatus,
+        LocalDateTime leaveDate) {
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
@@ -66,7 +67,10 @@ public class Member extends BaseEntity implements Serializable {
         this.phone = phone;
         this.license = license;
         this.address = address;
+        this.authority = authority;
         this.social = social;
+        this.memberStatus = memberStatus;
+        this.leaveDate = leaveDate;
     }
 
     public void encodePassword(String password) {
@@ -77,12 +81,12 @@ public class Member extends BaseEntity implements Serializable {
         this.authority = authority;
     }
 
-    public void leave(MemberStatus memberStatus, LocalDateTime leaveDate) {
+    public void changeStatus(MemberStatus memberStatus, LocalDateTime leaveDate) {
         this.memberStatus = memberStatus;
         this.leaveDate = leaveDate;
     }
 
-    public Member editMemberInfo(Member newMemberInfo) {
+    public Member changeMemberInfo(Member newMemberInfo) {
         this.password = newMemberInfo.getPassword();
         this.profileImage = newMemberInfo.getProfileImage();
         this.phone = newMemberInfo.getPhone();
