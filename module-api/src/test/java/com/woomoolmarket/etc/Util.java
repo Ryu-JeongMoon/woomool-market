@@ -3,6 +3,7 @@ package com.woomoolmarket.etc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDateTime;
 import lombok.extern.log4j.Log4j2;
@@ -33,5 +34,20 @@ class Util {
         log.info("result = {}", result);
 
         Assertions.assertThat(now.toString()).isEqualTo(result.replace("\"", ""));
+    }
+
+    @Test
+    @DisplayName("LocalDateTime 형식으로 읽어온다")
+    void objectMapperReadLocalDateTimeTest() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        LocalDateTime now = LocalDateTime.now();
+        String nowStr = objectMapper.writeValueAsString(now);
+        log.info(nowStr);
+
+        Object obj = objectMapper.readValue(nowStr, Object.class);
+        log.info(obj);
     }
 }
