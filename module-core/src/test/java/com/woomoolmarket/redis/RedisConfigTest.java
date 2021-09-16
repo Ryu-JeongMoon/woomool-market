@@ -1,29 +1,29 @@
-package com.woomoolmarket.redis.config;
+package com.woomoolmarket.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.ModuleServiceApplication;
+import static org.assertj.core.api.Assertions.*;
+
+import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest(classes = ModuleServiceApplication.class)
+@Log4j2
+@SpringBootTest
 class RedisConfigTest {
 
-    @Autowired
-    ObjectMapper objectMapper;
     @Autowired
     Environment env;
 
     @Test
+    @DisplayName("application.yml의 속성을 가져온다")
     void envTest() {
         int port = Integer.parseInt(env.getProperty("spring.redis.port"));
         String host = env.getProperty("spring.redis.host");
 
-        System.out.println("host = " + host);
-        System.out.println("port = " + port);
+        assertThat(port).isEqualTo(6379);
+        assertThat(host).isEqualTo("localhost");
     }
 
 }

@@ -4,26 +4,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woomoolmarket.ModuleCoreApplication;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.redis.config.TestConfig;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Transactional
-@SpringBootTest(classes = ModuleCoreApplication.class)
+@DataJpaTest
+@Import(TestConfig.class)
 class MemberRepositoryTest {
 
     @Autowired
-    EntityManager em;
-    @Autowired
     MemberRepository memberRepository;
-    @Autowired
-    JPAQueryFactory queryFactory;
 
     @Test
     void joinTest() {
@@ -62,23 +65,20 @@ class MemberRepositoryTest {
             .orElseThrow(() -> new RuntimeException("x")));
     }
 
-    // TODO - test for Local
-    //@Test
+    @Test
     void findPreviousIdTest() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             Member member = Member.builder()
-                .email("rjrj" + i)
-                .nickname("dldld" + i)
-                .password("1234" + i)
-                .build();
+                    .email("rjrj" + i)
+                    .build();
             memberRepository.save(member);
         }
 
-        Long id = 3L;
-
-        Long previousId = memberRepository.findPreviousId(id)
+        Member member1 = memberRepository.findByEmail("rjrj1").get();
+        Member member2 = memberRepository.findByEmail("rjrj2").get();
+        Long previousId = memberRepository.findPreviousId(member2.getId())
             .orElseThrow(() -> new RuntimeException("전 회원 없음?!"));
 
-        assertThat(previousId).isEqualTo(2L);
+        assertThat(previousId).isEqualTo(member1.getId());
     }
 }

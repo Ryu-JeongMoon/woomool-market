@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-@EqualsAndHashCode(of = "cart_id", callSuper = false)
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Cart extends BaseEntity {
 
     @Id
