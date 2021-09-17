@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.purchase.order.entity;
 
 import static javax.persistence.FetchType.LAZY;
 
-import com.woomoolmarket.common.BaseEntity;
+import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.domain.member.entity.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;

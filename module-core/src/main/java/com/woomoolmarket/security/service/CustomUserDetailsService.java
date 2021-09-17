@@ -1,9 +1,9 @@
 package com.woomoolmarket.security.service;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.entity.MemberStatus;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,17 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private User createUserDetails(Member member) {
-        if (member.getMemberStatus() == MemberStatus.INACTIVE) {
-            throw new RuntimeException(member.getEmail() + " -> 탈퇴한 회원입니다.");
-        }
+        List<GrantedAuthority> authorities =
+            Collections.singletonList(new SimpleGrantedAuthority(member.getAuthority().toString()));
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(member.getAuthority().toString()));
-
-//            member.getAuthority().stream()
-//            .map(authority -> new SimpleGrantedAuthority(authority.toString()))
-//            .collect(Collectors.toList());
-
-        return new User(member.getEmail(), member.getPassword(), grantedAuthorities);
+        return new User(member.getEmail(), member.getPassword(), authorities);
     }
 }

@@ -1,7 +1,7 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
-import com.woomoolmarket.common.BaseTimeEntity;
-import com.woomoolmarket.common.Region;
+import com.woomoolmarket.common.auditing.BaseTimeEntity;
+import com.woomoolmarket.common.enumeration.Region;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
@@ -111,7 +111,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
         Member findResult = memberRepository.save(member);
 
-        assertThat(findResult.getMemberStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(findResult.getMemberStatus()).isEqualTo(Status.ACTIVE);
     }
 
     @Test

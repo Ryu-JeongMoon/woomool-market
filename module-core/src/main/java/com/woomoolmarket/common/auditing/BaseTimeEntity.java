@@ -1,4 +1,4 @@
-package com.woomoolmarket.common;
+package com.woomoolmarket.common.auditing;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;

@@ -1,7 +1,6 @@
-package com.woomoolmarket.security.config;
+package com.woomoolmarket.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.security.config.xss.HTMLCharacterEscapes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;

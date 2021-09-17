@@ -1,6 +1,7 @@
 package com.woomoolmarket.domain.member.entity;
 
-import com.woomoolmarket.common.BaseEntity;
+import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.common.enumeration.Status;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class Member extends BaseEntity implements Serializable {
 
     @Id
@@ -47,17 +51,17 @@ public class Member extends BaseEntity implements Serializable {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private Social social;
+    private AuthProvider provider;
 
     @Enumerated(EnumType.STRING)
     private Authority authority = Authority.ROLE_USER;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus = MemberStatus.ACTIVE;
+    private Status memberStatus = Status.ACTIVE;
 
     @Builder
     public Member(String userId, String email, String nickname, String password, String profileImage,
-        String phone, String license, Address address, Social social) {
+        String phone, String license, Address address, AuthProvider provider, Authority authority) {
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
@@ -66,7 +70,8 @@ public class Member extends BaseEntity implements Serializable {
         this.phone = phone;
         this.license = license;
         this.address = address;
-        this.social = social;
+        this.provider = provider;
+        this.authority = authority;
     }
 
     public void encodePassword(String password) {
@@ -77,9 +82,17 @@ public class Member extends BaseEntity implements Serializable {
         this.authority = authority;
     }
 
-    public void leave(MemberStatus memberStatus, LocalDateTime leaveDate) {
+    public void leave(Status memberStatus, LocalDateTime leaveDate) {
         this.memberStatus = memberStatus;
         this.leaveDate = leaveDate;
+    }
+
+    public void editProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void editNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public Member editMemberInfo(Member newMemberInfo) {

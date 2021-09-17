@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SecurityUtil {
+public class SecurityUtils {
 
     private static final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

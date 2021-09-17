@@ -1,8 +1,9 @@
 package com.woomoolmarket.domain.member.entity;
 
-public enum Social {
+public enum AuthProvider {
     LOCAL,
     GOOGLE,
+    FACEBOOK,
     KAKAO,
     NAVER
 }

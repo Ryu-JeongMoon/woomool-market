@@ -1,4 +1,4 @@
-package com.woomoolmarket.common;
+package com.woomoolmarket.common.enumeration;
 
 public enum Region {
     GYEONGGIDO,

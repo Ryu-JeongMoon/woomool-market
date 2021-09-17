@@ -1,5 +1,6 @@
 package com.woomoolmarket.service.member.dto.request;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 public class LoginRequest {
 
     @NotBlank
+    @Email
     @Size(min = 9, max = 50)
     private String email;
 

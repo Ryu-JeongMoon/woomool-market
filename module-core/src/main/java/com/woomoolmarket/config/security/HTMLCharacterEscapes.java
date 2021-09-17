@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.config.xss;
+package com.woomoolmarket.config.security;
 
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;

@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.dto;
+package com.woomoolmarket.errors;
 
 import java.util.ArrayList;
 import java.util.List;

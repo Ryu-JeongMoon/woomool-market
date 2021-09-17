@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.log;
+package com.woomoolmarket.config.p6spy;
 
 import com.p6spy.engine.logging.Category;
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;

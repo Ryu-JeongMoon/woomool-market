@@ -8,7 +8,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+public class JwtAccessDeniedExceptionHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,

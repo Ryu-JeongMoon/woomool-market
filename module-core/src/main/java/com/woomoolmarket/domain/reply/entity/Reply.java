@@ -3,7 +3,7 @@ package com.woomoolmarket.domain.reply.entity;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
-import com.woomoolmarket.common.BaseTimeEntity;
+import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.member.entity.Member;
 import javax.persistence.Column;

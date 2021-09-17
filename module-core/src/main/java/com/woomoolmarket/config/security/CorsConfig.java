@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.config;
+package com.woomoolmarket.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

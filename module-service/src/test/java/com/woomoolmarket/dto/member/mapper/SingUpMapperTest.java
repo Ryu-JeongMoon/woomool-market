@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.entity.Social;
+import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapperImpl;
 import lombok.extern.log4j.Log4j2;
@@ -19,7 +19,7 @@ class SingUpMapperTest {
     void mapperTest() {
 
         Member member = new Member("1234", "yaho@", "nick", "1234", "profile", "0101234", "1324",
-            new Address("seoul", "str", "zip"), Social.LOCAL);
+            new Address("seoul", "str", "zip"), AuthProvider.LOCAL);
 
         SignUpMemberRequest signUpRequest = signUpMemberRequestMapper.toDto(member);
 

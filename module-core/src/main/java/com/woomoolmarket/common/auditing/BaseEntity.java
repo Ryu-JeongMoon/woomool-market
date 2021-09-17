@@ -1,4 +1,4 @@
-package com.woomoolmarket.common;
+package com.woomoolmarket.common.auditing;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -9,8 +9,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
-@MappedSuperclass
-@EntityListeners(value = {AuditingEntityListener.class})
 public abstract class BaseEntity extends BaseTimeEntity {
 
     @CreatedBy
