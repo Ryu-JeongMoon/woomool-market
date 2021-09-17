@@ -1,4 +1,4 @@
-package com.woomoolmarket.redis;
+package com.woomoolmarket.redis.config;
 
 import static org.assertj.core.api.Assertions.*;
 

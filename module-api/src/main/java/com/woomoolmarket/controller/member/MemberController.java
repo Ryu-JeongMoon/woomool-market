@@ -11,6 +11,7 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.service.MemberService;
 import java.net.URI;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
@@ -36,29 +37,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/members", produces = MediaTypes.HAL_JSON_VALUE)
 public class MemberController {
 
+    private final static WebMvcLinkBuilder DEFAULTURI = linkTo(MemberController.class);
     private final MemberService memberService;
 
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getMembers() {
-        return ResponseEntity.ok(memberService.findAllActiveMembers());
+    public ResponseEntity<Result<List<MemberResponse>>> getMembers(HttpServletRequest request) {
+        log.warn("http2 check ??!! -> {}", request.getProtocol());
+        return ResponseEntity.ok(new Result<>(memberService.findAllActiveMembers()));
     }
 
     @PostMapping
-    public Result<ResponseEntity> joinMember(@Validated @RequestBody SignUpMemberRequest signUpMemberRequest,
-        BindingResult bindingResult) {
+    public ResponseEntity<Result<EntityModel>> joinMember(
+        @Validated @RequestBody SignUpMemberRequest signUpMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new Result<>(ResponseEntity.badRequest().body(bindingResult.getFieldErrors()));
+            return ResponseEntity.badRequest().body(new Result(bindingResult.getFieldErrors()));
         }
 
         MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
 
-        URI createdUri = linkTo(MemberController.class).slash(memberResponse.getId()).toUri();
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
-        memberResponseModel.add(linkTo(MemberController.class).withRel("modify-member"));
-        memberResponseModel.add(linkTo(MemberController.class).withRel("leave-member"));
-
-        return new Result<>(ResponseEntity.created(createdUri).body(memberResponseModel));
+        memberResponseModel.add(DEFAULTURI.withRel("modify-member"), DEFAULTURI.withRel("leave-member"));
+        URI createdUri = DEFAULTURI.slash(memberResponse.getId()).withSelfRel().toUri();
+        return ResponseEntity.created(createdUri).body(new Result<>(memberResponseModel));
     }
 
     /**
@@ -67,36 +68,31 @@ public class MemberController {
      * 수정 페이지
      */
     @GetMapping("/{id}")
-    public Result<ResponseEntity> getMember(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMember(id);
+    public ResponseEntity<Result<EntityModel>> getMember(@PathVariable Long id) {
 
-        URI defaultURI = linkTo(MemberController.class).slash(memberResponse.getId()).toUri();
+        MemberResponse memberResponse = memberService.findMember(id);
         EntityModel<MemberResponse> memberResponseEntityModel = new MemberResponseModel(memberResponse);
         memberResponseEntityModel.add(
-            linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
-        memberResponseEntityModel.add(
-            linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
+            DEFAULTURI.slash(id).withRel("modify-member"),
+            DEFAULTURI.slash(id).withRel("leave-member"));
 
-        return new Result(ResponseEntity.ok().body(memberResponseEntityModel));
+        return ResponseEntity.ok(new Result<>(memberResponseEntityModel));
     }
 
-
     @PatchMapping("/{id}")
-    public ResponseEntity editMemberInfo(@PathVariable Long id,
+    public ResponseEntity<Result<EntityModel>> editMemberInfo(@PathVariable Long id,
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(new Result(bindingResult.getFieldErrors()));
         }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
-
-        WebMvcLinkBuilder builder = linkTo(MemberController.class).slash(memberResponse.getId());
-        URI createdURI = builder.toUri();
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
-        memberResponseModel.add(linkTo(MemberController.class).withRel("delete"));
+        memberResponseModel.add(DEFAULTURI.withRel("delete"));
+        URI createdUri = DEFAULTURI.slash(id).toUri();
 
-        return ResponseEntity.created(createdURI).body(memberResponseModel);
+        return ResponseEntity.created(createdUri).body(new Result<>(memberResponseModel));
     }
 
     @DeleteMapping("/{id}")
@@ -108,38 +104,39 @@ public class MemberController {
 
     /* FOR ADMIN */
     @GetMapping("/admin-only/{id}")
-    public ResponseEntity getMemberByAdmin(@PathVariable Long id) {
+    public ResponseEntity<Result<EntityModel>> getMemberByAdmin(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
         Long previousId = memberService.findPreviousId(memberResponse).getId();
         Long nextId = memberService.findNextId(memberResponse).getId();
 
         MemberResponseModel memberResponseModel = new MemberResponseModel(memberResponse);
-        memberResponseModel.add(linkTo(MemberController.class).slash(previousId).withRel("previous-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(nextId).withRel("next-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("modify-member"));
-        memberResponseModel.add(linkTo(MemberController.class).slash(memberResponse.getId()).withRel("leave-member"));
+        memberResponseModel.add(DEFAULTURI.slash(previousId).withRel("previous-member"));
+        memberResponseModel.add(
+            DEFAULTURI.slash(nextId).withRel("next-member"),
+            DEFAULTURI.slash(id).withRel("modify-member"),
+            DEFAULTURI.slash(id).withRel("leave-member"));
 
-        return ResponseEntity.ok().body(memberResponseModel);
+        return ResponseEntity.ok().body((new Result<>(memberResponseModel)));
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
-    public ResponseEntity<List<MemberResponse>> getAllMembers() {
-        return ResponseEntity.ok(memberService.findAllMembers());
+    public ResponseEntity<Result<List<MemberResponse>>> getAllMembers() {
+        return ResponseEntity.ok(new Result<>(memberService.findAllMembers()));
     }
 
     /* TODO 얘는 뭔가 중복스러운데 관리자를 위해 남겨두어야 할까?
      *  화면단에서 보여줘야 하는게 다르면 내비두장 */
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/active")
-    public ResponseEntity<List<MemberResponse>> getAllActiveMembers() {
-        return ResponseEntity.ok(memberService.findAllActiveMembers());
+    public ResponseEntity<Result<List<MemberResponse>>> getAllActiveMembers() {
+        return ResponseEntity.ok(new Result<>(memberService.findAllActiveMembers()));
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/inactive")
-    public ResponseEntity<List<MemberResponse>> getAllInactiveMembers() {
-        return ResponseEntity.ok(memberService.findAllInactiveMembers());
+    public ResponseEntity<Result<List<MemberResponse>>> getAllInactiveMembers() {
+        return ResponseEntity.ok(new Result<>(memberService.findAllInactiveMembers()));
     }
 }

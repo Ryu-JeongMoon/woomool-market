@@ -7,18 +7,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.redis.config.TestConfig;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest
+@DataJpaTest
+@Import(TestConfig.class)
 class MemberTest {
 
     @Autowired
@@ -40,7 +44,6 @@ class MemberTest {
     @Test
     @Description(value = "sql-dialect auto-increment 는 테이블 간 sequence 를 공유하지 않는다!")
     void sequenceTest() throws Exception {
-        //given
         Member member = Member.builder()
             .nickname("panda")
             .build();
@@ -49,19 +52,16 @@ class MemberTest {
             .title("hello-world")
             .build();
 
-        //when
         Member savedMember = memberRepository.save(member);
         Board savedBoard = boardRepository.save(board);
 
-        //then
         assertThat(savedMember.getId()).isEqualTo(1);
         assertThat(savedBoard.getId()).isEqualTo(1);
     }
 
     @Test
-    @Description(value = "changeMember() 메서드를 통해 기존 member 값도 변경 된다!")
+    @Description(value = "editMemberInfo() 메서드를 통해 기존 member 값도 변경 된다!")
     void changeTest() {
-
         Member member = memberRepository.save(Member.builder()
             .nickname("panda")
             .password("1234")
@@ -78,8 +78,8 @@ class MemberTest {
     }
 
     @Test
+    @DisplayName("passwordEncoder 가져온다")
     void passwordTest() {
-
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
 
         Member panda = Member.builder()
@@ -88,7 +88,6 @@ class MemberTest {
             .build();
 
         Member savedMember = memberRepository.save(panda);
-
         assertNotEquals("1592", panda.getPassword());
         assertTrue(passwordEncoder.matches("1592", savedMember.getPassword()));
     }
