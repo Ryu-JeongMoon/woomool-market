@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
-@Transactional
 @DataJpaTest
 @Import(TestConfig.class)
 class MemberRepositoryTest {

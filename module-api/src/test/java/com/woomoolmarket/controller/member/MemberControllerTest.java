@@ -66,8 +66,10 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
     }
 
+
+
     // Result<T>로 감싸면서 status, header 등의 정보가 감춰진다 -> 보완 필요
-    //@Test
+    @Test
     @DisplayName("회원가입 성공")
     public void signUpSuccessTest() throws Exception {
 
@@ -89,11 +91,11 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(status().isCreated())
             .andExpect(header().exists(HttpHeaders.LOCATION))
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-            .andExpect(jsonPath("email").value("rj@gogo.com"))
-            .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
-            .andExpect(jsonPath("_links.self").exists())
-            .andExpect(jsonPath("_links.modify-member").exists())
-            .andExpect(jsonPath("_links.leave-member").exists())
+            .andExpect(jsonPath("data.email").value("rj@gogo.com"))
+            .andExpect(jsonPath("data.address").value(new Address("seoul", "yeonhui", "1234")))
+            .andExpect(jsonPath("data.links.self").exists())
+            .andExpect(jsonPath("data.links.modify-member").exists())
+            .andExpect(jsonPath("data.links.leave-member").exists())
             .andDo(document("join-member"));
     }
 
@@ -148,7 +150,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(signUpMemberRequest)))
-            .andExpect(jsonPath("data.statusCodeValue").value(400));
+            .andExpect(status().isBadRequest());
     }
 
     // login 과정 이상 있나?, 테스트 깨짐
