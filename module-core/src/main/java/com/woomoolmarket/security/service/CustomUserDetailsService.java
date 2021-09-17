@@ -1,6 +1,5 @@
 package com.woomoolmarket.security.service;
 
-import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import java.util.Collections;
@@ -13,10 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
-@Component("userDetailsService")
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;

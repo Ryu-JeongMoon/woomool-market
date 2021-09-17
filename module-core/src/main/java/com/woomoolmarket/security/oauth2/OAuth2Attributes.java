@@ -98,13 +98,12 @@ public class OAuth2Attributes {
 
         return OAuth2Attributes.builder()
             .name((String) kakaoProfile.get("nickname"))
-            .email((String) kakaoAccount.get("account_email"))
+            .email((String) kakaoAccount.get("email"))
             .picture((String) kakaoProfile.get("profile_image_url"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
     }
-
 
     public Member toEntity() {
         return Member.builder()

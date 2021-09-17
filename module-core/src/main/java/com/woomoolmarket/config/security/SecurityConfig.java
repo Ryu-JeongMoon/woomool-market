@@ -43,7 +43,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static List<String> clients = Arrays.asList("google", "facebook", "naver", "kakao", "github");
+    private static List<String> clients = List.of("google", "facebook", "naver", "kakao", "github");
     private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -155,15 +155,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .userInfoEndpoint()
-            .userService(customOAuth2UserService)
+            .userService(customOAuth2UserService);
 
-            .and()
-            .successHandler(oAuth2AuthenticationSuccessHandler)
-            .failureHandler(oAuth2AuthenticationFailureHandler)
+//            .and()
+//            .successHandler(oAuth2AuthenticationSuccessHandler)
+//            .failureHandler(oAuth2AuthenticationFailureHandler)
 
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+//            .and()
+//            .exceptionHandling()
+//            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
     }
 }
