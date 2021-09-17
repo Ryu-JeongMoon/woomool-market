@@ -54,8 +54,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Member member;
         if (memberOptional.isPresent()) {
             member = memberOptional.get();
-            if (!member.getProvider()
-                .equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
+            if (!member.getProvider().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
 
                 throw new OAuth2AuthenticationProcessingException(
                     String.format("Looks like you're signed up with %s account. Please use your %s account to login.",
@@ -80,7 +79,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return memberRepository.save(member);
     }
 
-    public Member updateExistingUser(Long existingMemberId, OAuth2UserInfo oAuth2UserInfo) {
+    private Member updateExistingUser(Long existingMemberId, OAuth2UserInfo oAuth2UserInfo) {
         Member result = memberRepository.findById(existingMemberId)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 회원"));
 

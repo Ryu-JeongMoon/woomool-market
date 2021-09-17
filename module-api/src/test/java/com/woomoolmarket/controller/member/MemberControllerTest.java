@@ -66,8 +66,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
     }
 
-
-
     // Result<T>로 감싸면서 status, header 등의 정보가 감춰진다 -> 보완 필요
     @Test
     @DisplayName("회원가입 성공")
@@ -154,7 +152,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     }
 
     // login 과정 이상 있나?, 테스트 깨짐
-    //@Test
+    @Test
     void loginTest() throws Exception {
 
         Member member = Member.builder()

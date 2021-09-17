@@ -1,6 +1,11 @@
 package com.woomoolmarket.config.security;
 
 
+import static com.woomoolmarket.domain.member.entity.AuthProvider.FACEBOOK;
+import static com.woomoolmarket.domain.member.entity.AuthProvider.GOOGLE;
+import static com.woomoolmarket.domain.member.entity.AuthProvider.KAKAO;
+import static com.woomoolmarket.domain.member.entity.AuthProvider.NAVER;
+
 import com.woomoolmarket.security.handler.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;
 import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
@@ -9,8 +14,12 @@ import com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRep
 import com.woomoolmarket.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.woomoolmarket.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.woomoolmarket.security.service.CustomUserDetailsService;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +27,13 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
@@ -28,19 +42,49 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static List<String> clients = Arrays.asList("google", "facebook");
+    private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final JwtSecurityConfig jwtSecurityConfig;
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAccessDeniedExceptionHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsFilter corsFilter;
+    private final Environment env;
 
+    @Bean
+    public ClientRegistrationRepository clientRegistrationRepository() {
+        List<ClientRegistration> registrations = clients.stream()
+            .map(c -> getRegistration(c))
+            .filter(registration -> registration != null)
+            .collect(Collectors.toList());
+
+        return new InMemoryClientRegistrationRepository(registrations);
+    }
+
+    private ClientRegistration getRegistration(String client) {
+        String clientId = env.getProperty(
+            CLIENT_PROPERTY_KEY + client + ".client-id");
+
+        if (clientId == null) {
+            return null;
+        }
+
+        String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-secret");
+
+        if (client.equals("google")) {
+            return CommonOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+        }
+        if (client.equals("facebook")) {
+            return CommonOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                .build();
+        }
+        return null;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -80,8 +124,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/h2-console/**", "/xss")
+            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/h2-console/**", "/xss",
+                "/", "/oauth2/**", "/login")
             .permitAll()
+            .antMatchers("/facebook").hasAuthority(FACEBOOK.toString())
+            .antMatchers("/google").hasAuthority(GOOGLE.toString())
+            .antMatchers("/kakao").hasAuthority(KAKAO.toString())
+            .antMatchers("/naver").hasAuthority(NAVER.toString())
             .anyRequest().authenticated()
 
             .and()
@@ -89,6 +138,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .oauth2Login()
+            .clientRegistrationRepository(clientRegistrationRepository())
             .authorizationEndpoint()
             .baseUri("/oauth2/authorize")
             .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
@@ -103,6 +153,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .successHandler(oAuth2AuthenticationSuccessHandler)
-            .failureHandler(oAuth2AuthenticationFailureHandler);
+            .failureHandler(oAuth2AuthenticationFailureHandler)
+
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+
     }
 }

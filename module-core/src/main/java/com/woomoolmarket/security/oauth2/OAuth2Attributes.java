@@ -27,20 +27,23 @@ public class OAuth2Attributes {
         this.profileImage = picture;
     }
 
-    public static OAuth2Attributes of(
-        String registrationId,
-        String userNameAttributeName,
-        Map<String, Object> attributes) {
+    public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
 
-        if ("kakao".equals(registrationId)) {
-            return ofKakao("id", attributes);
+        switch (registrationId) {
+            case "kakao":
+                return ofKakao("id", attributes);
+            case "naver":
+                return ofNaver("id", attributes);
+            case "google":
+                return ofGoogle(userNameAttributeName, attributes);
+            case "github":
+                return ofGoogle(userNameAttributeName, attributes);
+            case "facebook":
+                return ofGoogle(userNameAttributeName, attributes);
+            default:
+                break;
         }
-
-        if ("naver".equals(registrationId)) {
-            return ofNaver("id", attributes);
-        }
-
-        return ofGoogle(userNameAttributeName, attributes);
+        return null;
     }
 
     private static OAuth2Attributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
@@ -68,8 +71,7 @@ public class OAuth2Attributes {
 
     private static OAuth2Attributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         /** 주의
-         * email 은 kakaoAccount 에 있고, nickname & profile_image_url 은 kakaoProfile 에 있음
-         */
+         * email 은 kakaoAccount 에 있고, nickname & profile_image_url 은 kakaoProfile 에 있음 */
 
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
