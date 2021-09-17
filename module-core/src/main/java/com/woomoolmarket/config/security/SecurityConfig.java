@@ -9,6 +9,7 @@ import static com.woomoolmarket.domain.member.entity.AuthProvider.NAVER;
 import com.woomoolmarket.security.handler.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;
 import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
+import com.woomoolmarket.security.oauth2.CustomOAuth2Provider;
 import com.woomoolmarket.security.oauth2.CustomOAuth2UserService;
 import com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.woomoolmarket.security.oauth2.OAuth2AuthenticationFailureHandler;
@@ -42,7 +43,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static List<String> clients = Arrays.asList("google", "facebook");
+    private static List<String> clients = Arrays.asList("google", "facebook", "naver", "kakao", "github");
     private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -59,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         List<ClientRegistration> registrations = clients.stream()
-            .map(c -> getRegistration(c))
+            .map(client -> getRegistration(client))
             .filter(registration -> registration != null)
             .collect(Collectors.toList());
 
@@ -67,23 +68,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private ClientRegistration getRegistration(String client) {
-        String clientId = env.getProperty(
-            CLIENT_PROPERTY_KEY + client + ".client-id");
-
-        if (clientId == null) {
-            return null;
-        }
-
+        String clientId = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-id");
         String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-secret");
 
-        if (client.equals("google")) {
-            return CommonOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+        switch (client) {
+            case "kakao":
+                return CustomOAuth2Provider.KAKAO
+                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+            case "naver":
+                return CustomOAuth2Provider.NAVER
+                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+            case "google":
+                return CommonOAuth2Provider.GOOGLE
+                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+            case "github":
+                return CommonOAuth2Provider.GITHUB
+                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+            case "facebook":
+                return CommonOAuth2Provider.FACEBOOK
+                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+            default:
+                return null;
         }
-        if (client.equals("facebook")) {
-            return CommonOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
-                .build();
-        }
-        return null;
     }
 
     @Bean
@@ -131,7 +137,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/google").hasAuthority(GOOGLE.toString())
             .antMatchers("/kakao").hasAuthority(KAKAO.toString())
             .antMatchers("/naver").hasAuthority(NAVER.toString())
-            .anyRequest().authenticated()
+//            .anyRequest().authenticated()
+            .anyRequest().permitAll()
 
             .and()
             .apply(jwtSecurityConfig)
@@ -140,12 +147,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .oauth2Login()
             .clientRegistrationRepository(clientRegistrationRepository())
             .authorizationEndpoint()
-            .baseUri("/oauth2/authorize")
             .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
 
-            .and()
-            .redirectionEndpoint()
-            .baseUri("/oauth2/callback/*")
+//            .and()
+//            .redirectionEndpoint()
+//            .baseUri("/oauth2/callback/*")
 
             .and()
             .userInfoEndpoint()

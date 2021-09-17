@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
-public class Member extends BaseEntity implements Serializable {
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")

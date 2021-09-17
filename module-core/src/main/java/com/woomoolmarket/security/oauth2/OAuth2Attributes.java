@@ -27,26 +27,46 @@ public class OAuth2Attributes {
         this.profileImage = picture;
     }
 
-    public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+    public static OAuth2Attributes of(String registrationId, String userNameAttributeName,
+        Map<String, Object> attributes) {
 
         switch (registrationId) {
             case "kakao":
-                return ofKakao("id", attributes);
+                return ofKakao(userNameAttributeName, attributes);
             case "naver":
-                return ofNaver("id", attributes);
+                return ofNaver(userNameAttributeName, attributes);
             case "google":
                 return ofGoogle(userNameAttributeName, attributes);
             case "github":
-                return ofGoogle(userNameAttributeName, attributes);
+                return ofGithub(userNameAttributeName, attributes);
             case "facebook":
-                return ofGoogle(userNameAttributeName, attributes);
+                return ofFacebook(userNameAttributeName, attributes);
             default:
-                break;
+                return null;
         }
-        return null;
     }
 
     private static OAuth2Attributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+        return OAuth2Attributes.builder()
+            .name((String) attributes.get("name"))
+            .email((String) attributes.get("email"))
+            .picture((String) attributes.get("picture"))
+            .attributes(attributes)
+            .nameAttributeKey(userNameAttributeName)
+            .build();
+    }
+
+    private static OAuth2Attributes ofGithub(String userNameAttributeName, Map<String, Object> attributes) {
+        return OAuth2Attributes.builder()
+            .name((String) attributes.get("name"))
+            .email((String) attributes.get("email"))
+            .picture((String) attributes.get("picture"))
+            .attributes(attributes)
+            .nameAttributeKey(userNameAttributeName)
+            .build();
+    }
+
+    private static OAuth2Attributes ofFacebook(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuth2Attributes.builder()
             .name((String) attributes.get("name"))
             .email((String) attributes.get("email"))
@@ -78,7 +98,7 @@ public class OAuth2Attributes {
 
         return OAuth2Attributes.builder()
             .name((String) kakaoProfile.get("nickname"))
-            .email((String) kakaoAccount.get("email"))
+            .email((String) kakaoAccount.get("account_email"))
             .picture((String) kakaoProfile.get("profile_image_url"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
