@@ -1,5 +1,6 @@
 spring:
   profiles:
+    include: oauth2
     active: test
 
   jpa:

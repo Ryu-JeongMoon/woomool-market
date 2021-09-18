@@ -2,7 +2,6 @@ package com.woomoolmarket.domain.member.entity;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Status;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -32,8 +31,6 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId;
-
     private String email;
 
     private String nickname;
@@ -61,9 +58,8 @@ public class Member extends BaseEntity {
     private Status memberStatus = Status.ACTIVE;
 
     @Builder
-    public Member(String userId, String email, String nickname, String password, String profileImage,
+    public Member(String email, String nickname, String password, String profileImage,
         String phone, String license, Address address, AuthProvider provider, Authority authority) {
-        this.userId = userId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
@@ -93,32 +89,40 @@ public class Member extends BaseEntity {
     }
 
     public Member editNicknameAndProfileImage(String nickname, String profileImage) {
-        if (StringUtils.hasText(nickname))
+        if (StringUtils.hasText(nickname)) {
             this.nickname = nickname;
-        if (StringUtils.hasText(profileImage))
+        }
+        if (StringUtils.hasText(profileImage)) {
             this.profileImage = profileImage;
+        }
         return this;
     }
 
     // TODO 값이 있는 경우에만 변경한다 -> 더 깔끔하게 표현할 방법이 있을까?
     public Member editMemberInfo(Member newMemberInfo) {
-        if (StringUtils.hasText(newMemberInfo.getNickname()))
+        if (StringUtils.hasText(newMemberInfo.getNickname())) {
             this.nickname = newMemberInfo.getNickname();
+        }
 
-        if (StringUtils.hasText(newMemberInfo.getPassword()))
+        if (StringUtils.hasText(newMemberInfo.getPassword())) {
             this.password = newMemberInfo.getPassword();
+        }
 
-        if (StringUtils.hasText(newMemberInfo.getProfileImage()))
+        if (StringUtils.hasText(newMemberInfo.getProfileImage())) {
             this.profileImage = newMemberInfo.getProfileImage();
+        }
 
-        if (StringUtils.hasText(newMemberInfo.getPhone()))
+        if (StringUtils.hasText(newMemberInfo.getPhone())) {
             this.phone = newMemberInfo.getPhone();
+        }
 
-        if (StringUtils.hasText(newMemberInfo.getLicense()))
+        if (StringUtils.hasText(newMemberInfo.getLicense())) {
             this.license = newMemberInfo.getLicense();
+        }
 
-        if (newMemberInfo.getAddress() != null)
+        if (newMemberInfo.getAddress() != null) {
             this.address = newMemberInfo.getAddress();
+        }
 
         return this;
     }

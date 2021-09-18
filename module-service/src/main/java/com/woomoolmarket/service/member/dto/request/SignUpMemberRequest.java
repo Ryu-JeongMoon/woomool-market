@@ -23,9 +23,6 @@ public class SignUpMemberRequest implements Serializable {
     private String email;
 
     @NotEmpty
-    private String userId;
-
-    @NotEmpty
     private String nickname;
 
     @Size(min = 6, max = 255)

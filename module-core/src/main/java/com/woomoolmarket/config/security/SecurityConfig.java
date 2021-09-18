@@ -40,11 +40,11 @@ import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) //jsr250Enabled = true,
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static List<String> clients = List.of("google", "facebook", "naver", "kakao", "github");
-    private static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
+    private final static List<String> clients = Arrays.asList("google", "facebook", "naver", "kakao", "github");
+    private final static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -73,20 +73,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         switch (client) {
             case "kakao":
-                return CustomOAuth2Provider.KAKAO
-                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CustomOAuth2Provider.KAKAO.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
             case "naver":
-                return CustomOAuth2Provider.NAVER
-                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CustomOAuth2Provider.NAVER.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
             case "google":
-                return CommonOAuth2Provider.GOOGLE
-                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CommonOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
             case "github":
-                return CommonOAuth2Provider.GITHUB
-                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CommonOAuth2Provider.GITHUB.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
             case "facebook":
-                return CommonOAuth2Provider.FACEBOOK
-                    .getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CommonOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
             default:
                 return null;
         }
@@ -131,14 +131,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/h2-console/**", "/xss",
-                "/", "/oauth2/**", "/login")
+                "api/member/admin-only/**", "/", "/oauth2/**", "/login")
             .permitAll()
             .antMatchers("/facebook").hasAuthority(FACEBOOK.toString())
             .antMatchers("/google").hasAuthority(GOOGLE.toString())
             .antMatchers("/kakao").hasAuthority(KAKAO.toString())
             .antMatchers("/naver").hasAuthority(NAVER.toString())
-//            .anyRequest().authenticated()
-            .anyRequest().permitAll()
+//            .antMatchers("/api/members/admin-only/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
 
             .and()
             .apply(jwtSecurityConfig)
@@ -149,21 +149,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizationEndpoint()
             .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
 
-//            .and()
-//            .redirectionEndpoint()
-//            .baseUri("/oauth2/callback/*")
+            .and()
+            .redirectionEndpoint()
+            .baseUri("/oauth2/callback/*")
 
             .and()
             .userInfoEndpoint()
-            .userService(customOAuth2UserService);
+            .userService(customOAuth2UserService)
 
-//            .and()
-//            .successHandler(oAuth2AuthenticationSuccessHandler)
-//            .failureHandler(oAuth2AuthenticationFailureHandler)
+            .and()
+            .successHandler(oAuth2AuthenticationSuccessHandler)
+            .failureHandler(oAuth2AuthenticationFailureHandler)
 
-//            .and()
-//            .exceptionHandling()
-//            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
     }
 }

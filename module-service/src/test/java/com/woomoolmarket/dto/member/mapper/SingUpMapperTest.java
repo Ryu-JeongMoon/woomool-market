@@ -3,8 +3,6 @@ package com.woomoolmarket.dto.member.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.domain.member.entity.Address;
-import com.woomoolmarket.domain.member.entity.AuthProvider;
-import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapperImpl;
@@ -19,8 +17,12 @@ class SingUpMapperTest {
     @Test
     void mapperTest() {
 
-        Member member = new Member("1234", "yaho@", "nick", "1234", "profile", "0101234", "1324",
-            new Address("seoul", "str", "zip"), AuthProvider.LOCAL, Authority.ROLE_USER);
+        Member member = Member.builder()
+            .email("panda")
+            .nickname("horaaa")
+            .password("1234")
+            .address(new Address("seoul", "daegu", "busan"))
+            .build();
 
         SignUpMemberRequest signUpRequest = signUpMemberRequestMapper.toDto(member);
 

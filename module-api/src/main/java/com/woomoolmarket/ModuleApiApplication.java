@@ -1,5 +1,7 @@
 package com.woomoolmarket;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -24,8 +26,9 @@ public class ModuleApiApplication {
     @Bean
     public ObjectMapper objectMapper() {
         return Jackson2ObjectMapperBuilder.json().build()
-            .enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, "@class")
+            .enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, "")
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
             .registerModules(new JavaTimeModule());
     }
 }
