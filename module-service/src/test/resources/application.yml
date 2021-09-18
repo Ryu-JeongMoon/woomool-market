@@ -1,6 +1,5 @@
 spring:
   profiles:
-    include: oauth2
     active: test
 
   datasource:
@@ -32,6 +31,31 @@ spring:
       hibernate:
         format_sql: true
         ddl-auto: create
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: Google
+            client-id: 1234
+            client-secret: 1234
+          facebook:
+            client-name: Facebook
+            client-id: 1234
+            client-secret: 1234
+          github:
+            client-name: GitHub
+            client-id: 1234
+            client-secret: 1234
+          kakao:
+            client-name: Kakao
+            client-id: 1234
+            client-secret: 1234
+          naver:
+            client-name: Naver
+            client-id: 1234
+            client-secret: 1234
 
 logging:
   level:
