@@ -1,7 +1,7 @@
 package com.woomoolmarket.domain.member.entity;
 
-import com.woomoolmarket.common.BaseEntity;
-import java.io.Serializable;
+import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.common.enumeration.Status;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,23 +11,25 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
-public class Member extends BaseEntity implements Serializable {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String userId;
 
     private String email;
 
@@ -47,18 +49,17 @@ public class Member extends BaseEntity implements Serializable {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private Social social;
+    private AuthProvider provider;
 
     @Enumerated(EnumType.STRING)
     private Authority authority = Authority.ROLE_USER;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus = MemberStatus.ACTIVE;
+    private Status memberStatus = Status.ACTIVE;
 
     @Builder
-    public Member(String userId, String email, String nickname, String password, String profileImage,
-        String phone, String license, Address address, Social social) {
-        this.userId = userId;
+    public Member(String email, String nickname, String password, String profileImage,
+        String phone, String license, Address address, AuthProvider provider, Authority authority) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
@@ -66,7 +67,8 @@ public class Member extends BaseEntity implements Serializable {
         this.phone = phone;
         this.license = license;
         this.address = address;
-        this.social = social;
+        this.provider = provider;
+        this.authority = authority;
     }
 
     public void encodePassword(String password) {
@@ -77,17 +79,50 @@ public class Member extends BaseEntity implements Serializable {
         this.authority = authority;
     }
 
-    public void leave(MemberStatus memberStatus, LocalDateTime leaveDate) {
+    public void leave(Status memberStatus, LocalDateTime leaveDate) {
         this.memberStatus = memberStatus;
         this.leaveDate = leaveDate;
     }
 
+    public String getAuthorityKey() {
+        return this.authority.getKey();
+    }
+
+    public Member editNicknameAndProfileImage(String nickname, String profileImage) {
+        if (StringUtils.hasText(nickname)) {
+            this.nickname = nickname;
+        }
+        if (StringUtils.hasText(profileImage)) {
+            this.profileImage = profileImage;
+        }
+        return this;
+    }
+
+    // TODO 값이 있는 경우에만 변경한다 -> 더 깔끔하게 표현할 방법이 있을까?
     public Member editMemberInfo(Member newMemberInfo) {
-        this.password = newMemberInfo.getPassword();
-        this.profileImage = newMemberInfo.getProfileImage();
-        this.phone = newMemberInfo.getPhone();
-        this.license = newMemberInfo.getLicense();
-        this.address = newMemberInfo.getAddress();
+        if (StringUtils.hasText(newMemberInfo.getNickname())) {
+            this.nickname = newMemberInfo.getNickname();
+        }
+
+        if (StringUtils.hasText(newMemberInfo.getPassword())) {
+            this.password = newMemberInfo.getPassword();
+        }
+
+        if (StringUtils.hasText(newMemberInfo.getProfileImage())) {
+            this.profileImage = newMemberInfo.getProfileImage();
+        }
+
+        if (StringUtils.hasText(newMemberInfo.getPhone())) {
+            this.phone = newMemberInfo.getPhone();
+        }
+
+        if (StringUtils.hasText(newMemberInfo.getLicense())) {
+            this.license = newMemberInfo.getLicense();
+        }
+
+        if (newMemberInfo.getAddress() != null) {
+            this.address = newMemberInfo.getAddress();
+        }
 
         return this;
     }

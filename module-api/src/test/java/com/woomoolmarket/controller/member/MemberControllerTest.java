@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
@@ -66,9 +66,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
     }
 
-
-
-    // Result<T>로 감싸면서 status, header 등의 정보가 감춰진다 -> 보완 필요
     @Test
     @DisplayName("회원가입 성공")
     public void signUpSuccessTest() throws Exception {
@@ -76,7 +73,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
         Member member =
             Member.builder()
                 .email("rj@gogo.com")
-                .userId("panda")
                 .nickname("horagin")
                 .password("123456")
                 .address(new Address("seoul", "yeonhui", "1234"))
@@ -91,11 +87,11 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(status().isCreated())
             .andExpect(header().exists(HttpHeaders.LOCATION))
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-            .andExpect(jsonPath("data.email").value("rj@gogo.com"))
-            .andExpect(jsonPath("data.address").value(new Address("seoul", "yeonhui", "1234")))
-            .andExpect(jsonPath("data.links.self").exists())
-            .andExpect(jsonPath("data.links.modify-member").exists())
-            .andExpect(jsonPath("data.links.leave-member").exists())
+            .andExpect(jsonPath("content.email").value("rj@gogo.com"))
+            .andExpect(jsonPath("content.address").value(new Address("seoul", "yeonhui", "1234")))
+//            .andExpect(jsonPath("content.links.self").exists())
+//            .andExpect(jsonPath("data.links.modify-member").exists())
+//            .andExpect(jsonPath("data.links.leave-member").exists())
             .andDo(document("join-member"));
     }
 
@@ -111,7 +107,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
         Member findResult = memberRepository.save(member);
 
-        assertThat(findResult.getMemberStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(findResult.getMemberStatus()).isEqualTo(Status.ACTIVE);
     }
 
     @Test
@@ -139,7 +135,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
         Member member = Member.builder()
             .email("panda@naver.com")
             .nickname("nick")
-            .userId("ponda")
             .password("12345")
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
@@ -153,14 +148,13 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(status().isBadRequest());
     }
 
-    // login 과정 이상 있나?, 테스트 깨짐
-    //@Test
+    @Test
+    @DisplayName("login 성공하면 redirect 시킨다")
     void loginTest() throws Exception {
 
         Member member = Member.builder()
             .email("panda@naver.com")
             .nickname("nick")
-            .userId("ponda")
             .password("123456")
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
@@ -174,6 +168,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
-        ).andExpect(status().isOk());
+        ).andExpect(status().is3xxRedirection());
     }
 }

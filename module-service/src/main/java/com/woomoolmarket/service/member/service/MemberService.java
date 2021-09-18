@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import com.woomoolmarket.common.util.LocalDateTimeUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.entity.MemberStatus;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
@@ -133,7 +133,7 @@ public class MemberService {
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .leave(MemberStatus.INACTIVE, LocalDateTime.now());
+            .leave(Status.INACTIVE, LocalDateTime.now());
     }
 
     /* TODO Batch Job 으로 돌릴 것 */
