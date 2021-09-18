@@ -6,5 +6,14 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Result<T> {
-    private T data;
+
+    private T content;
+
+    protected Result() {
+        this.content = null;
+    }
+
+    public static <T> Result<T> of(T content) {
+        return new Result<>(content);
+    }
 }

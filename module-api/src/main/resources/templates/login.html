@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title></head>
+<body>
+<div>
+    <h2>로그인</h2><br/><br/>
+    <a href="javascript:;" class="btn_social btn-secondary active" data-social="facebook" role="button">Facebook Login</a><br/>
+    <a href="javascript:;" class="btn_social btn-secondary active" data-social="google" role="button">Google Login</a><br/>
+    <a href="javascript:;" class="btn_social btn-secondary active" data-social="kakao" role="button">Kakao Login</a><br/>
+    <a href="javascript:;" class="btn_social btn-secondary active" data-social="naver" role="button">Naver Login</a><br/>
+    <a href="javascript:;" class="btn_social btn-secondary active" data-social="github" role="button">GitHub Login</a><br/>
+</div>
+<script>
+    let socials = document.getElementsByClassName("btn_social");
+    for (let social of socials) {
+        social.addEventListener('click', function () {
+            let socialType = this.getAttribute('data-social');
+            location.href = "/oauth2/authorization/" + socialType;
+        })
+    }
+</script>
+</body>
+</html>

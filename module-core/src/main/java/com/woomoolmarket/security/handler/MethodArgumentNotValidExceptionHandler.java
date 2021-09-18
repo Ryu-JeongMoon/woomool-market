@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.handler;
 
 
-import com.woomoolmarket.security.dto.ErrorResponse;
+import com.woomoolmarket.errors.ErrorResponse;
 import java.util.List;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

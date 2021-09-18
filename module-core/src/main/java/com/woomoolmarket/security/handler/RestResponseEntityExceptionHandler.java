@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.handler;
 
 
-import com.woomoolmarket.security.dto.ErrorResponse;
+import com.woomoolmarket.errors.ErrorResponse;
 import com.woomoolmarket.security.exception.MemberDuplicatedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

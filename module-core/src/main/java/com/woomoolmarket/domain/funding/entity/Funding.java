@@ -1,7 +1,7 @@
 package com.woomoolmarket.domain.funding.entity;
 
-import com.woomoolmarket.common.BaseTimeEntity;
-import com.woomoolmarket.common.Region;
+import com.woomoolmarket.common.auditing.BaseTimeEntity;
+import com.woomoolmarket.common.enumeration.Region;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;

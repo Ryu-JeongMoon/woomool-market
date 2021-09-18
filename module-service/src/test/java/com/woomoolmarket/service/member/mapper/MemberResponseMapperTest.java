@@ -32,7 +32,6 @@ class MemberResponseMapperTest {
     void memberMapperTest() {
         Member member = Member.builder()
             .email("panda@gmail.com")
-            .userId("pandabear")
             .nickname("panda")
             .password("123456")
             .build();
