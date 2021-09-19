@@ -1,14 +1,20 @@
 package com.woomoolmarket.domain.member.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.config.TestConfig;
 import javax.persistence.EntityManager;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +25,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Log4j2
 @DataJpaTest
 @Import(TestConfig.class)
 class MemberTest {
@@ -40,7 +47,7 @@ class MemberTest {
     }
 
     @Test
-    @Description(value = "sql-dialect auto-increment 는 테이블 간 sequence 를 공유하지 않는다!")
+    @DisplayName("sql-dialect auto-increment 는 테이블 간 sequence 를 공유하지 않는다")
     void sequenceTest() throws Exception {
         Member member = Member.builder()
             .nickname("panda")
@@ -58,21 +65,81 @@ class MemberTest {
     }
 
     @Test
-    @Description(value = "editMemberInfo() 메서드를 통해 기존 member 값도 변경 된다!")
-    void changeTest() {
+    @DisplayName("getAuthorityKey() 정상 작동 !~")
+    void authorityTest() {
+        Member member = Member.builder()
+            .nickname("panda")
+            .authority(Authority.ROLE_ADMIN)
+            .build();
+
+        String authorityKey = member.getAuthorityKey();
+        assertEquals(authorityKey, Authority.ROLE_ADMIN.toString());
+    }
+
+    @Test
+    @DisplayName("leave() 정상 작동 ~!")
+    void leaveTest() {
+        Member member = Member.builder()
+            .nickname("panda")
+            .build();
+
+        member.leave();
+
+        assertEquals(member.getMemberStatus(), Status.INACTIVE);
+        assertNotNull(member.getLeaveDateTime());
+    }
+
+    @Test
+    @DisplayName("restore() 정상 작동 ~!")
+    void restoreTest() {
+        Member member = Member.builder()
+            .nickname("panda")
+            .build();
+
+        member.leave();
+        member.restore();
+
+        assertEquals(member.getMemberStatus(), Status.ACTIVE);
+        assertNull(member.getLeaveDateTime());
+    }
+
+    @Test
+    @DisplayName("SOCIAL 로그인 사용자 정보 수정")
+    void editNicknameAndProfileTest() {
         Member member = memberRepository.save(Member.builder()
             .nickname("panda")
             .password("1234")
+            .profileImage("bear")
+            .provider(AuthProvider.FACEBOOK)
+            .build());
+
+        Member result = member.editNicknameAndProfileImage("white", "tiger");
+
+        assertEquals(member.getNickname(), result.getNickname());
+        assertEquals(member.getProfileImage(), result.getProfileImage());
+    }
+
+    @Test
+    @DisplayName("editMemberInfo() 통해 기존 member 변경")
+    @Description("editMemberInfo parameter 외에 다른 것 비교 시 에러")
+    void editMemberInfoTest() {
+        Member member = memberRepository.save(Member.builder()
+            .nickname("panda")
+            .password("1234")
+            .provider(AuthProvider.FACEBOOK)
             .build());
 
         Member newMember = Member.builder()
+            .nickname("bear")
             .password("5678")
+            .provider(AuthProvider.GITHUB)
             .build();
 
-        Member savedMember = member.editMemberInfo(newMember);
+        Member findResult = member.editMemberInfo(newMember);
 
-        assertThat(savedMember.getPassword()).isEqualTo(member.getPassword());
-        assertThat(savedMember.getNickname()).isEqualTo(member.getNickname());
+        assertEquals(findResult.getPassword(), member.getPassword());
+        assertEquals(findResult.getNickname(), member.getNickname());
+        assertNotEquals(newMember.getProvider(), member.getProvider());
     }
 
     @Test

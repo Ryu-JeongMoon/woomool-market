@@ -43,7 +43,7 @@ public class Member extends BaseEntity {
 
     private String license;
 
-    private LocalDateTime leaveDate;
+    private LocalDateTime leaveDateTime;
 
     @Embedded
     private Address address;
@@ -79,9 +79,17 @@ public class Member extends BaseEntity {
         this.authority = authority;
     }
 
-    public void leave(Status memberStatus, LocalDateTime leaveDate) {
+    public void leave() {
+        changeStatusAndLeaveDateTime(Status.INACTIVE, LocalDateTime.now());
+    }
+
+    public void restore() {
+        changeStatusAndLeaveDateTime(Status.ACTIVE, null);
+    }
+
+    public void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime leaveDateTime) {
         this.memberStatus = memberStatus;
-        this.leaveDate = leaveDate;
+        this.leaveDateTime = leaveDateTime;
     }
 
     public String getAuthorityKey() {

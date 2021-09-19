@@ -18,7 +18,7 @@ public class SwaggerConfiguration {
     public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(swaggerInfo())
             .select()
-            .apis(RequestHandlerSelectors.basePackage("com.woomoolmarket.practice.controller"))
+            .apis(RequestHandlerSelectors.basePackage("com.woomoolmarket.controller"))
             .paths(PathSelectors.any())
             .build()
             .useDefaultResponseMessages(false);
