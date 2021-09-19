@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.controller.member.model.MemberResponseModel;
 import com.woomoolmarket.controller.wrapper.Result;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
@@ -14,7 +15,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.LinkRelation;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.mediatype.hal.HalLinkRelation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -37,8 +40,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping
-    public ResponseEntity<Result<List<MemberResponse>>> getMembers() {
-        return ResponseEntity.ok(Result.of(memberService.findAllActiveMembers()));
+    public ResponseEntity<List<MemberResponse>> getMembers() {
+        return ResponseEntity.ok(memberService.findAllActiveMembers());
     }
 
     @PostMapping
@@ -51,22 +54,22 @@ public class MemberController {
 
         MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
 
-        EntityModel<MemberResponse> responseEntityModel = EntityModel.of(memberResponse);
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse);
         URI createdUri = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).toUri();
-        return ResponseEntity.created(createdUri).body(Result.of(responseEntityModel));
+        return ResponseEntity.created(createdUri).body(responseModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Result<EntityModel<MemberResponse>>> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
-        EntityModel<MemberResponse> entityModel = EntityModel.of(memberResponse,
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel(),
             linkTo(methodOn(MemberController.class).getMember(id)).withRel("modify-member"),
             linkTo(methodOn(MemberController.class).getMember(id)).withRel("leave-member")
         );
 
-        return ResponseEntity.ok(Result.of(entityModel));
+        return ResponseEntity.ok(Result.of(responseModel));
     }
 
     @PatchMapping("/{id}")
@@ -78,7 +81,7 @@ public class MemberController {
         }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
-        EntityModel responseModel = EntityModel.of(memberResponse);
+        MemberResponseModel responseModel = new MemberResponseModel(memberResponse);
         URI createdUri = linkTo(methodOn(MemberController.class).getMember(id)).toUri();
 
         return ResponseEntity.created(createdUri).body(responseModel);
@@ -87,7 +90,7 @@ public class MemberController {
     @DeleteMapping("/{id}")
     public ResponseEntity leaveMember(@PathVariable Long id) {
         memberService.leaveSoftly(id);
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("delete ok!");
     }
 
 
@@ -110,21 +113,25 @@ public class MemberController {
 
     //    @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
-    public ResponseEntity<Result<List<MemberResponse>>> getAllMembers() {
-        return ResponseEntity.ok(new Result<>(memberService.findAllMembers()));
+    public ResponseEntity<List<MemberResponse>> getAllMembers() {
+        return ResponseEntity.ok(memberService.findAllMembers());
     }
 
     /* TODO 얘는 뭔가 중복스러운데 관리자를 위해 남겨두어야 할까?
      *  화면단에서 보여줘야 하는게 다르면 내비두장 */
 //    @Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/active")
-    public ResponseEntity<Result<List<MemberResponse>>> getAllActiveMembers() {
-        return ResponseEntity.ok(new Result<>(memberService.findAllActiveMembers()));
+    public ResponseEntity<List<MemberResponse>> getAllActiveMembers() {
+        return ResponseEntity.ok(memberService.findAllActiveMembers());
     }
 
     //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin-only/inactive")
-    public ResponseEntity<Result<List<MemberResponse>>> getAllInactiveMembers() {
-        return ResponseEntity.ok(new Result<>(memberService.findAllInactiveMembers()));
+    public ResponseEntity<List<MemberResponse>> getAllInactiveMembers() {
+        return ResponseEntity.ok(memberService.findAllInactiveMembers());
     }
 }
+
+// redis @Cacheable을 사용하면 Custom Wrapper 객체 Result로 감싸줘야 에러가 안 터지고
+// _links -> links 배열 되면서 rel : href 관계가 깨진다
+// redis 쓸 것인지, hateoas 쓸 것인지 결정..?
