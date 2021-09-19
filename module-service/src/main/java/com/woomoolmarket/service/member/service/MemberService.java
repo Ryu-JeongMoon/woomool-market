@@ -89,7 +89,7 @@ public class MemberService {
     public List<MemberResponse> findAllInactiveMembers() {
         return memberRepository.findAll()
             .stream()
-            .filter(member -> member.getLeaveDate() != null)
+            .filter(member -> member.getLeaveDateTime() != null)
             .map(memberResponseMapper::toDto)
             .collect(toList());
     }
@@ -98,7 +98,7 @@ public class MemberService {
     public List<MemberResponse> findAllActiveMembers() {
         return memberRepository.findAll()
             .stream()
-            .filter(member -> member.getLeaveDate() == null)
+            .filter(member -> member.getLeaveDateTime() == null)
             .map(memberResponseMapper::toDto)
             .collect(toList());
     }
@@ -133,7 +133,7 @@ public class MemberService {
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .leave(Status.INACTIVE, LocalDateTime.now());
+            .leave();
     }
 
     /* TODO Batch Job 으로 돌릴 것 */
@@ -142,11 +142,9 @@ public class MemberService {
         memberRepository.findAll()
             .stream()
             .parallel()
-            .filter(member -> LocalDateTimeUtil.compareMonth(LocalDateTime.now(), member.getLeaveDate()) >= 6)
+            .filter(member -> LocalDateTimeUtil.compareMonth(LocalDateTime.now(), member.getLeaveDateTime()) >= 6)
             .forEach(member -> memberRepository.delete(member));
     }
-
-
 }
 
 /**
