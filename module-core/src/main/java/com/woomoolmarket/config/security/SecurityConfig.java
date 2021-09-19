@@ -72,20 +72,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-secret");
 
         switch (client) {
-            case "kakao":
-                return CustomOAuth2Provider.KAKAO.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+            case "google":
+                return CommonOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
+            case "facebook":
+                return CommonOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+                    .build();
+            case "github":
+                return CustomOAuth2Provider.GITHUB.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
                     .build();
             case "naver":
                 return CustomOAuth2Provider.NAVER.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
                     .build();
-            case "google":
-                return CommonOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
-                    .build();
-            case "github":
-                return CommonOAuth2Provider.GITHUB.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
-                    .build();
-            case "facebook":
-                return CommonOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
+            case "kakao":
+                return CustomOAuth2Provider.KAKAO.getBuilder(client).clientId(clientId).clientSecret(clientSecret)
                     .build();
             default:
                 return null;
@@ -149,9 +149,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizationEndpoint()
             .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
 
-            .and()
-            .redirectionEndpoint()
-            .baseUri("/oauth2/callback/*")
+//            .and()
+//            .redirectionEndpoint()
+//            .baseUri("/oauth2/callback/*")
 
             .and()
             .userInfoEndpoint()
