@@ -46,7 +46,7 @@ class MemberRepositoryTest {
         log.info("member.email = {}", savedMember.getEmail());
         log.info("member.nickname = {}", savedMember.getNickname());
         log.info("member.password = {}", savedMember.getPassword());
-        log.info("member.leaveDate = {}", savedMember.getLeaveDate());
+        log.info("member.leaveDate = {}", savedMember.getLeaveDateTime());
 
         assertThat(savedMember).isEqualTo(member);
 

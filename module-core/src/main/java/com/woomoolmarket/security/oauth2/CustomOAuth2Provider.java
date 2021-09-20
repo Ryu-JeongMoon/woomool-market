@@ -7,6 +7,23 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 
 public enum CustomOAuth2Provider {
 
+    GITHUB {
+
+        @Override
+        public Builder getBuilder(String registrationId) {
+            ClientRegistration.Builder builder = getBuilder(registrationId,
+                ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
+            builder.scope("read:user", "user:email");
+            builder.authorizationUri("https://github.com/login/oauth/authorize");
+            builder.tokenUri("https://github.com/login/oauth/access_token");
+            builder.userInfoUri("https://api.github.com/user");
+            builder.userNameAttributeName("id");
+            builder.clientName("GitHub");
+            return builder;
+        }
+
+    },
+
     KAKAO {
         @Override
         public Builder getBuilder(String registrationId) {
@@ -26,11 +43,11 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                ClientAuthenticationMethod.CLIENT_SECRET_POST, DEFAULT_REDIRECT_URL);
+                ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
             builder.scope("name", "email", "profile_image");
             builder.authorizationUri("https://nid.naver.com/oauth2.0/authorize");
             builder.tokenUri("https://nid.naver.com/oauth2.0/token");
-            builder.userInfoUri("https://openapi/naver/com/v1/nid/me");
+            builder.userInfoUri("https://openapi.naver.com/v1/nid/me");
             builder.userNameAttributeName("response");
             builder.clientName("Naver");
             return builder;

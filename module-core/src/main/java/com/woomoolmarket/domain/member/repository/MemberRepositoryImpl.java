@@ -27,7 +27,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public void deleteMemberHardly() {
         queryFactory.delete(member)
-            .where(member.leaveDate.loe(LocalDateTime.now()
+            .where(member.leaveDateTime.loe(LocalDateTime.now()
                 .minusMonths(12)))
             .execute();
     }

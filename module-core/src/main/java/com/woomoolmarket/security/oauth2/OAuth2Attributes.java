@@ -60,7 +60,7 @@ public class OAuth2Attributes {
         return OAuth2Attributes.builder()
             .name((String) attributes.get("name"))
             .email((String) attributes.get("email"))
-            .picture((String) attributes.get("picture"))
+            .picture((String) attributes.get("avatar_url"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
@@ -77,21 +77,21 @@ public class OAuth2Attributes {
     }
 
     private static OAuth2Attributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
-
+        /* naver는 user_name_attribute -> response 로 받아옴, 다른 곳들은 id */
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuth2Attributes.builder()
             .name((String) response.get("name"))
             .email((String) response.get("email"))
             .picture((String) response.get("profile_image"))
-            .attributes(response)
+            .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
     }
 
     private static OAuth2Attributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
-        /** 주의
-         * email 은 kakaoAccount 에 있고, nickname & profile_image_url 은 kakaoProfile 에 있음 */
+        /** 주의 */
+         /* email -> kakaoAccount에 있고, nickname & profile_image_url -> kakaoProfile에 있음 */
 
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");

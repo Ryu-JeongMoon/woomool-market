@@ -9,7 +9,9 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,14 @@ class MemberServiceTest {
     MemberService memberService;
     @Autowired
     MemberResponseMapper memberResponseMapper;
+    @Autowired
+    EntityManager em;
+
+    @BeforeEach
+    void initialize() {
+        memberRepository.deleteAll();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+    }
 
     @Test
     void dateCompareTest() {

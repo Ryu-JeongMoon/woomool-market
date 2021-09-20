@@ -9,7 +9,6 @@ spring:
       hibernate:
         ddl-auto: create
         dialect: org.hibernate.dialect.H2Dialect
-        format_sql: true
 
   redis:
     port: 6379
@@ -26,9 +25,30 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
 
-logging:
-  level:
-    org.hibernate.SQL: debug
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: Google
+            client-id: 1234
+            client-secret: 1234
+          facebook:
+            client-name: Facebook
+            client-id: 1234
+            client-secret: 1234
+          github:
+            client-name: GitHub
+            client-id: 1234
+            client-secret: 1234
+          kakao:
+            client-name: Kakao
+            client-id: 1234
+            client-secret: 1234
+          naver:
+            client-name: Naver
+            client-id: 1234
+            client-secret: 1234
 
 jwt:
   header: Authorization

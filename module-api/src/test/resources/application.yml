@@ -21,9 +21,33 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
-
     serialization:
       fail-on-empty-beans: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: Google
+            client-id: 1234
+            client-secret: 1234
+          facebook:
+            client-name: Facebook
+            client-id: 1234
+            client-secret: 1234
+          github:
+            client-name: GitHub
+            client-id: 1234
+            client-secret: 1234
+          kakao:
+            client-name: Kakao
+            client-id: 1234
+            client-secret: 1234
+          naver:
+            client-name: Naver
+            client-id: 1234
+            client-secret: 1234
 
 logging:
   level:

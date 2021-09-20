@@ -15,8 +15,6 @@ public class ModifyMemberRequest {
 
     private String password;
 
-    private String age;
-
     private String profileImage;
 
     private String phone;
