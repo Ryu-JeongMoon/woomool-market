@@ -57,10 +57,6 @@ spring:
             client-id: 1234
             client-secret: 1234
 
-logging:
-  level:
-    org.hibernate.SQL: debug
-
 jwt:
   header: Authorization
   secret: cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==

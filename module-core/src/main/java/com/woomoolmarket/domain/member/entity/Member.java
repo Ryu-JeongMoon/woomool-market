@@ -13,12 +13,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.util.StringUtils;
 
+@Setter
 @Getter
 @Entity
 @NoArgsConstructor
@@ -107,6 +110,7 @@ public class Member extends BaseEntity {
     }
 
     // TODO 값이 있는 경우에만 변경한다 -> 더 깔끔하게 표현할 방법이 있을까?
+    //  -> mapStruct updateFromDto 쓰자
     public Member editMemberInfo(Member newMemberInfo) {
         if (StringUtils.hasText(newMemberInfo.getNickname())) {
             this.nickname = newMemberInfo.getNickname();
