@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -84,13 +83,9 @@ public class MemberService {
     }
 
     // 그냥 쿼리에서 걸러서 가져오는게 나을듯?!
+    // -> findAll().stream().filter() 방식에서 findActiveMembers()로 쿼리에서 걸러서 가져오는 방식으로 변경
     @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllInactiveMembers", unless = "#result==null")
     public List<MemberResponse> findAllInactiveMembers() {
-//        return memberRepository.findAll()
-//            .stream()
-//            .filter(member -> member.getLeaveDateTime() != null)
-//            .map(memberResponseMapper::toDto)
-//            .collect(toList());
         return memberRepository.findActiveMembers()
             .stream()
             .map(memberResponseMapper::toDto)
