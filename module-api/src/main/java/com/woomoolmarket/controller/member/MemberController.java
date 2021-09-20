@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -53,19 +53,23 @@ public class MemberController {
 
         MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
 
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse);
-        URI createdUri = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).toUri();
-        return ResponseEntity.created(createdUri).body(responseModel);
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
+            linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
+
+        URI createUri = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).toUri();
+
+        return ResponseEntity.created(createUri).body(responseModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponseModel> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId()));
 
         MemberResponseModel responseModel = new MemberResponseModel(memberResponse,
-            linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel(),
-            linkTo(methodOn(MemberController.class).getMember(id)).withRel("modify-member"),
-            linkTo(methodOn(MemberController.class).getMember(id)).withRel("leave-member")
+            defaultLink.slash(id).withSelfRel(),
+            defaultLink.slash(id).withRel("modify-member"),
+            defaultLink.slash(id).withRel("leave-member")
         );
 
         return ResponseEntity.ok(responseModel);
@@ -80,10 +84,11 @@ public class MemberController {
         }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
-        MemberResponseModel responseModel = new MemberResponseModel(memberResponse);
-        URI createdUri = linkTo(methodOn(MemberController.class).getMember(id)).toUri();
 
-        return ResponseEntity.created(createdUri).body(responseModel);
+        MemberResponseModel responseModel = new MemberResponseModel(memberResponse,
+            linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel());
+
+        return ResponseEntity.ok().body(responseModel);
     }
 
     @DeleteMapping("/{id}")
