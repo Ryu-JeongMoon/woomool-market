@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@JsonTypeInfo(use= Id.CLASS, include= As.WRAPPER_OBJECT)
 public class MemberResponse implements Serializable {
 
     private Long id;

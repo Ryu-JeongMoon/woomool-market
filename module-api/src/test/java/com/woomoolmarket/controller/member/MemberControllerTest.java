@@ -87,11 +87,9 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(status().isCreated())
             .andExpect(header().exists(HttpHeaders.LOCATION))
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-            .andExpect(jsonPath("content.email").value("rj@gogo.com"))
-            .andExpect(jsonPath("content.address").value(new Address("seoul", "yeonhui", "1234")))
-//            .andExpect(jsonPath("content.links.self").exists())
-//            .andExpect(jsonPath("data.links.modify-member").exists())
-//            .andExpect(jsonPath("data.links.leave-member").exists())
+            .andExpect(jsonPath("email").value("rj@gogo.com"))
+            .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
+            .andExpect(jsonPath("_links.self").exists())
             .andDo(document("join-member"));
     }
 
