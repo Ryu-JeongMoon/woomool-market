@@ -11,7 +11,6 @@ public class MemberResponseModel<M> extends EntityModel<MemberResponse> {
 
     public MemberResponseModel(MemberResponse memberResponse, Link... links) {
         super(memberResponse, links);
-        add(linkTo(MemberController.class).slash(memberResponse.getId()).withSelfRel());
     }
 
     public static MemberResponseModel of(MemberResponse memberResponse, Iterable<Link> links) {
