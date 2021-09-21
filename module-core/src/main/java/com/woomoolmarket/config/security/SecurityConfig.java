@@ -40,7 +40,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) //jsr250Enabled = true,
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final static List<String> clients = Arrays.asList("google", "facebook", "naver", "kakao", "github");
@@ -149,10 +149,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizationEndpoint()
             .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
 
-//            .and()
-//            .redirectionEndpoint()
-//            .baseUri("/oauth2/callback/*")
-
             .and()
             .userInfoEndpoint()
             .userService(customOAuth2UserService)
@@ -163,7 +159,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .exceptionHandling()
-            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("https://localhost:8443/api/login"));
 
     }
 }

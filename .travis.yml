@@ -15,7 +15,7 @@ cache:
 before_install:
   - chmod +x gradlew
 
-script: "./gradlew clean build"
+script: "./gradlew -x test clean build --parallel"
 
 notifications:
   slack: woomoolhq:4dinJbih6JoxnjuyIy9LqQxP

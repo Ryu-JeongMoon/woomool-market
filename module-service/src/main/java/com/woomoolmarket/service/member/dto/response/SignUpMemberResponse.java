@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpMemberResponse {
 
     private Long id;
     private String email;
-    private String userId;
     private String nickname;
     private Address address;
 
