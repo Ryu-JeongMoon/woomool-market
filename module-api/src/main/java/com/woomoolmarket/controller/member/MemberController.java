@@ -6,27 +6,24 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.woomoolmarket.aop.time.LogExecutionTime;
-import com.woomoolmarket.controller.member.model.MemberCollectionModel;
-import com.woomoolmarket.controller.member.model.MemberResponseModel;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.service.MemberService;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @LogExecutionTime
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/members", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/api/members", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class MemberController {
 
     private final MemberService memberService;
@@ -96,17 +93,18 @@ public class MemberController {
             return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
 
-        MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
-            linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel());
+        Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
 
-        return ResponseEntity.ok().body(responseModel);
+        MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse, createUri);
+
+        return ResponseEntity.created(createUri.toUri()).body(responseModel);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity leaveMember(@PathVariable Long id) {
         memberService.leaveSoftly(id);
-        return ResponseEntity.ok("delete ok!");
+        return ResponseEntity.noContent().build();
     }
 
 

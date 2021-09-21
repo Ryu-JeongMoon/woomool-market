@@ -27,11 +27,13 @@ public class IndexController {
         return "login";
     }
 
+    @ResponseBody
     @GetMapping({"/loginSuccess", "/hello"})
     public String loginSuccess() {
         return "hello";
     }
 
+    @ResponseBody
     @GetMapping("/loginFailure")
     public String loginFailure() {
         return "loginFailure";

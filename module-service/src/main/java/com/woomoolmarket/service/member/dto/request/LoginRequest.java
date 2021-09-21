@@ -8,11 +8,13 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequest implements Serializable {
@@ -24,7 +26,7 @@ public class LoginRequest implements Serializable {
     private String email;
 
     @NotBlank
-    @Pattern(regexp = "^[\\w]{6,24}$")
+    @Pattern(regexp = "^[\\w]{4,24}$")
     private String password;
 
     public UsernamePasswordAuthenticationToken toAuthentication() {

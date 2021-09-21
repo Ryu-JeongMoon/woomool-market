@@ -30,7 +30,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        ddl-auto: create
+        ddl-auto: update
 
   security:
     oauth2:
@@ -56,6 +56,9 @@ spring:
             client-name: Naver
             client-id: 1234
             client-secret: 1234
+
+server:
+  port: 8443
 
 jwt:
   header: Authorization

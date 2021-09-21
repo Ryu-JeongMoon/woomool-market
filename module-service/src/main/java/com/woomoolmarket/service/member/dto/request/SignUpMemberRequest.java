@@ -31,10 +31,9 @@ public class SignUpMemberRequest implements Serializable {
     private String nickname;
 
     @NotBlank
-    @Pattern(regexp = "^[\\w]{6,24}$")
+    @Pattern(regexp = "^[\\w]{4,24}$")
     private String password;
 
-    @Pattern(regexp = "^[가-힣a-zA-Z ]{10,200}$")
     private Address address;
 }
 
@@ -43,4 +42,5 @@ public class SignUpMemberRequest implements Serializable {
 @NotEmpty   -> null, "" 둘다 허용 x, " " 허용
 @NotBlank   -> 다 허용 안 함
 이 규칙에 따라서 Validation 적용
+개발 단계에서 비밀번호 4자리 / 운영 단계에서 6 or 8 자리로 교체
  */

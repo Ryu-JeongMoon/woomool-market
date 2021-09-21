@@ -18,7 +18,7 @@ public class ModifyMemberRequest {
     @Pattern(regexp = "^[\\w]{4,24}$")
     private String nickname;
 
-    @Pattern(regexp = "^[\\w]{6,24}$")
+    @Pattern(regexp = "^[\\w]{4,24}$")
     private String password;
 
     @Size(max = 255)
@@ -32,6 +32,5 @@ public class ModifyMemberRequest {
     private String license;
 
     @Embedded
-    @Pattern(regexp = "^[가-힣a-zA-Z ]{10,200}$")
     private Address address;
 }
