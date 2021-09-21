@@ -118,13 +118,6 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-//    @Transactional
-//    public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
-//        return memberResponseMapper.toDto(memberRepository.findById(id)
-//            .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-//            .editMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
-//    }
-
     // (Command) 변경을 가하는 메서드는 반환값이 없어야 할텐데, 로직 상 수정된 회원을 바로 보여주고 싶은데 ?!
     // 이런 경우에 반환값 없애면 쿼리 두번 날려야 하잖아, 일단 반환값 주고 필요할 때 고치장
     // dirty checking 에 의해 바뀐당

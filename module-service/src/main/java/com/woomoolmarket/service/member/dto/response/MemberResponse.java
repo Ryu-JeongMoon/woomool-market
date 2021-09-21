@@ -19,7 +19,6 @@ public class MemberResponse implements Serializable {
 
     private Long id;
 
-    private String userId;
     private String email;
     private String nickname;
 
