@@ -158,10 +158,5 @@ public class MemberController {
     }
 }
 
-// redis @Cacheable을 사용하면 Custom Wrapper 객체 Result로 감싸줘야 에러가 안 터지고
-// _links -> links 배열 되면서 rel : href 관계가 깨진다
-// redis 쓸 것인지, hateoas 쓸 것인지 결정..?
-// -> 여기다가 redis를 써야하는 건지 의문이 생겼듬 쿼리 한방 나가는 정도면 안 쓰는 게 나을까
-
 // MemberResponseModel 반환하면 문제 없듬, 캐시도 안 쓰는데 LinkedHashMap 요놈은 뭘까?
 // EntityModel -> java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class com.woomoolmarket.service.member.dto.response.MemberResponse
