@@ -73,24 +73,24 @@ class MemberServiceTest {
     }
 
     /* 뭐지 별 차이 안 나네 둘 다 느린 거 같은데 .. Long 으로 직접 구하는게 빠르긴 함 */
-    @Test
-    void findNextIdTest() {
-        for (int i = 0; i < 7; i++) {
-            Member member = Member.builder()
-                .email("rjrj" + i)
-                .build();
-            memberRepository.save(member);
-        }
-
-        List<MemberResponse> allMembers = memberService.findAllMembers();
-
-        for (MemberResponse allMember : allMembers) {
-            System.out.println("allMember.getId() = " + allMember.getId());
-        }
-
-        Long nextId = memberService.findNextId(5L).orElse(0L);
-        MemberResponse memberResponse = memberService.findMember(5L);
-        MemberResponse nextMember = memberService.findNextId(memberResponse);
-        assertThat(nextId).isEqualTo(nextMember.getId());
-    }
+//    @Test
+//    void findNextIdTest() {
+//        for (int i = 0; i < 7; i++) {
+//            Member member = Member.builder()
+//                .email("rjrj" + i)
+//                .build();
+//            memberRepository.save(member);
+//        }
+//
+//        List<MemberResponse> allMembers = memberService.findAllMembers();
+//
+//        for (MemberResponse allMember : allMembers) {
+//            System.out.println("allMember.getId() = " + allMember.getId());
+//        }
+//
+//        Long nextId = memberService.findNextId(5L).orElse(0L);
+//        MemberResponse memberResponse = memberService.findMember(5L);
+//        MemberResponse nextMember = memberService.findNextId(memberResponse);
+//        assertThat(nextId).isEqualTo(nextMember.getId());
+//    }
 }

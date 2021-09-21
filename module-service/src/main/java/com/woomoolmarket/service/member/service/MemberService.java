@@ -19,7 +19,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,30 +77,27 @@ public class MemberService {
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다")));
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllMembers", unless = "#result==null")
-    public List<MemberResponse> findAllMembers() {
-        return memberRepository.findAll()
+    public Page<MemberResponse> findAllMembers(Pageable pageable) {
+        return new PageImpl<>(memberRepository.findAll(pageable)
             .stream()
             .map(memberResponseMapper::toDto)
-            .collect(toList());
+            .collect(toList()));
     }
 
     // 그냥 쿼리에서 걸러서 가져오는게 나을듯?!
     // -> findAll().stream().filter() 방식에서 findActiveMembers()로 쿼리에서 걸러서 가져오는 방식으로 변경
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllInactiveMembers", unless = "#result==null")
-    public List<MemberResponse> findAllInactiveMembers() {
-        return memberRepository.findActiveMembers()
+    public Page<MemberResponse> findAllActiveMembers(Pageable pageable) {
+        return new PageImpl<>(memberRepository.findActiveMembers(pageable)
             .stream()
             .map(memberResponseMapper::toDto)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
     }
 
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null")
-    public List<MemberResponse> findAllActiveMembers() {
-        return memberRepository.findInactiveMembers()
+    public Page<MemberResponse> findAllInactiveMembers(Pageable pageable) {
+        return new PageImpl<>(memberRepository.findInactiveMembers(pageable)
             .stream()
             .map(memberResponseMapper::toDto)
-            .collect(toList());
+            .collect(toList()));
     }
 
     /* 얘가 필요한감? */
@@ -106,6 +106,7 @@ public class MemberService {
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"));
     }
 
+    // Authority.ROLE_USER -> DB default 값으로 해결할 수 있을거 같은데?
     @Transactional
     public Long join(SignUpMemberRequest signUpRequest) {
 
@@ -117,22 +118,33 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
+//    @Transactional
+//    public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
+//        return memberResponseMapper.toDto(memberRepository.findById(id)
+//            .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
+//            .editMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
+//    }
+
+    // (Command) 변경을 가하는 메서드는 반환값이 없어야 할텐데, 로직 상 수정된 회원을 바로 보여주고 싶은데 ?!
+    // 이런 경우에 반환값 없애면 쿼리 두번 날려야 하잖아, 일단 반환값 주고 필요할 때 고치장
+    // dirty checking 에 의해 바뀐당
     @Transactional
     public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
-        return memberResponseMapper.toDto(memberRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
-            .editMemberInfo(modifyMemberRequestMapper.toEntity(modifyMemberRequest)));
+        Member member = memberRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
+        modifyMemberRequestMapper.updateFromDto(modifyMemberRequest, member);
+        return memberResponseMapper.toDto(member);
     }
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
     @Transactional
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"))
+            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"))
             .leave();
     }
 
     /* TODO Batch Job 으로 돌릴 것 */
+    // memberRepository::delete 메서드 참조로 바꿀 수 있는데 그냥 풀어놓는게 보기 편한뎅.. 익숙해지면 바꾸자
     @Transactional
     public void leaveHardly() {
         memberRepository.findAll()
@@ -144,11 +156,16 @@ public class MemberService {
 }
 
 /**
- * data 가공의 기준을 어디까지 잡아야 할까 service 에서는 무슨 일까지 해도 되는 걸까 화면 단에 맞춘 로직까지 넣어도 되는건가
- * <p>
- * -> controller 단을 최대한 깔끔하게 유지하려면 service에서 처리하는 게 낫지 않을까, entity를 모르게 dto 변환 로직까지도
- *
  * @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null")
  * <p>
  * -> redis <-> entity model 안 맞아.. 일단 캐시 다 걷어내고 hateoas 형식만 맞춰서 내보내자
  */
+
+//    @Cacheable 적용 버전
+//    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllMembers", unless = "#result==null")
+//    public List<MemberResponse> findAllMembers() {
+//        return memberRepository.findAll()
+//            .stream()
+//            .map(memberResponseMapper::toDto)
+//            .collect(toList());
+//    }
