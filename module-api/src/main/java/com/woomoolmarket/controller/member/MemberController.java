@@ -1,5 +1,7 @@
 package com.woomoolmarket.controller.member;
 
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -11,13 +13,20 @@ import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.service.MemberService;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,10 +46,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PagedResourcesAssembler<MemberResponse> assembler;
 
     @GetMapping
-    public ResponseEntity<MemberCollectionModel> getMembers() {
-        return ResponseEntity.ok(new MemberCollectionModel(memberService.findAllActiveMembers()));
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+
+        Page<MemberResponse> pagedResponse = memberService.findAllActiveMembers(pageRequest);
+        return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
     @PostMapping
@@ -62,14 +75,14 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseModel> getMember(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId()));
 
-        MemberResponseModel responseModel = new MemberResponseModel(memberResponse,
-            defaultLink.slash(id).withSelfRel(),
-            defaultLink.slash(id).withRel("modify-member"),
-            defaultLink.slash(id).withRel("leave-member")
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
+            defaultLink.withSelfRel(),
+            defaultLink.withRel("modify-member"),
+            defaultLink.withRel("leave-member")
         );
 
         return ResponseEntity.ok(responseModel);
@@ -84,8 +97,7 @@ public class MemberController {
         }
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
-
-        MemberResponseModel responseModel = new MemberResponseModel(memberResponse,
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel());
 
         return ResponseEntity.ok().body(responseModel);
@@ -99,40 +111,50 @@ public class MemberController {
 
 
     /* FOR ADMIN */
+    /* TODO Query 3방 해결하세요 */
+    //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/{id}")
-    public ResponseEntity<MemberResponseModel> getMemberByAdmin(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<MemberResponse>> getMemberByAdmin(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
         Long previousId = memberService.findPreviousId(memberResponse).getId();
         Long nextId = memberService.findNextId(memberResponse).getId();
 
-        MemberResponseModel responseModel = new MemberResponseModel(memberResponse,
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel(),
             linkTo(methodOn(MemberController.class).getMember(previousId)).withRel("previous-member"),
             linkTo(methodOn(MemberController.class).getMember(nextId)).withRel("next-member"),
             linkTo(methodOn(MemberController.class).getMember(id)).withRel("modify-member"));
 
-        return ResponseEntity.ok().body((responseModel));
+        return ResponseEntity.ok().body(responseModel);
     }
 
-    //    @Secured("ROLE_ADMIN")
+    /* TODO 얘네 메서드 새개는 나가는 쿼리가 달라서 중복은 아닌데 형태가 중복이다 정리할 수 있나? */
+    //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
-    public ResponseEntity<CollectionModel<MemberResponse>> getAllMembers() {
-        return ResponseEntity.ok(CollectionModel.of(memberService.findAllMembers()));
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+
+        Page<MemberResponse> pagedResponse = memberService.findAllMembers(pageRequest);
+        return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
-    /* TODO 얘는 뭔가 중복스러운데 관리자를 위해 남겨두어야 할까?
-     *  화면단에서 보여줘야 하는게 다르면 내비두장 */
-//    @Secured("ROLE_ADMIN")
+    //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/active")
-    public ResponseEntity<CollectionModel<MemberResponse>> getAllActiveMembers() {
-        return ResponseEntity.ok(CollectionModel.of(memberService.findAllActiveMembers()));
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+
+        Page<MemberResponse> pagedResponse = memberService.findAllActiveMembers(pageRequest);
+        return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
-    //    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin-only/inactive")
-    public ResponseEntity<CollectionModel<MemberResponse>> getAllInactiveMembers() {
-        return ResponseEntity.ok(CollectionModel.of(memberService.findAllInactiveMembers()));
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+
+        Page<MemberResponse> pagedResponse = memberService.findAllInactiveMembers(pageRequest);
+        return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 }
 

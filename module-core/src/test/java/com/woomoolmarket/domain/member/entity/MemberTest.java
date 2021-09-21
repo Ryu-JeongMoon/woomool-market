@@ -120,29 +120,6 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("editMemberInfo() 통해 기존 member 변경")
-    @Description("editMemberInfo parameter 외에 다른 것 비교 시 에러")
-    void editMemberInfoTest() {
-        Member member = memberRepository.save(Member.builder()
-            .nickname("panda")
-            .password("1234")
-            .provider(AuthProvider.FACEBOOK)
-            .build());
-
-        Member newMember = Member.builder()
-            .nickname("bear")
-            .password("5678")
-            .provider(AuthProvider.GITHUB)
-            .build();
-
-        Member findResult = member.editMemberInfo(newMember);
-
-        assertEquals(findResult.getPassword(), member.getPassword());
-        assertEquals(findResult.getNickname(), member.getNickname());
-        assertNotEquals(newMember.getProvider(), member.getProvider());
-    }
-
-    @Test
     @DisplayName("passwordEncoder 가져온다")
     void passwordTest() {
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
