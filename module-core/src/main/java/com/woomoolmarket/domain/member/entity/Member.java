@@ -108,34 +108,4 @@ public class Member extends BaseEntity {
         }
         return this;
     }
-
-    // TODO 값이 있는 경우에만 변경한다 -> 더 깔끔하게 표현할 방법이 있을까?
-    //  -> mapStruct updateFromDto 쓰자
-    public Member editMemberInfo(Member newMemberInfo) {
-        if (StringUtils.hasText(newMemberInfo.getNickname())) {
-            this.nickname = newMemberInfo.getNickname();
-        }
-
-        if (StringUtils.hasText(newMemberInfo.getPassword())) {
-            this.password = newMemberInfo.getPassword();
-        }
-
-        if (StringUtils.hasText(newMemberInfo.getProfileImage())) {
-            this.profileImage = newMemberInfo.getProfileImage();
-        }
-
-        if (StringUtils.hasText(newMemberInfo.getPhone())) {
-            this.phone = newMemberInfo.getPhone();
-        }
-
-        if (StringUtils.hasText(newMemberInfo.getLicense())) {
-            this.license = newMemberInfo.getLicense();
-        }
-
-        if (newMemberInfo.getAddress() != null) {
-            this.address = newMemberInfo.getAddress();
-        }
-
-        return this;
-    }
 }
