@@ -1,25 +1,27 @@
 package com.woomoolmarket.controller.member;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.RestDocsConfiguration;
-import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Address;
-import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
+import com.woomoolmarket.service.member.service.MemberService;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +40,6 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -64,6 +65,8 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     PasswordEncoder passwordEncoder;
     @Autowired
     EntityManager em;
+    @Autowired
+    MemberService memberService;
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
@@ -80,22 +83,47 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     }
 
     @Test
+    @DisplayName("회원조회 성공")
+    @WithMockUser(username = "pandabear@gogo.com", roles = "USER")
+    void findMemberTest() throws Exception {
+        SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
+            .email("pandabear@gogo.com")
+            .nickname("horagin")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        Long findResult = memberService.join(signUpMemberRequest);
+
+        mockMvc.perform(
+                get("/api/members/" + findResult)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaTypes.HAL_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+            .andExpect(jsonPath("email").value("pandabear@gogo.com"))
+            .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
+            .andExpect(jsonPath("_links.self").exists())
+            .andDo(document("get-member"));
+    }
+
+    @Test
     @DisplayName("회원가입 성공")
     public void signUpSuccessTest() throws Exception {
 
-        Member member =
-            Member.builder()
-                .email("pandabear@gogo.com")
-                .nickname("horagin")
-                .password("123456")
-                .address(new Address("seoul", "yeonhui", "1234"))
-                .build();
+        SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
+            .email("pandabear@gogo.com")
+            .nickname("horagin")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
 
         mockMvc.perform(
                 post("/api/members")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(signUpRequestMapper.toDto(member))))
+                    .content(objectMapper.writeValueAsString(signUpMemberRequest)))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(header().exists(HttpHeaders.LOCATION))
@@ -107,50 +135,14 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     }
 
     @Test
-    @DisplayName("기본 상태 ACTIVE")
-    public void statusTest() {
-        Member member =
-            Member.builder()
-                .email("rjrj")
-                .nickname("nick")
-                .password("1234")
-                .build();
-
-        Member findResult = memberRepository.save(member);
-
-        assertThat(findResult.getMemberStatus()).isEqualTo(Status.ACTIVE);
-    }
-
-    @Test
-    @DisplayName("signUpMapper 올바르게 변환된다")
-    public void signUpMapperTest() {
-        Member member =
-            Member.builder()
-                .email("panda@naver.com")
-                .nickname("nick")
-                .password("1234")
-                .address(new Address("seoul", "yeonhui", "1234"))
-                .build();
-
-        SignUpMemberRequest signUpMemberRequest = signUpRequestMapper.toDto(member);
-
-        assertThat(member.getEmail()).isEqualTo(signUpMemberRequest.getEmail());
-        assertThat(member.getNickname()).isEqualTo(signUpMemberRequest.getNickname());
-        assertThat(member.getPassword()).isEqualTo(signUpMemberRequest.getPassword());
-        assertThat(member.getAddress()).isEqualTo(signUpMemberRequest.getAddress());
-    }
-
-    @Test
     @DisplayName("회원가입 실패 - @Validation 동작한다")
     void signUpFailureTest() throws Exception {
-        Member member = Member.builder()
+        SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
             .email("panda@naver.com")
             .nickname("nick")
             .password("123")
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
-
-        SignUpMemberRequest signUpMemberRequest = signUpRequestMapper.toDto(member);
 
         mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -171,22 +163,60 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
 
         mockMvc.perform(
-                post("https://localhost:8443/api/members")
+                post("/api/members")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
                     .content(objectMapper.writeValueAsString(signUpMemberRequest)))
             .andExpect(status().isCreated());
 
-        Member member = memberRepository.findByEmail("panda@naver.com").get();
-        LoginRequest loginRequest = LoginRequest.builder().email(member.getEmail()).password("123456")
+        LoginRequest loginRequest = LoginRequest.builder()
+            .email(signUpMemberRequest.getEmail())
+            .password(signUpMemberRequest.getPassword())
             .build();
 
         mockMvc.perform(
-                post("https://localhost:8443/api/login")
+                post("/api/login")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
                     .content(objectMapper.writeValueAsString(loginRequest)))
-            .andExpect(status().isOk());
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("grantType").exists())
+            .andExpect(jsonPath("accessToken").exists())
+            .andExpect(jsonPath("refreshToken").exists())
+            .andExpect(jsonPath("accessTokenExpiresIn").exists())
+            .andDo(document("login-member"));
+    }
+
+    @Test
+    @DisplayName("수정하면 201 내려준다")
+    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    void modifyTest() throws Exception {
+        SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
+            .email("panda@naver.com")
+            .nickname("nick")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        Long findResult = memberService.join(signUpMemberRequest);
+
+        ModifyMemberRequest modifyMemberRequest = ModifyMemberRequest.builder()
+            .nickname("kcin")
+            .password("654321")
+            .address(new Address("부산", "갈매기", "끼룩"))
+            .build();
+
+        mockMvc.perform(
+                patch("/api/members/" + findResult)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaTypes.HAL_JSON)
+                    .content(objectMapper.writeValueAsString(modifyMemberRequest)))
+            .andDo(print())
+            .andExpect(jsonPath("email").exists())
+            .andExpect(jsonPath("nickname").value("kcin"))
+            .andExpect(jsonPath("address").exists())
+            .andDo(document("modify-member"));
     }
 
     @Test
@@ -201,16 +231,64 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        MvcResult mvcResult = mockMvc.perform(
-                post("https://localhost:8443/api/members")
+        mockMvc.perform(
+                post("/api/members")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
                     .content(objectMapper.writeValueAsString(signUpMemberRequest)))
             .andReturn();
 
         mockMvc.perform(
-                delete("https://localhost:8443/api/members/1")
+                delete("/api/members/1")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isNoContent());
+            .andExpect(status().isNoContent())
+            .andDo(document("leave-member"));
+    }
+
+    @Test
+    @DisplayName("어드민 전용 단건 조회")
+    @WithMockUser(username = "panda@gmail.com", roles = "ADMIN")
+    void adminFindMemberTest() throws Exception {
+        SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
+            .email("panda@naver.com")
+            .nickname("nick")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        Long findResult = memberService.join(signUpMemberRequest);
+
+        mockMvc.perform(
+                get("/api/members/admin-only/" + findResult)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaTypes.HAL_JSON))
+            .andDo(print())
+            .andExpect(jsonPath("email").value(signUpMemberRequest.getEmail()))
+            .andExpect(jsonPath("nickname").value(signUpMemberRequest.getNickname()))
+            .andExpect(jsonPath("_links.self").exists())
+            .andExpect(jsonPath("_links.previous-member").exists())
+            .andExpect(jsonPath("_links.next-member").exists())
+            .andDo(document("admin-only-get-member"));
+    }
+
+    @Test
+    @DisplayName("어드민 전용 전체 조회")
+    @WithMockUser(username = "panda@gmail.com", roles = "ADMIN")
+    void adminFindMembersTest() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
+                .email(String.format("panda-%d@naver.com", i + 1))
+                .nickname("nick" + i + 1)
+                .password("123456")
+                .build();
+            memberService.join(signUpMemberRequest);
+        }
+
+        mockMvc.perform(
+                get("/api/members/admin-only/all")
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("admin-only-get-members"));
     }
 }

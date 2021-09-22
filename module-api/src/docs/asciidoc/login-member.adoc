@@ -1,0 +1,24 @@
+== Login Member
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+=== Request
+
+CURL:
+include::{snippets}/login-member/curl-request.adoc[]
+
+HTTPie:
+include::{snippets}/login-member/httpie-request.adoc[]
+
+Request Parameters:
+include::{snippets}/login-member/request-body.adoc[]
+
+Request HTTP Example:
+include::{snippets}/login-member/http-request.adoc[]
+
+=== Response
+
+Response HTTP Example:
+include::{snippets}/login-member/http-response.adoc[]

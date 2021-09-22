@@ -65,6 +65,21 @@ class MemberTest {
     }
 
     @Test
+    @DisplayName("기본 상태 ACTIVE")
+    public void statusTest() {
+        Member member =
+            Member.builder()
+                .email("rjrj")
+                .nickname("nick")
+                .password("1234")
+                .build();
+
+        Member findResult = memberRepository.save(member);
+
+        assertThat(findResult.getMemberStatus()).isEqualTo(Status.ACTIVE);
+    }
+
+    @Test
     @DisplayName("getAuthorityKey() 정상 작동 !~")
     void authorityTest() {
         Member member = Member.builder()

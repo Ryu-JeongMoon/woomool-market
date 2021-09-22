@@ -15,6 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
@@ -43,7 +45,6 @@ class MemberServiceTest {
         System.out.println(LocalDateTime.now().compareTo(septemberFirst));
     }
 
-    // TODO - test for Local
     @Test
     void findIdTest() {
         for (int i = 8; i < 12; i++) {
@@ -61,8 +62,8 @@ class MemberServiceTest {
         Member member2 = memberRepository.findByEmail("panda@naver.com10").get();
         Member member3 = memberRepository.findByEmail("panda@naver.com11").get();
 
-        Long nextId = memberService.findNextId(memberResponseMapper.toDto(member2)).getId();
-        Long previousId = memberService.findPreviousId(memberResponseMapper.toDto(member2)).getId();
+        Long nextId = memberService.findNextId(memberResponseMapper.toDto(member2).getId());
+        Long previousId = memberService.findPreviousId(memberResponseMapper.toDto(member2).getId());
 
         log.info("member1.id = {}", member1.getId());
         log.info("member2.id = {}", member2.getId());
@@ -73,24 +74,23 @@ class MemberServiceTest {
     }
 
     /* 뭐지 별 차이 안 나네 둘 다 느린 거 같은데 .. Long 으로 직접 구하는게 빠르긴 함 */
-//    @Test
-//    void findNextIdTest() {
-//        for (int i = 0; i < 7; i++) {
-//            Member member = Member.builder()
-//                .email("rjrj" + i)
-//                .build();
-//            memberRepository.save(member);
-//        }
-//
-//        List<MemberResponse> allMembers = memberService.findAllMembers();
-//
-//        for (MemberResponse allMember : allMembers) {
-//            System.out.println("allMember.getId() = " + allMember.getId());
-//        }
-//
-//        Long nextId = memberService.findNextId(5L).orElse(0L);
-//        MemberResponse memberResponse = memberService.findMember(5L);
-//        MemberResponse nextMember = memberService.findNextId(memberResponse);
-//        assertThat(nextId).isEqualTo(nextMember.getId());
-//    }
+    @Test
+    void findNextIdTest() {
+        for (int i = 0; i < 7; i++) {
+            Member member = Member.builder()
+                .email("rjrj" + i)
+                .build();
+            memberRepository.save(member);
+        }
+
+        Page<MemberResponse> allMembers = memberService.findAllMembers(Pageable.unpaged());
+
+        for (MemberResponse allMember : allMembers) {
+            System.out.println("allMember.getId() = " + allMember.getId());
+        }
+
+        Long nextId = memberService.findNextId(5L);
+        MemberResponse nextMember = memberService.findMember(nextId);
+        assertThat(nextId).isEqualTo(nextMember.getId());
+    }
 }
