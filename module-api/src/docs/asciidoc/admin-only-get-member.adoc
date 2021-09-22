@@ -1,0 +1,24 @@
+== Admin Only Get Member
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+=== Request
+
+CURL:
+include::{snippets}/admin-only-get-member/curl-request.adoc[]
+
+HTTPie:
+include::{snippets}/admin-only-get-member/httpie-request.adoc[]
+
+Request Parameters:
+include::{snippets}/admin-only-get-member/request-body.adoc[]
+
+Request HTTP Example:
+include::{snippets}/admin-only-get-member/http-request.adoc[]
+
+=== Response
+
+Response HTTP Example:
+include::{snippets}/admin-only-get-member/http-response.adoc[]

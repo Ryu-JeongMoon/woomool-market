@@ -1,0 +1,24 @@
+== Update Member
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+=== Request
+
+CURL:
+include::{snippets}/modify-member/curl-request.adoc[]
+
+HTTPie:
+include::{snippets}/modify-member/httpie-request.adoc[]
+
+Request Parameters:
+include::{snippets}/modify-member/request-body.adoc[]
+
+Request HTTP Example:
+include::{snippets}/modify-member/http-request.adoc[]
+
+=== Response
+
+Response HTTP Example:
+include::{snippets}/modify-member/http-response.adoc[]
