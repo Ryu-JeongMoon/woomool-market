@@ -1,4 +1,4 @@
-== 인사하기
+== Join Member
 :toc: left
 :toclevels: 2
 :source-highlighter: highlightjs
@@ -9,14 +9,16 @@
 CURL:
 include::{snippets}/join-member/curl-request.adoc[]
 
+HTTPie:
+include::{snippets}/join-member/httpie-request.adoc[]
+
 Request Parameters:
-include::{snippets}/join-member/http-request.adoc[]
+include::{snippets}/join-member/request-body.adoc[]
 
 Request HTTP Example:
 include::{snippets}/join-member/http-request.adoc[]
 
 === Response
 
-Response:
+Response HTTP Example:
 include::{snippets}/join-member/http-response.adoc[]
-
