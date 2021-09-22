@@ -1,6 +1,8 @@
 package com.woomoolmarket.service.member.service;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 import com.woomoolmarket.common.util.LocalDateTimeUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
@@ -14,14 +16,13 @@ import com.woomoolmarket.service.member.mapper.ModifyMemberRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,44 +42,44 @@ public class MemberService {
     private final ModifyMemberRequestMapper modifyMemberRequestMapper;
 
     // orElseGet -> else 일 때만 실행, orElse -> 무조건 실행, 성능 상 유리하니 orElseGet 씁시다
-    public MemberResponse findPreviousId(MemberResponse memberResponse) {
+    public Long findPreviousId(Long id) {
         return memberRepository.findAll()
             .stream()
             .parallel()
             .sorted(Comparator.comparingLong(Member::getId).reversed())
-            .filter(member -> member.getId() < memberResponse.getId())
+            .filter(member -> member.getId() < id)
             .findFirst()
-            .map(memberResponseMapper::toDto)
-            .orElseGet(() -> memberResponse);
+            .map(Member::getId)
+            .orElseGet(() -> id);
     }
 
     // TODO 앞뒤 번호 찾기 -> refactoring 필요 뭔가 아쉽네
     // 앞뒤 번호 찾을 때 캐시 안 쓰면 쿼리 3방 나간다 이건 어떻게 해결해야 할까?!
     // 번호만 캐시하는 방법 없나~~~~ 페이징으로 하면 달라질라나
-    public MemberResponse findNextId(MemberResponse memberResponse) {
+    public Long findNextId(Long id) {
         return memberRepository.findAll()
             .stream()
-            .filter(member -> member.getId() > memberResponse.getId())
+            .filter(member -> member.getId() > id)
             .findFirst()
-            .map(memberResponseMapper::toDto)
-            .orElseGet(() -> memberResponse);
+            .map(Member::getId)
+            .orElseGet(() -> id);
     }
 
-    public Optional<Long> findPreviousId(Long id) {
-        return memberRepository.findPreviousId(id);
-    }
-
-    public Optional<Long> findNextId(Long id) {
-        return memberRepository.findNextId(id);
-    }
+//    public Optional<Long> findPreviousId(Long id) {
+//        return memberRepository.findPreviousId(id);
+//    }
+//    public Optional<Long> findNextId(Long id) {
+//        return memberRepository.findNextId(id);
+//    }
 
     public MemberResponse findMember(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다")));
     }
 
-    public Page<MemberResponse> findAllMembers(Pageable pageable) {
-        return new PageImpl<>(memberRepository.findAll(pageable)
+    public Page<MemberResponse> findAllMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+        return new PageImpl<>(memberRepository.findAll(pageRequest)
             .stream()
             .map(memberResponseMapper::toDto)
             .collect(toList()));
@@ -86,15 +87,17 @@ public class MemberService {
 
     // 그냥 쿼리에서 걸러서 가져오는게 나을듯?!
     // -> findAll().stream().filter() 방식에서 findActiveMembers()로 쿼리에서 걸러서 가져오는 방식으로 변경
-    public Page<MemberResponse> findAllActiveMembers(Pageable pageable) {
-        return new PageImpl<>(memberRepository.findActiveMembers(pageable)
+    public Page<MemberResponse> findAllActiveMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+        return new PageImpl<>(memberRepository.findActiveMembers(pageRequest)
             .stream()
             .map(memberResponseMapper::toDto)
             .collect(Collectors.toList()));
     }
 
-    public Page<MemberResponse> findAllInactiveMembers(Pageable pageable) {
-        return new PageImpl<>(memberRepository.findInactiveMembers(pageable)
+    public Page<MemberResponse> findAllInactiveMembers(
+        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+        return new PageImpl<>(memberRepository.findInactiveMembers(pageRequest)
             .stream()
             .map(memberResponseMapper::toDto)
             .collect(toList()));
@@ -123,7 +126,8 @@ public class MemberService {
     // dirty checking 에 의해 바뀐당
     @Transactional
     public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
         modifyMemberRequestMapper.updateFromDto(modifyMemberRequest, member);
         return memberResponseMapper.toDto(member);
     }

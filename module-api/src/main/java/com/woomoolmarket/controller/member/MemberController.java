@@ -92,7 +92,6 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
-
         Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
 
         MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
@@ -115,8 +114,8 @@ public class MemberController {
     public ResponseEntity<EntityModel<MemberResponse>> getMemberByAdmin(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMember(id);
 
-        Long previousId = memberService.findPreviousId(memberResponse).getId();
-        Long nextId = memberService.findNextId(memberResponse).getId();
+        Long previousId = memberService.findPreviousId(id);
+        Long nextId = memberService.findNextId(id);
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel(),
