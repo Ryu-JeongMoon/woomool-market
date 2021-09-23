@@ -12,16 +12,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
-import com.woomoolmarket.service.member.service.MemberService;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -93,7 +92,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.join(signUpMemberRequest);
+        Long findResult = memberService.joinMember(signUpMemberRequest);
 
         mockMvc.perform(
                 get("/api/members/" + findResult)
@@ -199,7 +198,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.join(signUpMemberRequest);
+        Long findResult = memberService.joinMember(signUpMemberRequest);
 
         ModifyMemberRequest modifyMemberRequest = ModifyMemberRequest.builder()
             .nickname("kcin")
@@ -256,7 +255,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.join(signUpMemberRequest);
+        Long findResult = memberService.joinMember(signUpMemberRequest);
 
         mockMvc.perform(
                 get("/api/members/admin-only/" + findResult)
@@ -281,7 +280,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .nickname("nick" + i + 1)
                 .password("123456")
                 .build();
-            memberService.join(signUpMemberRequest);
+            memberService.joinMember(signUpMemberRequest);
         }
 
         mockMvc.perform(

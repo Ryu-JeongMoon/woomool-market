@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.exception;
+package com.woomoolmarket.exception;
 
 public class MemberDuplicatedException extends RuntimeException {
 

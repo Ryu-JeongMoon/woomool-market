@@ -9,7 +9,7 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
-import com.woomoolmarket.service.member.service.MemberService;
+import com.woomoolmarket.service.member.MemberService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -61,7 +61,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
 
-        MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
+        MemberResponse memberResponse = memberService.findMember(memberService.joinMember(signUpMemberRequest));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());

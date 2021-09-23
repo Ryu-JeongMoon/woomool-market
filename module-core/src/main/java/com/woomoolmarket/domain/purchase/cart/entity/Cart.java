@@ -24,7 +24,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Cart extends BaseTimeEntity {
@@ -40,4 +39,10 @@ public class Cart extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartProduct> cartProducts = new ArrayList<>();
+
+    @Builder
+    public Cart(Member member, List<CartProduct> cartProducts) {
+        this.member = member;
+        this.cartProducts = cartProducts;
+    }
 }

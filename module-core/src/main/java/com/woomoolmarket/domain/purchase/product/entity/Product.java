@@ -1,8 +1,8 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.exception.product.NotEnoughStockException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,7 +19,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Product extends BaseEntity {
@@ -55,5 +53,16 @@ public class Product extends BaseEntity {
         this.productImage = productImg;
         this.productCategory = productCategory;
         this.region = region;
+    }
+
+    public void increaseStock(int quantity) {
+        this.stock += quantity;
+    }
+
+    public void decreaseStock(int quantity) {
+        if (this.stock < quantity) {
+            throw new NotEnoughStockException("재고를 초과해 주문할 수 없습니다");
+        }
+        this.stock -= quantity;
     }
 }

@@ -1,17 +1,21 @@
 package com.woomoolmarket.service.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.service.member.MemberService;
+import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -92,5 +96,20 @@ class MemberServiceTest {
         Long nextId = memberService.findNextId(5L);
         MemberResponse nextMember = memberService.findMember(nextId);
         assertThat(nextId).isEqualTo(nextMember.getId());
+    }
+
+    @Test
+    @DisplayName("Authority SELLER 로 들어감")
+    void joinSellerTest() {
+        SignUpMemberRequest seller = SignUpMemberRequest.builder()
+            .email("panda")
+            .nickname("bear")
+            .password("1234")
+            .build();
+
+        Long findId = memberService.joinSeller(seller);
+        MemberResponse memberResponse = memberService.findMember(findId);
+
+        assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);
     }
 }

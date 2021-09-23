@@ -1,4 +1,4 @@
-package com.woomoolmarket.service.board.service;
+package com.woomoolmarket.service.board;
 
 import static java.util.stream.Collectors.toList;
 

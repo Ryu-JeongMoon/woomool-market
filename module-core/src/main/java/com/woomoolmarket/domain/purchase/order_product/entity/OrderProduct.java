@@ -22,7 +22,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @Table(name = "ORDER_PRODUCT")
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -43,4 +42,22 @@ public class OrderProduct extends BaseTimeEntity {
 
     private int amount;
     private int quantity;
+
+    @Builder
+    public OrderProduct(Order order, Product product, int amount, int quantity) {
+        this.order = order;
+        this.product = product;
+        this.amount = amount;
+        this.quantity = quantity;
+    }
+
+    public static OrderProduct createOrderProduct(Product product, int amount, int quantity) {
+        product.decreaseStock(quantity);
+
+        return OrderProduct.builder()
+            .product(product)
+            .amount(amount)
+            .quantity(quantity)
+            .build();
+    }
 }

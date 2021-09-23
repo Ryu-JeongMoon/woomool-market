@@ -1,4 +1,4 @@
-package com.woomoolmarket.service.member.service;
+package com.woomoolmarket.service.member;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
@@ -74,7 +74,7 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다")));
+            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다")));
     }
 
     public Page<MemberResponse> findAllMembers(
@@ -106,18 +106,22 @@ public class MemberService {
     /* 얘가 필요한감? */
     public Member findById(Long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다"));
+            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
     }
 
     // Authority.ROLE_USER -> DB default 값으로 해결할 수 있을거 같은데?
     @Transactional
-    public Long join(SignUpMemberRequest signUpRequest) {
-
+    public Long joinMember(SignUpMemberRequest signUpRequest) {
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
-        member.registerAuthority(Authority.ROLE_USER);
+        return memberRepository.save(member).getId();
+    }
 
-        log.info("passwordEncoder = {}", passwordEncoder.getClass());
+    @Transactional
+    public Long joinSeller(SignUpMemberRequest signUpRequest) {
+        Member member = signUpRequestMapper.toEntity(signUpRequest);
+        member.encodePassword(passwordEncoder.encode(member.getPassword()));
+        member.registerAuthority(Authority.ROLE_SELLER);
         return memberRepository.save(member).getId();
     }
 
@@ -141,14 +145,13 @@ public class MemberService {
     }
 
     /* TODO Batch Job 으로 돌릴 것 */
-    // memberRepository::delete 메서드 참조로 바꿀 수 있는데 그냥 풀어놓는게 보기 편한뎅.. 익숙해지면 바꾸자
     @Transactional
     public void leaveHardly() {
         memberRepository.findAll()
             .stream()
             .parallel()
             .filter(member -> LocalDateTimeUtil.compareMonth(LocalDateTime.now(), member.getLeaveDateTime()) >= 6)
-            .forEach(member -> memberRepository.delete(member));
+            .forEach(memberRepository::delete);
     }
 }
 

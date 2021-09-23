@@ -5,7 +5,9 @@ import com.woomoolmarket.common.embeddable.Delivery;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -29,7 +31,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @Table(name = "ORDERS")
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -41,7 +42,7 @@ public class Order extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus orderStatus = OrderStatus.ONGOING;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,4 +53,11 @@ public class Order extends BaseTimeEntity {
 
     @Embedded
     private Delivery delivery;
+
+    @Builder
+    public Order(Member member, Delivery delivery, List<OrderProduct> orderProducts) {
+        this.member = member;
+        this.delivery = delivery;
+        this.orderProducts = orderProducts;
+    }
 }

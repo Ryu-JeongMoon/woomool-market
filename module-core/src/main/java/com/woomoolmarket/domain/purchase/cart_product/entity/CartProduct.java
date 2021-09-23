@@ -22,7 +22,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @Table(name = "CART_PRODUCT")
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -43,4 +42,12 @@ public class CartProduct extends BaseTimeEntity {
 
     private int amount;
     private int quantity;
+
+    @Builder
+    public CartProduct(Cart cart, Product product, int amount, int quantity) {
+        this.cart = cart;
+        this.product = product;
+        this.amount = amount;
+        this.quantity = quantity;
+    }
 }

@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.handler;
+package com.woomoolmarket.exception;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +13,6 @@ public class JwtAccessDeniedExceptionHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
         AccessDeniedException accessDeniedException) throws IOException {
-
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }

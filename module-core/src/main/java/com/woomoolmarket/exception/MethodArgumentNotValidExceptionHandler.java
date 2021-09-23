@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.handler;
+package com.woomoolmarket.exception;
 
 
 import com.woomoolmarket.errors.ErrorResponse;

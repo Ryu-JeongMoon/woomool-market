@@ -6,7 +6,7 @@ import static com.woomoolmarket.domain.member.entity.AuthProvider.GOOGLE;
 import static com.woomoolmarket.domain.member.entity.AuthProvider.KAKAO;
 import static com.woomoolmarket.domain.member.entity.AuthProvider.NAVER;
 
-import com.woomoolmarket.security.handler.JwtAccessDeniedExceptionHandler;
+import com.woomoolmarket.exception.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;
 import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
 import com.woomoolmarket.security.oauth2.CustomOAuth2Provider;

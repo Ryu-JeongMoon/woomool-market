@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.exception;
+package com.woomoolmarket.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
