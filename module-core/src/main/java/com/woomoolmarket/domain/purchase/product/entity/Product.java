@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
+import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.enumeration.Region;
 import javax.persistence.Column;
@@ -14,12 +15,15 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
+@Builder
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product extends BaseTimeEntity {
+public class Product extends BaseEntity {
 
     @Id
     @Column(name = "product_id")
@@ -27,33 +31,29 @@ public class Product extends BaseTimeEntity {
     private Long id;
 
     private String name;
-
     private String seller;
-
-    private Integer price;
-
-    private Integer stock;
-
     private String description;
-
     private String productImage;
 
+    private int price;
+    private int stock;
+
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private ProductCategory productCategory;
 
     @Enumerated(EnumType.STRING)
     private Region region;
 
     @Builder
-    public Product(String seller, String name, Integer price, Integer stock, String description, String productImg,
-        Category category, Region region) {
+    public Product(String seller, String name, int price, int stock, String description, String productImg,
+        ProductCategory productCategory, Region region) {
         this.seller = seller;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.description = description;
         this.productImage = productImg;
-        this.category = category;
+        this.productCategory = productCategory;
         this.region = region;
     }
 }

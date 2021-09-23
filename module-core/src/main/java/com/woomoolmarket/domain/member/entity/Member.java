@@ -26,7 +26,7 @@ import org.springframework.util.StringUtils;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "unique_email", columnNames = "email")})
 public class Member extends BaseEntity {
 
     @Id

@@ -2,8 +2,8 @@ package com.woomoolmarket.service.board.service;
 
 import static java.util.stream.Collectors.toList;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.board.entity.BoardStatus;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.request.RegisterBoardRequest;
@@ -41,7 +41,7 @@ public class BoardService {
         return boardRepository.findAll()
             .stream()
             .parallel()
-            .filter(board -> board.getBoardStatus() == BoardStatus.ACTIVE)
+            .filter(board -> board.getStatus() == Status.ACTIVE)
             .map(boardResponseMapper::toDto)
             .collect(Collectors.toList());
     }
@@ -50,7 +50,7 @@ public class BoardService {
         return boardRepository.findAll()
             .stream()
             .parallel()
-            .filter(board -> board.getBoardStatus() == BoardStatus.INACTIVE)
+            .filter(board -> board.getStatus() == Status.INACTIVE)
             .map(boardResponseMapper::toDto)
             .collect(Collectors.toList());
     }
@@ -70,7 +70,7 @@ public class BoardService {
     public List<BoardResponse> findActiveBoards() {
         return boardRepository.findAll()
             .stream()
-            .filter(board -> board.getBoardStatus() != BoardStatus.INACTIVE)
+            .filter(board -> board.getStatus() != Status.INACTIVE)
             .map(boardResponseMapper::toDto)
             .collect(toList());
     }
@@ -92,13 +92,13 @@ public class BoardService {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 글 번호입니다"));
 
-        board.changeBoard(modifyBoardRequestMapper.toEntity(modifyBoardRequest));
+        modifyBoardRequestMapper.updateFromDto(modifyBoardRequest, board);
     }
 
     @Transactional
     public void deleteSoftly(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("존재하지 않는 글 번호입니다"))
-            .changeStatus(BoardStatus.INACTIVE, LocalDateTime.now());
+            .changeStatus(Status.INACTIVE, LocalDateTime.now());
     }
 }
