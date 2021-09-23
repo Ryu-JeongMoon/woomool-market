@@ -2,7 +2,6 @@ package com.woomoolmarket.exception;
 
 
 import com.woomoolmarket.errors.ErrorResponse;
-import com.woomoolmarket.exception.MemberDuplicatedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

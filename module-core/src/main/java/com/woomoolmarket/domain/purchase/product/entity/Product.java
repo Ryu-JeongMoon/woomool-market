@@ -2,6 +2,7 @@ package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.exception.product.NotEnoughStockException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -61,7 +62,7 @@ public class Product extends BaseEntity {
 
     public void decreaseStock(int quantity) {
         if (this.stock < quantity) {
-            throw new NotEnoughStockException("재고를 초과해 주문할 수 없습니다");
+            throw new NotEnoughStockException(ExceptionUtil.NOT_ENOUGH_STOCK);
         }
         this.stock -= quantity;
     }

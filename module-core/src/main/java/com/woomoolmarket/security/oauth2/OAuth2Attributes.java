@@ -91,7 +91,7 @@ public class OAuth2Attributes {
 
     private static OAuth2Attributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         /** 주의 */
-         /* email -> kakaoAccount에 있고, nickname & profile_image_url -> kakaoProfile에 있음 */
+        /* email -> kakaoAccount에 있고, nickname & profile_image_url -> kakaoProfile에 있음 */
 
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");

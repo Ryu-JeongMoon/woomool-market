@@ -2,12 +2,11 @@ package com.woomoolmarket.domain.purchase.order.entity;
 
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.embeddable.Delivery;
+import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -59,5 +58,14 @@ public class Order extends BaseTimeEntity {
         this.member = member;
         this.delivery = delivery;
         this.orderProducts = orderProducts;
+    }
+
+    public void cancel() {
+        if (this.orderStatus == OrderStatus.DELIVERED) {
+            throw new IllegalArgumentException(ExceptionUtil.CANNOT_CANCEL);
+        }
+
+        this.orderStatus = OrderStatus.CANCELED;
+        orderProducts.forEach(OrderProduct::cancelOrder);
     }
 }

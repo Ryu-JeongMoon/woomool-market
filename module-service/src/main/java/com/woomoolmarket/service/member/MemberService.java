@@ -4,7 +4,8 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
-import com.woomoolmarket.common.util.LocalDateTimeUtil;
+import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -14,7 +15,6 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyMemberRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다")));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
     }
 
     public Page<MemberResponse> findAllMembers(
@@ -87,29 +87,15 @@ public class MemberService {
 
     // 그냥 쿼리에서 걸러서 가져오는게 나을듯?!
     // -> findAll().stream().filter() 방식에서 findActiveMembers()로 쿼리에서 걸러서 가져오는 방식으로 변경
-    public Page<MemberResponse> findAllActiveMembers(
+    public Page<MemberResponse> findMembersByStatus(Status status,
         @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-        return new PageImpl<>(memberRepository.findActiveMembers(pageRequest)
+        return new PageImpl<>(memberRepository.findMembersByStatus(status, pageRequest)
             .stream()
             .map(memberResponseMapper::toDto)
             .collect(Collectors.toList()));
     }
 
-    public Page<MemberResponse> findAllInactiveMembers(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-        return new PageImpl<>(memberRepository.findInactiveMembers(pageRequest)
-            .stream()
-            .map(memberResponseMapper::toDto)
-            .collect(toList()));
-    }
-
-    /* 얘가 필요한감? */
-    public Member findById(Long id) {
-        return memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
-    }
-
-    // Authority.ROLE_USER -> DB default 값으로 해결할 수 있을거 같은데?
+    // Authority.ROLE_USER -> DB default 값으로 해결할 수 있을거 같은데? 초기화 ROLE_USER로 해결함
     @Transactional
     public Long joinMember(SignUpMemberRequest signUpRequest) {
         Member member = signUpRequestMapper.toEntity(signUpRequest);
@@ -131,7 +117,7 @@ public class MemberService {
     @Transactional
     public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
         Member member = memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
         modifyMemberRequestMapper.updateFromDto(modifyMemberRequest, member);
         return memberResponseMapper.toDto(member);
     }
@@ -140,18 +126,8 @@ public class MemberService {
     @Transactional
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"))
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND))
             .leave();
-    }
-
-    /* TODO Batch Job 으로 돌릴 것 */
-    @Transactional
-    public void leaveHardly() {
-        memberRepository.findAll()
-            .stream()
-            .parallel()
-            .filter(member -> LocalDateTimeUtil.compareMonth(LocalDateTime.now(), member.getLeaveDateTime()) >= 6)
-            .forEach(memberRepository::delete);
     }
 }
 

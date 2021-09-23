@@ -4,6 +4,7 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINK
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 import com.woomoolmarket.common.embeddable.Delivery;
+import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
@@ -13,7 +14,9 @@ import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.exception.product.ProductNameNotFoundException;
+import com.woomoolmarket.service.order.dto.request.ModifyOrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
+import com.woomoolmarket.service.order.mapper.ModifyOrderRequestMapper;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,15 +38,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
+
     private final OrderResponseMapper orderResponseMapper;
+    private final ModifyOrderRequestMapper modifyOrderRequestMapper;
 
     @Transactional
     public Long order(Long memberId, Long productId, int quantity) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다"));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
 
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ProductNameNotFoundException("존재하지 않는 상품입니다"));
+            .orElseThrow(() -> new ProductNameNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
             .receiver(member.getNickname())
@@ -63,8 +68,9 @@ public class OrderService {
     }
 
     public OrderResponse findOrder(Long id) {
-        return orderResponseMapper.toDto(orderRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다")));
+        return orderRepository.findById(id)
+            .map(orderResponseMapper::toDto)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND));
     }
 
     public Page<OrderResponse> findAllOrders(
@@ -81,5 +87,19 @@ public class OrderService {
             .stream()
             .map(orderResponseMapper::toDto)
             .collect(Collectors.toList()));
+    }
+
+    @Transactional
+    public OrderResponse editOrder(Long id, ModifyOrderRequest modifyOrderRequest) {
+        return orderRepository.findById(id)
+            .map(orderResponseMapper::toDto)
+            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다"));
+    }
+
+    @Transactional
+    public void cancelOrder(Long id) {
+        orderRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다"))
+            .cancel();
     }
 }

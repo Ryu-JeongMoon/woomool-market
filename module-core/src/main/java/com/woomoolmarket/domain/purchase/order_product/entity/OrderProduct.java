@@ -60,4 +60,8 @@ public class OrderProduct extends BaseTimeEntity {
             .quantity(quantity)
             .build();
     }
+
+    public void cancelOrder() {
+        product.increaseStock(quantity);
+    }
 }

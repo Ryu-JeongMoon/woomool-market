@@ -1,6 +1,5 @@
 package com.woomoolmarket.common.embeddable;
 
-import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.domain.member.entity.Address;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -58,7 +57,7 @@ public class Member extends BaseEntity {
     private Authority authority = Authority.ROLE_USER;
 
     @Enumerated(EnumType.STRING)
-    private Status memberStatus = Status.ACTIVE;
+    private Status status = Status.ACTIVE;
 
     @Builder
     public Member(String email, String nickname, String password, String profileImage,
@@ -91,7 +90,7 @@ public class Member extends BaseEntity {
     }
 
     public void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime leaveDateTime) {
-        this.memberStatus = memberStatus;
+        this.status = memberStatus;
         this.leaveDateTime = leaveDateTime;
     }
 
