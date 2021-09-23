@@ -1,14 +1,15 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
-import java.util.List;
-import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,13 +43,9 @@ class OrderRepositoryTest {
     }
 
     @Test
+    @DisplayName("status 조건에 따라 다른 값 나온다")
     void findOrdersTest() {
-        List<Order> orders = orderRepository.findOrdersByOrderStatus(Pageable.unpaged(), OrderStatus.ONGOING);
-
-        for (Order order1 : orders) {
-            System.out.println("order1.getId() = " + order1.getId());
-            System.out.println("order1.getMember().getEmail() = " + order1.getMember().getEmail());
-            System.out.println("order1.getOrderStatus() = " + order1.getOrderStatus());
-        }
+        Order order = orderRepository.findOrdersByOrderStatus(Pageable.unpaged(), OrderStatus.ONGOING).get(0);
+        assertEquals(order.getOrderStatus(), OrderStatus.ONGOING);
     }
 }
