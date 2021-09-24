@@ -1,20 +1,25 @@
 package com.woomoolmarket.domain.purchase.product.repository;
 
-import com.woomoolmarket.domain.purchase.product.entity.Category;
+import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
-import java.util.List;
+import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findAllByName(String name);
+    Page<Product> findProductsByName(String name, Pageable pageable);
 
-    List<Product> findAllByCategory(Category category);
+    Page<Product> findProductsBySeller(String seller, Pageable pageable);
+
+    Page<Product> findProductsByRegion(Region region, Pageable pageable);
+
+    Page<Product> findProductsByProductCategory(ProductCategory productCategory, Pageable pageable);
 
     @Query("select p from Product p where p.price between :minPrice and :maxPrice")
-    List<Product> findAllByPrice(@Param("minPrice") Integer minPrice, @Param("maxPrice") Integer maxPrice);
+    Page<Product> findProductsByPriceRange(int minPrice, int maxPrice, Pageable pageable);
 
 
 }

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.woomoolmarket.common.enumeration.Status;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Description;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -76,7 +74,7 @@ class MemberTest {
 
         Member findResult = memberRepository.save(member);
 
-        assertThat(findResult.getMemberStatus()).isEqualTo(Status.ACTIVE);
+        assertThat(findResult.getStatus()).isEqualTo(Status.ACTIVE);
     }
 
     @Test
@@ -100,7 +98,7 @@ class MemberTest {
 
         member.leave();
 
-        assertEquals(member.getMemberStatus(), Status.INACTIVE);
+        assertEquals(member.getStatus(), Status.INACTIVE);
         assertNotNull(member.getLeaveDateTime());
     }
 
@@ -114,7 +112,7 @@ class MemberTest {
         member.leave();
         member.restore();
 
-        assertEquals(member.getMemberStatus(), Status.ACTIVE);
+        assertEquals(member.getStatus(), Status.ACTIVE);
         assertNull(member.getLeaveDateTime());
     }
 

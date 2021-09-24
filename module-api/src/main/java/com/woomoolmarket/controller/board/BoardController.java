@@ -4,9 +4,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.controller.board.model.BoardModel;
+import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.RegisterBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
-import com.woomoolmarket.service.board.service.BoardService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.MediaTypes;

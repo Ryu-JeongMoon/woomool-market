@@ -1,7 +1,6 @@
 package com.woomoolmarket.security.exception;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import com.woomoolmarket.exception.MemberDuplicatedException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

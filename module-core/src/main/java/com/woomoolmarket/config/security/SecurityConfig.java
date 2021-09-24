@@ -6,7 +6,7 @@ import static com.woomoolmarket.domain.member.entity.AuthProvider.GOOGLE;
 import static com.woomoolmarket.domain.member.entity.AuthProvider.KAKAO;
 import static com.woomoolmarket.domain.member.entity.AuthProvider.NAVER;
 
-import com.woomoolmarket.security.handler.JwtAccessDeniedExceptionHandler;
+import com.woomoolmarket.exception.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;
 import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
 import com.woomoolmarket.security.oauth2.CustomOAuth2Provider;
@@ -130,8 +130,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/h2-console/**", "/xss",
-                "api/member/admin-only/**", "/", "/oauth2/**", "/login")
+            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/api/reissue",
+                "/h2-console/**", "/xss", "/api/member/admin-only/**", "/", "/oauth2/**", "/login")
             .permitAll()
             .antMatchers("/facebook").hasAuthority(FACEBOOK.toString())
             .antMatchers("/google").hasAuthority(GOOGLE.toString())
@@ -159,7 +159,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .exceptionHandling()
-            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("https://localhost:8443/api/login"));
+            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/api/login"));
 
     }
 }

@@ -19,9 +19,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)

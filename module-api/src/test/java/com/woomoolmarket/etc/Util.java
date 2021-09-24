@@ -8,10 +8,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.StopWatch;
 
 @Log4j2
 class Util {
@@ -52,5 +55,24 @@ class Util {
         Object obj = objectMapper.readValue(nowStr, Object.class);
         log.info(obj);
         assertEquals(nowStr.replace("\"", ""), obj);
+    }
+
+    @Test
+    @DisplayName("toList vs toUnmodifiableList 시간 비교")
+    void unmodifiableTest() {
+        List<Integer> integers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+        StopWatch stopWatch1 = new StopWatch();
+        stopWatch1.start();
+        integers.stream().map(i -> i + 1).collect(Collectors.toList());
+        stopWatch1.stop();
+        log.info(stopWatch1.prettyPrint());
+
+        StopWatch stopWatch2 = new StopWatch();
+        stopWatch2.start();
+        integers.stream().map(i -> i + 1).collect(Collectors.toUnmodifiableList());
+        stopWatch2.stop();
+        log.info(stopWatch2.prettyPrint());
+
     }
 }
