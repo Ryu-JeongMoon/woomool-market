@@ -2,6 +2,7 @@ package com.woomoolmarket.service.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Authority;
@@ -14,11 +15,13 @@ import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,7 +117,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("중복 회원 가입")
+    @DisplayName("중복 회원 가입하면 에러 터짐")
     void duplicateTest() {
         SignUpRequest member1 = SignUpRequest.builder()
             .email("panda")
@@ -129,8 +132,7 @@ class MemberServiceTest {
             .build();
 
         memberService.joinAsMember(member1);
-        memberService.joinAsMember(member2);
 
-
+        assertThrows(DataIntegrityViolationException.class, () -> memberService.joinAsMember(member2));
     }
 }

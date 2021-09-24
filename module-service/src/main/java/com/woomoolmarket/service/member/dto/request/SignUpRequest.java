@@ -20,7 +20,6 @@ public class SignUpRequest implements Serializable {
 
     @Email
     @NotBlank
-    @UniqueElements
     @Size(min = 9, max = 64)
     @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
     private String email;
