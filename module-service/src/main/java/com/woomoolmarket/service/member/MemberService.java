@@ -100,6 +100,7 @@ public class MemberService {
     public Long joinMember(SignUpMemberRequest signUpRequest) {
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
+        member.registerAuthority(Authority.ROLE_USER);
         return memberRepository.save(member).getId();
     }
 
