@@ -8,7 +8,7 @@ import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.MemberService;
-import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import java.time.LocalDateTime;
@@ -101,15 +101,36 @@ class MemberServiceTest {
     @Test
     @DisplayName("Authority SELLER 로 들어감")
     void joinSellerTest() {
-        SignUpMemberRequest seller = SignUpMemberRequest.builder()
+        SignUpRequest seller = SignUpRequest.builder()
             .email("panda")
             .nickname("bear")
             .password("1234")
             .build();
 
-        Long findId = memberService.joinSeller(seller);
+        Long findId = memberService.joinAsSeller(seller);
         MemberResponse memberResponse = memberService.findMember(findId);
 
         assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);
+    }
+
+    @Test
+    @DisplayName("중복 회원 가입")
+    void duplicateTest() {
+        SignUpRequest member1 = SignUpRequest.builder()
+            .email("panda")
+            .nickname("bear")
+            .password("1234")
+            .build();
+
+        SignUpRequest member2 = SignUpRequest.builder()
+            .email("panda")
+            .nickname("bear")
+            .password("1234")
+            .build();
+
+        memberService.joinAsMember(member1);
+        memberService.joinAsMember(member2);
+
+
     }
 }

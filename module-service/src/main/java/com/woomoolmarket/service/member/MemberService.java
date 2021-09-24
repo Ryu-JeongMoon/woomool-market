@@ -9,12 +9,12 @@ import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
+import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
-import com.woomoolmarket.service.member.mapper.ModifyMemberRequestMapper;
-import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
+import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
+import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +38,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberResponseMapper memberResponseMapper;
-    private final SignUpMemberRequestMapper signUpRequestMapper;
-    private final ModifyMemberRequestMapper modifyMemberRequestMapper;
+    private final SignUpRequestMapper signUpRequestMapper;
+    private final ModifyRequestMapper modifyRequestMapper;
 
     // orElseGet -> else 일 때만 실행, orElse -> 무조건 실행, 성능 상 유리하니 orElseGet 씁시다
     public Long findPreviousId(Long id) {
@@ -97,29 +97,32 @@ public class MemberService {
 
     // Authority.ROLE_USER -> DB default 값으로 해결할 수 있을거 같은데? 초기화 ROLE_USER로 해결함
     @Transactional
-    public Long joinMember(SignUpMemberRequest signUpRequest) {
-        Member member = signUpRequestMapper.toEntity(signUpRequest);
-        member.encodePassword(passwordEncoder.encode(member.getPassword()));
-        member.registerAuthority(Authority.ROLE_USER);
+    public Long joinAsMember(SignUpRequest signUpRequest) {
+        Member member = join(signUpRequest, Authority.ROLE_USER);
         return memberRepository.save(member).getId();
     }
 
     @Transactional
-    public Long joinSeller(SignUpMemberRequest signUpRequest) {
+    public Long joinAsSeller(SignUpRequest signUpRequest) {
+        Member member = join(signUpRequest, Authority.ROLE_SELLER);
+        return memberRepository.save(member).getId();
+    }
+
+    private Member join(SignUpRequest signUpRequest, Authority authority) {
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
-        member.registerAuthority(Authority.ROLE_SELLER);
-        return memberRepository.save(member).getId();
+        member.registerAuthority(authority);
+        return member;
     }
 
     // (Command) 변경을 가하는 메서드는 반환값이 없어야 할텐데, 로직 상 수정된 회원을 바로 보여주고 싶은데 ?!
     // 이런 경우에 반환값 없애면 쿼리 두번 날려야 하잖아, 일단 반환값 주고 필요할 때 고치장
     // dirty checking 에 의해 바뀐당
     @Transactional
-    public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
+    public MemberResponse editInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
-        modifyMemberRequestMapper.updateFromDto(modifyMemberRequest, member);
+        modifyRequestMapper.updateFromDto(modifyRequest, member);
         return memberResponseMapper.toDto(member);
     }
 
