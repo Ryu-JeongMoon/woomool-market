@@ -59,7 +59,7 @@ public class MemberController {
         @Validated @RequestBody SignUpMemberRequest signUpMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult);
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
         MemberResponse memberResponse = memberService.findMember(memberService.joinMember(signUpMemberRequest));
 
@@ -90,7 +90,7 @@ public class MemberController {
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult);
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
         Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
 

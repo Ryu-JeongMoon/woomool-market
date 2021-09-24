@@ -45,7 +45,8 @@ class OrderRepositoryTest {
     @Test
     @DisplayName("status 조건에 따라 다른 값 나온다")
     void findOrdersTest() {
-        Order order = orderRepository.findOrdersByOrderStatus(Pageable.unpaged(), OrderStatus.ONGOING).get(0);
+        Order order = orderRepository.findOrdersByOrderStatus(Pageable.unpaged(),
+            OrderStatus.ONGOING).getContent().get(0);
         assertEquals(order.getOrderStatus(), OrderStatus.ONGOING);
     }
 }

@@ -20,9 +20,9 @@ spring:
 
   jackson:
     deserialization:
-      fail-on-unknown-properties: true
+      fail-on-unknown-properties: false
     serialization:
-      fail-on-empty-beans: true
+      WRITE_DATES_AS_TIMESTAMPS: false
 
   security:
     oauth2:
