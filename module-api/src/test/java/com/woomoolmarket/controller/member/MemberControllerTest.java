@@ -12,17 +12,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
-import com.woomoolmarket.service.member.service.MemberService;
 import javax.persistence.EntityManager;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +44,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+@Log4j2
 @Transactional
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -93,7 +94,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.join(signUpMemberRequest);
+        Long findResult = memberService.joinMember(signUpMemberRequest);
 
         mockMvc.perform(
                 get("/api/members/" + findResult)
@@ -151,10 +152,10 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(status().isBadRequest());
     }
 
+    // 이거 왜 깨지는거지..
     @Test
-    @DisplayName("login 성공하면 ok 내린다")
+    @DisplayName("login 성공하면 200 내린다")
     void loginTest() throws Exception {
-
         SignUpMemberRequest signUpMemberRequest = SignUpMemberRequest.builder()
             .email("panda@naver.com")
             .nickname("nick")
@@ -162,22 +163,20 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        mockMvc.perform(
-                post("/api/members")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(signUpMemberRequest)))
-            .andExpect(status().isCreated());
+        memberService.joinMember(signUpMemberRequest);
 
         LoginRequest loginRequest = LoginRequest.builder()
             .email(signUpMemberRequest.getEmail())
             .password(signUpMemberRequest.getPassword())
             .build();
 
+        log.info("loginRequest.email = {}", loginRequest.getEmail());
+        log.info("loginRequest.password = {}", loginRequest.getPassword());
+
         mockMvc.perform(
                 post("/api/login")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaTypes.HAL_JSON)
+                    .accept(MediaTypes.HAL_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(loginRequest)))
             .andDo(print())
             .andExpect(status().isOk())
@@ -199,7 +198,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.join(signUpMemberRequest);
+        Long findResult = memberService.joinMember(signUpMemberRequest);
 
         ModifyMemberRequest modifyMemberRequest = ModifyMemberRequest.builder()
             .nickname("kcin")
@@ -242,6 +241,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 delete("/api/members/1")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNoContent())
+            .andDo(print())
             .andDo(document("leave-member"));
     }
 
@@ -256,7 +256,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.join(signUpMemberRequest);
+        Long findResult = memberService.joinMember(signUpMemberRequest);
 
         mockMvc.perform(
                 get("/api/members/admin-only/" + findResult)
@@ -281,7 +281,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                 .nickname("nick" + i + 1)
                 .password("123456")
                 .build();
-            memberService.join(signUpMemberRequest);
+            memberService.joinMember(signUpMemberRequest);
         }
 
         mockMvc.perform(

@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 public enum CustomOAuth2Provider {
 
     GITHUB {
-
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,

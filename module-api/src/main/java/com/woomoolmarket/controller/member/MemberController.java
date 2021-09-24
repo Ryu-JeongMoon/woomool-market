@@ -6,10 +6,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
-import com.woomoolmarket.service.member.service.MemberService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -49,7 +50,7 @@ public class MemberController {
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getMembers(
         @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
 
-        Page<MemberResponse> pagedResponse = memberService.findAllActiveMembers(pageRequest);
+        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
@@ -58,10 +59,9 @@ public class MemberController {
         @Validated @RequestBody SignUpMemberRequest signUpMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-
-        MemberResponse memberResponse = memberService.findMember(memberService.join(signUpMemberRequest));
+        MemberResponse memberResponse = memberService.findMember(memberService.joinMember(signUpMemberRequest));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
@@ -90,7 +90,7 @@ public class MemberController {
         @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
         Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
 
@@ -126,7 +126,8 @@ public class MemberController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    /* TODO 얘네 메서드 새개는 나가는 쿼리가 달라서 중복은 아닌데 형태가 중복이다 정리할 수 있나? */
+    /* 얘네 메서드 새개는 나가는 쿼리가 달라서 중복은 아닌데 형태가 중복이다 정리할 수 있나?
+     * -> Member 전부 보여주는 메서드 제외, Status 조건에 따라 다른 결과 나오도록 변경함! */
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembers(
@@ -141,7 +142,7 @@ public class MemberController {
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembers(
         @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
 
-        Page<MemberResponse> pagedResponse = memberService.findAllActiveMembers(pageRequest);
+        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
@@ -150,10 +151,14 @@ public class MemberController {
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembers(
         @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
 
-        Page<MemberResponse> pagedResponse = memberService.findAllInactiveMembers(pageRequest);
+        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.INACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 }
 
-// MemberResponseModel 반환하면 문제 없듬, 캐시도 안 쓰는데 LinkedHashMap 요놈은 뭘까?
-// EntityModel -> java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class com.woomoolmarket.service.member.dto.response.MemberResponse
+/*
+ MemberResponseModel 반환하면 문제 없듬, 캐시도 안 쓰는데 LinkedHashMap 요놈은 뭘까?
+ EntityModel ->
+ java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class
+ com.woomoolmarket.service.member.dto.response.MemberResponse
+*/

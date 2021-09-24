@@ -3,6 +3,7 @@ package com.woomoolmarket.service.member.dto.response;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
+import com.woomoolmarket.domain.member.entity.Authority;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -30,6 +31,7 @@ public class MemberResponse implements Serializable {
     private LocalDateTime lastModifiedDate;
     private LocalDateTime leaveDate;
 
+    private Authority authority;
     private Address address;
     private AuthProvider authProvider;
     private Status memberStatus;

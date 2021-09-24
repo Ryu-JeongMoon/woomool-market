@@ -3,6 +3,7 @@ package com.woomoolmarket.domain.board.entity;
 import static javax.persistence.FetchType.LAZY;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.reply.entity.Reply;
 import java.time.LocalDateTime;
@@ -25,8 +26,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -55,7 +58,7 @@ public class Board extends BaseEntity {
     private int hit;
 
     @Enumerated(EnumType.STRING)
-    private BoardStatus boardStatus;
+    private Status status;
 
     private LocalDateTime deletedDate;
 
@@ -66,12 +69,9 @@ public class Board extends BaseEntity {
         hit++;
     }
 
-    public void changeStatus(BoardStatus boardStatus, LocalDateTime deletedDate) {
-        this.boardStatus = boardStatus;
+    public void changeStatus(Status status, LocalDateTime deletedDate) {
+        this.status = status;
         this.deletedDate = deletedDate;
     }
 
-    public Board changeBoard(Board newBoard) {
-        return this;
-    }
 }

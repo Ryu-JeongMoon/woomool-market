@@ -18,12 +18,12 @@ Content-Type: application/json
 
 {
   "email": "panda123456@gmail.com",
-  "userId" : "pandabear",
+  "userId": "pandabear",
   "nickname": "pandagom",
   "password": "1234",
-  "address" : {
-      "city": "seoul",
-      "street": "yeonhui-ro",
-      "zipcode": "13392"
+  "address": {
+    "city": "seoul",
+    "street": "yeonhui-ro",
+    "zipcode": "13392"
   }
 }

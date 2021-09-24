@@ -1,6 +1,6 @@
 package com.woomoolmarket.common.auditing;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
