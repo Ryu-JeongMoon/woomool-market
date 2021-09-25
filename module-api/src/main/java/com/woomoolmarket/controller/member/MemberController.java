@@ -5,6 +5,9 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.service.member.MemberService;
@@ -13,6 +16,7 @@ import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +30,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/members", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class MemberController {
 
+    private final ObjectMapper objectMapper;
     private final MemberService memberService;
     private final PagedResourcesAssembler<MemberResponse> assembler;
 
@@ -54,12 +60,15 @@ public class MemberController {
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
+    // bindingResult 그대로 반환하면 InvalidDefinitionException 뜬다
+    // @JsonComponent 붙였어도 objectMapper 를 따로 정의해서 쓰고 있어서 BindingResultSerializer 를 못 알아보나봐
+    // 일일이 writeValueAsString 붙여주면서 에러 선언하는 건 요상한데
     @PostMapping
     public ResponseEntity joinMember(
-        @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) {
+        @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
         MemberResponse memberResponse = memberService.findMemberById(memberService.joinAsMember(signUpRequest));
 
@@ -74,7 +83,7 @@ public class MemberController {
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId()));
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             defaultLink.withSelfRel(),
@@ -87,13 +96,12 @@ public class MemberController {
 
     @PatchMapping("/{id}")
     public ResponseEntity editMemberInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyRequest modifyRequest, BindingResult bindingResult) {
+        @Validated @RequestBody ModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
         Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
-
         MemberResponse memberResponse = memberService.editInfo(id, modifyRequest);
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse, createUri);
 
@@ -113,7 +121,6 @@ public class MemberController {
     @GetMapping("/admin-only/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getMemberByAdmin(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
-
         Long previousId = memberService.findPreviousId(id);
         Long nextId = memberService.findNextId(id);
 
@@ -155,10 +162,3 @@ public class MemberController {
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 }
-
-/*
- MemberResponseModel 반환하면 문제 없듬, 캐시도 안 쓰는데 LinkedHashMap 요놈은 뭘까?
- EntityModel ->
- java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class
- com.woomoolmarket.service.member.dto.response.MemberResponse
-*/

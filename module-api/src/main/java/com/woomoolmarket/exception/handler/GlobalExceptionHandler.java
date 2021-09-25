@@ -1,5 +1,6 @@
 package com.woomoolmarket.exception.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.woomoolmarket.aop.exception.LogForException;
 import com.woomoolmarket.errors.ExceptionResponse;
 import com.woomoolmarket.exception.member.UsernameDuplicatedException;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @ResponseBody
@@ -46,4 +46,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleNotEnoughStockException(Exception e) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
     }
+
+    @ExceptionHandler(value = JsonProcessingException.class)
+    public ResponseEntity handleJsonProcessingException(Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+    }
+
 }
