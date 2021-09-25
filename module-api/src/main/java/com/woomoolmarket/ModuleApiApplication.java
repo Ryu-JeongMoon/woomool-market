@@ -1,8 +1,11 @@
 package com.woomoolmarket;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.woomoolmarket.errors.JsonBindingResultModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,7 +23,7 @@ public class ModuleApiApplication {
     public ObjectMapper objectMapper() {
         return new ObjectMapper()
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .registerModule(new JavaTimeModule());
+            .registerModules(new JavaTimeModule(), new JsonBindingResultModule());
     }
 }
 
@@ -30,7 +33,4 @@ return Jackson2ObjectMapperBuilder.json().build()
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     .setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
     .registerModules(new JavaTimeModule());
-
-enableDefaultTyping 쓰니까 Type id handling not implemented 에러 뜬당
-내가 필요한 건 timestamp 변환이니까 간단하게 objectMapper 에다가 직접 javaTimeModule 추가해줘서 해결
 */
