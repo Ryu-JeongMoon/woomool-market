@@ -1,16 +1,20 @@
 package com.woomoolmarket.exception.handler;
 
-import com.woomoolmarket.errors.ErrorResponse;
-import lombok.extern.log4j.Log4j2;
+import com.woomoolmarket.aop.exception.LogForException;
+import com.woomoolmarket.exception.member.UsernameDuplicatedException;
+import com.woomoolmarket.exception.product.NotEnoughStockException;
+import com.woomoolmarket.exception.product.ProductNameNotFoundException;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Log4j2
-@RestController
+@ResponseBody
+@LogForException
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,9 +22,24 @@ public class GlobalExceptionHandler {
         return e != null ? e.getClass().getSimpleName() : "";
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = UsernameNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e, Model model) {
-        log.error(e.getStackTrace());
-        return ResponseEntity.badRequest().body(new ErrorResponse(400, e.getMessage()));
+    public ResponseEntity handleNotFoundException(Exception e) {
+        return ResponseEntity.of(Optional.of(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = UsernameDuplicatedException.class)
+    public ResponseEntity handleUsernameDuplicatedException(Exception e) {
+        return ResponseEntity.of(Optional.of(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ProductNameNotFoundException.class)
+    public ResponseEntity handleProductNameNotFoundException(Exception e) {
+        return ResponseEntity.of(Optional.of(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = NotEnoughStockException.class)
+    public ResponseEntity handleNotEnoughStockException(Exception e) {
+        return ResponseEntity.of(Optional.of(e.getMessage()));
     }
 }

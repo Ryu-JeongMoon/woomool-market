@@ -1,7 +1,10 @@
-package com.woomoolmarket.aop.time;
+package com.woomoolmarket.aop;
 
 import lombok.extern.log4j.Log4j2;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
@@ -23,5 +26,10 @@ public class LogAspect {
         log.info(stopWatch.prettyPrint());
 
         return proceed;
+    }
+
+    @AfterThrowing(value = "@within(com.woomoolmarket.aop.exception.LogForException)", throwing = "e")
+    public void logForException(JoinPoint joinPoint, Exception e) throws Throwable {
+        log.error(e.getMessage(), e.getStackTrace(), e.getClass());
     }
 }
