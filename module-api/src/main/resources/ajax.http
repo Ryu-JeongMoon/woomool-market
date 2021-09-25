@@ -1,18 +1,18 @@
+### FIND ONE
 GET https://localhost:8443/api/members/1
 Content-Type: application/json
 
-###
-# Send API call
+### ADMIN FIND ALL
 GET https://localhost:8443/api/members/admin-only/all
 Content-Type: application/json
 
-###
+### FIND ALL
 GET https://localhost:8443/api/members
 
-###
+### XSS TEST
 GET https://localhost:8443/xss
 
-###
+### SIGNUP
 POST https://localhost:8443/api/members
 Content-Type: application/json
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyMemberRequest {
+public class ModifyRequest {
 
     @Pattern(regexp = "^[\\w]{4,24}$")
     private String nickname;
