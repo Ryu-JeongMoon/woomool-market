@@ -6,7 +6,7 @@ import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.MemberService;
-import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
+import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 @Transactional
 @SpringBootTest
-class ModifyMemberRequestMapperTest {
+class ModifyRequestMapperTest {
 
     @Autowired
     MemberService memberService;
     @Autowired
-    ModifyMemberRequestMapper modifyMemberRequestMapper;
+    ModifyRequestMapper modifyRequestMapper;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -47,37 +47,37 @@ class ModifyMemberRequestMapperTest {
     @Test
     @DisplayName("updateFromDto 동작한다")
     void updateTest() {
-        ModifyMemberRequest modifyMemberRequest = createModifyDto();
+        ModifyRequest modifyRequest = createModifyDto();
         Member saveResult = memberRepository.findByEmail("panda").get();
 
-        modifyMemberRequestMapper.updateFromDto(modifyMemberRequest, saveResult);
+        modifyRequestMapper.updateFromDto(modifyRequest, saveResult);
 
         Member findResult = memberRepository.findByEmail("panda")
             .orElseGet(() -> Member.builder().password("0000").profileImage("0000").license("0000").build());
 
-        assertEquals(findResult.getPassword(), modifyMemberRequest.getPassword());
-        assertEquals(findResult.getProfileImage(), modifyMemberRequest.getProfileImage());
-        assertEquals(findResult.getPhone(), modifyMemberRequest.getPhone());
-        assertEquals(findResult.getLicense(), modifyMemberRequest.getLicense());
+        assertEquals(findResult.getPassword(), modifyRequest.getPassword());
+        assertEquals(findResult.getProfileImage(), modifyRequest.getProfileImage());
+        assertEquals(findResult.getPhone(), modifyRequest.getPhone());
+        assertEquals(findResult.getLicense(), modifyRequest.getLicense());
     }
 
     @Test
     @DisplayName("editInfo() 동작한다")
     void updateMemberTest() {
-        ModifyMemberRequest modifyMemberRequest = createModifyDto();
+        ModifyRequest modifyRequest = createModifyDto();
         Member member = memberRepository.findByEmail("panda").get();
-        memberService.editInfo(member.getId(), modifyMemberRequest);
+        memberService.editInfo(member.getId(), modifyRequest);
 
         Member findResult = memberRepository.findByEmail("panda").get();
 
-        assertEquals(findResult.getPassword(), modifyMemberRequest.getPassword());
-        assertEquals(findResult.getProfileImage(), modifyMemberRequest.getProfileImage());
-        assertEquals(findResult.getPhone(), modifyMemberRequest.getPhone());
-        assertEquals(findResult.getLicense(), modifyMemberRequest.getLicense());
+        assertEquals(findResult.getPassword(), modifyRequest.getPassword());
+        assertEquals(findResult.getProfileImage(), modifyRequest.getProfileImage());
+        assertEquals(findResult.getPhone(), modifyRequest.getPhone());
+        assertEquals(findResult.getLicense(), modifyRequest.getLicense());
     }
 
-    private ModifyMemberRequest createModifyDto() {
-        return ModifyMemberRequest.builder()
+    private ModifyRequest createModifyDto() {
+        return ModifyRequest.builder()
             .password("5678")
             .profileImage("bear")
             .phone("5678")

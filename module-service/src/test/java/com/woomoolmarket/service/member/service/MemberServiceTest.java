@@ -8,10 +8,9 @@ import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.MemberService;
-import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
-import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +43,17 @@ class MemberServiceTest {
     }
 
     @Test
-    void dateCompareTest() {
-        LocalDateTime septemberFirst = LocalDateTime.of(2021, 9, 1, 8, 15, 50);
-        System.out.println(LocalDateTime.now().compareTo(septemberFirst));
+    void joinTest() {
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+            .email("panda@naver.com")
+            .nickname("nick")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        Long joinMemberId = memberService.joinAsMember(signUpRequest);
+        MemberResponse memberResponse = memberService.findMemberById(joinMemberId);
+        assertEquals(signUpRequest.getEmail(), memberResponse.getEmail());
     }
 
     @Test
@@ -94,21 +101,21 @@ class MemberServiceTest {
         }
 
         Long nextId = memberService.findNextId(5L);
-        MemberResponse nextMember = memberService.findMember(nextId);
+        MemberResponse nextMember = memberService.findMemberById(nextId);
         assertThat(nextId).isEqualTo(nextMember.getId());
     }
 
     @Test
     @DisplayName("Authority SELLER 로 들어감")
     void joinSellerTest() {
-        SignUpMemberRequest seller = SignUpMemberRequest.builder()
+        SignUpRequest seller = SignUpRequest.builder()
             .email("panda")
             .nickname("bear")
             .password("1234")
             .build();
 
-        Long findId = memberService.joinSeller(seller);
-        MemberResponse memberResponse = memberService.findMember(findId);
+        Long findId = memberService.joinAsSeller(seller);
+        MemberResponse memberResponse = memberService.findMemberById(findId);
 
         assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);
     }

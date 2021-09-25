@@ -9,13 +9,13 @@ import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
+import com.woomoolmarket.exception.member.UsernameDuplicatedException;
+import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
-import com.woomoolmarket.service.member.mapper.ModifyMemberRequestMapper;
-import com.woomoolmarket.service.member.mapper.SignUpMemberRequestMapper;
-import java.util.Comparator;
+import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
+import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,42 +38,33 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberResponseMapper memberResponseMapper;
-    private final SignUpMemberRequestMapper signUpRequestMapper;
-    private final ModifyMemberRequestMapper modifyMemberRequestMapper;
+    private final SignUpRequestMapper signUpRequestMapper;
+    private final ModifyRequestMapper modifyRequestMapper;
 
+    // 앞뒤 번호 찾을 때 캐시 안 쓰면 쿼리 3방 나간다 이건 어떻게 해결해야 할까?!
     // orElseGet -> else 일 때만 실행, orElse -> 무조건 실행, 성능 상 유리하니 orElseGet 씁시다
     public Long findPreviousId(Long id) {
-        return memberRepository.findAll()
-            .stream()
-            .parallel()
-            .sorted(Comparator.comparingLong(Member::getId).reversed())
-            .filter(member -> member.getId() < id)
-            .findFirst()
-            .map(Member::getId)
+        return memberRepository.findPreviousId(id)
             .orElseGet(() -> id);
     }
 
-    // TODO 앞뒤 번호 찾기 -> refactoring 필요 뭔가 아쉽네
-    // 앞뒤 번호 찾을 때 캐시 안 쓰면 쿼리 3방 나간다 이건 어떻게 해결해야 할까?!
-    // 번호만 캐시하는 방법 없나~~~~ 페이징으로 하면 달라질라나
     public Long findNextId(Long id) {
-        return memberRepository.findAll()
-            .stream()
-            .filter(member -> member.getId() > id)
-            .findFirst()
-            .map(Member::getId)
+        return memberRepository.findNextId(id)
             .orElseGet(() -> id);
     }
 
-//    public Optional<Long> findPreviousId(Long id) {
-//        return memberRepository.findPreviousId(id);
-//    }
-//    public Optional<Long> findNextId(Long id) {
-//        return memberRepository.findNextId(id);
-//    }
-
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findMemberById(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
+    }
+
+    public MemberResponse findMemberByPhone(String phone) {
+        return memberResponseMapper.toDto(memberRepository.findByPhone(phone)
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
+    }
+
+    public MemberResponse findMemberByNickname(String nickname) {
+        return memberResponseMapper.toDto(memberRepository.findByNickname(nickname)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
     }
 
@@ -95,31 +86,33 @@ public class MemberService {
             .collect(Collectors.toList()));
     }
 
-    // Authority.ROLE_USER -> DB default 값으로 해결할 수 있을거 같은데? 초기화 ROLE_USER로 해결함
     @Transactional
-    public Long joinMember(SignUpMemberRequest signUpRequest) {
-        Member member = signUpRequestMapper.toEntity(signUpRequest);
-        member.encodePassword(passwordEncoder.encode(member.getPassword()));
-        member.registerAuthority(Authority.ROLE_USER);
-        return memberRepository.save(member).getId();
+    public Long joinAsMember(SignUpRequest signUpRequest) {
+        return join(signUpRequest, Authority.ROLE_USER);
     }
 
     @Transactional
-    public Long joinSeller(SignUpMemberRequest signUpRequest) {
+    public Long joinAsSeller(SignUpRequest signUpRequest) {
+        return join(signUpRequest, Authority.ROLE_SELLER);
+    }
+
+    private Long join(SignUpRequest signUpRequest, Authority authority) {
+        if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
+            throw new UsernameDuplicatedException(ExceptionUtil.DUPLICATED_USER);
+        }
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
-        member.registerAuthority(Authority.ROLE_SELLER);
+        member.registerAuthority(authority);
         return memberRepository.save(member).getId();
     }
 
     // (Command) 변경을 가하는 메서드는 반환값이 없어야 할텐데, 로직 상 수정된 회원을 바로 보여주고 싶은데 ?!
-    // 이런 경우에 반환값 없애면 쿼리 두번 날려야 하잖아, 일단 반환값 주고 필요할 때 고치장
-    // dirty checking 에 의해 바뀐당
+    // 이런 경우에 반환값 없애면 조회 쿼리 또 날려야 하니 일단 반환값 주고 필요할 때 고칠 것
     @Transactional
-    public MemberResponse editInfo(Long id, ModifyMemberRequest modifyMemberRequest) {
+    public MemberResponse editInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
-        modifyMemberRequestMapper.updateFromDto(modifyMemberRequest, member);
+        modifyRequestMapper.updateFromDto(modifyRequest, member);
         return memberResponseMapper.toDto(member);
     }
 
@@ -133,9 +126,8 @@ public class MemberService {
 }
 
 /**
- * @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null")
- * <p>
- * -> redis <-> entity model 안 맞아.. 일단 캐시 다 걷어내고 hateoas 형식만 맞춰서 내보내자
+ * @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null") -> redis <-> entity
+ * model 안 맞아.. 일단 캐시 다 걷어내고 hateoas 형식만 맞춰서 내보내자
  */
 
 //    @Cacheable 적용 버전

@@ -14,12 +14,9 @@
             <a href="/logout" class="btn btn-sm btn-info active" role="button">Logout</a>
         </div>
         <div th:if="${#strings.isEmpty(userName)}">
-            <!-- 스프링 시큐리티에서 기본 제공하는 URL - 별도 컨트롤러 작성 필요 없음 -->
-
             <a href="/oauth2/authorization/google" class="btn btn-sm btn-success active" role="button">Google Login</a>
             <a href="/oauth2/authorization/naver" class="btn btn-sm btn-secondary active" role="button">Naver Login</a>
             <a href="/oauth2/authorization/kakao" class="btn btn-sm btn-success active" role="button">Kakao Login</a>
-
         </div>
     </div>
     <div th:if="${not #strings.isEmpty(userName)}" class="col-md-2">

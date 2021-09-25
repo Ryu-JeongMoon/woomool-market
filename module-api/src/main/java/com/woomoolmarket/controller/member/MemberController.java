@@ -8,8 +8,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.service.member.MemberService;
-import com.woomoolmarket.service.member.dto.request.ModifyMemberRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpMemberRequest;
+import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -56,12 +56,12 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity joinMember(
-        @Validated @RequestBody SignUpMemberRequest signUpMemberRequest, BindingResult bindingResult) {
+        @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-        MemberResponse memberResponse = memberService.findMember(memberService.joinMember(signUpMemberRequest));
+        MemberResponse memberResponse = memberService.findMemberById(memberService.joinAsMember(signUpRequest));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
@@ -73,7 +73,7 @@ public class MemberController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMember(id);
+        MemberResponse memberResponse = memberService.findMemberById(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId()));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
@@ -87,14 +87,14 @@ public class MemberController {
 
     @PatchMapping("/{id}")
     public ResponseEntity editMemberInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyMemberRequest modifyMemberRequest, BindingResult bindingResult) {
+        @Validated @RequestBody ModifyRequest modifyRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
         Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
 
-        MemberResponse memberResponse = memberService.editInfo(id, modifyMemberRequest);
+        MemberResponse memberResponse = memberService.editInfo(id, modifyRequest);
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse, createUri);
 
         return ResponseEntity.created(createUri.toUri()).body(responseModel);
@@ -112,7 +112,7 @@ public class MemberController {
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getMemberByAdmin(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMember(id);
+        MemberResponse memberResponse = memberService.findMemberById(id);
 
         Long previousId = memberService.findPreviousId(id);
         Long nextId = memberService.findNextId(id);
