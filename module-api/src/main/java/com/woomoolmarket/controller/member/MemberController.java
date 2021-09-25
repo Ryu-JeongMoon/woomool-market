@@ -61,10 +61,11 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-        MemberResponse memberResponse = memberService.findMember(memberService.joinAsMember(signUpRequest));
+        MemberResponse memberResponse = memberService.findMemberById(memberService.joinAsMember(signUpRequest));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
+
         URI createUri = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).toUri();
 
         return ResponseEntity.created(createUri).body(responseModel);
@@ -72,7 +73,7 @@ public class MemberController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMember(id);
+        MemberResponse memberResponse = memberService.findMemberById(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId()));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
@@ -111,7 +112,7 @@ public class MemberController {
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getMemberByAdmin(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMember(id);
+        MemberResponse memberResponse = memberService.findMemberById(id);
 
         Long previousId = memberService.findPreviousId(id);
         Long nextId = memberService.findNextId(id);

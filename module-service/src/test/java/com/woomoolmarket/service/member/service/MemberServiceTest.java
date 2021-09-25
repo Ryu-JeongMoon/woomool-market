@@ -2,7 +2,6 @@ package com.woomoolmarket.service.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Authority;
@@ -12,16 +11,13 @@ import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
-import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,9 +43,17 @@ class MemberServiceTest {
     }
 
     @Test
-    void dateCompareTest() {
-        LocalDateTime septemberFirst = LocalDateTime.of(2021, 9, 1, 8, 15, 50);
-        System.out.println(LocalDateTime.now().compareTo(septemberFirst));
+    void joinTest() {
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+            .email("panda@naver.com")
+            .nickname("nick")
+            .password("123456")
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        Long joinMemberId = memberService.joinAsMember(signUpRequest);
+        MemberResponse memberResponse = memberService.findMemberById(joinMemberId);
+        assertEquals(signUpRequest.getEmail(), memberResponse.getEmail());
     }
 
     @Test
@@ -97,7 +101,7 @@ class MemberServiceTest {
         }
 
         Long nextId = memberService.findNextId(5L);
-        MemberResponse nextMember = memberService.findMember(nextId);
+        MemberResponse nextMember = memberService.findMemberById(nextId);
         assertThat(nextId).isEqualTo(nextMember.getId());
     }
 
@@ -111,28 +115,8 @@ class MemberServiceTest {
             .build();
 
         Long findId = memberService.joinAsSeller(seller);
-        MemberResponse memberResponse = memberService.findMember(findId);
+        MemberResponse memberResponse = memberService.findMemberById(findId);
 
         assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);
-    }
-
-    @Test
-    @DisplayName("중복 회원 가입하면 에러 터짐")
-    void duplicateTest() {
-        SignUpRequest member1 = SignUpRequest.builder()
-            .email("panda")
-            .nickname("bear")
-            .password("1234")
-            .build();
-
-        SignUpRequest member2 = SignUpRequest.builder()
-            .email("panda")
-            .nickname("bear")
-            .password("1234")
-            .build();
-
-        memberService.joinAsMember(member1);
-
-        assertThrows(DataIntegrityViolationException.class, () -> memberService.joinAsMember(member2));
     }
 }

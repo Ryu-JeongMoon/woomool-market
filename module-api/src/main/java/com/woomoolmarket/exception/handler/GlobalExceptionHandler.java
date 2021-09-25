@@ -22,24 +22,33 @@ public class GlobalExceptionHandler {
         return e != null ? e.getClass().getSimpleName() : "";
     }
 
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgumentException(Exception e) {
+        return ResponseEntity.of(Optional.of(e.getMessage() + getExceptionName(e)));
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = UsernameNotFoundException.class)
     public ResponseEntity handleNotFoundException(Exception e) {
-        return ResponseEntity.of(Optional.of(e.getMessage()));
+        return ResponseEntity.of(Optional.of(e.getMessage() + getExceptionName(e)));
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = UsernameDuplicatedException.class)
     public ResponseEntity handleUsernameDuplicatedException(Exception e) {
-        return ResponseEntity.of(Optional.of(e.getMessage()));
+        return ResponseEntity.of(Optional.of(e.getMessage() + getExceptionName(e)));
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = ProductNameNotFoundException.class)
     public ResponseEntity handleProductNameNotFoundException(Exception e) {
-        return ResponseEntity.of(Optional.of(e.getMessage()));
+        return ResponseEntity.of(Optional.of(e.getMessage() + getExceptionName(e)));
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotEnoughStockException.class)
     public ResponseEntity handleNotEnoughStockException(Exception e) {
-        return ResponseEntity.of(Optional.of(e.getMessage()));
+        return ResponseEntity.of(Optional.of(e.getMessage() + getExceptionName(e)));
     }
 }
