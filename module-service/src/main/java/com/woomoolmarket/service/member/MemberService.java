@@ -9,7 +9,6 @@ import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.exception.member.UsernameDuplicatedException;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
@@ -98,7 +97,7 @@ public class MemberService {
 
     private Long join(SignUpRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new UsernameDuplicatedException(ExceptionUtil.DUPLICATED_USER);
+            throw new IllegalArgumentException(ExceptionUtil.DUPLICATED_USER);
         }
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
