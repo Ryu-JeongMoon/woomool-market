@@ -34,15 +34,10 @@ public class Member extends BaseEntity {
     private Long id;
 
     private String email;
-
     private String nickname;
-
     private String password;
-
     private String profileImage;
-
     private String phone;
-
     private String license;
 
     private LocalDateTime leaveDateTime;

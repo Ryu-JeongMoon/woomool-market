@@ -86,29 +86,29 @@ public class MemberService {
     }
 
     @Transactional
-    public Long joinAsMember(SignUpRequest signUpRequest) {
-        return join(signUpRequest, Authority.ROLE_USER);
+    public MemberResponse joinAsMember(SignUpRequest signUpRequest) {
+        return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_USER));
     }
 
     @Transactional
-    public Long joinAsSeller(SignUpRequest signUpRequest) {
-        return join(signUpRequest, Authority.ROLE_SELLER);
+    public MemberResponse joinAsSeller(SignUpRequest signUpRequest) {
+        return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_USER));
     }
 
-    private Long join(SignUpRequest signUpRequest, Authority authority) {
+    private Member join(SignUpRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException(ExceptionUtil.DUPLICATED_USER);
         }
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.encodePassword(passwordEncoder.encode(member.getPassword()));
         member.registerAuthority(authority);
-        return memberRepository.save(member).getId();
+        return memberRepository.save(member);
     }
 
     // (Command) 변경을 가하는 메서드는 반환값이 없어야 할텐데, 로직 상 수정된 회원을 바로 보여주고 싶은데 ?!
     // 이런 경우에 반환값 없애면 조회 쿼리 또 날려야 하니 일단 반환값 주고 필요할 때 고칠 것
     @Transactional
-    public MemberResponse editInfo(Long id, ModifyRequest modifyRequest) {
+    public MemberResponse editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
