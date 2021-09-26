@@ -13,7 +13,6 @@ import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
-import com.woomoolmarket.exception.product.ProductNameNotFoundException;
 import com.woomoolmarket.service.order.dto.request.ModifyOrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
 import com.woomoolmarket.service.order.mapper.ModifyOrderRequestMapper;
@@ -48,7 +47,7 @@ public class OrderService {
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
 
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ProductNameNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
             .receiver(member.getNickname())
@@ -93,13 +92,13 @@ public class OrderService {
     public OrderResponse editOrder(Long id, ModifyOrderRequest modifyOrderRequest) {
         return orderRepository.findById(id)
             .map(orderResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다"));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND));
     }
 
     @Transactional
     public void cancelOrder(Long id) {
         orderRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다"))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND))
             .cancel();
     }
 }

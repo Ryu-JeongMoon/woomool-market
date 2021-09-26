@@ -30,8 +30,8 @@ class MemberResponseMapperTest {
             .build();
 
         Member savedMember = memberRepository.save(member);
-        LocalDateTime createdDate = savedMember.getCreatedDate();
+        LocalDateTime createdDate = savedMember.getCreatedDateTime();
         MemberResponse memberResponse = memberResponseMapper.toDto(savedMember);
-        Assertions.assertThat(createdDate).isEqualTo(memberResponse.getCreatedDate());
+        Assertions.assertThat(createdDate).isEqualTo(memberResponse.getCreatedDateTime());
     }
 }

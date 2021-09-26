@@ -3,6 +3,7 @@ package com.woomoolmarket.service.board;
 import static java.util.stream.Collectors.toList;
 
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
@@ -14,6 +15,7 @@ import com.woomoolmarket.service.board.mapper.RegisterBoardMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +59,7 @@ public class BoardService {
 
     public BoardResponse findActiveBoard(Long id) {
         return boardResponseMapper.toDto(boardRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 글 번호입니다")));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND)));
     }
 
 //    public List<BoardResponse> findActiveBoarByNickname(String nickname) {
@@ -78,7 +80,7 @@ public class BoardService {
     @Transactional
     public void increaseHit(Long id) {
         boardRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 글 번호입니다"))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND))
             .changeHit();
     }
 
@@ -90,7 +92,7 @@ public class BoardService {
     @Transactional
     public void editBoard(Long id, ModifyBoardRequest modifyBoardRequest) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 글 번호입니다"));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND));
 
         modifyBoardRequestMapper.updateFromDto(modifyBoardRequest, board);
     }
@@ -98,7 +100,7 @@ public class BoardService {
     @Transactional
     public void deleteSoftly(Long id) {
         boardRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("존재하지 않는 글 번호입니다"))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND))
             .changeStatus(Status.INACTIVE, LocalDateTime.now());
     }
 }

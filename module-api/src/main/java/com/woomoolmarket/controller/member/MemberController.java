@@ -7,7 +7,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.service.member.MemberService;
@@ -16,7 +15,6 @@ import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +28,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +67,7 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
-        MemberResponse memberResponse = memberService.findMemberById(memberService.joinAsMember(signUpRequest));
+        MemberResponse memberResponse = memberService.joinAsMember(signUpRequest);
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
@@ -102,7 +99,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
         Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
-        MemberResponse memberResponse = memberService.editInfo(id, modifyRequest);
+        MemberResponse memberResponse = memberService.editMemberInfo(id, modifyRequest);
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse, createUri);
 
         return ResponseEntity.created(createUri.toUri()).body(responseModel);

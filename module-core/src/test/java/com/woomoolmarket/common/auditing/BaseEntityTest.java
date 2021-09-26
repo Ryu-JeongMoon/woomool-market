@@ -29,7 +29,7 @@ class BaseEntityTest {
 
         Member result = memberRepository.save(member);
 
-        log.info("result = {}", result.getCreatedDate());
-        assertNotEquals(null, result.getCreatedDate());
+        log.info("result = {}", result.getCreatedDateTime());
+        assertNotEquals(null, result.getCreatedDateTime());
     }
 }
