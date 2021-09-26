@@ -2,7 +2,9 @@ package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -36,6 +38,11 @@ public class Product extends BaseEntity {
     private int price;
     private int stock;
 
+    private LocalDateTime deletedDateTime;
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
+
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
 
@@ -64,5 +71,18 @@ public class Product extends BaseEntity {
             throw new IllegalArgumentException(ExceptionUtil.NOT_ENOUGH_STOCK);
         }
         this.stock -= quantity;
+    }
+
+    public void delete() {
+        changeStatusAndLeaveDateTime(Status.INACTIVE, LocalDateTime.now());
+    }
+
+    public void restore() {
+        changeStatusAndLeaveDateTime(Status.ACTIVE, null);
+    }
+
+    public void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime deletedDateTime) {
+        this.status = memberStatus;
+        this.deletedDateTime = deletedDateTime;
     }
 }

@@ -28,7 +28,7 @@ class BaseTimeEntityTest {
             .build();
 
         Member result = memberRepository.save(member);
-        assertNotNull(result.getCreatedDate());
-        assertNotNull(result.getLastModifiedDate());
+        assertNotNull(result.getCreatedDateTime());
+        assertNotNull(result.getLastModifiedDateTime());
     }
 }

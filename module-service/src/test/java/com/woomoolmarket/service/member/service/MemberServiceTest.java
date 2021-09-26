@@ -51,7 +51,7 @@ class MemberServiceTest {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long joinMemberId = memberService.joinAsMember(signUpRequest);
+        Long joinMemberId = memberService.joinAsMember(signUpRequest).getId();
         MemberResponse memberResponse = memberService.findMemberById(joinMemberId);
         assertEquals(signUpRequest.getEmail(), memberResponse.getEmail());
     }
@@ -114,7 +114,7 @@ class MemberServiceTest {
             .password("1234")
             .build();
 
-        Long findId = memberService.joinAsSeller(seller);
+        Long findId = memberService.joinAsSeller(seller).getId();
         MemberResponse memberResponse = memberService.findMemberById(findId);
 
         assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);

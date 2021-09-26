@@ -94,7 +94,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.joinAsMember(signUpRequest);
+        Long findResult = memberService.joinAsMember(signUpRequest).getId();
 
         mockMvc.perform(
                 get("/api/members/" + findResult)
@@ -198,7 +198,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.joinAsMember(signUpRequest);
+        Long findResult = memberService.joinAsMember(signUpRequest).getId();
 
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .nickname("kcin")
@@ -256,7 +256,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.joinAsMember(signUpRequest);
+        Long findResult = memberService.joinAsMember(signUpRequest).getId();
 
         mockMvc.perform(
                 get("/api/members/admin-only/" + findResult)

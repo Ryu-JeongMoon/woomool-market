@@ -27,8 +27,8 @@ public class MemberResponse implements Serializable {
     private String phone;
     private String license;
 
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime createdDateTime;
+    private LocalDateTime lastModifiedDateTime;
     private LocalDateTime leaveDate;
 
     private Authority authority;
