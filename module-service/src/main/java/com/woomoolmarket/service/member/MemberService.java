@@ -92,7 +92,7 @@ public class MemberService {
 
     @Transactional
     public MemberResponse joinAsSeller(SignUpRequest signUpRequest) {
-        return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_USER));
+        return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_SELLER));
     }
 
     private Member join(SignUpRequest signUpRequest, Authority authority) {
