@@ -38,7 +38,7 @@ class MemberResponseMapperTest {
     @Test
     @DisplayName("createdDate 받아온다")
     void memberMapperTest() {
-        Member findResult = memberRepository.findById(1L).get();
+        Member findResult = memberRepository.findByNickname("panda").get();
         LocalDateTime createdDate = findResult.getCreatedDateTime();
         MemberResponse memberResponse = memberResponseMapper.toDto(findResult);
         assertThat(createdDate).isEqualTo(memberResponse.getCreatedDateTime());
