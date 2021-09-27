@@ -1,11 +1,15 @@
 package com.woomoolmarket.service.member.mapper;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.time.LocalDateTime;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +24,23 @@ class MemberResponseMapperTest {
 
     private MemberResponseMapperImpl memberResponseMapper = new MemberResponseMapperImpl();
 
-    @Test
-    @DisplayName("createdDate 받아온다")
-    void memberMapperTest() {
+    @BeforeEach
+    void init() {
         Member member = Member.builder()
             .email("panda@gmail.com")
             .nickname("panda")
             .password("123456")
             .build();
 
-        Member savedMember = memberRepository.save(member);
-        LocalDateTime createdDate = savedMember.getCreatedDateTime();
-        MemberResponse memberResponse = memberResponseMapper.toDto(savedMember);
-        Assertions.assertThat(createdDate).isEqualTo(memberResponse.getCreatedDateTime());
+        memberRepository.save(member);
+    }
+
+    @Test
+    @DisplayName("createdDate 받아온다")
+    void memberMapperTest() {
+        Member findResult = memberRepository.findById(1L).get();
+        LocalDateTime createdDate = findResult.getCreatedDateTime();
+        MemberResponse memberResponse = memberResponseMapper.toDto(findResult);
+        assertThat(createdDate).isEqualTo(memberResponse.getCreatedDateTime());
     }
 }

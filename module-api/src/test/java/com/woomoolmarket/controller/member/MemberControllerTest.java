@@ -20,6 +20,7 @@ import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
@@ -77,33 +78,36 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
     }
 
+    private static final String USERNAME = "panda@naver.com";
+    private static final String PASSWORD = "123456";
+
     @BeforeEach
     void initialize() {
         memberRepository.deleteAll();
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-    }
 
-    @Test
-    @DisplayName("회원조회 성공")
-    @WithMockUser(username = "pandabear@gogo.com", roles = "USER")
-    void findMemberTest() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("pandabear@gogo.com")
+            .email(USERNAME)
             .nickname("horagin")
-            .password("123456")
+            .password(PASSWORD)
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
         Long findResult = memberService.joinAsMember(signUpRequest).getId();
+    }
 
+    @Test
+    @DisplayName("회원조회 성공")
+    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    void findMemberTest() throws Exception {
         mockMvc.perform(
-                get("/api/members/" + findResult)
+                get("/api/members/1")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-            .andExpect(jsonPath("email").value("pandabear@gogo.com"))
+            .andExpect(jsonPath("email").value("panda@naver.com"))
             .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
             .andExpect(jsonPath("_links.self").exists())
             .andDo(document("get-member"));
@@ -139,7 +143,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     @DisplayName("회원가입 실패 - @Validation 동작한다")
     void signUpFailureTest() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("panda@naver.com")
+            .email("pandabear@gogo.com")
             .nickname("nick")
             .password("123")
             .address(new Address("seoul", "yeonhui", "1234"))
@@ -153,25 +157,14 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     }
 
     // 이거 왜 깨지는거지..
+    // -> Security Config 에서 /api/login 경로 허용 안 해줬기 때문!
     @Test
     @DisplayName("login 성공하면 200 내린다")
     void loginTest() throws Exception {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("panda@naver.com")
-            .nickname("nick")
-            .password("123456")
-            .address(new Address("seoul", "yeonhui", "1234"))
-            .build();
-
-        memberService.joinAsMember(signUpRequest);
-
         LoginRequest loginRequest = LoginRequest.builder()
-            .email(signUpRequest.getEmail())
-            .password(signUpRequest.getPassword())
+            .email(USERNAME)
+            .password(PASSWORD)
             .build();
-
-        log.info("loginRequest.email = {}", loginRequest.getEmail());
-        log.info("loginRequest.password = {}", loginRequest.getPassword());
 
         mockMvc.perform(
                 post("/api/login")
@@ -191,15 +184,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     @DisplayName("수정하면 201 내려준다")
     @WithMockUser(username = "panda@naver.com", roles = "USER")
     void modifyTest() throws Exception {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("panda@naver.com")
-            .nickname("nick")
-            .password("123456")
-            .address(new Address("seoul", "yeonhui", "1234"))
-            .build();
-
-        Long findResult = memberService.joinAsMember(signUpRequest).getId();
-
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .nickname("kcin")
             .password("654321")
@@ -207,7 +191,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
 
         mockMvc.perform(
-                patch("/api/members/" + findResult)
+                patch("/api/members/1")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
                     .content(objectMapper.writeValueAsString(modifyRequest)))
@@ -222,21 +206,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     @DisplayName("탈퇴하면 204 내려준다")
     @WithMockUser(username = "panda@naver.com", roles = "USER")
     void leaveTest() throws Exception {
-
-        SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("panda@naver.com")
-            .nickname("nick")
-            .password("123456")
-            .address(new Address("seoul", "yeonhui", "1234"))
-            .build();
-
-        mockMvc.perform(
-                post("/api/members")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(signUpRequest)))
-            .andReturn();
-
         mockMvc.perform(
                 delete("/api/members/1")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -250,7 +219,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     @WithMockUser(username = "panda@gmail.com", roles = "ADMIN")
     void adminFindMemberTest() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("panda@naver.com")
+            .email("panda@gmail.com")
             .nickname("nick")
             .password("123456")
             .address(new Address("seoul", "yeonhui", "1234"))

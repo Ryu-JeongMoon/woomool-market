@@ -1,6 +1,5 @@
 package com.woomoolmarket.service.member.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.woomoolmarket.domain.member.entity.Address;
@@ -27,6 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class MemberServiceTest {
 
+    private static final Long MEMBER_ID = 1L;
+    private static final Long SELLER_ID = 2L;
+    private static final String MEMBER_EMAIL = "panda@naver.com";
+
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -40,25 +43,43 @@ class MemberServiceTest {
     void initialize() {
         memberRepository.deleteAll();
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-    }
 
-    @Test
-    void joinTest() {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email("panda@naver.com")
+        SignUpRequest member = SignUpRequest.builder()
+            .email(MEMBER_EMAIL)
             .nickname("nick")
             .password("123456")
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long joinMemberId = memberService.joinAsMember(signUpRequest).getId();
-        MemberResponse memberResponse = memberService.findMemberById(joinMemberId);
-        assertEquals(signUpRequest.getEmail(), memberResponse.getEmail());
+        SignUpRequest seller = SignUpRequest.builder()
+            .email("panda")
+            .nickname("bear")
+            .password("1234")
+            .build();
+
+        memberService.joinAsMember(member);
+        memberService.joinAsSeller(seller);
     }
 
     @Test
+    @DisplayName("회원 가입 시 USER 권한")
+    void joinTest() {
+        MemberResponse memberResponse = memberService.findMemberById(MEMBER_ID);
+        assertEquals(MEMBER_EMAIL, memberResponse.getEmail());
+        assertEquals(memberResponse.getAuthority(), Authority.ROLE_USER);
+    }
+
+    @Test
+    @DisplayName("판매자 가입 시 SELLER 권한")
+    void joinSellerTest() {
+        MemberResponse memberResponse = memberService.findMemberById(SELLER_ID);
+        assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);
+    }
+
+    @Test
+    @DisplayName("이전, 다음 아이디 찾아온다")
     void findIdTest() {
-        for (int i = 8; i < 12; i++) {
+        for (int i = 9; i < 12; i++) {
             Member member = Member.builder()
                 .email("panda@naver.com" + i)
                 .nickname("nick" + i)
@@ -76,15 +97,11 @@ class MemberServiceTest {
         Long nextId = memberService.findNextId(memberResponseMapper.toDto(member2).getId());
         Long previousId = memberService.findPreviousId(memberResponseMapper.toDto(member2).getId());
 
-        log.info("member1.id = {}", member1.getId());
-        log.info("member2.id = {}", member2.getId());
-        log.info("member3.id = {}", member3.getId());
-
-        assertThat(nextId).isEqualTo(member3.getId());
-        assertThat(previousId).isEqualTo(member1.getId());
+        assertEquals(nextId, member3.getId());
+        assertEquals(previousId, member1.getId());
     }
-
     /* 뭐지 별 차이 안 나네 둘 다 느린 거 같은데 .. Long 으로 직접 구하는게 빠르긴 함 */
+
     @Test
     void findNextIdTest() {
         for (int i = 0; i < 7; i++) {
@@ -102,21 +119,6 @@ class MemberServiceTest {
 
         Long nextId = memberService.findNextId(5L);
         MemberResponse nextMember = memberService.findMemberById(nextId);
-        assertThat(nextId).isEqualTo(nextMember.getId());
-    }
-
-    @Test
-    @DisplayName("Authority SELLER 로 들어감")
-    void joinSellerTest() {
-        SignUpRequest seller = SignUpRequest.builder()
-            .email("panda")
-            .nickname("bear")
-            .password("1234")
-            .build();
-
-        Long findId = memberService.joinAsSeller(seller).getId();
-        MemberResponse memberResponse = memberService.findMemberById(findId);
-
-        assertEquals(memberResponse.getAuthority(), Authority.ROLE_SELLER);
+        assertEquals(nextId, nextMember.getId());
     }
 }

@@ -22,11 +22,8 @@ class PasswordEncoderTest {
         String encodedPassword = passwordEncoder.encode(password);
         String encodedPassword2 = passwordEncoder.encode(password);
 
-        log.info("password = {}", password);
-        log.info("encodedPassword = {}", encodedPassword);
-        log.info("encodedPassword2 = {}", encodedPassword2);
-
         assertNotEquals(password, encodedPassword);
+        assertNotEquals(encodedPassword, encodedPassword2);
         assertTrue(passwordEncoder.matches(password, encodedPassword));
     }
 
