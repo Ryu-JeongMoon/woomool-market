@@ -2,6 +2,8 @@ package com.woomoolmarket.controller.board;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.controller.board.model.BoardModel;
 import com.woomoolmarket.service.board.BoardService;
@@ -17,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BoardController {
 
     private final BoardService boardService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping
     public ResponseEntity getBoards() {
@@ -36,11 +38,11 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity registerBoard(@Validated @RequestBody RegisterBoardRequest registerBoardRequest,
-        BindingResult bindingResult) {
-        /* TODO error 잡히면 error response 보내줍시당 */
+    public ResponseEntity registerBoard(@Validated RegisterBoardRequest registerBoardRequest, BindingResult bindingResult)
+        throws JsonProcessingException {
+
         if (bindingResult.hasErrors()) {
-            return null;
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
         BoardResponse boardResponse = boardService.registerBoard(registerBoardRequest);

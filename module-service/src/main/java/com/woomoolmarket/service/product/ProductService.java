@@ -11,7 +11,7 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
-import com.woomoolmarket.service.product.dto.request.ProductRequest;
+import com.woomoolmarket.service.product.dto.request.CreateProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ModifyProductRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductRequestMapper;
@@ -51,7 +51,7 @@ public class ProductService {
     }
 
     // 조건과 메서드만 다르고 데이터 가공 방식은 같은데 중복을 없앨 방법이 있을까?
-    // 요렇게 되나?
+    // 동적 쿼리로 해결?!
     private Page<ProductResponse> findProductsByCondition(Page<Product> productPage) {
         return new PageImpl<>(productPage
             .stream()
@@ -92,7 +92,7 @@ public class ProductService {
     // MemberService처럼 response body에 상품 정보를 담아보내 주는 것이 나을지
     // 단순히 created 상태 코드만 주는게 나을지 고민해보자
     @Transactional
-    public Long createProduct(ProductRequest productRequest) {
+    public Long createProduct(CreateProductRequest productRequest) {
         Product product = productRequestMapper.toEntity(productRequest);
         return productRepository.save(product).getId();
     }

@@ -125,7 +125,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
-            .antMatchers("/api/hello", "/api/authenticate", "/api/login", "/api/members", "/api/reissue",
+            .antMatchers("/api/hello", "/api/authenticate", "/api/auth/**", "/api/members",
                 "/h2-console/**", "/xss", "/api/member/admin-only/**", "/", "/oauth2/**", "/login")
             .permitAll()
             .antMatchers("/facebook").hasAuthority(FACEBOOK.toString())
@@ -154,7 +154,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .exceptionHandling()
-            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/api/login"));
-
+            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/api/auth/login"));
     }
 }

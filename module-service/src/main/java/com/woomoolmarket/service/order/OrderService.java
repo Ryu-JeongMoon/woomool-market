@@ -39,7 +39,7 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     private final OrderResponseMapper orderResponseMapper;
-    private final ModifyOrderRequestMapper modifyOrderRequestMapper;
+    private final ModifyOrderRequestMapper modifyRequestMapper;
 
     @Transactional
     public Long order(Long memberId, Long productId, int quantity) {
@@ -89,10 +89,11 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse editOrder(Long id, ModifyOrderRequest modifyOrderRequest) {
-        return orderRepository.findById(id)
-            .map(orderResponseMapper::toDto)
+    public OrderResponse editOrder(Long id, ModifyOrderRequest modifyRequest) {
+        Order order = orderRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND));
+        modifyRequestMapper.updateFromDto(modifyRequest, order);
+        return orderResponseMapper.toDto(order);
     }
 
     @Transactional
