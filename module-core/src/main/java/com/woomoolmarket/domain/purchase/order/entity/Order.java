@@ -41,7 +41,7 @@ public class Order extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.ONGOING;
+    private OrderStatus status = OrderStatus.ONGOING;
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -61,11 +61,11 @@ public class Order extends BaseTimeEntity {
     }
 
     public void cancel() {
-        if (this.orderStatus == OrderStatus.DELIVERED) {
+        if (this.status == OrderStatus.DELIVERED) {
             throw new IllegalArgumentException(ExceptionUtil.CANNOT_CANCEL);
         }
 
-        this.orderStatus = OrderStatus.CANCELED;
+        this.status = OrderStatus.CANCELED;
         orderProducts.forEach(OrderProduct::cancelOrder);
     }
 }

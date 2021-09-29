@@ -19,6 +19,6 @@ class OrderTest {
             .member(panda)
             .build();
 
-        assertEquals(order.getOrderStatus(), OrderStatus.ONGOING);
+        assertEquals(order.getStatus(), OrderStatus.ONGOING);
     }
 }

@@ -3,6 +3,8 @@ package com.woomoolmarket.domain.purchase.cart.entity;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.cart_product.entity.CartProduct;
+import com.woomoolmarket.domain.purchase.order.entity.Order;
+import com.woomoolmarket.domain.purchase.product.entity.Product;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,12 +40,12 @@ public class Cart extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<CartProduct> cartProducts = new ArrayList<>();
+    @OneToOne
+    private Product product;
 
     @Builder
-    public Cart(Member member, List<CartProduct> cartProducts) {
+    public Cart(Member member, Product product) {
         this.member = member;
-        this.cartProducts = cartProducts;
+        this.product = product;
     }
 }
