@@ -1,4 +1,4 @@
-package com.woomoolmarket.service.member.service;
+package com.woomoolmarket.service.member;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -100,8 +100,8 @@ class MemberServiceTest {
         assertEquals(nextId, member3.getId());
         assertEquals(previousId, member1.getId());
     }
-    /* 뭐지 별 차이 안 나네 둘 다 느린 거 같은데 .. Long 으로 직접 구하는게 빠르긴 함 */
 
+    /* 뭐지 별 차이 안 나네 둘 다 느린 거 같은데 .. Long 으로 직접 구하는게 빠르긴 함 */
 //    @Test
 //    void findNextIdTest() {
 //        for (int i = 0; i < 7; i++) {

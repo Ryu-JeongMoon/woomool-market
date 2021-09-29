@@ -4,7 +4,6 @@ import com.woomoolmarket.common.embeddable.Delivery;
 import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
@@ -42,7 +41,7 @@ public class OrderService {
 
     // 단건 주문
     @Transactional
-    public Long order(Long memberId, Long productId, int quantity) {
+    public void order(Long memberId, Long productId, int quantity) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
 
@@ -63,22 +62,42 @@ public class OrderService {
             .orderProducts(List.of(orderProduct))
             .build();
 
-        return orderRepository.save(order).getId();
+        orderRepository.save(order);
     }
 
     // 다건 주문, Cart 에서 넘겨 받고 주문 후 Cart 에서는 바로 삭제
     @Transactional
-    public Long order(Long memberId) {
+    public void order(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
 
-        List<Cart> carts = cartRepository.findByMemberId(memberId);
+        Delivery delivery = Delivery.builder()
+            .receiver(member.getEmail())
+            .address(member.getAddress())
+            .phone(member.getPhone())
+            .build();
 
+        List<OrderProduct> orderProducts = cartRepository.findAllByMember(member)
+            .parallelStream()
+            .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getProduct().getPrice(), cart.getQuantity()))
+            .collect(Collectors.toList());
+
+        Order order = Order.builder()
+            .member(member)
+            .delivery(delivery)
+            .orderProducts(orderProducts).build();
+
+        orderRepository.save(order);
+
+        cartRepository.deleteAllByMemberId(memberId);
     }
 
     // Controller 에서 본인만 가능하도록 권한 설정 필요
     public Page<OrderResponse> findOrdersByMemberId(Long memberId, Pageable pageRequest) {
-        return new PageImpl<>(orderRepository.findOrdersByMemberId(memberId, pageRequest)
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+
+        return new PageImpl<>(orderRepository.findOrdersByMember(member, pageRequest)
             .stream()
             .map(orderResponseMapper::toDto)
             .collect(Collectors.toList()));
@@ -95,7 +114,8 @@ public class OrderService {
     @Transactional
     public void cancelOrder(Long id) {
         orderRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND)).cancel();
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND))
+            .cancel();
     }
 
 

@@ -40,12 +40,16 @@ public class Cart extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToOne
+    @JoinColumn(name = "product_id")
+    @OneToOne(fetch = FetchType.LAZY)
     private Product product;
 
+    private int quantity;
+
     @Builder
-    public Cart(Member member, Product product) {
+    public Cart(Member member, Product product, int quantity) {
         this.member = member;
         this.product = product;
+        this.quantity = quantity;
     }
 }

@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
+import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import java.util.Optional;
@@ -12,6 +13,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findOrdersByOrderStatus(OrderStatus status, Pageable pageable);
 
-    @Query("select o from Order o where o.member = :memberId and o.status in ('ONGOING', 'DELIVERED')")
-    Page<Order> findOrdersByMemberId(Long memberId, Pageable pageable);
+    @Query("select o from Order o where o.member = :member and o.orderStatus in ('ONGOING', 'DELIVERED')")
+    Page<Order> findOrdersByMember(Member member, Pageable pageable);
 }

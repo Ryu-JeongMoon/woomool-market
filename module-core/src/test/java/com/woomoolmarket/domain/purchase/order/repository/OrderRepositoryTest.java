@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.woomoolmarket.config.TestConfig;
@@ -47,6 +48,6 @@ class OrderRepositoryTest {
     void findOrdersTest() {
         Order order = orderRepository.findOrdersByOrderStatus(OrderStatus.ONGOING, Pageable.unpaged())
             .getContent().get(0);
-        assertEquals(order.getStatus(), OrderStatus.ONGOING);
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ONGOING);
     }
 }
