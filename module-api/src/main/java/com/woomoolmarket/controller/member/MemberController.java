@@ -12,9 +12,11 @@ import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -144,5 +146,39 @@ public class MemberController {
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembers(@PageableDefault Pageable pageRequest) {
         Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.INACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
+    }
+
+    // Cache 적용 버전!!
+    @GetMapping("/admin-only/all-cache")
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembersByCache(@PageableDefault Pageable pageable) {
+        PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findAllMembersByCache()
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+    }
+
+    @GetMapping("/admin-only/active-cache")
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembersByCache(@PageableDefault Pageable pageable) {
+        PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findMembersByStatusAndCache(Status.ACTIVE)
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+    }
+
+    @GetMapping("/admin-only/inactive-cache")
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembersByCache(@PageableDefault Pageable pageable) {
+        PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findMembersByStatusAndCache(Status.INACTIVE)
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
     }
 }
