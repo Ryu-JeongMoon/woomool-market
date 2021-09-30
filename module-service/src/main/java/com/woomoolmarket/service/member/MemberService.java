@@ -1,8 +1,6 @@
 package com.woomoolmarket.service.member;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
@@ -16,12 +14,12 @@ import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,6 +52,11 @@ public class MemberService {
 
     public MemberResponse findMemberById(Long id) {
         return memberResponseMapper.toDto(memberRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
+    }
+
+    public MemberResponse findMemberByEmail(String email) {
+        return memberResponseMapper.toDto(memberRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
     }
 
@@ -64,11 +67,10 @@ public class MemberService {
 
     public MemberResponse findMemberByNickname(String nickname) {
         return memberResponseMapper.toDto(memberRepository.findByNickname(nickname)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND)));
     }
 
-    public Page<MemberResponse> findAllMembers(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<MemberResponse> findAllMembers(Pageable pageRequest) {
         return new PageImpl<>(memberRepository.findAll(pageRequest)
             .stream()
             .map(memberResponseMapper::toDto)
@@ -77,12 +79,12 @@ public class MemberService {
 
     // 그냥 쿼리에서 걸러서 가져오는게 나을듯?!
     // -> findAll().stream().filter() 방식에서 findActiveMembers()로 쿼리에서 걸러서 가져오는 방식으로 변경
-    public Page<MemberResponse> findMembersByStatus(Status status,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-        return new PageImpl<>(memberRepository.findMembersByStatus(status, pageRequest)
-            .stream()
-            .map(memberResponseMapper::toDto)
-            .collect(Collectors.toList()));
+    public Page<MemberResponse> findMembersByStatus(Status status, Pageable pageRequest) {
+        return new PageImpl<>(
+            memberRepository.findMembersByStatus(status, pageRequest)
+                .stream()
+                .map(memberResponseMapper::toDto)
+                .collect(Collectors.toList()));
     }
 
     @Transactional
@@ -110,7 +112,7 @@ public class MemberService {
     @Transactional
     public MemberResponse editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
         return memberResponseMapper.toDto(member);
     }
@@ -119,7 +121,7 @@ public class MemberService {
     @Transactional
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND))
             .leave();
     }
 }

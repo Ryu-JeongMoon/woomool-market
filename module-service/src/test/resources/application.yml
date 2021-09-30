@@ -26,11 +26,10 @@ spring:
   jpa:
     generate-ddl: true
     database-platform: org.hibernate.dialect.H2Dialect
-    show_sql: true
     properties:
       hibernate:
         format_sql: true
-        ddl-auto: update
+        ddl-auto: create
 
   security:
     oauth2:

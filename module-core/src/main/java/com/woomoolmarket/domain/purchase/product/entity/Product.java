@@ -86,3 +86,5 @@ public class Product extends BaseEntity {
         this.deletedDateTime = deletedDateTime;
     }
 }
+
+/* TODO deletedDateTime, Status 삭제 혹은 탈퇴한 것을 이중으로 관리할 필요가 있을까? */

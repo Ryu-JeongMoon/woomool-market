@@ -40,23 +40,24 @@ public class OrderProduct extends BaseTimeEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int amount;
+    private int price;
     private int quantity;
+    private int totalPrice = price * quantity;
 
     @Builder
-    public OrderProduct(Order order, Product product, int amount, int quantity) {
+    public OrderProduct(Order order, Product product, int price, int quantity) {
         this.order = order;
         this.product = product;
-        this.amount = amount;
+        this.price = price;
         this.quantity = quantity;
     }
 
-    public static OrderProduct createOrderProduct(Product product, int amount, int quantity) {
+    public static OrderProduct createOrderProduct(Product product, int price, int quantity) {
         product.decreaseStock(quantity);
 
         return OrderProduct.builder()
             .product(product)
-            .amount(amount)
+            .price(price)
             .quantity(quantity)
             .build();
     }

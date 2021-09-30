@@ -1,4 +1,4 @@
-package com.woomoolmarket.controller.purchase.cart;
+package com.woomoolmarket.controller.cart;
 
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import lombok.RequiredArgsConstructor;

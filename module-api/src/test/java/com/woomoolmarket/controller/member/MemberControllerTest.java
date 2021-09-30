@@ -167,7 +167,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
 
         mockMvc.perform(
-                post("/api/login")
+                post("/api/auth/login")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(loginRequest)))
