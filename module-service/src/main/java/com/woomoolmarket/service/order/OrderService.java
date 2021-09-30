@@ -39,9 +39,20 @@ public class OrderService {
     private final OrderResponseMapper orderResponseMapper;
     private final ModifyOrderRequestMapper modifyRequestMapper;
 
+    // Controller 에서 본인만 가능하도록 권한 설정 필요
+    public Page<OrderResponse> findOrdersByMemberId(Long memberId, Pageable pageRequest) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+
+        return new PageImpl<>(orderRepository.findOrdersByMember(member, pageRequest)
+            .stream()
+            .map(orderResponseMapper::toDto)
+            .collect(Collectors.toList()));
+    }
+
     // 단건 주문
     @Transactional
-    public void order(Long memberId, Long productId, int quantity) {
+    public void orderOne(Long memberId, Long productId, int quantity) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
 
@@ -67,7 +78,7 @@ public class OrderService {
 
     // 다건 주문, Cart 에서 넘겨 받고 주문 후 Cart 에서는 바로 삭제
     @Transactional
-    public void order(Long memberId) {
+    public void orderMultiples(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
 
@@ -92,28 +103,17 @@ public class OrderService {
         cartRepository.deleteAllByMemberId(memberId);
     }
 
-    // Controller 에서 본인만 가능하도록 권한 설정 필요
-    public Page<OrderResponse> findOrdersByMemberId(Long memberId, Pageable pageRequest) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
-
-        return new PageImpl<>(orderRepository.findOrdersByMember(member, pageRequest)
-            .stream()
-            .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList()));
-    }
-
     @Transactional
-    public OrderResponse editOrder(Long id, ModifyOrderRequest modifyRequest) {
-        Order order = orderRepository.findById(id)
+    public OrderResponse edit(Long orderId, ModifyOrderRequest modifyRequest) {
+        Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, order);
         return orderResponseMapper.toDto(order);
     }
 
     @Transactional
-    public void cancelOrder(Long id) {
-        orderRepository.findById(id)
+    public void cancel(Long orderId) {
+        orderRepository.findById(orderId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND))
             .cancel();
     }
@@ -128,6 +128,20 @@ public class OrderService {
 
     public Page<OrderResponse> findAllOrders(Pageable pageRequest) {
         return new PageImpl<>(orderRepository.findAll(pageRequest)
+            .stream()
+            .map(orderResponseMapper::toDto)
+            .collect(Collectors.toList()));
+    }
+
+    public Page<OrderResponse> findAllActiveOrders(Pageable pageRequest) {
+        return new PageImpl<>(orderRepository.findAllActive(pageRequest)
+            .stream()
+            .map(orderResponseMapper::toDto)
+            .collect(Collectors.toList()));
+    }
+
+    public Page<OrderResponse> findAllInactiveOrders(Pageable pageRequest) {
+        return new PageImpl<>(orderRepository.findAllInactive(pageRequest)
             .stream()
             .map(orderResponseMapper::toDto)
             .collect(Collectors.toList()));

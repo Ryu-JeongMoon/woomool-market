@@ -1,4 +1,4 @@
-package com.woomoolmarket.controller.purchase.product;
+package com.woomoolmarket.controller.product;
 
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;

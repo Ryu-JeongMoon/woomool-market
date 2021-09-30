@@ -52,6 +52,7 @@ public class ProductService {
 
     // 조건과 메서드만 다르고 데이터 가공 방식은 같은데 중복을 없앨 방법이 있을까?
     // 동적 쿼리로 해결?!
+    // ============================================================================
     private Page<ProductResponse> findProductsByCondition(Page<Product> productPage) {
         return new PageImpl<>(productPage
             .stream()
@@ -59,35 +60,30 @@ public class ProductService {
             .collect(Collectors.toList()));
     }
 
-    public Page<ProductResponse> findProductsByName(String name,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<ProductResponse> findProductsByName(String name, Pageable pageRequest) {
         return findProductsByCondition(productRepository.findProductsByName(name, pageRequest));
     }
 
-    public Page<ProductResponse> findProductsBySeller(String seller,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<ProductResponse> findProductsBySeller(String seller, Pageable pageRequest) {
         return findProductsByCondition(productRepository.findProductsBySeller(seller, pageRequest));
     }
 
-    public Page<ProductResponse> findProductsByRegion(Region region,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<ProductResponse> findProductsByRegion(Region region, Pageable pageRequest) {
         return findProductsByCondition(productRepository.findProductsByRegion(region, pageRequest));
     }
 
-    public Page<ProductResponse> findProductsByProductCategory(ProductCategory productCategory,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<ProductResponse> findProductsByProductCategory(ProductCategory productCategory, Pageable pageRequest) {
         return findProductsByCondition(productRepository.findProductsByProductCategory(productCategory, pageRequest));
     }
 
-    public Page<ProductResponse> findProductsByPriceRange(int minPrice, int maxPrice,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<ProductResponse> findProductsByPriceRange(int minPrice, int maxPrice, Pageable pageRequest) {
         return findProductsByCondition(productRepository.findProductsByPriceRange(minPrice, maxPrice, pageRequest));
     }
 
-    public Page<ProductResponse> findProductsByStatus(Status status,
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public Page<ProductResponse> findProductsByStatus(Status status, Pageable pageRequest) {
         return findProductsByCondition(productRepository.findProductsByStatus(status, pageRequest));
     }
+    // ============================================================================
 
     // MemberService처럼 response body에 상품 정보를 담아보내 주는 것이 나을지
     // 단순히 created 상태 코드만 주는게 나을지 고민해보자
@@ -105,7 +101,6 @@ public class ProductService {
         return productResponseMapper.toDto(product);
     }
 
-    /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
     @Transactional
     public void deleteSoftly(Long id) {
         productRepository.findById(id)

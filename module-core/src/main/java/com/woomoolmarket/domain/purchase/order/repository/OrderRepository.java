@@ -11,6 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+    @Query("select o from Order o where o.orderStatus in ('ONGOING', 'DELIVERED')")
+    Page<Order> findAllActive(Pageable pageable);
+
+    @Query("select o from Order o where o.orderStatus = 'CANCELED'")
+    Page<Order> findAllInactive(Pageable pageable);
+
     Page<Order> findOrdersByOrderStatus(OrderStatus status, Pageable pageable);
 
     @Query("select o from Order o where o.member = :member and o.orderStatus in ('ONGOING', 'DELIVERED')")

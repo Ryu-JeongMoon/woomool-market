@@ -85,27 +85,27 @@ class OrderServiceTest {
     @Test
     @DisplayName("단건 주문")
     void orderOneTest() {
-        orderService.order(MEMBER_ID);
+        orderService.orderOne(MEMBER_ID, PRODUCT_ID, 3);
         assertThat(orderRepository.findById(1L)).isNotNull();
     }
 
     @Test
     @DisplayName("다건 주문")
     void orderMultipleTest() {
-        orderService.order(MEMBER_ID, PRODUCT_ID, 3);
+        orderService.orderMultiples(MEMBER_ID);
         assertThat(orderRepository.findById(1L)).isNotNull();
     }
 
     @Test
     @DisplayName("재고 이상 주문 불가")
     void orderOverTheStockTest() {
-        assertThrows(IllegalArgumentException.class, () -> orderService.order(MEMBER_ID, PRODUCT_ID, 501));
+        assertThrows(IllegalArgumentException.class, () -> orderService.orderOne(MEMBER_ID, PRODUCT_ID, 501));
     }
 
     @Test
     @DisplayName("없는 상품 주문 불가")
     void orderNonExistProductTest() {
-        assertThrows(EntityNotFoundException.class, () -> orderService.order(MEMBER_ID, 5L, 30));
+        assertThrows(EntityNotFoundException.class, () -> orderService.orderOne(MEMBER_ID, 5L, 30));
     }
 
     @Test
@@ -117,7 +117,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 정보 수정")
     void editOrderTest() {
-        orderService.order(MEMBER_ID, PRODUCT_ID, 3);
+        orderService.orderOne(MEMBER_ID, PRODUCT_ID, 3);
         OrderResponse order = orderService.findOrder(1L);
 
     }
