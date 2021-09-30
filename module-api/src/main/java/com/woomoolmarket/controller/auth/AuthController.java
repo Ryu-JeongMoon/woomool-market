@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @LogExecutionTime
 @RequiredArgsConstructor
+@RequestMapping(value = "/api/auth")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest,
         HttpServletResponse response) {
         TokenResponse tokenResponse = authService.login(loginRequest);
@@ -42,7 +43,7 @@ public class AuthController {
         return cookie;
     }
 
-    @PostMapping("/api/reissue")
+    @PostMapping("/reissue")
     public ResponseEntity<TokenResponse> reissue(@RequestBody TokenRequest tokenRequest) {
         return ResponseEntity.ok(authService.reissue(tokenRequest));
     }

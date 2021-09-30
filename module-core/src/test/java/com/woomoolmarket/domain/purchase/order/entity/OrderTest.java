@@ -1,8 +1,10 @@
 package com.woomoolmarket.domain.purchase.order.entity;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.woomoolmarket.domain.member.entity.Member;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +21,6 @@ class OrderTest {
             .member(panda)
             .build();
 
-        assertEquals(order.getOrderStatus(), OrderStatus.ONGOING);
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ONGOING);
     }
 }

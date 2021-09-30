@@ -40,6 +40,7 @@ public class Order extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.ONGOING;
 

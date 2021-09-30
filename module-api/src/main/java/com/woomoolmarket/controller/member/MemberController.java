@@ -1,7 +1,5 @@
 package com.woomoolmarket.controller.member;
 
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -50,16 +48,11 @@ public class MemberController {
     private final PagedResourcesAssembler<MemberResponse> assembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getMembers(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-
-        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageRequest);
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getMembers(@PageableDefault Pageable pageable) {
+        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageable);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
-    // bindingResult 그대로 반환하면 InvalidDefinitionException 뜬다
-    // @JsonComponent 붙였어도 objectMapper 를 따로 정의해서 쓰고 있어서 BindingResultSerializer 를 못 알아보나봐
-    // 일일이 writeValueAsString 붙여주면서 에러 선언하는 건 요상한데
     @PostMapping
     public ResponseEntity joinMember(
         @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
@@ -134,27 +127,21 @@ public class MemberController {
      * -> Member 전부 보여주는 메서드 제외, Status 조건에 따라 다른 결과 나오도록 변경함! */
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembers(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-
-        Page<MemberResponse> pagedResponse = memberService.findAllMembers(pageRequest);
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembers(@PageableDefault Pageable pageable) {
+        Page<MemberResponse> pagedResponse = memberService.findAllMembers(pageable);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/active")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembers(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembers(@PageableDefault Pageable pageRequest) {
         Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
     //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin-only/inactive")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembers(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembers(@PageableDefault Pageable pageRequest) {
         Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.INACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
