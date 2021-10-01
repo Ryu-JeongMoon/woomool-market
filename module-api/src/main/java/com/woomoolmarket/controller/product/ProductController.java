@@ -1,7 +1,5 @@
 package com.woomoolmarket.controller.product;
 
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_MAX_LINKED_PAGES;
-import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -13,8 +11,9 @@ import com.woomoolmarket.service.product.ProductService;
 import com.woomoolmarket.service.product.dto.request.CreateProductRequest;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -46,11 +45,14 @@ public class ProductController {
     private final PagedResourcesAssembler<ProductResponse> assembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getProducts(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
+    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getProducts(@PageableDefault Pageable pageable) {
+        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(productService.findProductsByStatusAndCache(Status.ACTIVE)
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
 
-        Page<ProductResponse> pagedResponse = productService.findProductsByStatus(Status.ACTIVE, pageRequest);
-        return ResponseEntity.ok(assembler.toModel(pagedResponse));
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
     }
 
     @PostMapping
@@ -78,8 +80,8 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity editProductInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyProductRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
+    public ResponseEntity editProductInfo(@PathVariable Long id, @Validated @RequestBody ModifyProductRequest modifyRequest,
+        BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
@@ -96,5 +98,40 @@ public class ProductController {
     public ResponseEntity delete(@PathVariable Long id) {
         productService.deleteSoftly(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    /* FOR ADMIN */
+    @GetMapping("/admin-only/all-cache")
+    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getAllProducts(@PageableDefault Pageable pageable) {
+        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(productService.findAllProductsByCache()
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+    }
+
+    @GetMapping("/admin-only/active-cache")
+    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getActiveProducts(@PageableDefault Pageable pageable) {
+        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(productService.findProductsByStatusAndCache(Status.ACTIVE)
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+    }
+
+    @GetMapping("/admin-only/inactive-cache")
+    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getInactiveProducts(@PageableDefault Pageable pageable) {
+        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(productService.findProductsByStatusAndCache(Status.INACTIVE)
+            .stream()
+            .skip(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(assembler.toModel(cacheResponse));
     }
 }
