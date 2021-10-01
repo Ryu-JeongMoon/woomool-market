@@ -20,7 +20,6 @@ import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
-import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
@@ -80,6 +79,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     private static final String USERNAME = "panda@naver.com";
     private static final String PASSWORD = "123456";
+    private static Long MEMBER_ID;
 
     @BeforeEach
     void initialize() {
@@ -93,7 +93,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.joinAsMember(signUpRequest).getId();
+        MEMBER_ID = memberService.joinAsMember(signUpRequest).getId();
     }
 
     @Test
@@ -191,14 +191,12 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
 
         mockMvc.perform(
-                patch("/api/members/1")
+                patch("/api/members/" + MEMBER_ID)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON)
                     .content(objectMapper.writeValueAsString(modifyRequest)))
             .andDo(print())
-            .andExpect(jsonPath("email").exists())
-            .andExpect(jsonPath("nickname").value("kcin"))
-            .andExpect(jsonPath("address").exists())
+            .andExpect(status().isCreated())
             .andDo(document("modify-member"));
     }
 
@@ -207,7 +205,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     @WithMockUser(username = "panda@naver.com", roles = "USER")
     void leaveTest() throws Exception {
         mockMvc.perform(
-                delete("/api/members/1")
+                delete("/api/members/" + MEMBER_ID)
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNoContent())
             .andDo(print())
