@@ -17,14 +17,14 @@ public class OAuth2Attributes {
 
     @Builder
     public OAuth2Attributes(Map<String, Object> attributes,
-        String nameAttributeKey, String name,
-        String email, String picture) {
+        String nameAttributeKey, String nickname,
+        String email, String profileImage) {
 
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
-        this.nickname = name;
+        this.nickname = nickname;
         this.email = email;
-        this.profileImage = picture;
+        this.profileImage = profileImage;
     }
 
     public static OAuth2Attributes of(String registrationId, String userNameAttributeName,
@@ -48,9 +48,9 @@ public class OAuth2Attributes {
 
     private static OAuth2Attributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuth2Attributes.builder()
-            .name((String) attributes.get("name"))
+            .nickname((String) attributes.get("name"))
             .email((String) attributes.get("email"))
-            .picture((String) attributes.get("picture"))
+            .profileImage((String) attributes.get("picture"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
@@ -58,9 +58,9 @@ public class OAuth2Attributes {
 
     private static OAuth2Attributes ofGithub(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuth2Attributes.builder()
-            .name((String) attributes.get("name"))
+            .nickname((String) attributes.get("name"))
             .email((String) attributes.get("email"))
-            .picture((String) attributes.get("avatar_url"))
+            .profileImage((String) attributes.get("avatar_url"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
@@ -68,9 +68,9 @@ public class OAuth2Attributes {
 
     private static OAuth2Attributes ofFacebook(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuth2Attributes.builder()
-            .name((String) attributes.get("name"))
+            .nickname((String) attributes.get("name"))
             .email((String) attributes.get("email"))
-            .picture((String) attributes.get("picture"))
+            .profileImage((String) attributes.get("picture"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
@@ -81,9 +81,9 @@ public class OAuth2Attributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuth2Attributes.builder()
-            .name((String) response.get("name"))
+            .nickname((String) response.get("name"))
             .email((String) response.get("email"))
-            .picture((String) response.get("profile_image"))
+            .profileImage((String) response.get("profile_image"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
@@ -97,9 +97,9 @@ public class OAuth2Attributes {
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
 
         return OAuth2Attributes.builder()
-            .name((String) kakaoProfile.get("nickname"))
+            .nickname((String) kakaoProfile.get("nickname"))
             .email((String) kakaoAccount.get("email"))
-            .picture((String) kakaoProfile.get("profile_image_url"))
+            .profileImage((String) kakaoProfile.get("profile_image_url"))
             .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();

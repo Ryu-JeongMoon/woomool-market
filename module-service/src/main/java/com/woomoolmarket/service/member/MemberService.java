@@ -87,8 +87,6 @@ public class MemberService {
             .collect(Collectors.toList());
     }
 
-    // 그냥 쿼리에서 걸러서 가져오는게 나을듯?!
-    // -> findAll().stream().filter() 방식에서 findActiveMembers()로 쿼리에서 걸러서 가져오는 방식으로 변경
     public Page<MemberResponse> findMembersByStatus(Status status, Pageable pageRequest) {
         return new PageImpl<>(
             memberRepository.findMembersByStatus(status, pageRequest)
@@ -131,11 +129,11 @@ public class MemberService {
     // 이런 경우에 반환값 없애면 조회 쿼리 또 날려야 하니 일단 반환값 주고 필요할 때 고칠 것
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "findAllMembersByCache", allEntries = true)
-    public MemberResponse editMemberInfo(Long id, ModifyRequest modifyRequest) {
+    public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
-        return memberResponseMapper.toDto(member);
+        memberResponseMapper.toDto(member);
     }
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
@@ -147,17 +145,3 @@ public class MemberService {
             .leave();
     }
 }
-
-/**
- * @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllActiveMembers", unless = "#result==null") -> redis <-> entity
- * model 안 맞아.. 일단 캐시 다 걷어내고 hateoas 형식만 맞춰서 내보내자
- */
-
-//    @Cacheable 적용 버전
-//    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllMembers", unless = "#result==null")
-//    public List<MemberResponse> findAllMembers() {
-//        return memberRepository.findAll()
-//            .stream()
-//            .map(memberResponseMapper::toDto)
-//            .collect(toList());
-//    }

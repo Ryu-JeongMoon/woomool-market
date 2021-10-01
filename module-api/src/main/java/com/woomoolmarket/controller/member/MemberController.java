@@ -49,12 +49,22 @@ public class MemberController {
     private final MemberService memberService;
     private final PagedResourcesAssembler<MemberResponse> assembler;
 
-    @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getMembers(@PageableDefault Pageable pageable) {
-        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageable);
-        return ResponseEntity.ok(assembler.toModel(pagedResponse));
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
+        MemberResponse memberResponse = memberService.findMemberById(id);
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
+
+        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
+            defaultLink.withSelfRel(),
+            defaultLink.withRel("modify-member"),
+            defaultLink.withRel("leave-member")
+        );
+
+        return ResponseEntity.ok(responseModel);
     }
 
+    // createdUri, response body 에 있는 url 중복이지 않을까?
+    // -> created status code 만 반환하고 response body url 을 쓸까?
     @PostMapping
     public ResponseEntity joinMember(
         @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
@@ -72,32 +82,17 @@ public class MemberController {
         return ResponseEntity.created(createUri).body(responseModel);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMemberById(id);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
-
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
-            defaultLink.withSelfRel(),
-            defaultLink.withRel("modify-member"),
-            defaultLink.withRel("leave-member")
-        );
-
-        return ResponseEntity.ok(responseModel);
-    }
-
     @PatchMapping("/{id}")
-    public ResponseEntity editMemberInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
+    public ResponseEntity editMemberInfo(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest,
+        BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
-        Link createUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel();
-        MemberResponse memberResponse = memberService.editMemberInfo(id, modifyRequest);
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse, createUri);
 
-        return ResponseEntity.created(createUri.toUri()).body(responseModel);
+        URI createdUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel().toUri();
+        memberService.editMemberInfo(id, modifyRequest);
+        return ResponseEntity.created(createdUri).build();
     }
 
     @DeleteMapping("/{id}")
@@ -125,8 +120,6 @@ public class MemberController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    /* 얘네 메서드 새개는 나가는 쿼리가 달라서 중복은 아닌데 형태가 중복이다 정리할 수 있나?
-     * -> Member 전부 보여주는 메서드 제외, Status 조건에 따라 다른 결과 나오도록 변경함! */
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/all")
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembers(@PageableDefault Pageable pageable) {
@@ -136,14 +129,14 @@ public class MemberController {
 
     //@Secured("ROLE_ADMIN")
     @GetMapping("/admin-only/active")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembers(@PageableDefault Pageable pageRequest) {
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getActiveMembers(@PageableDefault Pageable pageRequest) {
         Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
 
     //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin-only/inactive")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembers(@PageableDefault Pageable pageRequest) {
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getInactiveMembers(@PageableDefault Pageable pageRequest) {
         Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.INACTIVE, pageRequest);
         return ResponseEntity.ok(assembler.toModel(pagedResponse));
     }
@@ -161,7 +154,7 @@ public class MemberController {
     }
 
     @GetMapping("/admin-only/active-cache")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllActiveMembersByCache(@PageableDefault Pageable pageable) {
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getActiveMembersByCache(@PageableDefault Pageable pageable) {
         PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findMembersByStatusAndCache(Status.ACTIVE)
             .stream()
             .skip(pageable.getOffset())
@@ -172,7 +165,7 @@ public class MemberController {
     }
 
     @GetMapping("/admin-only/inactive-cache")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllInactiveMembersByCache(@PageableDefault Pageable pageable) {
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getInactiveMembersByCache(@PageableDefault Pageable pageable) {
         PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findMembersByStatusAndCache(Status.INACTIVE)
             .stream()
             .skip(pageable.getOffset())
@@ -182,3 +175,5 @@ public class MemberController {
         return ResponseEntity.ok(assembler.toModel(cacheResponse));
     }
 }
+
+/* cache 적용 버전만 사용할지 일단 두개 공존시키고 나중에 정리할지 결정 */

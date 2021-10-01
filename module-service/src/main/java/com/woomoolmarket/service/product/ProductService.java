@@ -16,9 +16,12 @@ import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ModifyProductRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -42,12 +45,20 @@ public class ProductService {
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
     }
 
-    public Page<ProductResponse> findAllProducts(
-        @PageableDefault(page = DEFAULT_MAX_LINKED_PAGES, size = DEFAULT_PAGE_SIZE) Pageable pageRequest) {
-        return new PageImpl<>(productRepository.findAll(pageRequest)
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllProducts", unless = "#result==null")
+    public List<ProductResponse> findAllProductsByCache() {
+        return productRepository.findAll()
             .stream()
             .map(productResponseMapper::toDto)
-            .collect(toList()));
+            .collect(toList());
+    }
+
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "findAllProductsByCache", unless = "#result==null")
+    public List<ProductResponse> findProductsByStatusAndCache(Status status) {
+        return productRepository.findProductsByStatusAndCache(status)
+            .stream()
+            .map(productResponseMapper::toDto)
+            .collect(Collectors.toList());
     }
 
     // 조건과 메서드만 다르고 데이터 가공 방식은 같은데 중복을 없앨 방법이 있을까?
@@ -88,12 +99,14 @@ public class ProductService {
     // MemberService처럼 response body에 상품 정보를 담아보내 주는 것이 나을지
     // 단순히 created 상태 코드만 주는게 나을지 고민해보자
     @Transactional
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "findAllProductsByCache", allEntries = true)
     public Long createProduct(CreateProductRequest productRequest) {
         Product product = productRequestMapper.toEntity(productRequest);
         return productRepository.save(product).getId();
     }
 
     @Transactional
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "findAllProductsByCache", allEntries = true)
     public ProductResponse editProductInfo(Long id, ModifyProductRequest modifyRequest) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
@@ -102,9 +115,12 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "findAllProductsByCache", allEntries = true)
     public void deleteSoftly(Long id) {
         productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND))
             .delete();
     }
 }
+
+/* 조건에 따른 동적 쿼리 생성하자! */
