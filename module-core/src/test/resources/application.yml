@@ -9,6 +9,8 @@ spring:
       hibernate:
         ddl-auto: create
         dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        show_sql: true
 
   redis:
     port: 6379
@@ -49,6 +51,14 @@ spring:
             client-name: Naver
             client-id: 1234
             client-secret: 1234
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
 
 jwt:
   header: Authorization

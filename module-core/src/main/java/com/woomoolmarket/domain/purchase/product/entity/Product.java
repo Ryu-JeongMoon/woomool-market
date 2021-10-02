@@ -35,7 +35,7 @@ public class Product extends BaseEntity {
     private String description;
     private String productImage;
 
-    private int price;
+    private Integer price;
     private int stock;
 
     private LocalDateTime deletedDateTime;
@@ -50,7 +50,7 @@ public class Product extends BaseEntity {
     private Region region;
 
     @Builder
-    public Product(String seller, String name, int price, int stock, String description, String productImg,
+    public Product(String seller, String name, Integer price, int stock, String description, String productImg,
         ProductCategory productCategory, Region region) {
         this.seller = seller;
         this.name = name;
