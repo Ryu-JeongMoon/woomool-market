@@ -76,6 +76,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 }
 
 /*
+TODO eq -> contains 검색 조건 변경 필요
 메서드 많아서 지저분해 보인당
 해결 방법이 있을 것인가?!
  */

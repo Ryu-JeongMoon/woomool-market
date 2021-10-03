@@ -21,7 +21,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,8 +30,6 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Builder
-@AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
@@ -46,7 +43,6 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder.Default
     @OneToMany(mappedBy = "board")
     private List<Reply> replies = new ArrayList<>();
 
@@ -58,20 +54,35 @@ public class Board extends BaseEntity {
     private int hit;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.ACTIVE;
 
-    private LocalDateTime deletedDate;
+    private LocalDateTime deletedDateTime;
 
     @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
+
+    @Builder
+    public Board(Member member, String title, String content, BoardCategory boardCategory) {
+        this.member = member;
+        this.title = title;
+        this.content = content;
+        this.boardCategory = boardCategory;
+    }
 
     public void changeHit() {
         hit++;
     }
 
-    public void changeStatus(Status status, LocalDateTime deletedDate) {
-        this.status = status;
-        this.deletedDate = deletedDate;
+    public void delete() {
+        changeStatusAndDeletedDateTime(Status.INACTIVE, LocalDateTime.now());
     }
 
+    public void restore() {
+        changeStatusAndDeletedDateTime(Status.ACTIVE, null);
+    }
+
+    private void changeStatusAndDeletedDateTime(Status status, LocalDateTime deletedDateTime) {
+        this.status = status;
+        this.deletedDateTime = deletedDateTime;
+    }
 }
