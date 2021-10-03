@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 @Transactional
 @SpringBootTest
-@RequiredArgsConstructor
 class OrderServiceTest {
 
     private static Long CART_ID;

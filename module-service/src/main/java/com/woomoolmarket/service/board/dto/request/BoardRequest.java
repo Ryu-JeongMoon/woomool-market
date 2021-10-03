@@ -11,14 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterBoardRequest {
+public class BoardRequest {
 
-    /* TODO member 를 그대로 넣지 말고 name 으로 치환해야 될 것 같음 */
     private Member member;
-
     private String title;
-
     private String content;
-
     private BoardCategory boardCategory;
 }
