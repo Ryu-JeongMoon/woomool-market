@@ -79,4 +79,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 /*
 회원은 활성화 되어 있는 게시글만 볼 수 있고
 관리자는 전부 볼 수 있게 하기 위해 메서드 나눠둠
+
+searchByAll, searchByAllForAdmin 중복
+검색 메서드 추가될 경우 중복 제거하기
  */

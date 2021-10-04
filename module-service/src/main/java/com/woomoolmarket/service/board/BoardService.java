@@ -41,8 +41,9 @@ public class BoardService {
     }
 
     public BoardResponse getByIdAndStatus(Long id, Status status) {
-        return boardResponseMapper.toDto(boardRepository.findByIdAndStatus(id, status)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND)));
+        return boardRepository.findByIdAndStatus(id, status)
+            .map(boardResponseMapper::toDto)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND));
     }
 
     @Transactional
