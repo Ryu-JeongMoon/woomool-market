@@ -23,7 +23,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<Product> findByPriceRange(Integer minPrice, Integer maxPrice) {
         return queryFactory
             .selectFrom(product)
-            .where(priceRange(minPrice, maxPrice))
+            .where(searchByPriceRange(minPrice, maxPrice))
             .fetch();
     }
 
@@ -31,6 +31,13 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public List<Product> findByCondition(ProductSearchCondition searchCondition) {
         return queryFactory.selectFrom(product)
             .where(searchedByAll(searchCondition))
+            .fetch();
+    }
+
+    @Override
+    public List<Product> findByConditionForAdmin(ProductSearchCondition searchCondition) {
+        return queryFactory.selectFrom(product)
+            .where(searchedByAllForAdmin(searchCondition))
             .fetch();
     }
 
@@ -42,16 +49,21 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return QueryDslUtil.nullSafeBuilder(() -> product.price.goe(minPrice));
     }
 
-    private BooleanBuilder priceRange(Integer minPrice, Integer maxPrice) {
-        return priceGoe(minPrice).and(priceLoe(maxPrice));
+    private BooleanBuilder searchByPriceRange(Integer minPrice, Integer maxPrice) {
+        return priceGoe(minPrice)
+            .and(priceLoe(maxPrice));
     }
 
-    private BooleanBuilder nameEq(String name) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.name.eq(name));
+    private BooleanBuilder nameContains(String name) {
+        return QueryDslUtil.nullSafeBuilder(() -> product.name.contains(name));
     }
 
-    private BooleanBuilder sellerEq(String seller) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.seller.eq(seller));
+    private BooleanBuilder sellerContains(String seller) {
+        return QueryDslUtil.nullSafeBuilder(() -> product.seller.contains(seller));
+    }
+
+    private BooleanBuilder regionEq(Region region) {
+        return QueryDslUtil.nullSafeBuilder(() -> product.region.eq(region));
     }
 
     private BooleanBuilder statusEq(Status status) {
@@ -62,16 +74,20 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return QueryDslUtil.nullSafeBuilder(() -> product.productCategory.eq(category));
     }
 
-    private BooleanBuilder regionEq(Region region) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.region.eq(region));
+    private BooleanBuilder searchedByAll(ProductSearchCondition searchCondition) {
+        return nameContains(searchCondition.getName())
+            .and(sellerContains(searchCondition.getSeller()))
+            .and(regionEq(searchCondition.getRegion()))
+            .and(statusEq(Status.ACTIVE))
+            .and(categoryEq(searchCondition.getCategory()));
     }
 
-    private BooleanBuilder searchedByAll(ProductSearchCondition searchCondition) {
-        return nameEq(searchCondition.getName())
-            .and(sellerEq(searchCondition.getSeller()))
-            .and(categoryEq(searchCondition.getCategory()))
+    private BooleanBuilder searchedByAllForAdmin(ProductSearchCondition searchCondition) {
+        return nameContains(searchCondition.getName())
+            .and(sellerContains(searchCondition.getSeller()))
             .and(regionEq(searchCondition.getRegion()))
-            .and(statusEq(searchCondition.getStatus()));
+            .and(statusEq(searchCondition.getStatus()))
+            .and(categoryEq(searchCondition.getCategory()));
     }
 }
 

@@ -9,8 +9,8 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.service.board.BoardService;
-import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
+import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -71,14 +71,14 @@ public class BoardController {
         BoardResponse boardResponse = boardService.getByIdAndStatus(id, Status.ACTIVE);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getActiveBoardById(id));
 
-        EntityModel<BoardResponse> boardModel =
+        EntityModel<BoardResponse> responseModel =
             EntityModel.of(
                 boardResponse,
                 defaultLink.withSelfRel(),
-                defaultLink.withRel("modify-product"),
-                defaultLink.withRel("delete-product"));
+                defaultLink.withRel("modify-board"),
+                defaultLink.withRel("delete-board"));
 
-        return ResponseEntity.ok(boardModel);
+        return ResponseEntity.ok(responseModel);
     }
 
     @PatchMapping("/{id}")

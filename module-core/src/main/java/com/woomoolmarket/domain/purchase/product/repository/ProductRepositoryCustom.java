@@ -8,4 +8,7 @@ public interface ProductRepositoryCustom {
     List<Product> findByPriceRange(Integer minPrice, Integer maxPrice);
 
     List<Product> findByCondition(ProductSearchCondition searchCondition);
+
+    List<Product> findByConditionForAdmin(ProductSearchCondition searchCondition);
+
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.ProductService;
 import com.woomoolmarket.service.product.dto.request.CreateProductRequest;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
@@ -45,11 +46,12 @@ public class ProductController {
     private final PagedResourcesAssembler<ProductResponse> assembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getList(@PageableDefault Pageable pageable) {
-        List<ProductResponse> response = productService.getListByStatus(Status.ACTIVE);
-        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(response, pageable, response.size());
+    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getListBySearchConditionForMember(
+        ProductSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+        List<ProductResponse> productResponses = productService.getListBySearchConditionForMember(condition);
+        PageImpl<ProductResponse> responsePage = new PageImpl<>(productResponses, pageable, productResponses.size());
+        return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 
     @PostMapping
@@ -65,22 +67,22 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<ProductResponse>> get(@PathVariable Long id) {
-        ProductResponse productResponse = productService.findProductById(id);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).get(id));
+    public ResponseEntity<EntityModel<ProductResponse>> getById(@PathVariable Long id) {
+        ProductResponse productResponse = productService.getByIdAndStatus(id, Status.ACTIVE);
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getById(id));
 
-        EntityModel<ProductResponse> responseModel =
+        EntityModel<ProductResponse> productModel =
             EntityModel.of(
                 productResponse,
                 defaultLink.withSelfRel(),
                 defaultLink.withRel("modify-product"),
                 defaultLink.withRel("delete-product"));
 
-        return ResponseEntity.ok(responseModel);
+        return ResponseEntity.ok(productModel);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity edit(@PathVariable Long id,
+    public ResponseEntity editProduct(@PathVariable Long id,
         @Validated @RequestBody ModifyProductRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
@@ -88,45 +90,30 @@ public class ProductController {
         }
 
         ProductResponse productResponse = productService.edit(id, modifyRequest);
-        EntityModel<ProductResponse> responseModel =
-            EntityModel.of(productResponse, linkTo(methodOn(ProductController.class).get(id)).withSelfRel());
+        EntityModel<ProductResponse> productModel =
+            EntityModel.of(productResponse, linkTo(methodOn(ProductController.class).getById(id)).withSelfRel());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteSoftly(id);
         return ResponseEntity.noContent().build();
     }
 
 
     /* FOR ADMIN */
-    @GetMapping("/admin/all")
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getListByAdmin(@PageableDefault Pageable pageable) {
-        List<ProductResponse> responses = productService.getList();
-        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(responses, pageable, responses.size());
+    @GetMapping("/admin")
+    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getListBySearchConditionForAdmin(
+        ProductSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
-    }
-
-    @GetMapping("/admin/active")
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getActiveListByAdmin(@PageableDefault Pageable pageable) {
-        List<ProductResponse> responses = productService.getListByStatus(Status.ACTIVE);
-        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(responses, pageable, responses.size());
-
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
-    }
-
-    @GetMapping("/admin/inactive")
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getInactiveListByAdmin(@PageableDefault Pageable pageable) {
-        List<ProductResponse> responses = productService.getListByStatus(Status.INACTIVE);
-        PageImpl<ProductResponse> cacheResponse = new PageImpl<>(responses, pageable, responses.size());
-
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+        List<ProductResponse> productResponses = productService.getListBySearchConditionForAdmin(condition);
+        PageImpl<ProductResponse> responsePage = new PageImpl<>(productResponses, pageable, productResponses.size());
+        return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 }
 
 /*
-controller 계층 메서드 이름... 어떻게 지어야 잘 지은걸까?!
+어드민을 위한 메서드의 경우 다른 Controller 에 작성하는 것이 좋을듯
  */
