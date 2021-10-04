@@ -64,12 +64,12 @@ class ProductRepositoryImplTest {
     @DisplayName("모든 검색 값 동적 쿼리 조회")
     void searchByAllConditionsTest() {
         ProductSearchCondition searchCondition = ProductSearchCondition.builder()
-            .name("panda")
+            .name("pan")
             .seller("bear")
             .category(ProductCategory.FISH)
             .build();
 
-        List<Product> products = productRepository.findByCondition(searchCondition);
+        List<Product> products = productRepository.findByConditionForAdmin(searchCondition);
 
         for (Product product : products) {
             log.info("product => {}", product.getPrice());
