@@ -6,27 +6,27 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.time.LogExecutionTime;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
-import java.util.stream.Collectors;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,23 +63,18 @@ public class MemberController {
         return ResponseEntity.ok(responseModel);
     }
 
-    // createdUri, response body 에 있는 url 중복이지 않을까?
-    // -> created status code 만 반환하고 response body url 을 쓸까?
     @PostMapping
     public ResponseEntity joinMember(
         @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
-
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
-        MemberResponse memberResponse = memberService.joinAsMember(signUpRequest);
 
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
+        MemberResponse memberResponse = memberService.joinAsMember(signUpRequest);
+        EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
 
-        URI createUri = linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).toUri();
-
-        return ResponseEntity.created(createUri).body(responseModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberModel);
     }
 
     @PatchMapping("/{id}")
@@ -101,12 +96,19 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/deleted/{id}")
+    public ResponseEntity<Void> restoreMember(@PathVariable Long id) {
+        memberService.restore(id);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 
     /* FOR ADMIN */
     /* TODO Query 3방 해결하세요 */
-    //@Secured("ROLE_ADMIN")
-    @GetMapping("/admin-only/{id}")
-    public ResponseEntity<EntityModel<MemberResponse>> getMemberByAdmin(@PathVariable Long id) {
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<EntityModel<MemberResponse>> getOneForAdmin(@PathVariable Long id) {
+
         MemberResponse memberResponse = memberService.findMemberById(id);
         Long previousId = memberService.findPreviousId(id);
         Long nextId = memberService.findNextId(id);
@@ -120,59 +122,14 @@ public class MemberController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    //@Secured("ROLE_ADMIN")
-    @GetMapping("/admin-only/all")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembers(@PageableDefault Pageable pageable) {
-        Page<MemberResponse> pagedResponse = memberService.findAllMembers(pageable);
-        return ResponseEntity.ok(assembler.toModel(pagedResponse));
-    }
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/admin")
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getListBySearchConditionForAdmin(
+        MemberSearchCondition condition, @PageableDefault Pageable pageable) {
 
-    //@Secured("ROLE_ADMIN")
-    @GetMapping("/admin-only/active")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getActiveMembers(@PageableDefault Pageable pageRequest) {
-        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.ACTIVE, pageRequest);
-        return ResponseEntity.ok(assembler.toModel(pagedResponse));
-    }
-
-    //@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin-only/inactive")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getInactiveMembers(@PageableDefault Pageable pageRequest) {
-        Page<MemberResponse> pagedResponse = memberService.findMembersByStatus(Status.INACTIVE, pageRequest);
-        return ResponseEntity.ok(assembler.toModel(pagedResponse));
-    }
-
-    // Cache 적용 버전!!
-    @GetMapping("/admin-only/all-cache")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getAllMembersByCache(@PageableDefault Pageable pageable) {
-        PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findAllMembersByCache()
-            .stream()
-            .skip(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .collect(Collectors.toList()));
-
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
-    }
-
-    @GetMapping("/admin-only/active-cache")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getActiveMembersByCache(@PageableDefault Pageable pageable) {
-        PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findMembersByStatusAndCache(Status.ACTIVE)
-            .stream()
-            .skip(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .collect(Collectors.toList()));
-
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
-    }
-
-    @GetMapping("/admin-only/inactive-cache")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getInactiveMembersByCache(@PageableDefault Pageable pageable) {
-        PageImpl<MemberResponse> cacheResponse = new PageImpl<>(memberService.findMembersByStatusAndCache(Status.INACTIVE)
-            .stream()
-            .skip(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .collect(Collectors.toList()));
-
-        return ResponseEntity.ok(assembler.toModel(cacheResponse));
+        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
+        PageImpl<MemberResponse> responsePage = new PageImpl<>(memberResponses, pageable, memberResponses.size());
+        return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 }
 

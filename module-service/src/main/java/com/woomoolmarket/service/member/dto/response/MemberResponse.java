@@ -34,6 +34,6 @@ public class MemberResponse implements Serializable {
     private Authority authority;
     private Address address;
     private AuthProvider authProvider;
-    private Status memberStatus;
+    private Status status;
 
 }
