@@ -1,0 +1,24 @@
+== Leave Member
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+=== Request
+
+CURL:
+include::{snippets}/restore-member/curl-request.adoc[]
+
+HTTPie:
+include::{snippets}/restore-member/httpie-request.adoc[]
+
+Request Parameters:
+include::{snippets}/restore-member/request-body.adoc[]
+
+Request HTTP Example:
+include::{snippets}/restore-member/http-request.adoc[]
+
+=== Response
+
+Response HTTP Example:
+include::{snippets}/restore-member/http-response.adoc[]

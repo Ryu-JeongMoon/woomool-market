@@ -104,3 +104,9 @@ public class BoardService {
             .collect(Collectors.toList());
     }
 }
+
+/*
+1. CacheEvict 중복을 제거할 수 있을 것인가?
+2. reigister의 경우 캐시를 다 날릴 필요 없이 CachePut을 쓰면 어떨까?
+3. edit 의 경우도 마찬가지일까?
+ */

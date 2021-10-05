@@ -52,6 +52,10 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 class MemberControllerTest implements BeforeTestExecutionCallback {
 
+    private static final String USERNAME = "panda@naver.com";
+    private static final String PASSWORD = "123456";
+    private static Long MEMBER_ID = 1L;
+
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -77,10 +81,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .build();
     }
 
-    private static final String USERNAME = "panda@naver.com";
-    private static final String PASSWORD = "123456";
-    private static Long MEMBER_ID;
-
     @BeforeEach
     void initialize() {
         memberRepository.deleteAll();
@@ -93,7 +93,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        MEMBER_ID = memberService.joinAsMember(signUpRequest).getId();
+        memberService.joinAsMember(signUpRequest);
     }
 
     @Test
@@ -131,7 +131,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                     .content(objectMapper.writeValueAsString(signUpRequest)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(header().exists(HttpHeaders.LOCATION))
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
             .andExpect(jsonPath("email").value("pandabear@gogo.com"))
             .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
@@ -213,6 +212,18 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
     }
 
     @Test
+    @DisplayName("복구하면 201 내려준다")
+    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    void restoreTest() throws Exception {
+        mockMvc.perform(
+            get("/api/members/deleted/" + MEMBER_ID)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isCreated())
+            .andDo(print())
+            .andDo(document("restore-member"));
+    }
+
+    @Test
     @DisplayName("어드민 전용 단건 조회")
     @WithMockUser(username = "panda@gmail.com", roles = "ADMIN")
     void adminFindMemberTest() throws Exception {
@@ -223,10 +234,10 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long findResult = memberService.joinAsMember(signUpRequest).getId();
+        memberService.joinAsMember(signUpRequest);
 
         mockMvc.perform(
-                get("/api/members/admin-only/" + findResult)
+                get("/api/members/admin/2")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON))
             .andDo(print())
@@ -252,7 +263,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
         }
 
         mockMvc.perform(
-                get("/api/members/admin-only/all")
+                get("/api/members/admin")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andDo(print())
