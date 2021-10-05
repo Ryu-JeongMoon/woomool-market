@@ -55,13 +55,13 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity registerBoard(@Validated BoardRequest registerBoardRequest, BindingResult bindingResult)
-        throws JsonProcessingException {
+    public ResponseEntity registerBoard(
+        @Validated BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
-        boardService.register(registerBoardRequest);
+        boardService.register(boardRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
