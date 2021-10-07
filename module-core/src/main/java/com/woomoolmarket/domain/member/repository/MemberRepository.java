@@ -20,10 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     Optional<Member> findByNickname(String nickname);
 
-    @Query(value = "select m from Member m where m.status = :status",
-        countQuery = "select count(m.id) from Member m where m.status = :status")
-    Page<Member> findMembersByStatus(@Param("status") Status status, Pageable pageable);
+    Optional<Member> findByIdAndStatus(Long id, Status status);
 
-    @Query("select m from Member m where m.status = :status")
-    List<Member> findMembersByStatusAndCache(@Param("status") Status status);
 }
