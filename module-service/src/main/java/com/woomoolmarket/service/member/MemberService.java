@@ -50,7 +50,7 @@ public class MemberService {
     public MemberResponse findMemberById(Long id) {
         return memberRepository.findById(id)
             .map(memberResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
     }
 
     @Transactional
@@ -81,7 +81,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
         memberResponseMapper.toDto(member);
     }
@@ -91,7 +91,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void leaveSoftly(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND))
             .leave();
     }
 
@@ -99,7 +99,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void restore(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND))
             .restore();
     }
 
