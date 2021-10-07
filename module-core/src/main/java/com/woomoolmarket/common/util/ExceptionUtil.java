@@ -2,7 +2,7 @@ package com.woomoolmarket.common.util;
 
 public class ExceptionUtil {
 
-    public static final String USER_NOT_FOUND = "존재하지 않는 회원입니다";
+    public static final String MEMBER_NOT_FOUND = "존재하지 않는 회원입니다";
     public static final String DUPLICATED_USER = "이미 존재하는 회원 아이디입니다";
 
     public static final String PRODUCT_NOT_FOUND = "존재하지 않는 상품입니다";

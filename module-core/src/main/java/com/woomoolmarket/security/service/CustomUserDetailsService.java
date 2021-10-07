@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         return memberRepository.findByEmail(email)
             .map(this::createUserDetails)
-            .orElseThrow(() -> new UsernameNotFoundException(email + ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(email + ExceptionUtil.MEMBER_NOT_FOUND));
     }
 
     private User createUserDetails(Member member) {

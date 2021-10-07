@@ -42,7 +42,7 @@ public class OrderService {
     // Controller 에서 본인만 가능하도록 권한 설정 필요
     public Page<OrderResponse> findOrdersByMemberId(Long memberId, Pageable pageRequest) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
         return new PageImpl<>(orderRepository.findOrdersByMember(member, pageRequest)
             .stream()
@@ -54,7 +54,7 @@ public class OrderService {
     @Transactional
     public void orderOne(Long memberId, Long productId, int quantity) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
@@ -80,7 +80,7 @@ public class OrderService {
     @Transactional
     public void orderMultiples(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
             .receiver(member.getEmail())
@@ -88,7 +88,7 @@ public class OrderService {
             .phone(member.getPhone())
             .build();
 
-        List<OrderProduct> orderProducts = cartRepository.findAllByMember(member)
+        List<OrderProduct> orderProducts = cartRepository.findByMember(member)
             .parallelStream()
             .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getProduct().getPrice(), cart.getQuantity()))
             .collect(Collectors.toList());
@@ -100,7 +100,7 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        cartRepository.deleteAllByMemberId(memberId);
+        cartRepository.deleteByMember(member);
     }
 
     @Transactional

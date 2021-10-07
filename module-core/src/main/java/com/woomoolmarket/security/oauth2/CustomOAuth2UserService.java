@@ -64,6 +64,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Member editExistingMember(OAuth2Attributes attributes) {
         return memberRepository.findByEmail(attributes.getEmail())
             .map(member -> member.editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage()))
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.USER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
     }
 }
