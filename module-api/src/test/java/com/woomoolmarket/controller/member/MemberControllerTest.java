@@ -155,8 +155,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(status().isBadRequest());
     }
 
-    // 이거 왜 깨지는거지..
-    // -> Security Config 에서 /api/login 경로 허용 안 해줬기 때문!
     @Test
     @DisplayName("login 성공하면 200 내린다")
     void loginTest() throws Exception {
