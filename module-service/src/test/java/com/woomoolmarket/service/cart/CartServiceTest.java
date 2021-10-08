@@ -82,7 +82,7 @@ class CartServiceTest {
     @Test
     @DisplayName("장바구니 추가")
     void add() {
-        Long cartId = cartService.add(MEMBER_ID, PRODUCT_ID, 200);
+        Long cartId = cartService.add(MEMBER_ID, PRODUCT_ID, 20);
         CartResponse cartResponse = cartService.getById(cartId);
         assertThat(cartResponse).isNotNull();
     }
