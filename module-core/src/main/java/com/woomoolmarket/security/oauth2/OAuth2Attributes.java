@@ -27,8 +27,7 @@ public class OAuth2Attributes {
         this.profileImage = profileImage;
     }
 
-    public static OAuth2Attributes of(String registrationId, String userNameAttributeName,
-        Map<String, Object> attributes) {
+    public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
 
         switch (registrationId) {
             case "kakao":
@@ -107,8 +106,8 @@ public class OAuth2Attributes {
 
     public Member toEntity() {
         return Member.builder()
-            .nickname(nickname)
             .email(email)
+            .nickname(nickname)
             .profileImage(profileImage)
             .authority(Authority.ROLE_USER)
             .build();

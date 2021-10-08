@@ -7,6 +7,7 @@ import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.TokenProvider;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;

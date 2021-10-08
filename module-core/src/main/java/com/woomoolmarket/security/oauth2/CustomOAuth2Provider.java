@@ -11,7 +11,7 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
+                ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
             builder.scope("read:user", "user:email");
             builder.authorizationUri("https://github.com/login/oauth/authorize");
             builder.tokenUri("https://github.com/login/oauth/access_token");
@@ -27,7 +27,7 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                ClientAuthenticationMethod.CLIENT_SECRET_POST, DEFAULT_REDIRECT_URL);
+                ClientAuthenticationMethod.CLIENT_SECRET_POST);
             builder.scope("profile_image", "profile_nickname", "account_email");
             builder.authorizationUri("https://kauth.kakao.com/oauth/authorize");
             builder.tokenUri("https://kauth.kakao.com/oauth/token");
@@ -42,7 +42,7 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
+                ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
             builder.scope("name", "email", "profile_image");
             builder.authorizationUri("https://nid.naver.com/oauth2.0/authorize");
             builder.tokenUri("https://nid.naver.com/oauth2.0/token");
@@ -55,12 +55,11 @@ public enum CustomOAuth2Provider {
 
     private static final String DEFAULT_REDIRECT_URL = "{baseUrl}/{action}/oauth2/code/{registrationId}";
 
-    protected final ClientRegistration.Builder getBuilder(String registrationId, ClientAuthenticationMethod method,
-        String redirectUri) {
+    protected final ClientRegistration.Builder getBuilder(String registrationId, ClientAuthenticationMethod method) {
         ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(registrationId);
         builder.clientAuthenticationMethod(method);
         builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE);
-        builder.redirectUri(redirectUri);
+        builder.redirectUri(CustomOAuth2Provider.DEFAULT_REDIRECT_URL);
         return builder;
     }
 
