@@ -12,6 +12,7 @@ import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -48,6 +49,7 @@ public class MemberController {
     private final PagedResourcesAssembler<MemberResponse> assembler;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
@@ -103,8 +105,8 @@ public class MemberController {
 
     /* FOR ADMIN */
     /* TODO Query 3방 해결하세요 */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<MemberResponse>> getOneForAdmin(@PathVariable Long id) {
 
         MemberResponse memberResponse = memberService.findMemberById(id);
@@ -120,8 +122,8 @@ public class MemberController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getListBySearchConditionForAdmin(
         MemberSearchCondition condition, @PageableDefault Pageable pageable) {
 
