@@ -6,22 +6,17 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
-import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
+import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
-import com.woomoolmarket.service.order.dto.request.ModifyOrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
-import com.woomoolmarket.service.order.mapper.ModifyOrderRequestMapper;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,19 +30,14 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
-
     private final OrderResponseMapper orderResponseMapper;
-    private final ModifyOrderRequestMapper modifyRequestMapper;
 
     // Controller 에서 본인만 가능하도록 권한 설정 필요
-    public Page<OrderResponse> findOrdersByMemberId(Long memberId, Pageable pageRequest) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
-
-        return new PageImpl<>(orderRepository.findOrdersByMember(member, pageRequest)
+    public List<OrderResponse> getListByMemberId(Long memberId) {
+        return orderRepository.findByMemberId(memberId)
             .stream()
             .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList());
     }
 
     // 단건 주문
@@ -104,14 +94,6 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse edit(Long orderId, ModifyOrderRequest modifyRequest) {
-        Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND));
-        modifyRequestMapper.updateFromDto(modifyRequest, order);
-        return orderResponseMapper.toDto(order);
-    }
-
-    @Transactional
     public void cancel(Long orderId) {
         orderRepository.findById(orderId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND))
@@ -120,38 +102,11 @@ public class OrderService {
 
 
     /* FOR ADMIN */
-    public OrderResponse findOrder(Long id) {
-        return orderRepository.findById(id)
-            .map(orderResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.ORDER_NOT_FOUND));
-    }
-
-    public Page<OrderResponse> findAllOrders(Pageable pageRequest) {
-        return new PageImpl<>(orderRepository.findAll(pageRequest)
+    public List<OrderResponse> getListBySearchCondition(OrderSearchCondition condition) {
+        return orderRepository.findByConditionForAdmin(condition)
             .stream()
             .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList()));
-    }
-
-    public Page<OrderResponse> findAllActiveOrders(Pageable pageRequest) {
-        return new PageImpl<>(orderRepository.findAllActive(pageRequest)
-            .stream()
-            .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList()));
-    }
-
-    public Page<OrderResponse> findAllInactiveOrders(Pageable pageRequest) {
-        return new PageImpl<>(orderRepository.findAllInactive(pageRequest)
-            .stream()
-            .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList()));
-    }
-
-    public Page<OrderResponse> findOrdersByOrderStatus(OrderStatus orderStatus, Pageable pageRequest) {
-        return new PageImpl<>(orderRepository.findOrdersByOrderStatus(orderStatus, pageRequest)
-            .stream()
-            .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList());
     }
 }
 

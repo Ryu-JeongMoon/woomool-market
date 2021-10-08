@@ -1,13 +1,13 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,13 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Pageable;
 
 @Log4j2
 @DataJpaTest
 @Import(TestConfig.class)
 class OrderRepositoryTest {
 
+    private static Long MEMBER_ID;
+    private static Long ORDER_ID;
     @Autowired
     OrderRepository orderRepository;
     @Autowired
@@ -39,15 +40,30 @@ class OrderRepositoryTest {
             .member(member)
             .build();
 
-        memberRepository.save(member);
-        orderRepository.save(order);
+        MEMBER_ID = memberRepository.save(member).getId();
+        ORDER_ID = orderRepository.save(order).getId();
     }
 
     @Test
-    @DisplayName("status 조건에 따라 다른 값 나온다")
-    void findOrdersTest() {
-        Order order = orderRepository.findOrdersByOrderStatus(OrderStatus.ONGOING, Pageable.unpaged())
-            .getContent().get(0);
+    @DisplayName("주문 상태 코드로 조회")
+    void findByConditionForAdmin_Status() {
+        OrderSearchCondition condition = OrderSearchCondition.builder()
+            .orderStatus(OrderStatus.ONGOING)
+            .build();
+        Order order = orderRepository.findByConditionForAdmin(condition).get(0);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ONGOING);
+    }
+
+    @Test
+    @DisplayName("회원 번호로 조회")
+    void findByConditionForAdmin_Id() {
+        OrderSearchCondition condition = OrderSearchCondition.builder()
+            .orderStatus(OrderStatus.ONGOING)
+            .email("pan")
+            .memberId(MEMBER_ID)
+            .build();
+
+        List<Order> orders = orderRepository.findByConditionForAdmin(condition);
+        assertThat(orders.size()).isEqualTo(1);
     }
 }
