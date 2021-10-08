@@ -12,7 +12,6 @@ import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -49,7 +48,7 @@ public class MemberController {
     private final PagedResourcesAssembler<MemberResponse> assembler;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
@@ -91,7 +90,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity leaveMember(@PathVariable Long id) {
+    public ResponseEntity<Void> leaveMember(@PathVariable Long id) {
         memberService.leaveSoftly(id);
         return ResponseEntity.noContent().build();
     }
