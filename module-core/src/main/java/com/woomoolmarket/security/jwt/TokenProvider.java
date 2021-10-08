@@ -67,18 +67,18 @@ public class TokenProvider implements InitializingBean {
             .build();
     }
 
-    private String createRefreshToken(long currentTime) {
-        return Jwts.builder()
-            .setExpiration(new Date(currentTime + REFRESH_TOKEN_EXPIRE_TIME))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
-    }
-
     private String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate) {
         return Jwts.builder()
             .setSubject(authentication.getName())
             .claim(AUTHORITIES_KEY, authorities)
             .setExpiration(accessTokenExpireDate)
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+    }
+
+    private String createRefreshToken(long currentTime) {
+        return Jwts.builder()
+            .setExpiration(new Date(currentTime + REFRESH_TOKEN_EXPIRE_TIME))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
     }
@@ -94,6 +94,11 @@ public class TokenProvider implements InitializingBean {
 
         User principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+    }
+
+    public Long getMemberIdFromToken(String accessToken) {
+        Claims claims = parseClaims(accessToken);
+        return Long.parseLong(claims.getSubject());
     }
 
     private Claims parseClaims(String accessToken) {
