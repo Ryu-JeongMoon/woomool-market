@@ -72,6 +72,9 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-devtools'
 
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'de.codecentric:spring-boot-admin-starter-client:2.5.2'
+
         implementation 'org.springframework.session:spring-session-core'
         implementation 'com.googlecode.json-simple:json-simple:1.1.1'
         implementation 'org.mapstruct:mapstruct:1.4.1.Final'

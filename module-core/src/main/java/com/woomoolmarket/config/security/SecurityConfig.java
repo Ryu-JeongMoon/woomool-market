@@ -1,14 +1,8 @@
 package com.woomoolmarket.config.security;
 
 
-import static com.woomoolmarket.domain.member.entity.AuthProvider.FACEBOOK;
-import static com.woomoolmarket.domain.member.entity.AuthProvider.GOOGLE;
-import static com.woomoolmarket.domain.member.entity.AuthProvider.KAKAO;
-import static com.woomoolmarket.domain.member.entity.AuthProvider.NAVER;
-
 import com.woomoolmarket.exception.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;
-import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
 import com.woomoolmarket.security.oauth2.CustomOAuth2Provider;
 import com.woomoolmarket.security.oauth2.CustomOAuth2UserService;
 import com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -35,8 +29,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -51,10 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final JwtSecurityConfig jwtSecurityConfig;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CorsConfig corsConfig;
     private final JwtAccessDeniedExceptionHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final CorsFilter corsFilter;
     private final Environment env;
 
     @Bean
@@ -108,8 +99,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
             .csrf().disable()
-            .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -128,15 +117,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/hello", "/api/authenticate", "/api/auth/**", "/api/members",
                 "/h2-console/**", "/xss", "/api/member/admin-only/**", "/", "/oauth2/**", "/login")
             .permitAll()
-            .antMatchers("/facebook").hasAuthority(FACEBOOK.toString())
-            .antMatchers("/google").hasAuthority(GOOGLE.toString())
-            .antMatchers("/kakao").hasAuthority(KAKAO.toString())
-            .antMatchers("/naver").hasAuthority(NAVER.toString())
-//            .antMatchers("/api/members/admin-only/**").hasRole("ADMIN")
             .anyRequest().authenticated()
 
             .and()
             .apply(jwtSecurityConfig)
+            .and()
+            .apply(corsConfig)
 
             .and()
             .oauth2Login()
