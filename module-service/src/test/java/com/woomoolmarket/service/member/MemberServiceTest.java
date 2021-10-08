@@ -42,7 +42,7 @@ class MemberServiceTest {
     EntityManager em;
 
     @BeforeEach
-    void initialize() {
+    void init() {
         memberRepository.deleteAll();
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
 

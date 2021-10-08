@@ -76,6 +76,16 @@ public class ProductService {
             .delete();
     }
 
+    @Transactional
+    @Caching(evict = {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForMember", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForAdmin", allEntries = true)})
+    public void restore(Long id) {
+        productRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND))
+            .restore();
+    }
+
     /* FOR ADMIN */
     @Cacheable(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForAdmin", unless = "#result==null")
     public List<ProductResponse> getListBySearchConditionForAdmin(ProductSearchCondition searchCondition) {
