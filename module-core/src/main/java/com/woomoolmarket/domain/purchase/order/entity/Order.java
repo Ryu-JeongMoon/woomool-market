@@ -62,11 +62,11 @@ public class Order extends BaseTimeEntity {
     }
 
     public void cancel() {
-        if (this.orderStatus == OrderStatus.DELIVERED) {
+        if (orderStatus == OrderStatus.DELIVERED) {
             throw new IllegalArgumentException(ExceptionUtil.CANNOT_CANCEL);
         }
 
-        this.orderStatus = OrderStatus.CANCELED;
+        orderStatus = OrderStatus.CANCELED;
         orderProducts.forEach(OrderProduct::cancelOrder);
     }
 }

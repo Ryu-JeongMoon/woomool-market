@@ -14,7 +14,6 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,7 +25,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Log4j2
 @RestController
 @LogExecutionTime
 @RequiredArgsConstructor
@@ -105,7 +103,7 @@ public class MemberController {
 
     /* FOR ADMIN */
     /* TODO Query 3방 해결하세요 */
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/{id}")
     public ResponseEntity<EntityModel<MemberResponse>> getOneForAdmin(@PathVariable Long id) {
 
@@ -122,7 +120,7 @@ public class MemberController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getListBySearchConditionForAdmin(
         MemberSearchCondition condition, @PageableDefault Pageable pageable) {

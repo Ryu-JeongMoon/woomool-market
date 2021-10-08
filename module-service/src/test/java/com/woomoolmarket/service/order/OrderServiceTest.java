@@ -9,22 +9,23 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
+import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
+import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
@@ -110,14 +111,19 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 내역 조회")
     void findOrdersByMemberIdTest() {
-        assertThat(orderService.findOrdersByMemberId(MEMBER_ID, Pageable.unpaged())).isNotNull();
+        assertThat(orderService.getListByMemberId(MEMBER_ID)).isNotNull();
     }
 
     @Test
-    @DisplayName("주문 정보 수정")
-    void editOrderTest() {
+    @DisplayName("주문 검색")
+    void getListBySearchConditionForAdmin() {
         orderService.orderOne(MEMBER_ID, PRODUCT_ID, 3);
-        OrderResponse order = orderService.findOrder(1L);
 
+        OrderSearchCondition condition = OrderSearchCondition.builder()
+            .orderStatus(OrderStatus.ONGOING)
+            .build();
+
+        List<OrderResponse> orderResponses = orderService.getListBySearchCondition(condition);
+        assertThat(orderResponses.size()).isEqualTo(1);
     }
 }
