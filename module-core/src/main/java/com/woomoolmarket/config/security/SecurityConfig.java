@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
+    private final JwtSecurityConfig jwtSecurityConfig;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
@@ -45,10 +46,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
             .and()
+            .apply(jwtSecurityConfig)
+
+            .and()
             .authorizeRequests()
-            .antMatchers("/api/members", "/api/auth/**", "/h2-console/**", "/xss", "/", "/oauth2/**", "/login", "/logout")
+            .antMatchers("/api/members", "/api/auth/**", "/", "/oauth2/**")
             .permitAll()
             .anyRequest()
             .authenticated();
     }
 }
+
+/*
+여기서 jwtSecurityConfig apply 안 해주면 적용 안 되네!!
+다른 놈들도 마찬가지인가?
+ */

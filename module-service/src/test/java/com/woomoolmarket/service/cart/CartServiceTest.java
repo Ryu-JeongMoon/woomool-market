@@ -11,6 +11,7 @@ import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import java.util.List;
+import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,8 @@ class CartServiceTest {
     ProductRepository productRepository;
     @Autowired
     CartService cartService;
+    @Autowired
+    EntityManager em;
 
     @BeforeEach
     void init() {
@@ -59,6 +62,10 @@ class CartServiceTest {
 
         MEMBER_ID = memberRepository.save(member).getId();
         PRODUCT_ID = productRepository.save(product).getId();
+
+        em.flush();
+        em.clear();
+
         CART_ID = cartRepository.save(cart).getId();
     }
 

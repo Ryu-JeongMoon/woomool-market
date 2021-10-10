@@ -44,7 +44,7 @@ public class CartService {
     }
 
     @Transactional
-    public Long add(Long memberId, Long productId, int quantity) {
+    public Long add(Long memberId, Long productId, Integer quantity) {
         Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
