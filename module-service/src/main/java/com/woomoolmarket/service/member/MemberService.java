@@ -87,6 +87,7 @@ public class MemberService {
         memberResponseMapper.toDto(member);
     }
 
+    // TODO 멱등성을 위한 수정
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)

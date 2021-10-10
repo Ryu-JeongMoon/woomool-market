@@ -48,7 +48,7 @@ public class MemberController {
     private final PagedResourcesAssembler<MemberResponse> assembler;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
@@ -131,5 +131,3 @@ public class MemberController {
         return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 }
-
-/* cache 적용 버전만 사용할지 일단 두개 공존시키고 나중에 정리할지 결정 */

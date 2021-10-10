@@ -15,4 +15,6 @@ public class ExceptionUtil {
 
     public static final String CART_NOT_FOUND = "존재하지 않는 장바구니입니다";
 
+    public static final String REFRESH_TOKEN_NOT_FOUND = "유효하지 않은 토큰입니다";
+    public static final String USER_NOT_LOGIN = "로그아웃 된 사용자입니다";
 }

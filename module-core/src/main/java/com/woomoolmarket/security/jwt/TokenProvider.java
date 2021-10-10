@@ -1,20 +1,21 @@
 package com.woomoolmarket.security.jwt;
 
+import com.woomoolmarket.redis.RedisUtil;
 import com.woomoolmarket.security.dto.TokenResponse;
+import com.woomoolmarket.security.dto.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,17 +23,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
+    private static final String BEARER_TYPE = "Bearer";
     private static final String AUTHORITIES_KEY = "auth";
-    private static final String BEARER_TYPE = "bearer";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+
+    private final RedisUtil redisUtil;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -55,15 +61,16 @@ public class TokenProvider implements InitializingBean {
         Date currentDate = new Date();
         long currentTime = currentDate.getTime();
         Date accessTokenExpireDate = new Date(currentTime + ACCESS_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpireDate = new Date(currentTime + REFRESH_TOKEN_EXPIRE_TIME);
 
         String accessToken = createAccessToken(authentication, authorities, accessTokenExpireDate);
-        String refreshToken = createRefreshToken(currentTime);
+        String refreshToken = createRefreshToken(refreshTokenExpireDate);
 
         return TokenResponse.builder()
             .grantType(BEARER_TYPE)
             .accessToken(accessToken)
-            .accessTokenExpiresIn(REFRESH_TOKEN_EXPIRE_TIME)
             .refreshToken(refreshToken)
+            .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME)
             .build();
     }
 
@@ -76,9 +83,9 @@ public class TokenProvider implements InitializingBean {
             .compact();
     }
 
-    private String createRefreshToken(long currentTime) {
+    private String createRefreshToken(Date refreshTokenExpireDate) {
         return Jwts.builder()
-            .setExpiration(new Date(currentTime + REFRESH_TOKEN_EXPIRE_TIME))
+            .setExpiration(refreshTokenExpireDate)
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
     }
@@ -92,13 +99,8 @@ public class TokenProvider implements InitializingBean {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        UserPrincipal principal = new UserPrincipal(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
-    }
-
-    public Long getMemberIdFromToken(String accessToken) {
-        Claims claims = parseClaims(accessToken);
-        return Long.parseLong(claims.getSubject());
     }
 
     private Claims parseClaims(String accessToken) {
@@ -113,23 +115,31 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
+    public boolean validate(String token) {
+        return !isBlocked(token) && isValid(token);
+    }
+
+    // redis block list 에 해당 토큰 있는지 확인
+    private boolean isBlocked(String token) {
+        return StringUtils.hasText(token) && StringUtils.hasText(redisUtil.getHashData("logout", token));
+    }
+
     // 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String token) {
+    private boolean isValid(String token) {
         try {
             Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.debug("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.debug("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.debug("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.debug("JWT 토큰이 잘못되었습니다.");
+        } catch (Exception e) {
+            log.error(e.getStackTrace());
         }
         return false;
+    }
+
+    public String resolveTokenFrom(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        return StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE) ? bearerToken.substring(7) : null;
     }
 }

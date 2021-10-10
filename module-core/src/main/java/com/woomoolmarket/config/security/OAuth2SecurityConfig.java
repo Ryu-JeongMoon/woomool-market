@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistration.Builder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -50,9 +51,9 @@ public class OAuth2SecurityConfig extends SecurityConfigurerAdapter<DefaultSecur
 
         switch (client) {
             case "google":
-                return CommonOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CustomOAuth2Provider.GOOGLE.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
             case "facebook":
-                return CommonOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
+                return CustomOAuth2Provider.FACEBOOK.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
             case "github":
                 return CustomOAuth2Provider.GITHUB.getBuilder(client).clientId(clientId).clientSecret(clientSecret).build();
             case "naver":
@@ -63,7 +64,7 @@ public class OAuth2SecurityConfig extends SecurityConfigurerAdapter<DefaultSecur
                 return null;
         }
     }
-
+    
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http

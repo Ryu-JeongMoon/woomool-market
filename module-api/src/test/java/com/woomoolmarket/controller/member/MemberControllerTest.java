@@ -98,7 +98,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("회원조회 성공")
-    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    @WithMockUser(username = USERNAME, roles = "USER")
     void findMemberTest() throws Exception {
         mockMvc.perform(
                 get("/api/members/1")
@@ -179,7 +179,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("수정하면 201 내려준다")
-    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    @WithMockUser(username = USERNAME, roles = "USER")
     void modifyTest() throws Exception {
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .nickname("kcin")
@@ -199,7 +199,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("탈퇴하면 204 내려준다")
-    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    @WithMockUser(username = USERNAME, roles = "USER")
     void leaveTest() throws Exception {
         mockMvc.perform(
                 delete("/api/members/" + MEMBER_ID)
@@ -211,7 +211,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("복구하면 201 내려준다")
-    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    @WithMockUser(username = USERNAME, roles = "USER")
     void restoreTest() throws Exception {
         mockMvc.perform(
             get("/api/members/deleted/" + MEMBER_ID)
@@ -223,7 +223,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("어드민 전용 단건 조회")
-    @WithMockUser(username = "panda@gmail.com", roles = "ADMIN")
+    @WithMockUser(username = USERNAME, roles = "ADMIN")
     void adminFindMemberTest() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
             .email("panda@gmail.com")
@@ -249,7 +249,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("어드민 전용 전체 조회")
-    @WithMockUser(username = "panda@gmail.com", roles = "ADMIN")
+    @WithMockUser(username = USERNAME, roles = "ADMIN")
     void adminFindMembersTest() throws Exception {
         for (int i = 0; i < 5; i++) {
             SignUpRequest signUpRequest = SignUpRequest.builder()

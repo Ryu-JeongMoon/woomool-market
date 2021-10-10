@@ -9,7 +9,7 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.ProductService;
-import com.woomoolmarket.service.product.dto.request.CreateProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import java.util.List;
@@ -55,7 +55,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity create(@Validated @RequestBody CreateProductRequest createRequest, BindingResult bindingResult)
+    public ResponseEntity create(@Validated @RequestBody ProductRequest createRequest, BindingResult bindingResult)
         throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {

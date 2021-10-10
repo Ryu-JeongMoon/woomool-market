@@ -10,7 +10,7 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
-import com.woomoolmarket.service.product.dto.request.CreateProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
@@ -108,7 +108,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 생성 성공")
     void create() {
-        CreateProductRequest createProductRequest = CreateProductRequest.builder()
+        ProductRequest productRequest = ProductRequest.builder()
             .name("dog")
             .price(15000)
             .seller("postman")
@@ -116,7 +116,7 @@ class ProductServiceTest {
             .description("mung mung")
             .region(Region.CHUNGCHEONGBUKDO)
             .productCategory(ProductCategory.CEREAL).build();
-        productService.create(createProductRequest);
+        productService.create(productRequest);
 
         assertThat(productRepository.findById(3L).get()).isNotNull();
     }

@@ -7,7 +7,7 @@ import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
-import com.woomoolmarket.service.product.dto.request.CreateProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ModifyProductRequestMapper;
@@ -50,7 +50,7 @@ public class ProductService {
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForMember", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForAdmin", allEntries = true)})
-    public void create(CreateProductRequest productRequest) {
+    public void create(ProductRequest productRequest) {
         Product product = productRequestMapper.toEntity(productRequest);
         productRepository.save(product);
     }
