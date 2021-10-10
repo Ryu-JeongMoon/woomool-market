@@ -1,6 +1,5 @@
 package com.woomoolmarket.redis.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +19,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @PropertySource("classpath:application.yml") // 아 이자식 땜에 계속 안 됐넹
 public class RedisConfig {
 
-    private final ObjectMapper objectMapper;
     @Value("${spring.redis.port}")
     public int port;
     @Value("${spring.redis.host}")

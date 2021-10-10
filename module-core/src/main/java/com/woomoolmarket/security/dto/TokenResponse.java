@@ -1,5 +1,7 @@
 package com.woomoolmarket.security.dto;
 
+import java.io.Serializable;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
+public class TokenResponse implements Serializable {
 
     private String grantType;
     private String accessToken;
     private String refreshToken;
-    private Long accessTokenExpiresIn;
+    private long accessTokenExpiresIn;
 
 }

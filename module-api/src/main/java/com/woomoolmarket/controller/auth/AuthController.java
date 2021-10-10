@@ -6,9 +6,11 @@ import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,9 +42,22 @@ public class AuthController {
         return cookie;
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        authService.logout(request);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/reissue")
     public ResponseEntity<TokenResponse> reissue(@RequestBody TokenRequest tokenRequest) {
         return ResponseEntity.ok(authService.reissue(tokenRequest));
     }
 }
 
+
+/*
+logout 어떻게 구현할 것인고?
+레디스에다가 액세스 토큰 넣고 로그인 과정에서 확인해가지고 있으면 거부?
+
+아니면 accessToken 값 자체를 null 로 바꿔서 요청와도 토큰 값이 다르니까 거부
+ */

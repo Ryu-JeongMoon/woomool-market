@@ -30,9 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserPrincipal createUserDetails(Member member) {
-        List<GrantedAuthority> authorities =
-            Collections.singletonList(new SimpleGrantedAuthority(member.getAuthority().toString()));
-
-        return new UserPrincipal(member.getId(), member.getEmail(), member.getPassword(), authorities);
+        return UserPrincipal.of(member);
     }
 }

@@ -14,34 +14,29 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @RequiredArgsConstructor
 public class UserPrincipal implements OAuth2User, UserDetails {
 
-    private final Long id;
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public static UserPrincipal create(Member member) {
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    public static UserPrincipal of(Member member) {
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(member.getAuthorityKey()));
 
         return new UserPrincipal(
-            member.getId(),
             member.getEmail(),
             member.getPassword(),
             authorities
         );
     }
 
-    public static UserPrincipal create(Member member, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(member);
+    public static UserPrincipal of(Member member, Map<String, Object> attributes) {
+        UserPrincipal userPrincipal = UserPrincipal.of(member);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
+    @Override
+    public String getUsername() {
         return email;
     }
 
@@ -51,8 +46,22 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getName() {
+        return String.valueOf(email);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 
     @Override
@@ -73,24 +82,5 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
-
-    @Override
-    public String getName() {
-        return String.valueOf(email);
     }
 }

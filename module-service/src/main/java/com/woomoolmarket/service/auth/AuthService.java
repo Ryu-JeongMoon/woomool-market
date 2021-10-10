@@ -1,13 +1,16 @@
 package com.woomoolmarket.service.auth;
 
+import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.token.entiy.RefreshToken;
 import com.woomoolmarket.domain.token.repository.RefreshTokenRepository;
+import com.woomoolmarket.redis.RedisUtil;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.TokenProvider;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -19,9 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RedisUtil redisUtil;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public TokenResponse login(LoginRequest loginRequest) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
@@ -46,10 +50,16 @@ public class AuthService {
         return tokenResponse;
     }
 
+    // 레디스에 액세스 토큰 넣기
+    public void logout(HttpServletRequest request) {
+        String accessToken = tokenProvider.resolveTokenFrom(request);
+        redisUtil.setHashData("logout", accessToken, accessToken);
+    }
+
     public TokenResponse reissue(TokenRequest tokenRequest) {
         // 1. Refresh Token 검증
-        if (!tokenProvider.validateToken(tokenRequest.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
+        if (!tokenProvider.validate(tokenRequest.getRefreshToken())) {
+            throw new AccessDeniedException(ExceptionUtil.REFRESH_TOKEN_NOT_FOUND);
         }
 
         // 2. Access Token 에서 Member ID 가져오기
@@ -57,11 +67,11 @@ public class AuthService {
 
         // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-            .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+            .orElseThrow(() -> new AccessDeniedException(ExceptionUtil.USER_NOT_LOGIN));
 
         // 4. Refresh Token 일치하는지 검사
         if (!refreshToken.getValue().equals(tokenRequest.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+            throw new AccessDeniedException(ExceptionUtil.REFRESH_TOKEN_NOT_FOUND);
         }
 
         // 5. 새로운 토큰 생성
