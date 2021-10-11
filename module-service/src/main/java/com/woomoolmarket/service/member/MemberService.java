@@ -1,5 +1,6 @@
 package com.woomoolmarket.service.member;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -81,18 +82,16 @@ public class MemberService {
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
-        memberResponseMapper.toDto(member);
     }
 
-    // TODO 멱등성을 위한 수정
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void leaveSoftly(Long id) {
-        memberRepository.findById(id)
+        memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND))
             .leave();
     }
@@ -100,7 +99,7 @@ public class MemberService {
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void restore(Long id) {
-        memberRepository.findById(id)
+        memberRepository.findByIdAndStatus(id, Status.INACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND))
             .restore();
     }
