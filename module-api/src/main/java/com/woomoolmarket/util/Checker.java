@@ -1,5 +1,6 @@
 package com.woomoolmarket.util;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -19,7 +20,7 @@ public class Checker {
     private final MemberRepository memberRepository;
 
     public boolean isSelf(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

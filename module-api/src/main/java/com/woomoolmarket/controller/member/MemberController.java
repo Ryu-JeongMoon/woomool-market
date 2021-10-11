@@ -11,10 +11,11 @@ import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
+import com.woomoolmarket.util.PageUtil;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -77,6 +78,7 @@ public class MemberController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity editMemberInfo(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest,
         BindingResult bindingResult) throws JsonProcessingException {
 
@@ -90,12 +92,14 @@ public class MemberController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> leaveMember(@PathVariable Long id) {
         memberService.leaveSoftly(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/deleted/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> restoreMember(@PathVariable Long id) {
         memberService.restore(id);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -127,7 +131,7 @@ public class MemberController {
         MemberSearchCondition condition, @PageableDefault Pageable pageable) {
 
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        PageImpl<MemberResponse> responsePage = new PageImpl<>(memberResponses, pageable, memberResponses.size());
+        Page<MemberResponse> responsePage = PageUtil.toPage(memberResponses, pageable);
         return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 }
