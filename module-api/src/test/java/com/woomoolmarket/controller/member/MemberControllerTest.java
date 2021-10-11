@@ -211,8 +211,10 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
 
     @Test
     @DisplayName("복구하면 201 내려준다")
-    @WithMockUser(username = USERNAME, roles = "USER")
+    @WithMockUser(username = USERNAME, roles = "ADMIN")
     void restoreTest() throws Exception {
+        memberService.leaveSoftly(MEMBER_ID);
+
         mockMvc.perform(
             get("/api/members/deleted/" + MEMBER_ID)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
