@@ -12,9 +12,10 @@ import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
+import com.woomoolmarket.util.PageUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -24,6 +25,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,11 +52,27 @@ public class BoardController {
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
         List<BoardResponse> boardResponses = boardService.getListBySearchCondition(condition);
-        PageImpl<BoardResponse> responsePage = new PageImpl<>(boardResponses, pageable, boardResponses.size());
+        Page<BoardResponse> responsePage = PageUtil.toPage(boardResponses, pageable);
         return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 
+    @PatchMapping("/{id}")
+    @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
+    public ResponseEntity editBoardInfo(@PathVariable Long id,
+        @Validated @RequestBody ModifyBoardRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
+        }
+
+        BoardResponse boardResponse = boardService.edit(id, modifyRequest);
+        EntityModel<BoardResponse> boardModel =
+            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getActiveBoardById(id)).withSelfRel());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
+    }
+
     @PostMapping
+    @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
     public ResponseEntity registerBoard(
         @Validated BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
@@ -81,27 +99,15 @@ public class BoardController {
         return ResponseEntity.ok(responseModel);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity editBoardInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyBoardRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
-
-        BoardResponse boardResponse = boardService.edit(id, modifyRequest);
-        EntityModel<BoardResponse> boardModel =
-            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getActiveBoardById(id)).withSelfRel());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
-    }
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
         boardService.deleteSoftly(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/deleted/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> restoreBoard(@PathVariable Long id) {
         boardService.restore(id);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -110,16 +116,12 @@ public class BoardController {
 
     /* FOR ADMIN */
     @GetMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getListBySearchConditionForAdmin(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
         List<BoardResponse> boardResponses = boardService.getListBySearchConditionForAdmin(condition);
-        PageImpl<BoardResponse> responsePage = new PageImpl<>(boardResponses, pageable, boardResponses.size());
+        Page<BoardResponse> responsePage = PageUtil.toPage(boardResponses, pageable);
         return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 }
-
-/*
-게시글 복구의 경우 URI 어떻게 받을 것인지?
-api/boards/deleted/{id} ??
- */

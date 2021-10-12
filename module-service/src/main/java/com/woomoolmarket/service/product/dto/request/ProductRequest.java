@@ -3,6 +3,8 @@ package com.woomoolmarket.service.product.dto.request;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import javax.persistence.Lob;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -17,25 +19,32 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductRequest {
 
+    @NotBlank
     @Pattern(regexp = "^[\\w]{4,24}$", message = "상품 이름은 6 - 24자 사이로 입력 가능합니다")
     private String name;
 
-    @Pattern(regexp = "^[\\w]{4,24}$", message = "이름은 6 - 24자 사이로 입력 가능합니다")
-    private String seller;
+    @Email
+    @NotBlank
+    @Size(min = 9, max = 64)@Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+    private String email;
 
     @Lob
+    @NotBlank
     private String description;
 
     @Size(max = 255)
     @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자지 입력 가능합니다")
     private String productImage;
 
-    @NotNull(message = "숫자만 입력 가능합니다")
+    @NotBlank(message = "숫자만 입력 가능합니다")
     private Integer price;
 
-    @NotNull(message = "숫자만 입력 가능합니다")
+    @NotBlank(message = "숫자만 입력 가능합니다")
     private Integer stock;
 
-    private ProductCategory productCategory;
+    @NotBlank
     private Region region;
+
+    @NotBlank
+    private ProductCategory productCategory;
 }

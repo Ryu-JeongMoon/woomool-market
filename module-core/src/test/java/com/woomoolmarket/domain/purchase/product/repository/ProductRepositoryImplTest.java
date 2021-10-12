@@ -26,21 +26,18 @@ class ProductRepositoryImplTest {
     void init() {
         Product product1 = Product.builder()
             .name("panda")
-            .seller("bear")
             .price(15000)
             .productCategory(ProductCategory.FISH)
             .build();
 
         Product product2 = Product.builder()
             .name("panda")
-            .seller("bear")
             .price(35000)
             .productCategory(ProductCategory.FISH)
             .build();
 
         Product product3 = Product.builder()
             .name("panda")
-            .seller("bear")
             .price(56000)
             .productCategory(ProductCategory.FISH)
             .build();
@@ -65,7 +62,6 @@ class ProductRepositoryImplTest {
     void searchByAllConditionsTest() {
         ProductSearchCondition searchCondition = ProductSearchCondition.builder()
             .name("pan")
-            .seller("bear")
             .category(ProductCategory.FISH)
             .build();
 

@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CartService {
 
     private final CartRepository cartRepository;
@@ -27,12 +27,14 @@ public class CartService {
     private final ProductRepository productRepository;
     private final CartResponseMapper cartResponseMapper;
 
+    @Transactional(readOnly = true)
     public CartResponse getById(Long cartId) {
         return cartRepository.findById(cartId)
             .map(cartResponseMapper::toDto)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.CART_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
     public List<CartResponse> getListByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
@@ -43,7 +45,6 @@ public class CartService {
             .collect(Collectors.toList());
     }
 
-    @Transactional
     public Long add(Long memberId, Long productId, Integer quantity) {
         Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
@@ -60,7 +61,6 @@ public class CartService {
         return cartRepository.save(cart).getId();
     }
 
-    @Transactional
     public void remove(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.CART_NOT_FOUND));
@@ -68,7 +68,6 @@ public class CartService {
         cartRepository.delete(cart);
     }
 
-    @Transactional
     public void removeAll(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
