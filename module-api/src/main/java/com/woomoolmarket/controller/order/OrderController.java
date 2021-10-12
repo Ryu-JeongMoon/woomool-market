@@ -5,8 +5,10 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.service.order.OrderService;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
+import com.woomoolmarket.util.PageUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,6 +18,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,15 +39,17 @@ public class OrderController {
     private final PagedResourcesAssembler<OrderResponse> assembler;
 
     @GetMapping("/{memberId}")
+    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<OrderResponse>>> getOrders(
         @PathVariable Long memberId, @PageableDefault Pageable pageable) {
 
         List<OrderResponse> orderResponses = orderService.getListByMemberId(memberId);
-        PageImpl<OrderResponse> responsePage = new PageImpl<>(orderResponses, pageable, orderResponses.size());
+        Page<OrderResponse> responsePage = PageUtil.toPage(orderResponses, pageable);
         return ResponseEntity.ok(assembler.toModel(responsePage));
     }
 
     @PostMapping("/{memberId}")
+    @PreAuthorize("@checker.isSelf(#memberId)")
     public ResponseEntity createOrder(@PathVariable Long memberId,
         @RequestParam(value = "productId", required = false, defaultValue = "0") Long productId, int quantity) {
         if (productId != 0) {
@@ -57,6 +62,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{memberId}/{orderId}")
+    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity cancelOrder(@PathVariable Long memberId, @PathVariable Long orderId) {
         orderService.cancel(orderId);
         return ResponseEntity.noContent().build();
@@ -64,21 +70,23 @@ public class OrderController {
 
 
     /* FOR ADMIN */
-    @GetMapping("/admin-only/{memberId}")
+    @GetMapping("/admin/{memberId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<OrderResponse>>> getOrdersByAdminAndMemberId(
         @PathVariable Long memberId, @PageableDefault Pageable pageable) {
 
         List<OrderResponse> orderResponses = orderService.getListByMemberId(memberId);
-        PageImpl<OrderResponse> responsePage = new PageImpl<>(orderResponses, pageable, orderResponses.size());
+        Page<OrderResponse> responsePage = PageUtil.toPage(orderResponses, pageable);
         return ResponseEntity.ok().body(assembler.toModel(responsePage));
     }
 
-    @GetMapping("/admin-only/all")
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<OrderResponse>>> getListBySearchConditionForAdmin(
         OrderSearchCondition condition, @PageableDefault Pageable pageable) {
 
         List<OrderResponse> orderResponses = orderService.getListBySearchCondition(condition);
-        PageImpl<OrderResponse> responsePage = new PageImpl<>(orderResponses, pageable, orderResponses.size());
+        Page<OrderResponse> responsePage = PageUtil.toPage(orderResponses, pageable);
         return ResponseEntity.ok().body(assembler.toModel(responsePage));
     }
 }

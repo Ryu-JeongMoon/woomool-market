@@ -48,7 +48,7 @@ class CartServiceTest {
 
         Product product = Product.builder()
             .name("fruit")
-            .seller("pandabear")
+            .member(member)
             .stock(500)
             .price(10000)
             .productCategory(ProductCategory.FRUIT)
@@ -64,7 +64,6 @@ class CartServiceTest {
         PRODUCT_ID = productRepository.save(product).getId();
 
         em.flush();
-        em.clear();
 
         CART_ID = cartRepository.save(cart).getId();
     }
@@ -89,7 +88,8 @@ class CartServiceTest {
     @Test
     @DisplayName("장바구니 추가")
     void add() {
-        Long cartId = cartService.add(MEMBER_ID, PRODUCT_ID, 20);
+        Integer quantity = 20;
+        Long cartId = cartService.add(MEMBER_ID, PRODUCT_ID, quantity);
         CartResponse cartResponse = cartService.getById(cartId);
         assertThat(cartResponse).isNotNull();
     }

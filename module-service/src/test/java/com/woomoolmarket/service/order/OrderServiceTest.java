@@ -65,7 +65,7 @@ class OrderServiceTest {
         MEMBER_ID = member.getId();
 
         Product product = productRepository.save(Product.builder()
-            .seller("panda")
+            .member(member)
             .name("bear")
             .price(15000)
             .region(Region.JEJUDO)

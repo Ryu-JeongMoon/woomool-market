@@ -4,8 +4,9 @@ import com.woomoolmarket.common.mapper.GenericMapper;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardResponseMapper extends GenericMapper<BoardResponse, Board> {
 
 }

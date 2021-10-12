@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ProductSearchCondition {
 
     private String name;
-    private String seller;
+    private String email;
     private Region region;
     private Status status;
     private ProductCategory category;

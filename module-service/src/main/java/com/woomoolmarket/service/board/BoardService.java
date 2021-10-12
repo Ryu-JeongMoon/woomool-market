@@ -8,9 +8,9 @@ import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
+import com.woomoolmarket.service.board.mapper.BoardRequestMapper;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import com.woomoolmarket.service.board.mapper.ModifyBoardMapper;
-import com.woomoolmarket.service.board.mapper.RegisterBoardMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
@@ -22,16 +22,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardResponseMapper boardResponseMapper;
 
-    private final RegisterBoardMapper registerBoardMapper;
+    private final BoardRequestMapper boardRequestMapper;
     private final ModifyBoardMapper modifyBoardRequestMapper;
 
+    @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByCondition", unless = "#result==null")
     public List<BoardResponse> getListBySearchCondition(BoardSearchCondition searchCondition) {
         return boardRepository.findByCondition(searchCondition)
@@ -40,29 +41,27 @@ public class BoardService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public BoardResponse getByIdAndStatus(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND));
     }
 
-    @Transactional
     public void increaseHit(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND))
             .changeHit();
     }
 
-    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
     public void register(BoardRequest boardRequest) {
-        Board board = registerBoardMapper.toEntity(boardRequest);
+        Board board = boardRequestMapper.toEntity(boardRequest);
         boardRepository.save(board);
     }
 
-    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
@@ -74,7 +73,6 @@ public class BoardService {
         return boardResponseMapper.toDto(board);
     }
 
-    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
@@ -84,7 +82,6 @@ public class BoardService {
             .delete();
     }
 
-    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
@@ -96,6 +93,7 @@ public class BoardService {
 
 
     /* FOR ADMIN */
+    @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", unless = "#result==null")
     public List<BoardResponse> getListBySearchConditionForAdmin(BoardSearchCondition condition) {
         return boardRepository.findByConditionForAdmin(condition)
@@ -106,7 +104,10 @@ public class BoardService {
 }
 
 /*
-1. CacheEvict 중복을 제거할 수 있을 것인가?
-2. reigister의 경우 캐시를 다 날릴 필요 없이 CachePut을 쓰면 어떨까?
-3. edit 의 경우도 마찬가지일까?
+하나의 로직 안에 Command, Query 겹쳐있지 않게 조회 로직에서 조회수 올리지 않고, 조회 후 increaseHit() 호출하도록 함
+멱등성 지켜주기 위해 ?
+-> delete, restore 호출할 때 Status 확인 후 로직 수행되게 함
+
+@checker.isSelfByBoardId 체크 로직에서 Status.ACTIVE 만 걸러 받도록 했으니 중복 수행되지 않게 서비스 단에서는 체크 안 해줘도 됨
+관리자를 위해서 중복으로 해줘야 하나?!
  */
