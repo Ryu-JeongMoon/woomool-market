@@ -24,6 +24,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -40,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @LogExecutionTime
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/boards", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(path = "/api/boards", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class BoardController {
 
     private final BoardService boardService;
@@ -54,33 +55,6 @@ public class BoardController {
         List<BoardResponse> boardResponses = boardService.getListBySearchCondition(condition);
         Page<BoardResponse> responsePage = PageUtil.toPage(boardResponses, pageable);
         return ResponseEntity.ok(assembler.toModel(responsePage));
-    }
-
-    @PatchMapping("/{id}")
-    @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity editBoardInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyBoardRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
-
-        BoardResponse boardResponse = boardService.edit(id, modifyRequest);
-        EntityModel<BoardResponse> boardModel =
-            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getActiveBoardById(id)).withSelfRel());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
-    }
-
-    @PostMapping
-    @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity registerBoard(
-        @Validated BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
-
-        boardService.register(boardRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}")
@@ -97,6 +71,33 @@ public class BoardController {
                 defaultLink.withRel("delete-board"));
 
         return ResponseEntity.ok(responseModel);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
+    public ResponseEntity registerBoard(
+        @Validated BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
+        }
+
+        boardService.register(boardRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
+    public ResponseEntity editBoardInfo(@PathVariable Long id,
+        @Validated @RequestBody ModifyBoardRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
+        }
+
+        BoardResponse boardResponse = boardService.edit(id, modifyRequest);
+        EntityModel<BoardResponse> boardModel =
+            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getActiveBoardById(id)).withSelfRel());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
     }
 
     @DeleteMapping("/{id}")
