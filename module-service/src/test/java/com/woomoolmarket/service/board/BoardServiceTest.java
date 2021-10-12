@@ -14,7 +14,6 @@ import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +36,9 @@ class BoardServiceTest {
     private static final String BOARD_2_CONTENT = "bear2";
     private static final String BOARD_3_TITLE = "panda3";
     private static final String BOARD_3_CONTENT = "bear3";
+    private static Long BOARD_1_ID;
+    private static Long BOARD_2_ID;
+    private static Long BOARD_3_ID;
 
     @Autowired
     BoardRepository boardRepository;
@@ -70,30 +72,30 @@ class BoardServiceTest {
         memberRepository.save(member2);
         em.flush();
 
-        BoardRequest board1 = BoardRequest.builder()
+        Board board1 = Board.builder()
             .member(member1)
             .title(BOARD_1_TITLE)
             .content(BOARD_1_CONTENT)
             .boardCategory(BoardCategory.QNA)
             .build();
 
-        BoardRequest board2 = BoardRequest.builder()
+        Board board2 = Board.builder()
             .member(member1)
             .title(BOARD_2_TITLE)
             .content(BOARD_2_CONTENT)
             .boardCategory(BoardCategory.FREE)
             .build();
 
-        BoardRequest board3 = BoardRequest.builder()
+        Board board3 = Board.builder()
             .member(member2)
             .title(BOARD_3_TITLE)
             .content(BOARD_3_CONTENT)
             .boardCategory(BoardCategory.NOTICE)
             .build();
 
-        boardService.register(board1);
-        boardService.register(board2);
-        boardService.register(board3);
+        BOARD_1_ID = boardRepository.save(board1).getId();
+        BOARD_2_ID = boardRepository.save(board2).getId();
+        BOARD_3_ID = boardRepository.save(board3).getId();
     }
 
     @Test
@@ -128,7 +130,7 @@ class BoardServiceTest {
     @Test
     @DisplayName("ID & STATUS 조건 검색")
     void getByIdAndStatus() {
-        BoardResponse boardResponse = boardService.getByIdAndStatus(1L, Status.ACTIVE);
+        BoardResponse boardResponse = boardService.getByIdAndStatus(BOARD_1_ID, Status.ACTIVE);
         assertThat(boardResponse.getTitle()).isEqualTo(BOARD_1_TITLE);
     }
 

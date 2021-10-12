@@ -21,9 +21,6 @@ public class ModifyProductRequest {
     @Pattern(regexp = "^[\\w]{4,24}$", message = "상품 이름은 6 - 24자 사이로 입력 가능합니다")
     private String name;
 
-    @Pattern(regexp = "^[\\w]{4,24}$", message = "이름은 6 - 24자 사이로 입력 가능합니다")
-    private String seller;
-
     @Lob
     private String description;
 
@@ -37,6 +34,6 @@ public class ModifyProductRequest {
     @Pattern(regexp = "^(\\d)$", message = "숫자만 입력 가능합니다")
     private int stock;
 
-    private ProductCategory productCategory;
     private Region region;
+    private ProductCategory productCategory;
 }

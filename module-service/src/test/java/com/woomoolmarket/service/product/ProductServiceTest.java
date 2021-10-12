@@ -10,8 +10,8 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
-import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
 import java.util.List;
@@ -57,7 +57,7 @@ class ProductServiceTest {
 
         Product product1 = Product.builder()
             .name("panda")
-            .seller("bear")
+            .member(member)
             .price(50000)
             .stock(3000)
             .productCategory(ProductCategory.CEREAL)
@@ -67,7 +67,7 @@ class ProductServiceTest {
 
         Product product2 = Product.builder()
             .name("tiger")
-            .seller("cat")
+            .member(member)
             .price(30000)
             .stock(5000)
             .productCategory(ProductCategory.FISH)
@@ -111,7 +111,6 @@ class ProductServiceTest {
         ProductRequest productRequest = ProductRequest.builder()
             .name("dog")
             .price(15000)
-            .seller("postman")
             .stock(900)
             .description("mung mung")
             .region(Region.CHUNGCHEONGBUKDO)
@@ -145,10 +144,10 @@ class ProductServiceTest {
     @DisplayName("검색 조건 - 판매자 이름으로 조회")
     void getListBySearchConditionForAdmin() {
         ProductSearchCondition condition = ProductSearchCondition.builder()
-            .seller("ca")
+            .email("pa")
             .build();
 
         List<ProductResponse> productResponses = productService.getListBySearchConditionForAdmin(condition);
-        assertThat(productResponses.size()).isEqualTo(1);
+        assertThat(productResponses.size()).isEqualTo(2);
     }
 }

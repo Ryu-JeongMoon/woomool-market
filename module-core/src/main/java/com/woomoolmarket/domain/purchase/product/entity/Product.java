@@ -4,14 +4,19 @@ import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,7 +36,11 @@ public class Product extends BaseEntity {
     private Long id;
 
     private String name;
-    private String seller;
+
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Member member;
+
     private String description;
     private String productImage;
 
@@ -50,9 +59,9 @@ public class Product extends BaseEntity {
     private Region region;
 
     @Builder
-    public Product(String seller, String name, Integer price, int stock, String description, String productImg,
+    public Product(Member member, String name, Integer price, int stock, String description, String productImg,
         ProductCategory productCategory, Region region) {
-        this.seller = seller;
+        this.member = member;
         this.name = name;
         this.price = price;
         this.stock = stock;

@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.product.repository;
 
+import static com.woomoolmarket.domain.member.entity.QMember.member;
 import static com.woomoolmarket.domain.purchase.product.entity.QProduct.product;
 
 import com.querydsl.core.BooleanBuilder;
@@ -30,6 +31,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     @Override
     public List<Product> findByCondition(ProductSearchCondition searchCondition) {
         return queryFactory.selectFrom(product)
+            .leftJoin(product.member, member)
+            .fetchJoin()
             .where(searchedByAll(searchCondition))
             .fetch();
     }
@@ -37,6 +40,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     @Override
     public List<Product> findByConditionForAdmin(ProductSearchCondition searchCondition) {
         return queryFactory.selectFrom(product)
+            .leftJoin(product.member, member)
+            .fetchJoin()
             .where(searchedByAllForAdmin(searchCondition))
             .fetch();
     }
@@ -58,8 +63,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return QueryDslUtil.nullSafeBuilder(() -> product.name.contains(name));
     }
 
-    private BooleanBuilder sellerContains(String seller) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.seller.contains(seller));
+    private BooleanBuilder emailContains(String email) {
+        return QueryDslUtil.nullSafeBuilder(() -> product.member.email.contains(email));
     }
 
     private BooleanBuilder regionEq(Region region) {
@@ -76,7 +81,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private BooleanBuilder searchedByAll(ProductSearchCondition searchCondition) {
         return nameContains(searchCondition.getName())
-            .and(sellerContains(searchCondition.getSeller()))
+            .and(emailContains(searchCondition.getEmail()))
             .and(regionEq(searchCondition.getRegion()))
             .and(statusEq(Status.ACTIVE))
             .and(categoryEq(searchCondition.getCategory()));
@@ -84,7 +89,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private BooleanBuilder searchedByAllForAdmin(ProductSearchCondition searchCondition) {
         return nameContains(searchCondition.getName())
-            .and(sellerContains(searchCondition.getSeller()))
+            .and(emailContains(searchCondition.getEmail()))
             .and(regionEq(searchCondition.getRegion()))
             .and(statusEq(searchCondition.getStatus()))
             .and(categoryEq(searchCondition.getCategory()));
