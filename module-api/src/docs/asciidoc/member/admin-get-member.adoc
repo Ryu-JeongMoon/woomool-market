@@ -1,0 +1,24 @@
+= Find Specific Member By Admin
+:toc: left
+:toclevels: 4
+
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+== Request
+
+=== CURL:
+include::{snippets}/member/admin-get-member/curl-request.adoc[]
+
+=== HTTPie:
+include::{snippets}/member/admin-get-member/httpie-request.adoc[]
+
+=== Request Parameters:
+include::{snippets}/member/admin-get-member/request-body.adoc[]
+
+=== Request HTTP Example:
+include::{snippets}/member/admin-get-member/http-request.adoc[]
+
+== Response
+=== Response HTTP Example:
+include::{snippets}/member/admin-get-member/http-response.adoc[]
