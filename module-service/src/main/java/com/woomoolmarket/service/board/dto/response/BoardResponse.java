@@ -24,3 +24,4 @@ public class BoardResponse {
     private int hit;
     private BoardCategory boardCategory;
 }
+// TODO replies 수정 필요

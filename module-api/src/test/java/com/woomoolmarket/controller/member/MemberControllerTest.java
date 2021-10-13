@@ -46,10 +46,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 @Log4j2
 @Transactional
+@SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
-@SpringBootTest
 class MemberControllerTest implements BeforeTestExecutionCallback {
 
     private static final String USERNAME = "panda@naver.com";
@@ -110,7 +110,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(jsonPath("email").value("panda@naver.com"))
             .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
             .andExpect(jsonPath("_links.self").exists())
-            .andDo(document("get-member"));
+            .andDo(document("member/get-member"));
     }
 
     @Test
@@ -135,7 +135,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(jsonPath("email").value("pandabear@gogo.com"))
             .andExpect(jsonPath("address").value(new Address("seoul", "yeonhui", "1234")))
             .andExpect(jsonPath("_links.self").exists())
-            .andDo(document("join-member"));
+            .andDo(document("member/join-member"));
     }
 
     @Test
@@ -174,7 +174,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(jsonPath("accessToken").exists())
             .andExpect(jsonPath("refreshToken").exists())
             .andExpect(jsonPath("accessTokenExpiresIn").exists())
-            .andDo(document("login-member"));
+            .andDo(document("member/login-member"));
     }
 
     @Test
@@ -194,7 +194,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                     .content(objectMapper.writeValueAsString(modifyRequest)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andDo(document("modify-member"));
+            .andDo(document("member/modify-member"));
     }
 
     @Test
@@ -206,7 +206,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNoContent())
             .andDo(print())
-            .andDo(document("leave-member"));
+            .andDo(document("member/leave-member"));
     }
 
     @Test
@@ -216,11 +216,11 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
         memberService.leaveSoftly(MEMBER_ID);
 
         mockMvc.perform(
-            get("/api/members/deleted/" + MEMBER_ID)
-                .accept(MediaType.APPLICATION_JSON_VALUE))
+                get("/api/members/deleted/" + MEMBER_ID)
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated())
             .andDo(print())
-            .andDo(document("restore-member"));
+            .andDo(document("member/restore-member"));
     }
 
     @Test
@@ -246,7 +246,7 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
             .andExpect(jsonPath("_links.self").exists())
             .andExpect(jsonPath("_links.previous-member").exists())
             .andExpect(jsonPath("_links.next-member").exists())
-            .andDo(document("admin-only-get-member"));
+            .andDo(document("member/admin-get-member"));
     }
 
     @Test
@@ -267,6 +267,6 @@ class MemberControllerTest implements BeforeTestExecutionCallback {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andDo(print())
-            .andDo(document("admin-only-get-members"));
+            .andDo(document("member/admin-get-members"));
     }
 }

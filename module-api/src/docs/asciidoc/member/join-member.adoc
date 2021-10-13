@@ -1,0 +1,23 @@
+= Join As a Member
+:toc: left
+:toclevels: 4
+
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+== Request
+=== CURL:
+include::{snippets}/member/join-member/curl-request.adoc[]
+
+=== HTTPie:
+include::{snippets}/member/join-member/httpie-request.adoc[]
+
+=== Request Parameters:
+include::{snippets}/member/join-member/request-body.adoc[]
+
+=== Request HTTP Example:
+include::{snippets}/member/join-member/http-request.adoc[]
+
+== Response
+=== Response HTTP Example:
+include::{snippets}/member/join-member/http-response.adoc[]
