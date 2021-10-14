@@ -6,6 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.woomoolmarket.errors.JsonBindingResultModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
+import org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 

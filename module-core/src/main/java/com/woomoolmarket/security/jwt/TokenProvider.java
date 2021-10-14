@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
+    private static final String REDIS_KEY_PREFIX = "logout:";
     private static final String BEARER_TYPE = "Bearer";
     private static final String AUTHORITIES_KEY = "auth";
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -121,7 +122,7 @@ public class TokenProvider implements InitializingBean {
 
     // redis block list 에 해당 토큰 있는지 확인
     private boolean isBlocked(String token) {
-        return StringUtils.hasText(token) && StringUtils.hasText(redisUtil.getHashData("logout", token));
+        return StringUtils.hasText(token) && StringUtils.hasText(redisUtil.getData(REDIS_KEY_PREFIX + token));
     }
 
     // 토큰의 유효성 + 만료일자 확인
