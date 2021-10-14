@@ -3,6 +3,7 @@ package com.woomoolmarket.controller.xss;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import com.woomoolmarket.ModuleApiApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = ModuleApiApplication.class)
 class XssTestControllerTest {
 
     @Autowired

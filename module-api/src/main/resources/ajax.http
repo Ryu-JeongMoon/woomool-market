@@ -12,6 +12,15 @@ GET https://localhost:8443/api/members
 ### XSS TEST
 GET https://localhost:8443/xss
 
+### LOGIN
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "panda123456@gmail.com",
+  "password": "1234"
+}
+
 ### SIGNUP
 POST https://localhost:8443/api/members
 Content-Type: application/json
