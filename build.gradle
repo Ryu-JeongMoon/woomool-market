@@ -27,6 +27,7 @@ repositories {
 configurations {
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude module: 'spring-boot-starter-tomcat'
     }
 }
 
@@ -53,6 +54,7 @@ subprojects {
         }
         all {
             exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            exclude module: 'spring-boot-starter-tomcat'
         }
     }
 
@@ -67,7 +69,10 @@ subprojects {
         implementation 'org.springframework.security.oauth:spring-security-oauth2'
         implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-undertow'
+        implementation ('org.springframework.boot:spring-boot-starter-web') {
+            exclude module: 'spring-boot-starter-tomcat'
+        }
         implementation 'org.springframework.boot:spring-boot-starter-log4j2'
         implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-devtools'
