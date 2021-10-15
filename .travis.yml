@@ -30,7 +30,7 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
     bucket: woomool-market
     region: ap-northeast-2
-    acl: public_read
+    acl: private
     wait_until_deployed: true
     skip_cleanup: true
     on:
