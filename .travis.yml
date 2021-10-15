@@ -32,6 +32,7 @@ deploy:
     region: ap-northeast-2
     acl: public_read
     wait_until_deployed: true
+    skip_cleanup: true
     on:
       repo: Ryu-JeongMoon/woomool-market
       branch: woomool-market-135
@@ -46,6 +47,7 @@ deploy:
     deployment_group: woomool-market-group
     region: ap-northeast-2
     wait_until_deployed: true
+    skip_cleanup: true
     on:
       repo: Ryu-JeongMoon/woomool-market
       branch: woomool-market-135
