@@ -19,7 +19,7 @@ before_install:
 script: "./gradlew -x test build --parallel"
 
 before_deploy:
-  - zip -r woomool-market/module-api/build/libs *
+  - zip -r woomool-market/module-api *
   - mkdir -p deploy
   - mv woomool-market.zip deploy/woomool-market.zip
 
