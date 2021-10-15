@@ -5,7 +5,8 @@ jdk:
 
 branches:
   only:
-    - develop, woomool-market-135
+    - develop
+    - woomool-market-135
 
 cache:
   directories:
