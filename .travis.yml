@@ -6,6 +6,7 @@ jdk:
 branches:
   only:
     - develop
+    - woomool-market-135
 
 cache:
   directories:
@@ -19,3 +20,22 @@ script: "./gradlew -x test build --parallel"
 
 notifications:
   slack: woomoolhq:4dinJbih6JoxnjuyIy9LqQxP
+
+before_deploy:
+  - zip -r woomool-market *
+  - mkdir -p deploy
+  - mv woomool-market.zip deploy/woomool-market.zip
+
+deploy:
+  - provider: s3
+    local_dir: deploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: woomool-market
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: public_read
+    wait-until-deployed: true
+    on:
+      repo: Ryu-JeongMoon/woomool-market
+      branch: develop, woomool-market-135
