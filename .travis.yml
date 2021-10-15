@@ -37,5 +37,19 @@ deploy:
       repo: Ryu-JeongMoon/woomool-market
       branch: develop, woomool-market-135
 
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: woomool-market
+    key: woomool-market.zip
+    bundle_type: zip
+    application: woomool-market
+    deployment_group: woomool-market-group
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      repo: Ryu-JeongMoon/woomool-market
+      branch: develop, woomool-market-135
+
 notifications:
   slack: woomoolhq:4dinJbih6JoxnjuyIy9LqQxP
