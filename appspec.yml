@@ -3,3 +3,8 @@ os: linux
 files:
   - source:  /
     destination: /home/ec2-user/app/travis/build/
+
+hooks:
+  AfterInstall:
+    - location: execute-deploy.sh
+      timeout: 180
