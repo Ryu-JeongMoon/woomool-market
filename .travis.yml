@@ -19,6 +19,7 @@ before_install:
 script: "./gradlew -x test build --parallel"
 
 before_deploy:
+  - mkdir -p before-deploy
   - cp scripts/*.sh before-deploy/
   - cp appspec.yml before-deploy/
   - cp module-api/build/libs/*.jar before-deploy/
