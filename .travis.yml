@@ -17,5 +17,42 @@ before_install:
 
 script: "./gradlew -x test build --parallel"
 
+before_deploy:
+  - mkdir -p before-deploy
+  - cp scripts/*.sh before-deploy/
+  - cp appspec.yml before-deploy/
+  - cp module-api/build/libs/*.jar before-deploy/
+  - cd before-deploy && zip -r before-deploy *
+  - cd ../ && mkdir -p deploy
+  - mv before-deploy/before-deploy.zip deploy/woomool-market.zip
+
+deploy:
+  - provider: s3
+    local_dir: deploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: woomool-market
+    region: ap-northeast-2
+    acl: private
+    wait_until_deployed: true
+    skip_cleanup: true
+    on:
+      repo: Ryu-JeongMoon/woomool-market
+      branch: develop
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: woomool-market
+    key: woomool-market.zip
+    bundle_type: zip
+    application: woomool-market
+    deployment_group: woomool-market-group
+    region: ap-northeast-2
+    wait_until_deployed: true
+    on:
+      repo: Ryu-JeongMoon/woomool-market
+      branch: develop
+
 notifications:
   slack: woomoolhq:4dinJbih6JoxnjuyIy9LqQxP
