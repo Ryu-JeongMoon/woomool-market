@@ -18,9 +18,6 @@ before_install:
 
 script: "./gradlew -x test build --parallel"
 
-notifications:
-  slack: woomoolhq:4dinJbih6JoxnjuyIy9LqQxP
-
 before_deploy:
   - zip -r woomool-market *
   - mkdir -p deploy
@@ -39,3 +36,6 @@ deploy:
     on:
       repo: Ryu-JeongMoon/woomool-market
       branch: develop, woomool-market-135
+
+notifications:
+  slack: woomoolhq:4dinJbih6JoxnjuyIy9LqQxP
