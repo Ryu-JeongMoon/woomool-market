@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth2
+    include: oauth2, aws
     active: test
 
   jpa:
@@ -51,6 +51,19 @@ spring:
             client-name: Naver
             client-id: 1234
             client-secret: 1234
+
+cloud:
+  aws:
+    stack:
+      auto: false
+    credentials:
+      accessKey: 1234
+      secretKey: 5678
+    region:
+      static: ap-northeast-2
+      auto: false
+    s3:
+      bucket: bucket-man
 
 logging:
   level:
