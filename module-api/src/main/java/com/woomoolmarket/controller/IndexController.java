@@ -18,7 +18,12 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String getAuthorizationMessage() {
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping("/home")
+    public String home() {
         return "home";
     }
 
