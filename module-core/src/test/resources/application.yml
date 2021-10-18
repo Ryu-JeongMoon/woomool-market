@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth2, aws
+    include: oauth2, aws, jwt
     active: test
 
   jpa:
@@ -72,7 +72,3 @@ logging:
         type:
           descriptor:
             sql: trace
-
-jwt:
-  header: Authorization
-  secret: cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth2, aws
+    include: oauth2, aws, jwt
     active: test
 
   redis:
@@ -65,7 +65,3 @@ cloud:
 logging:
   level:
     org.hibernate.SQL: debug
-
-jwt:
-  header: Authorization
-  secret: c3ByaW5nLWJvb3QtcGFuZGEtYmVhci1uZXN0ZWQtZXhjZXB0aW9uLWp3dC13ZWFrLWtleS1mdWNrLWl0Cg==cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==

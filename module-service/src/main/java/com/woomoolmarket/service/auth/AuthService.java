@@ -6,7 +6,8 @@ import com.woomoolmarket.domain.token.repository.RefreshTokenRepository;
 import com.woomoolmarket.redis.RedisUtil;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.security.jwt.TokenProvider;
+import com.woomoolmarket.security.jwt.factory.HS512TokenFactory;
+import com.woomoolmarket.security.jwt.factory.RSA512TokenFactory;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ public class AuthService {
     private static final String REDIS_KEY_PREFIX = "logout:";
 
     private final RedisUtil redisUtil;
-    private final TokenProvider tokenProvider;
+    private final HS512TokenFactory hs512TokenFactory;
+    private final RSA512TokenFactory rsa512TokenFactory;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -40,7 +42,7 @@ public class AuthService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenResponse tokenResponse = tokenProvider.createToken(authentication);
+        TokenResponse tokenResponse = rsa512TokenFactory.createToken(authentication);
 
         // 4. RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.builder()
@@ -57,18 +59,18 @@ public class AuthService {
     // 레디스에 액세스 토큰 넣기
     public void logout(HttpServletRequest request) {
         SecurityContextHolder.clearContext();
-        String accessToken = tokenProvider.resolveTokenFrom(request);
+        String accessToken = rsa512TokenFactory.resolveTokenFrom(request);
         redisUtil.setDataExpire(REDIS_KEY_PREFIX + accessToken, accessToken, EXPIRED_DURATION);
     }
 
     public TokenResponse reissue(TokenRequest tokenRequest) {
         // 1. Refresh Token 검증
-        if (!tokenProvider.validate(tokenRequest.getRefreshToken())) {
+        if (!rsa512TokenFactory.validate(tokenRequest.getRefreshToken())) {
             throw new AccessDeniedException(ExceptionUtil.REFRESH_TOKEN_NOT_FOUND);
         }
 
         // 2. Access Token 에서 Member ID 가져오기
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequest.getAccessToken());
+        Authentication authentication = rsa512TokenFactory.getAuthentication(tokenRequest.getAccessToken());
 
         // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
@@ -80,7 +82,7 @@ public class AuthService {
         }
 
         // 5. 새로운 토큰 생성
-        TokenResponse tokenResponse = tokenProvider.createToken(authentication);
+        TokenResponse tokenResponse = rsa512TokenFactory.createToken(authentication);
 
         // 6. 저장소 정보 업데이트
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenResponse.getRefreshToken());
@@ -91,4 +93,6 @@ public class AuthService {
     }
 }
 
-// 어렵당 우헤헤
+// TODO
+// token RDBMS 에 저장할 필요가 있을까?
+// -> Redis 로 변경?

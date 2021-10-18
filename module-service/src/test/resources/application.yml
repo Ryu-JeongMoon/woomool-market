@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test
+    active: test, jwt
 
   datasource:
     url: jdbc:h2:mem:testdb
@@ -71,7 +71,3 @@ cloud:
 
 server:
   port: 8443
-
-jwt:
-  header: Authorization
-  secret: cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==cGFuZGFwYW5kYXBhbmRhcGFuZGFiZWFyYmVhcmJlYXJiZWFycGFuZGFwYW5kYWJlYXJiZWFyCg==
