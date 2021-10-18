@@ -2,7 +2,8 @@ package com.woomoolmarket.security.oauth2;
 
 import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import com.woomoolmarket.security.jwt.TokenProvider;
+import com.woomoolmarket.security.jwt.factory.HS512TokenFactory;
+import com.woomoolmarket.security.jwt.factory.RSA512TokenFactory;
 import com.woomoolmarket.security.util.CookieUtils;
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final TokenProvider tokenProvider;
+    private final RSA512TokenFactory rsa512TokenFactory;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Value("{app.oauth2.authorizedRedirectUris}")
@@ -31,7 +32,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-        Authentication authentication) throws IOException, ServletException {
+        Authentication authentication) throws IOException {
         String targetUrl = determineTargetUrl(request, response, authentication);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -50,7 +51,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 "Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-        String token = tokenProvider.createToken(authentication).getAccessToken();
+        String token = rsa512TokenFactory.createToken(authentication).getAccessToken();
         return UriComponentsBuilder.fromUriString(targetUrl)
             .queryParam("token", token)
             .build().toUriString();
