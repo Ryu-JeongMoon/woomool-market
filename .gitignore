@@ -27,6 +27,7 @@ bin/
 *.yml
 *.xml
 *.log
+*.pem
 logs/
 *.ipr
 out/
