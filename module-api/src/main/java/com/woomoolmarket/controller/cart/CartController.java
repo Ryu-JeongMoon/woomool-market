@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.woomoolmarket.service.cart.CartService;
+import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import com.woomoolmarket.util.PageUtil;
 import java.net.URI;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,8 +47,8 @@ public class CartController {
 
     @PostMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> addToCart(@PathVariable Long memberId, Long productId, Integer quantity) {
-        Long cartId = cartService.add(memberId, productId, quantity);
+    public ResponseEntity<Void> addToCart(@PathVariable Long memberId, @RequestBody CartRequest cartRequest) {
+        Long cartId = cartService.add(cartRequest);
         URI createdUri = linkTo(methodOn(CartController.class).getOneById(memberId, cartId)).toUri();
         return ResponseEntity.created(createdUri).build();
     }
@@ -71,7 +73,7 @@ public class CartController {
         return ResponseEntity.ok().body(responseModel);
     }
 
-    @DeleteMapping("/{memberId}/{cartId} or hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{memberId}/{cartId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> removeOne(@PathVariable Long memberId, @PathVariable Long cartId) {
         cartService.remove(cartId);

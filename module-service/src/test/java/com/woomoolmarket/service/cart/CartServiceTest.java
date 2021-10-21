@@ -41,6 +41,8 @@ class CartServiceTest {
 
     @BeforeEach
     void init() {
+        em.createNativeQuery("ALTER TABLE CART ALTER COLUMN `cart_id` RESTART WITH 1").executeUpdate();
+
         Member member = Member.builder()
             .email("panda")
             .nickname("bear")

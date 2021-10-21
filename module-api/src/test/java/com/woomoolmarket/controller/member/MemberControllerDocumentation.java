@@ -55,7 +55,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("회원조회 성공")
+    @DisplayName("회원조회")
     @WithMockUser(username = USERNAME, roles = "USER")
     void findMemberTest() throws Exception {
         mockMvc.perform(
@@ -85,7 +85,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("회원가입 성공")
+    @DisplayName("회원가입")
     public void signUpSuccessTest() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
             .email("pandabear@gogo.com")
@@ -123,7 +123,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("login 성공하면 200 내린다")
+    @DisplayName("회원 로그인")
     void loginTest() throws Exception {
         LoginRequest loginRequest = LoginRequest.builder()
             .email(USERNAME)
@@ -145,7 +145,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("수정하면 201 내려준다")
+    @DisplayName("회원 정보 수정")
     @WithMockUser(username = USERNAME, roles = "USER")
     void modifyTest() throws Exception {
         ModifyRequest modifyRequest = ModifyRequest.builder()
@@ -165,7 +165,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("탈퇴하면 204 내려준다")
+    @DisplayName("회원 탈퇴")
     @WithMockUser(username = USERNAME, roles = "USER")
     void leaveTest() throws Exception {
         mockMvc.perform(
@@ -177,7 +177,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("복구하면 201 내려준다")
+    @DisplayName("탈퇴 회원 복구")
     @WithMockUser(username = USERNAME, roles = "ADMIN")
     void restoreTest() throws Exception {
         memberService.leaveSoftly(MEMBER_ID);
