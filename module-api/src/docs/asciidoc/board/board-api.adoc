@@ -40,16 +40,31 @@ include::{snippets}/board/get-boards/http-response.adoc[]
 == 게시글 추가
 === Request
 ==== CURL
-include::{snippets}/board/add-board/curl-request.adoc[]
+include::{snippets}/board/create-board/curl-request.adoc[]
 ==== HTTPie
-include::{snippets}/board/add-board/httpie-request.adoc[]
+include::{snippets}/board/create-board/httpie-request.adoc[]
 ==== Request Fields
-include::{snippets}/board/add-board/request-fields.adoc[]
+include::{snippets}/board/create-board/request-fields.adoc[]
 ==== Request HTTP Example
-include::{snippets}/board/add-board/http-request.adoc[]
+include::{snippets}/board/create-board/http-request.adoc[]
 === Response
 ==== Response HTTP Example
-include::{snippets}/board/add-board/http-response.adoc[]
+include::{snippets}/board/create-board/http-response.adoc[]
+
+
+== 게시글 수정
+=== Request
+==== CURL
+include::{snippets}/board/edit-board/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/edit-board/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/board/edit-board/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/edit-board/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/board/edit-board/http-response.adoc[]
 
 
 == 게시글 단건 삭제
@@ -58,8 +73,6 @@ include::{snippets}/board/add-board/http-response.adoc[]
 include::{snippets}/board/delete-board/curl-request.adoc[]
 ==== HTTPie
 include::{snippets}/board/delete-board/httpie-request.adoc[]
-==== Request Fields
-include::{snippets}/board/delete-board/request-body.adoc[]
 ==== Request HTTP Example
 include::{snippets}/board/delete-board/http-request.adoc[]
 === Response
@@ -67,16 +80,16 @@ include::{snippets}/board/delete-board/http-request.adoc[]
 include::{snippets}/board/delete-board/http-response.adoc[]
 
 
-== 게시글 다건 삭제
+== 관리자 전용 게시글 다건 조회
 === Request
 ==== CURL
-include::{snippets}/board/delete-boards/curl-request.adoc[]
+include::{snippets}/board/admin-get-boards/curl-request.adoc[]
 ==== HTTPie
-include::{snippets}/board/delete-boards/httpie-request.adoc[]
-==== Request Fields
-include::{snippets}/board/delete-boards/request-body.adoc[]
+include::{snippets}/board/admin-get-boards/httpie-request.adoc[]
 ==== Request HTTP Example
-include::{snippets}/board/delete-boards/http-request.adoc[]
+include::{snippets}/board/admin-get-boards/http-request.adoc[]
 === Response
+==== Response Fields
+include::{snippets}/board/admin-get-boards/response-fields.adoc[]
 ==== Response HTTP Example
-include::{snippets}/board/delete-boards/http-response.adoc[]
+include::{snippets}/board/admin-get-boards/http-response.adoc[]

@@ -29,7 +29,7 @@ public class MemberResponse implements Serializable {
 
     private LocalDateTime createdDateTime;
     private LocalDateTime lastModifiedDateTime;
-    private LocalDateTime leaveDate;
+    private LocalDateTime leaveDateTime;
 
     private Authority authority;
     private Address address;

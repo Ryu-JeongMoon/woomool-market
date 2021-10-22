@@ -146,6 +146,7 @@ class BoardServiceTest {
     @DisplayName("게시글 등록")
     void register() {
         BoardRequest boardRequest = BoardRequest.builder()
+            .email(MEMBER_1_EMAIL)
             .title("hello")
             .content("hi")
             .build();
