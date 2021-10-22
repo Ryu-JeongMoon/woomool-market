@@ -3,6 +3,7 @@ package com.woomoolmarket.controller.member;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
@@ -119,7 +120,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                         .attributes(key("constraint").value("문자 형식, 2-24자")),
                     fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("주소 - 우편번호").optional()
                         .attributes(key("constraint").value("문자 형식, 5-6자"))
-                    )));
+                )));
     }
 
     @Test
@@ -141,7 +142,13 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
             .andExpect(jsonPath("accessToken").exists())
             .andExpect(jsonPath("refreshToken").exists())
             .andExpect(jsonPath("accessTokenExpiresIn").exists())
-            .andDo(document("member/login-member"));
+            .andDo(document("member/login-member",
+                requestFields(
+                    fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
+                        .attributes(key("constraint").value("이메일 형식 9-64자")),
+                    fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                        .attributes(key("constraint").value("문자 형식 4-24자"))
+                )));
     }
 
     @Test
@@ -161,7 +168,25 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                     .content(objectMapper.writeValueAsString(modifyRequest)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andDo(document("member/modify-member"));
+            .andDo(document("member/modify-member",
+                requestFields(
+                    fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 이름 또는 별칭").optional()
+                        .attributes(key("constraint").value("문자 형식 6-24자")),
+                    fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").optional()
+                        .attributes(key("constraint").value("문자 형식 4-24자")),
+                    fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 사진").optional()
+                        .attributes(key("constraint").value("문자 형식 최대 255자")),
+                    fieldWithPath("phone").type(JsonFieldType.STRING).description("전화번호").optional()
+                        .attributes(key("constraint").value("문자 형식 10-11자")),
+                    fieldWithPath("license").type(JsonFieldType.STRING).description("사업자 번호").optional()
+                        .attributes(key("constraint").value("문자 형식 10자")),
+                    fieldWithPath("address.city").type(JsonFieldType.STRING).description("주소 - 도시명").optional()
+                        .attributes(key("constraint").value("문자 형식, 2-24자")),
+                    fieldWithPath("address.street").type(JsonFieldType.STRING).description("주소 - 도로명").optional()
+                        .attributes(key("constraint").value("문자 형식, 2-24자")),
+                    fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("주소 - 우편번호").optional()
+                        .attributes(key("constraint").value("문자 형식, 5-6자"))
+                )));
     }
 
     @Test
@@ -208,12 +233,23 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaTypes.HAL_JSON))
             .andDo(print())
-            .andExpect(jsonPath("email").value(signUpRequest.getEmail()))
-            .andExpect(jsonPath("nickname").value(signUpRequest.getNickname()))
-            .andExpect(jsonPath("_links.self").exists())
-            .andExpect(jsonPath("_links.previous-member").exists())
-            .andExpect(jsonPath("_links.next-member").exists())
-            .andDo(document("member/admin-get-member"));
+            .andDo(document("member/admin-get-member",
+                responseFields(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
+                    fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                    fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 이름 또는 별칭"),
+                    fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 사진").optional(),
+                    fieldWithPath("phone").type(JsonFieldType.STRING).description("전화번호").optional(),
+                    fieldWithPath("license").type(JsonFieldType.STRING).description("사업자 번호").optional(),
+                    fieldWithPath("createdDateTime").type(JsonFieldType.VARIES).description("생성일"),
+                    fieldWithPath("lastModifiedDateTime").type(JsonFieldType.VARIES).description("최종 수정일"),
+                    fieldWithPath("leaveDate").type(JsonFieldType.VARIES).description("탈퇴일").optional(),
+                    fieldWithPath("authority").type(JsonFieldType.STRING).description("권한"),
+                    subsectionWithPath("address").type(JsonFieldType.OBJECT).description("주소").optional(),
+                    fieldWithPath("authProvider").type(JsonFieldType.STRING).description("소셜 로그인 여부").optional(),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("회원 활성화 여부"),
+                    subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS")
+                )));
     }
 
     @Test
@@ -234,6 +270,11 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andDo(print())
-            .andDo(document("member/admin-get-members"));
+            .andDo(document("member/admin-get-members",
+                relaxedResponseFields(
+                    subsectionWithPath("_embedded.memberResponseList").type(JsonFieldType.ARRAY).description("회원 리스트"),
+                    subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
+                    subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
+                )));
     }
 }

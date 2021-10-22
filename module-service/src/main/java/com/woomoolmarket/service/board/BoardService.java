@@ -5,6 +5,8 @@ import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
+import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final BoardResponseMapper boardResponseMapper;
 
@@ -54,11 +57,16 @@ public class BoardService {
             .changeHit();
     }
 
+    // setMember 로 강제 주입 필요, 개선할 수 있을지?
+    // 현재로서는 이메일로 찾아서 주입해주는 방법이 최선일 듯..
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
     public void register(BoardRequest boardRequest) {
         Board board = boardRequestMapper.toEntity(boardRequest);
+        Member member = memberRepository.findByEmail(boardRequest.getEmail())
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
+        board.setMember(member);
         boardRepository.save(board);
     }
 

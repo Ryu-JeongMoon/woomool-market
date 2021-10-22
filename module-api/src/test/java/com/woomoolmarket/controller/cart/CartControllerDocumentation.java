@@ -4,10 +4,13 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.config.ApiDocumentationConfig;
@@ -45,8 +48,6 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
             .build();
         MEMBER_ID = memberRepository.save(member).getId();
 
-//        em.flush();
-
         Product product = Product.builder()
             .member(member)
             .name("panda")
@@ -58,9 +59,6 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
             .build();
         PRODUCT_ID = productRepository.save(product).getId();
 
-//        em.flush();
-
-
         Cart cart = Cart.builder()
             .member(member)
             .product(product)
@@ -70,7 +68,7 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("장바구니 조회")
+    @DisplayName("특정 회원 장바구니 조회")
     @WithMockUser(username = USERNAME, roles = "USER")
     void getListByMember() throws Exception {
         mockMvc.perform(
@@ -113,15 +111,45 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
                 )));
     }
 
-    void removeAll() {
-
+    @Test
+    @DisplayName("특정 회원 장바구니 전체 삭제")
+    @WithMockUser(username = USERNAME, roles = "USER")
+    void removeAll() throws Exception {
+        mockMvc.perform(
+                delete("/api/carts/" + MEMBER_ID)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.ALL))
+            .andExpect(status().isNoContent())
+            .andDo(document("cart/delete-carts"));
     }
 
-    void getOneById() {
-
+    @Test
+    @DisplayName("장바구니 단건 조회")
+    @WithMockUser(username = USERNAME, roles = "USER")
+    void getOneById() throws Exception {
+        mockMvc.perform(
+            get("/api/carts/" + MEMBER_ID + "/" + CART_ID)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL))
+            .andDo(document("cart/get-cart",
+                responseFields(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("장바구니 고유 번호"),
+                    fieldWithPath("quantity").type(JsonFieldType.NUMBER).description("주문 수량"),
+                    subsectionWithPath("memberResponse").type(JsonFieldType.OBJECT).description("주문 회원"),
+                    subsectionWithPath("productResponse").type(JsonFieldType.OBJECT).description("주문 상품"),
+                    subsectionWithPath("_links").type(JsonFieldType.VARIES).description("HATEOAS")
+                )));
     }
 
-    void removeOne() {
-
+    @Test
+    @DisplayName("장바구니 단건 삭제")
+    @WithMockUser(username = USERNAME, roles = "USER")
+    void removeOne() throws Exception {
+        mockMvc.perform(
+                delete("/api/carts/" + MEMBER_ID + "/"  + CART_ID)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.ALL))
+            .andExpect(status().isNoContent())
+            .andDo(document("cart/delete-cart"));
     }
 }

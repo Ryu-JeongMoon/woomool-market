@@ -8,151 +8,116 @@
 :root: ../../../../module-api/src/docs/asciidoc
 
 == 회원 가입
-
 === Request
 ==== CURL
 include::{snippets}/member/join-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/join-member/httpie-request.adoc[]
-
 ==== Request Fields
 include::{snippets}/member/join-member/request-fields.adoc[]
-
 ==== Request HTTP Example
 include::{snippets}/member/join-member/http-request.adoc[]
-
 === Response
 ==== Response HTTP Example
 include::{snippets}/member/join-member/http-response.adoc[]
+
 
 == 회원 로그인
 === Request
 ==== CURL
 include::{snippets}/member/login-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/login-member/httpie-request.adoc[]
-
 ==== Request Fields
-include::{snippets}/member/login-member/request-body.adoc[]
-
+include::{snippets}/member/login-member/request-fields.adoc[]
 ==== Request HTTP Example
 include::{snippets}/member/login-member/http-request.adoc[]
-
 === Response
 ==== Response HTTP Example
 include::{snippets}/member/login-member/http-response.adoc[]
 
+
 == 회원 본인 조회
-
 === Request
-
 ==== CURL
 include::{snippets}/member/get-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/get-member/httpie-request.adoc[]
-
 ==== Request HTTP Example
 include::{snippets}/member/get-member/http-request.adoc[]
-
 === Response
 ==== Response Fields
 include::{snippets}/member/get-member/response-fields.adoc[]
-
 ==== Response HTTP Example
 include::{snippets}/member/get-member/http-response.adoc[]
+
 
 == 회원 정보 수정
 === Request
 ==== CURL
 include::{snippets}/member/modify-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/modify-member/httpie-request.adoc[]
-
 ==== Request Fields
-include::{snippets}/member/modify-member/request-body.adoc[]
-
+include::{snippets}/member/modify-member/request-fields.adoc[]
 ==== Request HTTP Example
 include::{snippets}/member/modify-member/http-request.adoc[]
-
 === Response
 ==== Response HTTP Example
 include::{snippets}/member/modify-member/http-response.adoc[]
+
 
 == 회원 탈퇴
 === Request
 ==== CURL
 include::{snippets}/member/leave-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/leave-member/httpie-request.adoc[]
-
-==== Request Fields
-include::{snippets}/member/leave-member/request-body.adoc[]
-
 ==== Request HTTP Example
 include::{snippets}/member/leave-member/http-request.adoc[]
-
 === Response
 ==== Response HTTP Example
 include::{snippets}/member/leave-member/http-response.adoc[]
+
 
 == 회원 탈퇴 복구
 === Request
 ==== CURL
 include::{snippets}/member/restore-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/restore-member/httpie-request.adoc[]
-
-==== Request Fields
-include::{snippets}/member/restore-member/request-body.adoc[]
-
 ==== Request HTTP Example
 include::{snippets}/member/restore-member/http-request.adoc[]
-
 === Response
 ==== Response HTTP Example
 include::{snippets}/member/restore-member/http-response.adoc[]
 
+
 == 관리자 - 회원 단건 조회
 === Request
-
 ==== CURL
 include::{snippets}/member/admin-get-member/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/admin-get-member/httpie-request.adoc[]
-
-==== Request Fields
-include::{snippets}/member/admin-get-member/request-body.adoc[]
-
 ==== Request HTTP Example
 include::{snippets}/member/admin-get-member/http-request.adoc[]
-
 === Response
+==== Response Fields
+include::{snippets}/member/admin-get-member/response-fields.adoc[]
 ==== Response HTTP Example
 include::{snippets}/member/admin-get-member/http-response.adoc[]
 
 
 == 관리자 - 회원 다건 조회
 === Request
-
 ==== CURL
 include::{snippets}/member/admin-get-members/curl-request.adoc[]
-
 ==== HTTPie
 include::{snippets}/member/admin-get-members/httpie-request.adoc[]
-
-==== Request Fields
-include::{snippets}/member/admin-get-members/request-body.adoc[]
-
 ==== Request HTTP Example
 include::{snippets}/member/admin-get-members/http-request.adoc[]
-
 === Response
+==== Response Fields
+include::{snippets}/member/admin-get-members/response-fields.adoc[]
 ==== Response HTTP Example
 include::{snippets}/member/admin-get-members/http-response.adoc[]

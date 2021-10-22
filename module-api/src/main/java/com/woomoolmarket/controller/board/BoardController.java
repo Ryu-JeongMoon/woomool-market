@@ -49,7 +49,7 @@ public class BoardController {
     private final PagedResourcesAssembler<BoardResponse> assembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getListBySearchConditionForMember(
+    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getListBySearchCondition(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
         List<BoardResponse> boardResponses = boardService.getListBySearchCondition(condition);
@@ -76,7 +76,7 @@ public class BoardController {
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
     public ResponseEntity registerBoard(
-        @Validated BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
+        @Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }

@@ -1,0 +1,82 @@
+= 장바구니
+:toc: left
+:toclevels: 4
+
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+== 장바구니 단건 조회
+=== Request
+==== CURL
+include::{snippets}/cart/get-cart/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/cart/get-cart/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/cart/get-cart/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/cart/get-cart/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/cart/get-cart/http-response.adoc[]
+
+
+== 장바구니 다건 조회
+=== Request
+==== CURL
+include::{snippets}/cart/get-carts/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/cart/get-carts/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/cart/get-carts/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/cart/get-carts/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/cart/get-carts/http-response.adoc[]
+
+
+== 장바구니 추가
+=== Request
+==== CURL
+include::{snippets}/cart/add-cart/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/cart/add-cart/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/cart/add-cart/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/cart/add-cart/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/cart/add-cart/http-response.adoc[]
+
+
+== 장바구니 단건 삭제
+=== Request
+==== CURL
+include::{snippets}/cart/delete-cart/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/cart/delete-cart/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/cart/delete-cart/request-body.adoc[]
+==== Request HTTP Example
+include::{snippets}/cart/delete-cart/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/cart/delete-cart/http-response.adoc[]
+
+
+== 장바구니 다건 삭제
+=== Request
+==== CURL
+include::{snippets}/cart/delete-carts/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/cart/delete-carts/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/cart/delete-carts/request-body.adoc[]
+==== Request HTTP Example
+include::{snippets}/cart/delete-carts/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/cart/delete-carts/http-response.adoc[]

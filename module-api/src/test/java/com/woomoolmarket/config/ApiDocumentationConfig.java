@@ -8,6 +8,7 @@ import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.board.BoardService;
+import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import com.woomoolmarket.service.cart.CartService;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.order.OrderService;
