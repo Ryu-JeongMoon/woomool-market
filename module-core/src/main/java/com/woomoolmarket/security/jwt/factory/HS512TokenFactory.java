@@ -1,8 +1,6 @@
 package com.woomoolmarket.security.jwt.factory;
 
 import com.woomoolmarket.redis.RedisUtil;
-import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.security.dto.UserPrincipal;
 import com.woomoolmarket.security.jwt.TokenConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -11,26 +9,19 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class HS512TokenFactory extends TokenFactory{
+public class HS512TokenFactory extends TokenFactory {
 
     private final RedisUtil redisUtil;
 
