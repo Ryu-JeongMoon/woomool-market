@@ -22,7 +22,6 @@ public enum CustomOAuth2Provider {
             builder.clientName("Google");
             return builder;
         }
-
     },
 
     GITHUB {
@@ -37,7 +36,6 @@ public enum CustomOAuth2Provider {
             builder.clientName("GitHub");
             return builder;
         }
-
     },
 
     FACEBOOK {
@@ -52,14 +50,12 @@ public enum CustomOAuth2Provider {
             builder.clientName("Facebook");
             return builder;
         }
-
     },
 
     KAKAO {
         @Override
         public Builder getBuilder(String registrationId) {
-            ClientRegistration.Builder builder = getBuilder(registrationId,
-                ClientAuthenticationMethod.CLIENT_SECRET_POST);
+            ClientRegistration.Builder builder = getBuilder(registrationId, ClientAuthenticationMethod.CLIENT_SECRET_POST);
             builder.scope("profile_image", "profile_nickname", "account_email");
             builder.authorizationUri("https://kauth.kakao.com/oauth/authorize");
             builder.tokenUri("https://kauth.kakao.com/oauth/token");
@@ -73,8 +69,7 @@ public enum CustomOAuth2Provider {
     NAVER {
         @Override
         public Builder getBuilder(String registrationId) {
-            ClientRegistration.Builder builder = getBuilder(registrationId,
-                ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+            ClientRegistration.Builder builder = getBuilder(registrationId, ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
             builder.scope("name", "email", "profile_image");
             builder.authorizationUri("https://nid.naver.com/oauth2.0/authorize");
             builder.tokenUri("https://nid.naver.com/oauth2.0/token");

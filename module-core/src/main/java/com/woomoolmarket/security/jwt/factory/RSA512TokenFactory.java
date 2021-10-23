@@ -18,11 +18,13 @@ import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Log4j2
+@Primary
 @Component
 @RequiredArgsConstructor
 public class RSA512TokenFactory extends TokenFactory {
