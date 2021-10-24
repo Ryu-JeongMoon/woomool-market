@@ -1,12 +1,11 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
-import static com.woomoolmarket.domain.member.entity.QMember.*;
+import static com.woomoolmarket.domain.member.entity.QMember.member;
 import static com.woomoolmarket.domain.purchase.order.entity.QOrder.order;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.querydsl.QueryDslUtil;
-import com.woomoolmarket.domain.member.entity.QMember;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import java.util.List;

@@ -1,0 +1,95 @@
+= 상품
+:toc: left
+:toclevels: 4
+
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+== 상품 단건 조회
+=== Request
+==== CURL
+include::{snippets}/product/get-product/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/product/get-product/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/product/get-product/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/product/get-product/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/product/get-product/http-response.adoc[]
+
+
+== 상품 다건 조회
+=== Request
+==== CURL
+include::{snippets}/product/get-products/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/product/get-products/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/product/get-products/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/product/get-products/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/product/get-products/http-response.adoc[]
+
+
+== 상품 추가
+=== Request
+==== CURL
+include::{snippets}/product/create-product/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/product/create-product/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/product/create-product/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/product/create-product/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/product/create-product/http-response.adoc[]
+
+
+== 상품 수정
+=== Request
+==== CURL
+include::{snippets}/product/edit-product/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/product/edit-product/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/product/edit-product/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/product/edit-product/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/product/edit-product/http-response.adoc[]
+
+
+== 상품 단건 삭제
+=== Request
+==== CURL
+include::{snippets}/product/delete-product/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/product/delete-product/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/product/delete-product/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/product/delete-product/http-response.adoc[]
+
+
+== 관리자 전용 상품 다건 조회
+=== Request
+==== CURL
+include::{snippets}/product/admin-get-products/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/product/admin-get-products/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/product/admin-get-products/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/product/admin-get-products/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/product/admin-get-products/http-response.adoc[]

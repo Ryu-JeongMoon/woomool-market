@@ -15,6 +15,7 @@ import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.List;
@@ -85,27 +86,42 @@ class OrderServiceTest {
     @Test
     @DisplayName("단건 주문")
     void orderOneTest() {
-        orderService.orderOne(MEMBER_ID, PRODUCT_ID, 3);
+        OrderRequest orderRequest = OrderRequest.builder()
+            .memberId(MEMBER_ID)
+            .productId(PRODUCT_ID)
+            .quantity(3).build();
+        orderService.orderOne(orderRequest);
         assertThat(orderRepository.findById(1L)).isNotNull();
     }
 
     @Test
     @DisplayName("다건 주문")
     void orderMultipleTest() {
-        orderService.orderMultiples(MEMBER_ID);
+        OrderRequest orderRequest = OrderRequest.builder()
+            .memberId(MEMBER_ID)
+            .build();
+        orderService.orderMultiples(orderRequest);
         assertThat(orderRepository.findById(1L)).isNotNull();
     }
 
     @Test
     @DisplayName("재고 이상 주문 불가")
     void orderOverTheStockTest() {
-        assertThrows(IllegalArgumentException.class, () -> orderService.orderOne(MEMBER_ID, PRODUCT_ID, 501));
+        OrderRequest orderRequest = OrderRequest.builder()
+            .memberId(MEMBER_ID)
+            .productId(PRODUCT_ID)
+            .quantity(501).build();
+        assertThrows(IllegalArgumentException.class, () -> orderService.orderOne(orderRequest));
     }
 
     @Test
     @DisplayName("없는 상품 주문 불가")
     void orderNonExistProductTest() {
-        assertThrows(EntityNotFoundException.class, () -> orderService.orderOne(MEMBER_ID, 5L, 30));
+        OrderRequest orderRequest = OrderRequest.builder()
+            .memberId(MEMBER_ID)
+            .productId(5L)
+            .quantity(3).build();
+        assertThrows(EntityNotFoundException.class, () -> orderService.orderOne(orderRequest));
     }
 
     @Test
@@ -117,7 +133,11 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 검색")
     void getListBySearchConditionForAdmin() {
-        orderService.orderOne(MEMBER_ID, PRODUCT_ID, 3);
+        OrderRequest orderRequest = OrderRequest.builder()
+            .memberId(MEMBER_ID)
+            .productId(PRODUCT_ID)
+            .quantity(3).build();
+        orderService.orderOne(orderRequest);
 
         OrderSearchCondition condition = OrderSearchCondition.builder()
             .orderStatus(OrderStatus.ONGOING)

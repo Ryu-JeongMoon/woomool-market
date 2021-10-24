@@ -103,7 +103,7 @@ public class RSA512TokenFactory extends TokenFactory {
                 .getExpiration()
                 .after(new Date());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return false;
     }

@@ -2,6 +2,7 @@ package com.woomoolmarket.service.board.dto.response;
 
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ public class BoardResponse {
 
     private Long id;
 
-    private Member member;
+    private MemberResponse memberResponse;
 
     private String title;
 

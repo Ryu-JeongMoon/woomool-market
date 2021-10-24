@@ -8,9 +8,9 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
-import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
-import com.woomoolmarket.service.product.mapper.ModifyProductRequestMapper;
+import com.woomoolmarket.service.product.mapper.ProductModifyRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductRequestMapper productRequestMapper;
     private final ProductResponseMapper productResponseMapper;
-    private final ModifyProductRequestMapper modifyProductRequestMapper;
+    private final ProductModifyRequestMapper productModifyRequestMapper;
 
     public ProductResponse getByIdAndStatus(Long id, Status status) {
         return productRepository.findByIdAndStatus(id, status)
@@ -59,10 +59,10 @@ public class ProductService {
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForMember", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchConditionForAdmin", allEntries = true)})
-    public ProductResponse edit(Long id, ModifyProductRequest modifyRequest) {
+    public ProductResponse edit(Long id, ProductModifyRequest modifyRequest) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
-        modifyProductRequestMapper.updateFromDto(modifyRequest, product);
+        productModifyRequestMapper.updateFromDto(modifyRequest, product);
         return productResponseMapper.toDto(product);
     }
 
