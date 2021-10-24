@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
@@ -22,6 +23,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Getter
@@ -37,6 +40,7 @@ public class Product extends BaseEntity {
 
     private String name;
 
+    @JsonIgnore
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member member;

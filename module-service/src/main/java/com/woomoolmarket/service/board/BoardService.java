@@ -7,12 +7,12 @@ import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardRequestMapper;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
-import com.woomoolmarket.service.board.mapper.ModifyBoardMapper;
+import com.woomoolmarket.service.board.mapper.BoardModifyMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
@@ -33,7 +33,7 @@ public class BoardService {
     private final BoardResponseMapper boardResponseMapper;
 
     private final BoardRequestMapper boardRequestMapper;
-    private final ModifyBoardMapper modifyBoardRequestMapper;
+    private final BoardModifyMapper modifyBoardRequestMapper;
 
     @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByCondition", unless = "#result==null")
@@ -73,7 +73,7 @@ public class BoardService {
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
-    public BoardResponse edit(Long id, ModifyBoardRequest modifyRequest) {
+    public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND));
 

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyProductRequest {
+public class ProductModifyRequest {
 
     @Pattern(regexp = "^[\\w]{4,24}$", message = "상품 이름은 6 - 24자 사이로 입력 가능합니다")
     private String name;
@@ -28,11 +28,9 @@ public class ModifyProductRequest {
     @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자지 입력 가능합니다")
     private String productImage;
 
-    @Pattern(regexp = "^(\\d)$", message = "숫자만 입력 가능합니다")
-    private int price;
+    private Integer price;
 
-    @Pattern(regexp = "^(\\d)$", message = "숫자만 입력 가능합니다")
-    private int stock;
+    private Integer stock;
 
     private Region region;
     private ProductCategory productCategory;

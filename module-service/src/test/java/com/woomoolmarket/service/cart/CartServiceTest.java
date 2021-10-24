@@ -91,11 +91,12 @@ class CartServiceTest {
     @Test
     @DisplayName("장바구니 추가")
     void add() {
-        Integer quantity = 500;
         CartRequest cartRequest = CartRequest.builder()
             .memberId(MEMBER_ID)
             .productId(PRODUCT_ID)
-            .quantity(quantity).build();
+            .quantity(500)
+            .build();
+
         Long cartId = cartService.add(cartRequest);
         CartResponse cartResponse = cartService.getById(cartId);
         assertThat(cartResponse).isNotNull();

@@ -1,0 +1,65 @@
+= 주문
+:toc: left
+:toclevels: 4
+
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+== 주문 내역 조회
+=== Request
+==== CURL
+include::{snippets}/order/get-orders/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/order/get-orders/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/order/get-orders/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/order/get-orders/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/order/get-orders/http-response.adoc[]
+
+
+== 주문 추가
+=== Request
+==== CURL
+include::{snippets}/order/create-order/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/order/create-order/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/order/create-order/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/order/create-order/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/order/create-order/http-response.adoc[]
+
+
+== 주문 단건 삭제
+=== Request
+==== CURL
+include::{snippets}/order/delete-order/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/order/delete-order/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/order/delete-order/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/order/delete-order/http-response.adoc[]
+
+
+== 관리자 전용 주문 다건 조회
+=== Request
+==== CURL
+include::{snippets}/order/admin-get-orders/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/order/admin-get-orders/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/order/admin-get-orders/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/order/admin-get-orders/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/order/admin-get-orders/http-response.adoc[]

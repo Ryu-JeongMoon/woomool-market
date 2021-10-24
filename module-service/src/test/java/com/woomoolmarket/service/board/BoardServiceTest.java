@@ -9,8 +9,8 @@ import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import java.util.List;
@@ -157,7 +157,7 @@ class BoardServiceTest {
     @Test
     @DisplayName("게시글 수정")
     void edit() {
-        ModifyBoardRequest modifyRequest = ModifyBoardRequest.builder()
+        BoardModifyRequest modifyRequest = BoardModifyRequest.builder()
             .title("hello")
             .boardCategory(BoardCategory.FREE)
             .build();

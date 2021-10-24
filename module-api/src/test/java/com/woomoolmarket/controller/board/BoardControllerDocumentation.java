@@ -17,8 +17,8 @@ import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -123,7 +123,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
     @DisplayName("게시글 수정")
     @WithMockUser(username = USERNAME, roles = "USER")
     void editBoardInfo() throws Exception {
-        ModifyBoardRequest modifyBoardRequest = ModifyBoardRequest.builder()
+        BoardModifyRequest boardModifyRequest = BoardModifyRequest.builder()
             .title("bear")
             .content("panda").build();
 
@@ -131,7 +131,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
                 patch("/api/boards")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.ALL)
-                    .content(objectMapper.writeValueAsString(modifyBoardRequest)))
+                    .content(objectMapper.writeValueAsString(boardModifyRequest)))
             .andDo(document("board/edit-board",
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING).description("제목").optional()

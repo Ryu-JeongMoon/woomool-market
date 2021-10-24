@@ -5,7 +5,6 @@ import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,8 @@ public class ProductRequest {
 
     @Email
     @NotBlank
-    @Size(min = 9, max = 64)@Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+    @Size(min = 9, max = 64)
+    @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
     private String email;
 
     @Lob
@@ -33,18 +33,14 @@ public class ProductRequest {
     private String description;
 
     @Size(max = 255)
-    @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자지 입력 가능합니다")
+    @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자까지 입력 가능합니다")
     private String productImage;
 
-    @NotBlank(message = "숫자만 입력 가능합니다")
     private Integer price;
 
-    @NotBlank(message = "숫자만 입력 가능합니다")
     private Integer stock;
 
-    @NotBlank
     private Region region;
 
-    @NotBlank
     private ProductCategory productCategory;
 }

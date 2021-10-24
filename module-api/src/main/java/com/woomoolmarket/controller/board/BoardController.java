@@ -10,7 +10,7 @@ import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.request.ModifyBoardRequest;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.util.PageUtil;
 import java.util.List;
@@ -88,7 +88,7 @@ public class BoardController {
     @PatchMapping("/{id}")
     @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity editBoardInfo(@PathVariable Long id,
-        @Validated @RequestBody ModifyBoardRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
+        @Validated @RequestBody BoardModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
