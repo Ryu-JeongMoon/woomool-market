@@ -4,6 +4,7 @@ import com.woomoolmarket.domain.board.entity.BoardCategory;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,6 @@ public class BoardRequest {
     @NotBlank
     private String content;
 
-    @NotBlank
+    @NotNull
     private BoardCategory boardCategory;
 }

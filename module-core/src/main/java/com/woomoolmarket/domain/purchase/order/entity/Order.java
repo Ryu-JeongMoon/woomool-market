@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.embeddable.Delivery;
 import com.woomoolmarket.common.util.ExceptionUtil;
@@ -26,12 +27,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "ORDERS")
+//@ToString(exclude = {"orderProducts", "member"}, callSuper = true)
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Order extends BaseTimeEntity {
 
@@ -48,6 +53,7 @@ public class Order extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 

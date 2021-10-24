@@ -36,11 +36,25 @@ class OrderRepositoryTest {
             .password("1234")
             .build();
 
+        Member member1 = Member.builder()
+            .email("pepsi")
+            .nickname("coke")
+            .password("1234")
+            .build();
+
+        Member member2 = Member.builder()
+            .email("horangi")
+            .nickname("blue")
+            .password("1234")
+            .build();
+
         Order order = Order.builder()
             .member(member)
             .build();
 
         MEMBER_ID = memberRepository.save(member).getId();
+        memberRepository.save(member1);
+        memberRepository.save(member2);
         ORDER_ID = orderRepository.save(order).getId();
     }
 

@@ -2,14 +2,12 @@ package com.woomoolmarket.security.oauth2;
 
 import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import com.woomoolmarket.security.jwt.factory.HS512TokenFactory;
-import com.woomoolmarket.security.jwt.factory.RSA512TokenFactory;
+import com.woomoolmarket.security.jwt.factory.TokenFactory;
 import com.woomoolmarket.security.util.CookieUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final RSA512TokenFactory rsa512TokenFactory;
+    private final TokenFactory tokenFactory;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Value("{app.oauth2.authorizedRedirectUris}")
@@ -51,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 "Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-        String token = rsa512TokenFactory.createToken(authentication).getAccessToken();
+        String token = tokenFactory.createToken(authentication).getAccessToken();
         return UriComponentsBuilder.fromUriString(targetUrl)
             .queryParam("token", token)
             .build().toUriString();

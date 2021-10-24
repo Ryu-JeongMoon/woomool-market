@@ -10,7 +10,7 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
-import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
@@ -123,10 +123,10 @@ class ProductServiceTest {
     @Test
     @DisplayName("가격 변경")
     void edit() {
-        ModifyProductRequest modifyProductRequest = ModifyProductRequest.builder()
+        ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
             .price(90000)
             .build();
-        ProductResponse productResponse = productService.edit(PRODUCT1_ID, modifyProductRequest);
+        ProductResponse productResponse = productService.edit(PRODUCT1_ID, productModifyRequest);
         assertThat(productResponse.getPrice()).isEqualTo(90000);
     }
 

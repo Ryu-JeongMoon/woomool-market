@@ -1,6 +1,6 @@
 package com.woomoolmarket.security.jwt;
 
-import com.woomoolmarket.security.jwt.factory.HS512TokenFactory;
+import com.woomoolmarket.security.jwt.factory.TokenFactory;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,16 +20,15 @@ import org.springframework.web.filter.GenericFilterBean;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final HS512TokenFactory hs512TokenFactory;
-    private final HS512TokenFactory HS512TokenFactory;
+    private final TokenFactory tokenFactory;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc) throws ServletException, IOException {
-        String token = HS512TokenFactory.resolveTokenFrom((HttpServletRequest) request);
+        String token = tokenFactory.resolveTokenFrom((HttpServletRequest) request);
         String requestURI = ((HttpServletRequest) request).getRequestURI();
 
-        if (StringUtils.hasText(token) && HS512TokenFactory.validate(token)) {
-            Authentication authentication = HS512TokenFactory.getAuthentication(token);
+        if (StringUtils.hasText(token) && tokenFactory.validate(token)) {
+            Authentication authentication = tokenFactory.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

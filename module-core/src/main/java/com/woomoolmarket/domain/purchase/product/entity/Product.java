@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
@@ -22,6 +23,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Getter
@@ -37,15 +40,18 @@ public class Product extends BaseEntity {
 
     private String name;
 
+    @JsonIgnore
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member member;
 
     private String description;
+
     private String productImage;
 
     private Integer price;
-    private int stock;
+
+    private Integer stock;
 
     private LocalDateTime deletedDateTime;
 
@@ -59,7 +65,7 @@ public class Product extends BaseEntity {
     private Region region;
 
     @Builder
-    public Product(Member member, String name, Integer price, int stock, String description, String productImg,
+    public Product(Member member, String name, Integer price, Integer stock, String description, String productImg,
         ProductCategory productCategory, Region region) {
         this.member = member;
         this.name = name;
@@ -71,11 +77,11 @@ public class Product extends BaseEntity {
         this.region = region;
     }
 
-    public void increaseStock(int quantity) {
+    public void increaseStock(Integer quantity) {
         this.stock += quantity;
     }
 
-    public void decreaseStock(int quantity) {
+    public void decreaseStock(Integer quantity) {
         if (this.stock < quantity) {
             throw new IllegalArgumentException(ExceptionUtil.NOT_ENOUGH_STOCK);
         }

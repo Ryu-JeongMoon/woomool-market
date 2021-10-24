@@ -9,6 +9,7 @@ import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -41,6 +42,8 @@ class CartServiceTest {
 
     @BeforeEach
     void init() {
+        em.createNativeQuery("ALTER TABLE CART ALTER COLUMN `cart_id` RESTART WITH 1").executeUpdate();
+
         Member member = Member.builder()
             .email("panda")
             .nickname("bear")
@@ -88,8 +91,13 @@ class CartServiceTest {
     @Test
     @DisplayName("장바구니 추가")
     void add() {
-        Integer quantity = 20;
-        Long cartId = cartService.add(MEMBER_ID, PRODUCT_ID, quantity);
+        CartRequest cartRequest = CartRequest.builder()
+            .memberId(MEMBER_ID)
+            .productId(PRODUCT_ID)
+            .quantity(500)
+            .build();
+
+        Long cartId = cartService.add(cartRequest);
         CartResponse cartResponse = cartService.getById(cartId);
         assertThat(cartResponse).isNotNull();
     }

@@ -9,7 +9,7 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.ProductService;
-import com.woomoolmarket.service.product.dto.request.ModifyProductRequest;
+import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.util.PageUtil;
@@ -58,14 +58,14 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_SELLER', 'ROLE_ADMIN'})")
-    public ResponseEntity create(@Validated @RequestBody ProductRequest createRequest, BindingResult bindingResult)
+    public ResponseEntity create(@Validated @RequestBody ProductRequest productRequest, BindingResult bindingResult)
         throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
-        productService.create(createRequest);
+        productService.create(productRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -87,7 +87,7 @@ public class ProductController {
     @PatchMapping("/{productId}")
     @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity editProduct(@PathVariable Long productId,
-        @Validated @RequestBody ModifyProductRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
+        @Validated @RequestBody ProductModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));

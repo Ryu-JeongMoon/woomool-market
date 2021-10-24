@@ -11,6 +11,7 @@ import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.List;
@@ -32,7 +33,6 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderResponseMapper orderResponseMapper;
 
-    // Controller 에서 본인만 가능하도록 권한 설정 필요
     public List<OrderResponse> getListByMemberId(Long memberId) {
         return orderRepository.findByMemberId(memberId)
             .stream()
@@ -40,13 +40,21 @@ public class OrderService {
             .collect(Collectors.toList());
     }
 
+    public void order(OrderRequest orderRequest) {
+        if (orderRequest.getProductId() != 0) {
+            orderMultiples(orderRequest);
+        } else {
+            orderOne(orderRequest);
+        }
+    }
+
     // 단건 주문
     @Transactional
-    public void orderOne(Long memberId, Long productId, int quantity) {
-        Member member = memberRepository.findById(memberId)
+    public void orderOne(OrderRequest orderRequest) {
+        Member member = memberRepository.findById(orderRequest.getMemberId())
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findById(orderRequest.getProductId())
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
@@ -55,7 +63,7 @@ public class OrderService {
             .phone(member.getPhone())
             .build();
 
-        OrderProduct orderProduct = OrderProduct.createOrderProduct(product, product.getPrice(), quantity);
+        OrderProduct orderProduct = OrderProduct.createOrderProduct(product, orderRequest.getQuantity());
 
         Order order = Order.builder()
             .member(member)
@@ -68,8 +76,8 @@ public class OrderService {
 
     // 다건 주문, Cart 에서 넘겨 받고 주문 후 Cart 에서는 바로 삭제
     @Transactional
-    public void orderMultiples(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public void orderMultiples(OrderRequest orderRequest) {
+        Member member = memberRepository.findById(orderRequest.getMemberId())
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
@@ -80,7 +88,7 @@ public class OrderService {
 
         List<OrderProduct> orderProducts = cartRepository.findByMember(member)
             .parallelStream()
-            .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getProduct().getPrice(), cart.getQuantity()))
+            .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getQuantity()))
             .collect(Collectors.toList());
 
         Order order = Order.builder()

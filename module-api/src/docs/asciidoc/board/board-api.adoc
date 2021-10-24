@@ -1,0 +1,95 @@
+= 게시글
+:toc: left
+:toclevels: 4
+
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:root: ../../../../module-api/src/docs/asciidoc
+
+== 게시글 단건 조회
+=== Request
+==== CURL
+include::{snippets}/board/get-board/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/get-board/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/get-board/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/board/get-board/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/board/get-board/http-response.adoc[]
+
+
+== 게시글 다건 조회
+=== Request
+==== CURL
+include::{snippets}/board/get-boards/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/get-boards/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/get-boards/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/board/get-boards/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/board/get-boards/http-response.adoc[]
+
+
+== 게시글 추가
+=== Request
+==== CURL
+include::{snippets}/board/create-board/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/create-board/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/board/create-board/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/create-board/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/board/create-board/http-response.adoc[]
+
+
+== 게시글 수정
+=== Request
+==== CURL
+include::{snippets}/board/edit-board/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/edit-board/httpie-request.adoc[]
+==== Request Fields
+include::{snippets}/board/edit-board/request-fields.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/edit-board/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/board/edit-board/http-response.adoc[]
+
+
+== 게시글 단건 삭제
+=== Request
+==== CURL
+include::{snippets}/board/delete-board/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/delete-board/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/delete-board/http-request.adoc[]
+=== Response
+==== Response HTTP Example
+include::{snippets}/board/delete-board/http-response.adoc[]
+
+
+== 관리자 전용 게시글 다건 조회
+=== Request
+==== CURL
+include::{snippets}/board/admin-get-boards/curl-request.adoc[]
+==== HTTPie
+include::{snippets}/board/admin-get-boards/httpie-request.adoc[]
+==== Request HTTP Example
+include::{snippets}/board/admin-get-boards/http-request.adoc[]
+=== Response
+==== Response Fields
+include::{snippets}/board/admin-get-boards/response-fields.adoc[]
+==== Response HTTP Example
+include::{snippets}/board/admin-get-boards/http-response.adoc[]

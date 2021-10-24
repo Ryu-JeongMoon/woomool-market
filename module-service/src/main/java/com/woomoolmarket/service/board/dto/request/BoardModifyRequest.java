@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModifyBoardRequest {
+public class BoardModifyRequest {
 
     @NotBlank
     @Size(min = 2, max = 255)

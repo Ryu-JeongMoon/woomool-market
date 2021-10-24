@@ -8,6 +8,7 @@ import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import com.woomoolmarket.service.cart.mapper.CartResponseMapper;
 import java.util.List;
@@ -45,17 +46,17 @@ public class CartService {
             .collect(Collectors.toList());
     }
 
-    public Long add(Long memberId, Long productId, Integer quantity) {
-        Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
+    public Long add(CartRequest cartRequest) {
+        Member member = memberRepository.findByIdAndStatus(cartRequest.getMemberId(), Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
-        Product product = productRepository.findByIdAndStatus(productId, Status.ACTIVE)
+        Product product = productRepository.findByIdAndStatus(cartRequest.getProductId(), Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.PRODUCT_NOT_FOUND));
 
         Cart cart = Cart.builder()
             .member(member)
             .product(product)
-            .quantity(quantity)
+            .quantity(cartRequest.getQuantity())
             .build();
 
         return cartRepository.save(cart).getId();

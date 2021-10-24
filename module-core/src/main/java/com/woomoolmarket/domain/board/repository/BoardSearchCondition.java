@@ -4,10 +4,10 @@ import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
