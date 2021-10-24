@@ -1,4 +1,4 @@
-# module-vue
+# module-vue-ts
 
 ## Project setup
 ```

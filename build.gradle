@@ -142,9 +142,9 @@ subprojects {
 node {
     version = '16.6.1'
     npmVersion = "7.20.3"
-    workDir = file("./module-vue")
-    npmWorkDir = file("./module-vue")
-    nodeModulesDir = file("./module-vue")
+    workDir = file("./module-vue-ts")
+    npmWorkDir = file("./module-vue-ts")
+    nodeModulesDir = file("./module-vue-ts")
 }
 
 task setUp(type: NpmTask) {
