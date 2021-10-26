@@ -1,5 +1,7 @@
 package com.woomoolmarket.controller.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
@@ -10,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult,
+        HttpServletResponse response) throws JsonProcessingException {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
+        }
+
         TokenResponse tokenResponse = authService.login(loginRequest);
         Cookie cookie = prepareCookie(tokenResponse);
         response.addCookie(cookie);

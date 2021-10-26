@@ -67,7 +67,8 @@ public class MemberService {
         return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_SELLER));
     }
 
-    private Member join(SignUpRequest signUpRequest, Authority authority) {
+    @Transactional
+    public Member join(SignUpRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException(ExceptionUtil.DUPLICATED_USER);
         }
