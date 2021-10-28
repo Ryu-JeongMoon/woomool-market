@@ -12,7 +12,6 @@ import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import java.util.List;
-import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,13 +36,9 @@ class CartServiceTest {
     ProductRepository productRepository;
     @Autowired
     CartService cartService;
-    @Autowired
-    EntityManager em;
 
     @BeforeEach
     void init() {
-        em.createNativeQuery("ALTER TABLE CART ALTER COLUMN `cart_id` RESTART WITH 1").executeUpdate();
-
         Member member = Member.builder()
             .email("panda")
             .nickname("bear")
@@ -65,9 +60,6 @@ class CartServiceTest {
 
         MEMBER_ID = memberRepository.save(member).getId();
         PRODUCT_ID = productRepository.save(product).getId();
-
-        em.flush();
-
         CART_ID = cartRepository.save(cart).getId();
     }
 
@@ -105,7 +97,7 @@ class CartServiceTest {
     @Test
     @DisplayName("장바구니 단건 삭제")
     void remove() {
-        cartService.remove(CART_ID);
+        cartService.removeByCartId(CART_ID);
         List<CartResponse> cartResponses = cartService.getListByMember(MEMBER_ID);
         assertThat(cartResponses.size()).isEqualTo(0);
     }
@@ -113,7 +105,7 @@ class CartServiceTest {
     @Test
     @DisplayName("장바구니 다건 삭제")
     void removeAll() {
-        cartService.removeAll(MEMBER_ID);
+        cartService.removeAllByMemberId(MEMBER_ID);
         List<CartResponse> cartResponses = cartService.getListByMember(MEMBER_ID);
         assertThat(cartResponses.size()).isEqualTo(0);
     }

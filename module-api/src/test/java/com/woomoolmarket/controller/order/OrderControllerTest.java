@@ -19,7 +19,6 @@ import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
-import com.woomoolmarket.service.order.OrderService;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import java.util.List;
@@ -39,18 +38,16 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc(addFilters = false)
 class OrderControllerTest {
 
+    private static final String MEMBER_EMAIL = "panda@naver.com";
+    private static final String MEMBER_PASSWORD = "123456";
     private static Long ORDER_ID;
     private static Long PRODUCT_ID;
     private static Long MEMBER_ID;
-    private static final String MEMBER_EMAIL = "panda@naver.com";
-    private static final String MEMBER_PASSWORD = "123456";
 
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
-    OrderService orderService;
     @Autowired
     OrderRepository orderRepository;
     @Autowired
@@ -194,8 +191,8 @@ class OrderControllerTest {
     @WithMockUser(roles = "ADMIN")
     void getListBySearchConditionForAdmin() throws Exception {
         mockMvc.perform(
-            get("/api/orders/admin")
-                .contentType(MediaType.ALL))
+                get("/api/orders/admin")
+                    .contentType(MediaType.ALL))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("_embedded.orderResponseList[0].id").value(ORDER_ID))
