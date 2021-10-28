@@ -4,7 +4,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,7 +75,7 @@ class OrderControllerDocumentation extends ApiDocumentationConfig {
     @WithMockUser(username = USERNAME, roles = "USER")
     void getOrders() throws Exception {
         mockMvc.perform(
-                get("/api/orders?memberId=" + MEMBER_ID)
+                get("/api/orders/" + MEMBER_ID)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.ALL))
             .andDo(document("order/get-orders",
@@ -128,7 +127,7 @@ class OrderControllerDocumentation extends ApiDocumentationConfig {
             .build();
 
         mockMvc.perform(
-                delete("/api/orders")
+                delete("/api/orders/" + MEMBER_ID)
                     .content(objectMapper.writeValueAsString(deleteRequest))
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.ALL))

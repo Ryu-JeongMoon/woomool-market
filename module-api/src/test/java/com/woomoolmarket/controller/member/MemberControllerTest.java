@@ -74,7 +74,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 실패 - @Validation 동작")
+    @DisplayName("회원가입 실패 - 400 @Valid 동작")
     void signUpFailTest() throws Exception {
         SignUpRequest signUpRequest = SignUpRequest.builder()
             .email("pandabear@gogo.com")
@@ -110,7 +110,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 실패 - ")
+    @DisplayName("로그인 실패 - 400 @Valid 작동")
     void loginFailTest() throws Exception {
         LoginRequest loginRequest = LoginRequest.builder()
             .email("fail")
@@ -127,7 +127,7 @@ class MemberControllerTest {
     @Test
     @WithMockUser(username = "panda@naver.com", roles = "USER")
     @DisplayName("회원 조회 성공 - @PreAuthorize 통과")
-    void getMemberSuccessTest() throws Exception {
+    void getMember() throws Exception {
         mockMvc.perform(
                 get("/api/members/" + MEMBER_ID)
                     .accept(MediaType.ALL))
@@ -143,8 +143,8 @@ class MemberControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("회원 조회 실패 - 존재하지 않는 회원")
-    void getMemberFailTest() throws Exception {
+    @DisplayName("회원 조회 실패 - 404 존재하지 않는 회원")
+    void getMemberFail() throws Exception {
         mockMvc.perform(
                 get("/api/members/" + 1L)
                     .accept(MediaType.ALL))
@@ -154,7 +154,7 @@ class MemberControllerTest {
     @Test
     @WithMockUser(username = "panda@naver.com", roles = "USER")
     @DisplayName("수정 성공")
-    void editSuccessTest() throws Exception {
+    void edit() throws Exception {
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .nickname("panda")
             .phone("01012345678")
@@ -170,8 +170,8 @@ class MemberControllerTest {
 
     @Test
     @WithMockUser(username = "panda@naver.com", roles = "USER")
-    @DisplayName("수정 실패 - @Valid 동작")
-    void editFailTest() throws Exception {
+    @DisplayName("수정 실패 - 400 @Valid 동작")
+    void editFail() throws Exception {
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .nickname("panda")
             .phone("0101234")
@@ -188,7 +188,7 @@ class MemberControllerTest {
     @Test
     @WithMockUser(username = "panda@naver.com", roles = "USER")
     @DisplayName("탈퇴 성공")
-    void deleteSuccessTest() throws Exception {
+    void leave() throws Exception {
         mockMvc.perform(
                 delete("/api/members/" + MEMBER_ID))
             .andDo(print())
@@ -197,8 +197,8 @@ class MemberControllerTest {
 
     @Test
     @WithMockUser(username = "mock", roles = "USER")
-    @DisplayName("탈퇴 실패 - @checker 동작")
-    void deleteFailTest() throws Exception {
+    @DisplayName("탈퇴 실패 - 403 @checker 동작")
+    void leaveFail() throws Exception {
         mockMvc.perform(
                 delete("/api/members/" + MEMBER_ID))
             .andExpect(status().isForbidden());
@@ -207,7 +207,7 @@ class MemberControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     @DisplayName("관리자 단건 조회 성공")
-    void getOneForAdminSuccessTest() throws Exception {
+    void getOneForAdmin() throws Exception {
         mockMvc.perform(
                 get("/api/members/admin/" + MEMBER_ID))
             .andDo(print())
@@ -218,8 +218,8 @@ class MemberControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("관리자 단건 조회 실패 - @checker 동작")
-    void getOneForAdminFailTest() throws Exception {
+    @DisplayName("관리자 단건 조회 실패 - 403 @checker 동작")
+    void getOneForAdminFail() throws Exception {
         mockMvc.perform(
                 get("/api/members/admin/" + MEMBER_ID))
             .andDo(print())
@@ -229,7 +229,7 @@ class MemberControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     @DisplayName("관리자 다건 조회 성공")
-    void getListBySearchConditionForAdminSuccessTest() throws Exception {
+    void getListBySearchConditionForAdmin() throws Exception {
         mockMvc.perform(
                 get("/api/members/admin"))
             .andDo(print())
@@ -242,8 +242,8 @@ class MemberControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("관리자 다건 조회 실패 - @checker 동작")
-    void getListBySearchConditionForAdminFailTest() throws Exception {
+    @DisplayName("관리자 다건 조회 실패 - 403 @checker 동작")
+    void getListBySearchConditionForAdminFail() throws Exception {
         mockMvc.perform(
                 get("/api/members/admin"))
             .andDo(print())
