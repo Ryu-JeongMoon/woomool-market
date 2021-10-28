@@ -62,14 +62,14 @@ public class CartService {
         return cartRepository.save(cart).getId();
     }
 
-    public void remove(Long cartId) {
+    public void removeByCartId(Long cartId) {
         Cart cart = cartRepository.findById(cartId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.CART_NOT_FOUND));
 
         cartRepository.delete(cart);
     }
 
-    public void removeAll(Long memberId) {
+    public void removeAllByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
