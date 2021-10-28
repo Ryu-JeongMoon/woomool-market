@@ -1,5 +1,7 @@
 package com.woomoolmarket.service.cart.dto.request;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +14,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartRequest {
 
+    @NotNull
+    @Min(value = 1L)
     private Long memberId;
+
+    @Min(value = 1L)
     private Long productId;
+
+    @NotNull
+    @Min(value = 1L)
     private Integer quantity;
 }

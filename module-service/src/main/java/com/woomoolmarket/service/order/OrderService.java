@@ -41,7 +41,7 @@ public class OrderService {
     }
 
     public void order(OrderRequest orderRequest) {
-        if (orderRequest.getProductId() != 0) {
+        if (orderRequest.getProductId() != null) {
             orderMultiples(orderRequest);
         } else {
             orderOne(orderRequest);
