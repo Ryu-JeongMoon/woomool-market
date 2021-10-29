@@ -16,14 +16,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardModifyRequest {
 
-    @NotBlank
     @Size(min = 2, max = 255)
     private String title;
 
     @Lob
-    @NotBlank
     private String content;
 
-    @NotBlank
     private BoardCategory boardCategory;
 }
