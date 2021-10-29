@@ -522,7 +522,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_curl">CURL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/orders?memberId=3' -i -X GET \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/orders/3' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: */*'</code></pre>
 </div>
@@ -532,7 +532,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_httpie">HTTPie</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ http GET 'https://localhost:8443/api/orders?memberId=3' \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ http GET 'https://localhost:8443/api/orders/3' \
     'Content-Type:application/json;charset=UTF-8' \
     'Accept:*/*'</code></pre>
 </div>
@@ -542,7 +542,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_request_http_example">Request HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/orders?memberId=3 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/orders/3 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: */*
 Host: localhost:8443</code></pre>
@@ -640,7 +640,7 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1905
+Content-Length: 1895
 
 {
   "_embedded" : {
@@ -653,8 +653,8 @@ Content-Length: 1905
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-10-25T01:13:36.084193",
-        "lastModifiedDateTime" : "2021-10-25T01:13:36.084193",
+        "createdDateTime" : "2021-10-29T15:03:08.884069",
+        "lastModifiedDateTime" : "2021-10-29T15:03:08.884069",
         "leaveDateTime" : null,
         "authority" : null,
         "address" : {
@@ -667,12 +667,12 @@ Content-Length: 1905
       },
       "orderStatus" : "ONGOING",
       "orderProducts" : [ {
-        "createdDateTime" : "2021-10-25T01:13:36.098919",
-        "lastModifiedDateTime" : "2021-10-25T01:13:36.098919",
+        "createdDateTime" : "2021-10-29T15:03:08.891682",
+        "lastModifiedDateTime" : "2021-10-29T15:03:08.891682",
         "id" : 3,
         "product" : {
-          "createdDateTime" : "2021-10-25T01:13:36.088929",
-          "lastModifiedDateTime" : "2021-10-25T01:13:36.123861",
+          "createdDateTime" : "2021-10-29T15:03:08.88688",
+          "lastModifiedDateTime" : "2021-10-29T15:03:08.903017",
           "createdBy" : null,
           "lastModifiedBy" : null,
           "id" : 3,
@@ -702,7 +702,7 @@ Content-Length: 1905
   },
   "_links" : {
     "self" : {
-      "href" : "https://localhost:8443/api/orders?memberId=3&amp;page=0&amp;size=10"
+      "href" : "https://localhost:8443/api/orders/3?page=0&amp;size=10"
     }
   },
   "page" : {
@@ -847,7 +847,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_curl_3">CURL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/orders' -i -X DELETE \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/orders/1' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: */*' \
     -d '{
@@ -864,7 +864,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <pre class="highlight"><code class="language-bash" data-lang="bash">$ echo '{
   "memberId" : 1,
   "orderId" : 1
-}' | http DELETE 'https://localhost:8443/api/orders' \
+}' | http DELETE 'https://localhost:8443/api/orders/1' \
     'Content-Type:application/json;charset=UTF-8' \
     'Accept:*/*'</code></pre>
 </div>
@@ -874,7 +874,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_request_http_example_3">Request HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/orders HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/orders/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: */*
 Content-Length: 37
@@ -1051,8 +1051,8 @@ Content-Length: 1900
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-10-25T01:13:36.266449",
-        "lastModifiedDateTime" : "2021-10-25T01:13:36.266449",
+        "createdDateTime" : "2021-10-29T15:03:08.965218",
+        "lastModifiedDateTime" : "2021-10-29T15:03:08.965218",
         "leaveDateTime" : null,
         "authority" : null,
         "address" : {
@@ -1065,12 +1065,12 @@ Content-Length: 1900
       },
       "orderStatus" : "ONGOING",
       "orderProducts" : [ {
-        "createdDateTime" : "2021-10-25T01:13:36.282024",
-        "lastModifiedDateTime" : "2021-10-25T01:13:36.282024",
+        "createdDateTime" : "2021-10-29T15:03:08.977165",
+        "lastModifiedDateTime" : "2021-10-29T15:03:08.977165",
         "id" : 4,
         "product" : {
-          "createdDateTime" : "2021-10-25T01:13:36.271139",
-          "lastModifiedDateTime" : "2021-10-25T01:13:36.514049",
+          "createdDateTime" : "2021-10-29T15:03:08.969313",
+          "lastModifiedDateTime" : "2021-10-29T15:03:08.985782",
           "createdBy" : null,
           "lastModifiedBy" : null,
           "id" : 4,
@@ -1119,7 +1119,7 @@ Content-Length: 1900
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-24 23:26:39 +0900
+Last updated 2021-10-25 01:35:31 +0900
 </div>
 </div>
 </body>
