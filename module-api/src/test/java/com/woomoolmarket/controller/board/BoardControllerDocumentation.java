@@ -25,7 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
+@WithMockUser(username = "panda@naver.com", roles = "USER")
 public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     private static final String USERNAME = "panda@naver.com";
@@ -56,7 +59,6 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("게시글 단건 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getActiveBoardById() throws Exception {
         mockMvc.perform(
                 get("/api/boards/" + BOARD_ID)
@@ -76,7 +78,6 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("게시글 전체 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getListBySearchConditionForMember() throws Exception {
         mockMvc.perform(
                 get("/api/boards")
@@ -92,7 +93,6 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("게시글 작성")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void registerBoard() throws Exception {
         BoardRequest boardRequest = BoardRequest.builder()
             .email(USERNAME)
@@ -121,7 +121,6 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("게시글 수정")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void editBoardInfo() throws Exception {
         BoardModifyRequest boardModifyRequest = BoardModifyRequest.builder()
             .title("bear")
@@ -145,7 +144,6 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("게시글 삭제")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void deleteBoard() throws Exception {
         mockMvc.perform(
                 delete("/api/boards/" + BOARD_ID)
