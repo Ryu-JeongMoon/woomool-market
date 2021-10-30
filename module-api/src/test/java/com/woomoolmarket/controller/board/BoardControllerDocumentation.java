@@ -1,5 +1,6 @@
 package com.woomoolmarket.controller.board;
 
+import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_EMAIL;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
@@ -25,36 +26,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @WithMockUser(username = "panda@naver.com", roles = "USER")
 public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
-    private static final String USERNAME = "panda@naver.com";
-    private static final String PASSWORD = "123456";
-    private static final String NICKNAME = "panda";
-    private static Long MEMBER_ID;
-    private static Long BOARD_ID;
-
     @BeforeEach
-    void initialize() {
-        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
+    void init() {
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
 
-        Member member = Member.builder()
-            .email(USERNAME)
-            .password(PASSWORD)
-            .nickname(NICKNAME)
-            .build();
-        MEMBER_ID = memberRepository.save(member).getId();
-
-        Board board = Board.builder()
-            .member(member)
-            .title("panda")
-            .content("bear")
-            .boardCategory(BoardCategory.NOTICE)
-            .build();
-        BOARD_ID = boardRepository.save(board).getId();
+        Board board = boardTestHelper.createBoard(member);
+        BOARD_ID = board.getId();
     }
 
     @Test
@@ -95,7 +77,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
     @DisplayName("게시글 작성")
     void registerBoard() throws Exception {
         BoardRequest boardRequest = BoardRequest.builder()
-            .email(USERNAME)
+            .email(MEMBER_EMAIL)
             .title("polar")
             .content("bear")
             .boardCategory(BoardCategory.FREE)
@@ -124,7 +106,8 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
     void editBoardInfo() throws Exception {
         BoardModifyRequest boardModifyRequest = BoardModifyRequest.builder()
             .title("bear")
-            .content("panda").build();
+            .content("panda")
+            .build();
 
         mockMvc.perform(
                 patch("/api/boards")
@@ -155,7 +138,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("게시글 복구")
-    @WithMockUser(username = USERNAME, roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void restoreBoard() throws Exception {
         boardService.deleteSoftly(BOARD_ID);
 
@@ -169,7 +152,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("관리자 전용 전체 조회")
-    @WithMockUser(username = USERNAME, roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void getListBySearchConditionForAdmin() throws Exception {
         mockMvc.perform(
                 get("/api/boards/admin")
@@ -183,5 +166,3 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
                 )));
     }
 }
-
-// TODO 게시글 단건 & 다건 조회, 권한 설정 필요 없으나 Filter 에서 걸리는 문제 해결

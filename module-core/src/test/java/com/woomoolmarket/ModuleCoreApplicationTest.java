@@ -1,10 +1,12 @@
 package com.woomoolmarket;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-class ModuleCoreApplicationTest {
+public class ModuleCoreApplicationTest {
 
-    public void contextLoads() {
+    public static void main(String[] args) {
+        SpringApplication.run(ModuleCoreApplicationTest.class, args);
     }
 }
