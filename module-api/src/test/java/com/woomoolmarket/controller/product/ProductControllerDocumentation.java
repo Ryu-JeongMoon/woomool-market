@@ -1,5 +1,6 @@
 package com.woomoolmarket.controller.product;
 
+import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_EMAIL;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedRequestFields;
@@ -14,7 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.config.ApiDocumentationConfig;
-import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
@@ -27,42 +27,20 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
+@WithMockUser(username = "panda@naver.com", roles = "SELLER")
 class ProductControllerDocumentation extends ApiDocumentationConfig {
 
-    private static final String USERNAME = "panda@naver.com";
-    private static final String PASSWORD = "123456";
-    private static final String NICKNAME = "panda";
-    private static Long MEMBER_ID;
-    private static Long PRODUCT_ID;
-
     @BeforeEach
-    void initialize() throws Exception {
-        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
+    void init() {
+        Member member = memberTestHelper.createSeller();
+        MEMBER_ID = member.getId();
 
-        Member member = Member.builder()
-            .email(USERNAME)
-            .password(PASSWORD)
-            .nickname(NICKNAME)
-            .address(new Address("seoul", "yeonhui", "01023"))
-            .phone("01012345678")
-            .build();
-        MEMBER_ID = memberRepository.save(member).getId();
-
-        Product product = Product.builder()
-            .member(member)
-            .name("panda")
-            .price(50000)
-            .description("nice bear")
-            .productCategory(ProductCategory.MEAT)
-            .stock(15000)
-            .region(Region.CHUNGCHEONGBUKDO)
-            .build();
-        PRODUCT_ID = productRepository.save(product).getId();
+        Product product = productTestHelper.createProduct(member);
+        PRODUCT_ID = product.getId();
     }
 
     @Test
     @DisplayName("상품 목록 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getListBySearchConditionForMember() throws Exception {
         mockMvc.perform(
                 get("/api/products")
@@ -87,7 +65,6 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("상품 추가")
-    @WithMockUser(username = USERNAME, roles = "SELLER")
     void create() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
             .name("apple")
@@ -97,7 +74,8 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
             .stock(50000)
             .region(Region.CHUNGCHEONGBUKDO)
             .productCategory(ProductCategory.FRUIT)
-            .email(USERNAME).build();
+            .email(MEMBER_EMAIL)
+            .build();
 
         mockMvc.perform(
                 post("/api/products")
@@ -126,7 +104,6 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("상품 단건 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getById() throws Exception {
         mockMvc.perform(
                 get("/api/products/" + PRODUCT_ID)
@@ -147,7 +124,6 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("상품 수정")
-    @WithMockUser(username = USERNAME, roles = "SELLER")
     void editProduct() throws Exception {
         ProductModifyRequest modifyRequest = ProductModifyRequest.builder()
             .name("bear")
@@ -179,7 +155,6 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("상품 삭제")
-    @WithMockUser(username = USERNAME, roles = "SELLER")
     void deleteProduct() throws Exception {
         mockMvc.perform(
                 delete("/api/products/" + PRODUCT_ID))
@@ -189,7 +164,7 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("관리자 상품 목록 조회")
-    @WithMockUser(username = USERNAME, roles = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void getListBySearchConditionForAdmin() throws Exception {
         mockMvc.perform(
                 get("/api/products/admin")

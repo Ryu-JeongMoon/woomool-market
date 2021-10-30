@@ -9,18 +9,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.woomoolmarket.common.embeddable.Delivery;
-import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.config.ApiDocumentationConfig;
-import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,51 +23,27 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
+@WithMockUser(username = "panda@naver.com", roles = "USER")
 class OrderControllerDocumentation extends ApiDocumentationConfig {
 
-    private static final String USERNAME = "panda@naver.com";
-    private static final String PASSWORD = "123456";
-    private static final String NICKNAME = "panda";
-    private static Long MEMBER_ID;
-    private static Long PRODUCT_ID;
-    private static Long ORDER_ID;
-
     @BeforeEach
-    void initialize() throws Exception {
-        em.createNativeQuery("ALTER TABLE ORDERS ALTER COLUMN `order_id` RESTART WITH 1").executeUpdate();
+    void init() {
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
 
-        Member member = Member.builder()
-            .email(USERNAME)
-            .password(PASSWORD)
-            .nickname(NICKNAME)
-            .address(new Address("seoul", "yeonhui", "01023"))
-            .phone("01012345678")
-            .build();
-        MEMBER_ID = memberRepository.save(member).getId();
-
-        Product product = Product.builder()
-            .member(member)
-            .name("panda")
-            .price(50000)
-            .description("nice bear")
-            .productCategory(ProductCategory.MEAT)
-            .stock(15000)
-            .region(Region.CHUNGCHEONGBUKDO)
-            .build();
-        PRODUCT_ID = productRepository.save(product).getId();
+        Product product = productTestHelper.createProduct(member);
+        PRODUCT_ID = product.getId();
 
         OrderProduct orderProduct = OrderProduct.createOrderProduct(product, 500);
 
-        Order order = Order.builder()
-            .orderProducts(List.of(orderProduct))
-            .delivery(new Delivery(member.getEmail(), member.getAddress(), member.getPhone()))
-            .member(member).build();
-        ORDER_ID = orderRepository.save(order).getId();
+        Order order = orderTestHelper.createOrder(member, orderProduct);
+        ORDER_ID = order.getId();
+
+        stringRedisTemplate.keys("*").forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test
     @DisplayName("주문내역 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getOrders() throws Exception {
         mockMvc.perform(
                 get("/api/orders/" + MEMBER_ID)
@@ -95,7 +66,6 @@ class OrderControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("주문 추가")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void createOrder() throws Exception {
         OrderRequest orderRequest = OrderRequest.builder()
             .memberId(MEMBER_ID)
@@ -119,7 +89,6 @@ class OrderControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("주문 취소")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void cancelOrder() throws Exception {
         OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
             .memberId(MEMBER_ID)
