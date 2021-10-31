@@ -67,3 +67,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
     }
 }
+// TODO, register & edit method private 이라 auditing 적용 안 되는 듯함 service module 로 이동 하면서 바꿔야 할 듯

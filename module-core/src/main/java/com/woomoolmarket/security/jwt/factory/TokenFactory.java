@@ -1,5 +1,6 @@
 package com.woomoolmarket.security.jwt.factory;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.dto.UserPrincipal;
 import com.woomoolmarket.security.jwt.TokenConstant;
@@ -56,7 +57,7 @@ public abstract class TokenFactory {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        UserPrincipal principal = new UserPrincipal(claims.getSubject(), "", authorities);
+        UserPrincipal principal = new UserPrincipal(claims.getSubject(), "", Status.ACTIVE, authorities);
         return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
     }
 
