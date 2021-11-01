@@ -62,11 +62,3 @@ public class AuthController {
         return ResponseEntity.ok(authService.reissue(tokenRequest));
     }
 }
-
-
-/*
-logout 어떻게 구현할 것인고?
-레디스에다가 액세스 토큰 넣고 로그인 과정에서 확인해가지고 있으면 거부?
-
-아니면 accessToken 값 자체를 null 로 바꿔서 요청와도 토큰 값이 다르니까 거부
- */
