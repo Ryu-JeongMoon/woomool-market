@@ -1,5 +1,8 @@
 package com.woomoolmarket.controller.board;
 
+import static com.woomoolmarket.helper.BoardTestHelper.BOARD_CONTENT;
+import static com.woomoolmarket.helper.BoardTestHelper.BOARD_TITLE;
+import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_EMAIL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -8,70 +11,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
-import com.woomoolmarket.domain.board.repository.BoardRepository;
-import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
 @WithMockUser(username = "panda@naver.com", roles = "USER")
-class BoardControllerTest {
-
-    private static final String MEMBER_EMAIL = "panda@naver.com";
-    private static final String MEMBER_PASSWORD = "123456";
-    private static final String BOARD_TITLE = "panda is cool";
-    private static final String BOARD_CONTENT = "yahoo";
-    private static Long MEMBER_ID;
-    private static Long BOARD_ID;
-
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    BoardRepository boardRepository;
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
+class BoardControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = Member.builder()
-            .email(MEMBER_EMAIL)
-            .password(MEMBER_PASSWORD)
-            .address(new Address("seoul", "yeonhui", "padaro"))
-            .build();
-        MEMBER_ID = memberRepository.save(member).getId();
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
 
-        Board board = Board.builder()
-            .member(member)
-            .title(BOARD_TITLE)
-            .content(BOARD_CONTENT)
-            .boardCategory(BoardCategory.NOTICE)
-            .build();
-        BOARD_ID = boardRepository.save(board).getId();
+        Board board = boardTestHelper.createBoard(member);
+        BOARD_ID = board.getId();
 
-        stringRedisTemplate.delete(
-            "getListByCondition::BoardService_getListBySearchCondition_BoardSearchCondition(email=null, title=null, content=null, status=null, boardCategory=null)");
+        stringRedisTemplate.keys("*").forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test

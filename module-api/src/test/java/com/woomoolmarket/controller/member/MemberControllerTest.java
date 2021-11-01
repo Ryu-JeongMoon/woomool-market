@@ -1,5 +1,7 @@
 package com.woomoolmarket.controller.member;
 
+import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_EMAIL;
+import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_PASSWORD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -9,51 +11,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.member.entity.Address;
-import com.woomoolmarket.service.member.MemberService;
+import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-class MemberControllerTest {
-
-    private static Long MEMBER_ID;
-    private static String MEMBER_EMAIL = "panda@naver.com";
-    private static String MEMBER_PASSWORD = "123456";
-
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    MemberService memberService;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+class MemberControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
-            .email(MEMBER_EMAIL)
-            .password(MEMBER_PASSWORD)
-            .build();
-
-        MEMBER_ID = memberService.joinAsMember(signUpRequest).getId();
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
     }
 
     @Test

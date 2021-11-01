@@ -1,5 +1,6 @@
 package com.woomoolmarket.common.auditing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.woomoolmarket.config.TestConfig;
@@ -28,8 +29,6 @@ class BaseEntityTest {
             .build();
 
         Member result = memberRepository.save(member);
-
-        log.info("result = {}", result.getCreatedDateTime());
-        assertNotEquals(null, result.getCreatedDateTime());
+        assertThat(result.getCreatedDateTime()).isNotNull();
     }
 }

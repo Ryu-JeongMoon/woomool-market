@@ -1,5 +1,6 @@
 package com.woomoolmarket.security.dto;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +17,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     private final String email;
     private final String password;
+    private final Status status;
     private final Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
@@ -25,6 +27,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return new UserPrincipal(
             member.getEmail(),
             member.getPassword(),
+            member.getStatus(),
             authorities
         );
     }
@@ -66,21 +69,21 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return Status.ACTIVE.equals(status);
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return Status.ACTIVE.equals(status);
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return Status.ACTIVE.equals(status);
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return Status.ACTIVE.equals(status);
     }
 }

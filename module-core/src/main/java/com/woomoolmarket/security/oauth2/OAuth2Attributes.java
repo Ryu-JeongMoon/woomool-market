@@ -1,19 +1,26 @@
 package com.woomoolmarket.security.oauth2;
 
-import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.util.Map;
+import java.util.function.BiFunction;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class OAuth2Attributes {
 
-    private Map<String, Object> attributes;
-    private String nameAttributeKey;
-    private String nickname;
-    private String email;
-    private String profileImage;
+    private static final Map<String, BiFunction<String, Map<String, Object>, OAuth2Attributes>> attributesMap = Map.of(
+        "kakao", OAuth2Attributes::ofKakao,
+        "naver", OAuth2Attributes::ofNaver,
+        "google", OAuth2Attributes::ofGoogle,
+        "github", OAuth2Attributes::ofGithub,
+        "facebook", OAuth2Attributes::ofFacebook);
+
+    private final Map<String, Object> attributes;
+    private final String nameAttributeKey;
+    private final String nickname;
+    private final String email;
+    private final String profileImage;
 
     @Builder
     public OAuth2Attributes(Map<String, Object> attributes,
@@ -28,21 +35,7 @@ public class OAuth2Attributes {
     }
 
     public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-
-        switch (registrationId) {
-            case "kakao":
-                return ofKakao(userNameAttributeName, attributes);
-            case "naver":
-                return ofNaver(userNameAttributeName, attributes);
-            case "google":
-                return ofGoogle(userNameAttributeName, attributes);
-            case "github":
-                return ofGithub(userNameAttributeName, attributes);
-            case "facebook":
-                return ofFacebook(userNameAttributeName, attributes);
-            default:
-                return null;
-        }
+        return attributesMap.get(registrationId).apply(userNameAttributeName, attributes);
     }
 
     private static OAuth2Attributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
@@ -108,7 +101,6 @@ public class OAuth2Attributes {
             .email(email)
             .nickname(nickname)
             .profileImage(profileImage)
-            .authority(Authority.ROLE_USER)
             .build();
     }
 }

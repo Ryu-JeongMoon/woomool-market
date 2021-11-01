@@ -1,6 +1,6 @@
 package com.woomoolmarket.common.auditing;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -28,7 +28,7 @@ class BaseTimeEntityTest {
             .build();
 
         Member result = memberRepository.save(member);
-        assertNotNull(result.getCreatedDateTime());
-        assertNotNull(result.getLastModifiedDateTime());
+        assertThat(result.getCreatedDateTime()).isNotNull();
+        assertThat(result.getLastModifiedDateTime()).isNotNull();
     }
 }

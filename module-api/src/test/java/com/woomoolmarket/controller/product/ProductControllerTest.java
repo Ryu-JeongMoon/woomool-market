@@ -1,5 +1,9 @@
 package com.woomoolmarket.controller.product;
 
+import static com.woomoolmarket.helper.ProductTestHelper.PRODUCT_DESCRIPTION;
+import static com.woomoolmarket.helper.ProductTestHelper.PRODUCT_NAME;
+import static com.woomoolmarket.helper.ProductTestHelper.PRODUCT_PRICE;
+import static com.woomoolmarket.helper.ProductTestHelper.PRODUCT_STOCK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -8,75 +12,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.enumeration.Region;
-import com.woomoolmarket.domain.member.entity.Address;
-import com.woomoolmarket.domain.member.entity.Authority;
+import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
 @WithMockUser(username = "panda@naver.com", roles = "SELLER")
-class ProductControllerTest {
-
-    private static final String MEMBER_EMAIL = "panda@naver.com";
-    private static final String MEMBER_PASSWORD = "123456";
-    private static final String PRODUCT_NAME = "panda";
-    private static final String PRODUCT_DESCRIPTION = "panda is bear";
-    private static final int PRODUCT_PRICE = 50000;
-    private static final int PRODUCT_STOCK = 10000;
-    private static final Region PRODUCT_REGION = Region.GANGWONDO;
-    private static final ProductCategory PRODUCT_CATEGORY = ProductCategory.MEAT;
-
-    private static Long PRODUCT_ID;
-    private static Long MEMBER_ID;
-
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    ProductRepository productRepository;
+class ProductControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = Member.builder()
-            .email(MEMBER_EMAIL)
-            .password(MEMBER_PASSWORD)
-            .address(new Address("seoul", "yeonhui", "padaro"))
-            .authority(Authority.ROLE_SELLER)
-            .build();
-        MEMBER_ID = memberRepository.save(member).getId();
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
 
-        Product product = Product.builder()
-            .member(member)
-            .name(PRODUCT_NAME)
-            .price(PRODUCT_PRICE)
-            .stock(PRODUCT_STOCK)
-            .region(PRODUCT_REGION)
-            .productCategory(PRODUCT_CATEGORY)
-            .description(PRODUCT_DESCRIPTION)
-            .build();
-        PRODUCT_ID = productRepository.save(product).getId();
+        Product product = productTestHelper.createProduct(member);
+        PRODUCT_ID = product.getId();
     }
 
     @Test

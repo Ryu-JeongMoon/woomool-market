@@ -26,50 +26,23 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
+@WithMockUser(username = "panda@naver.com", roles = "USER")
 class CartControllerDocumentation extends ApiDocumentationConfig {
-
-    private static final String USERNAME = "panda@naver.com";
-    private static final String PASSWORD = "123456";
-    private static final String NICKNAME = "panda";
-    private static Long MEMBER_ID;
-    private static Long PRODUCT_ID;
-    private static Long CART_ID;
 
     @BeforeEach
     void init() {
-        em.createNativeQuery("ALTER TABLE CART ALTER COLUMN `cart_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
 
-        Member member = Member.builder()
-            .email(USERNAME)
-            .password(PASSWORD)
-            .nickname(NICKNAME)
-            .build();
-        MEMBER_ID = memberRepository.save(member).getId();
+        Product product = productTestHelper.createProduct(member);
+        PRODUCT_ID = product.getId();
 
-        Product product = Product.builder()
-            .member(member)
-            .name("panda")
-            .price(50000)
-            .description("nice bear")
-            .productCategory(ProductCategory.MEAT)
-            .stock(15000)
-            .region(Region.CHUNGCHEONGBUKDO)
-            .build();
-        PRODUCT_ID = productRepository.save(product).getId();
-
-        Cart cart = Cart.builder()
-            .member(member)
-            .product(product)
-            .quantity(500)
-            .build();
-        CART_ID = cartRepository.save(cart).getId();
+        Cart cart = cartTestHelper.createCart(member, product);
+        CART_ID = cart.getId();
     }
 
     @Test
     @DisplayName("특정 회원 장바구니 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getListByMember() throws Exception {
         mockMvc.perform(
                 get("/api/carts/" + MEMBER_ID)
@@ -88,7 +61,6 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("장바구니 추가")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void addToCart() throws Exception {
         CartRequest cartRequest = CartRequest.builder()
             .memberId(MEMBER_ID)
@@ -113,7 +85,6 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("특정 회원 장바구니 전체 삭제")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void removeAll() throws Exception {
         mockMvc.perform(
                 delete("/api/carts/" + MEMBER_ID)
@@ -125,7 +96,6 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("장바구니 단건 조회")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void getOneById() throws Exception {
         mockMvc.perform(
             get("/api/carts/" + MEMBER_ID + "/" + CART_ID)
@@ -143,7 +113,6 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
 
     @Test
     @DisplayName("장바구니 단건 삭제")
-    @WithMockUser(username = USERNAME, roles = "USER")
     void removeOne() throws Exception {
         mockMvc.perform(
                 delete("/api/carts/" + MEMBER_ID + "/"  + CART_ID)

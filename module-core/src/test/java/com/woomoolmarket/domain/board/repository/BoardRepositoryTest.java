@@ -1,5 +1,7 @@
 package com.woomoolmarket.domain.board.repository;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
@@ -27,6 +29,6 @@ public class BoardRepositoryTest {
             .content("bear")
             .build();
 
-        Assertions.assertThat(board.getStatus()).isEqualTo(Status.ACTIVE);
+        assertThat(board.getStatus()).isEqualTo(Status.ACTIVE);
     }
 }
