@@ -54,7 +54,7 @@ public class BoardService {
     public void increaseHit(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND))
-            .changeHit();
+            .increaseHit();
     }
 
     // setMember 로 강제 주입 필요, 개선할 수 있을지?
