@@ -25,7 +25,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-        AuthenticationException exception) throws IOException, ServletException {
+        AuthenticationException exception) throws IOException {
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
             .map(Cookie::getValue)
             .orElse(("/"));
@@ -40,4 +40,3 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
-// TODO 여기서 에러 던짐?

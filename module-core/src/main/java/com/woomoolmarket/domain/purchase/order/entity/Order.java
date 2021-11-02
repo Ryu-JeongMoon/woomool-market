@@ -27,9 +27,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Getter
@@ -76,3 +73,13 @@ public class Order extends BaseTimeEntity {
         orderProducts.forEach(OrderProduct::cancelOrder);
     }
 }
+
+/*
+순환 참조 문제 해결 방법
+1. @JsonIgnore 사용
+2. @JsonManagedReference & @JsonBackReference 사용
+
+두 방법 모두 순환참조를 막을 수 있는데 본질적으로는 차이가 있다.
+@JsonIgnore 경우, property null 할당
+@JsonManagedReference & @JsonBackReference 순환참조를 막기 위한 Annotation
+ */
