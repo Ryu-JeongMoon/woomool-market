@@ -47,7 +47,7 @@ class CartServiceTest {
         Product product = Product.builder()
             .name("fruit")
             .member(member)
-            .stock(500)
+            .stock(50000)
             .price(10000)
             .productCategory(ProductCategory.FRUIT)
             .build();

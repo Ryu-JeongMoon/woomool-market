@@ -96,8 +96,10 @@ public class Product extends BaseEntity {
         changeStatusAndLeaveDateTime(Status.ACTIVE, null);
     }
 
-    public void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime deletedDateTime) {
+    private void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime deletedDateTime) {
         this.status = memberStatus;
         this.deletedDateTime = deletedDateTime;
     }
 }
+
+// TODO, increase & decrease stock 동시성 문제 발생하지 않을까? 어떻게 해결해야 하남?
