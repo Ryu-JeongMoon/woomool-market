@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class OAuth2Attributes {
 
-    private static final Map<String, BiFunction<String, Map<String, Object>, OAuth2Attributes>> attributesMap = Map.of(
+    private static final Map<String, BiFunction<String, Map<String, Object>, OAuth2Attributes>> attributesFunctionMap = Map.of(
         "kakao", OAuth2Attributes::ofKakao,
         "naver", OAuth2Attributes::ofNaver,
         "google", OAuth2Attributes::ofGoogle,
@@ -34,8 +34,9 @@ public class OAuth2Attributes {
         this.profileImage = profileImage;
     }
 
+    // switch 문이 이해하기 더 편하긴 한듯..?
     public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-        return attributesMap.get(registrationId).apply(userNameAttributeName, attributes);
+        return attributesFunctionMap.get(registrationId).apply(userNameAttributeName, attributes);
     }
 
     private static OAuth2Attributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {

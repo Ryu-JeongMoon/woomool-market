@@ -1,5 +1,7 @@
 package com.woomoolmarket.security.jwt.factory;
 
+import static com.woomoolmarket.security.jwt.TokenConstant.*;
+
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.dto.UserPrincipal;
@@ -35,17 +37,17 @@ public abstract class TokenFactory {
 
         Date currentDate = new Date();
         long currentTime = currentDate.getTime();
-        Date accessTokenExpireDate = new Date(currentTime + TokenConstant.ACCESS_TOKEN_EXPIRE_TIME);
-        Date refreshTokenExpireDate = new Date(currentTime + TokenConstant.REFRESH_TOKEN_EXPIRE_TIME);
+        Date accessTokenExpireDate = new Date(currentTime + ACCESS_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpireDate = new Date(currentTime + REFRESH_TOKEN_EXPIRE_TIME);
 
         String accessToken = createAccessToken(authentication, authorities, accessTokenExpireDate);
         String refreshToken = createRefreshToken(refreshTokenExpireDate);
 
         return TokenResponse.builder()
-            .grantType(TokenConstant.BEARER_TYPE)
+            .grantType(BEARER_TYPE)
             .accessToken(accessToken)
             .refreshToken(refreshToken)
-            .accessTokenExpiresIn(TokenConstant.ACCESS_TOKEN_EXPIRE_TIME)
+            .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME)
             .build();
     }
 
@@ -53,7 +55,7 @@ public abstract class TokenFactory {
         Claims claims = parseClaims(accessToken);
 
         Collection<? extends GrantedAuthority> authorities =
-            Arrays.stream(claims.get(TokenConstant.AUTHORITIES_KEY).toString().split(","))
+            Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
@@ -66,7 +68,7 @@ public abstract class TokenFactory {
     }
 
     public String resolveTokenFrom(HttpServletRequest request) {
-        String token = request.getHeader(TokenConstant.AUTHORIZATION_HEADER);
-        return StringUtils.hasText(token) && token.startsWith(TokenConstant.BEARER_TYPE) ? token.substring(7) : null;
+        String token = request.getHeader(AUTHORIZATION_HEADER);
+        return StringUtils.hasText(token) && token.startsWith(BEARER_TYPE) ? token.substring(7) : null;
     }
 }

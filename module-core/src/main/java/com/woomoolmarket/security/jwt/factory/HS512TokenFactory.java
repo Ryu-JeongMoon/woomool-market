@@ -1,7 +1,8 @@
 package com.woomoolmarket.security.jwt.factory;
 
+import static com.woomoolmarket.security.jwt.TokenConstant.*;
+
 import com.woomoolmarket.redis.RedisUtil;
-import com.woomoolmarket.security.jwt.TokenConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -40,7 +41,7 @@ public class HS512TokenFactory extends TokenFactory {
     protected String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate) {
         return Jwts.builder()
             .setSubject(authentication.getName())
-            .claim(TokenConstant.AUTHORITIES_KEY, authorities)
+            .claim(AUTHORITIES_KEY, authorities)
             .setExpiration(accessTokenExpireDate)
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
@@ -70,7 +71,7 @@ public class HS512TokenFactory extends TokenFactory {
     // redis block list 에 해당 토큰 있는지 확인
     @Override
     protected boolean isBlocked(String token) {
-        return StringUtils.hasText(token) && StringUtils.hasText(redisUtil.getData(TokenConstant.REDIS_KEY_PREFIX + token));
+        return StringUtils.hasText(token) && StringUtils.hasText(redisUtil.getData(LOGOUT_KEY_PREFIX + token));
     }
 
     // 토큰의 유효성 + 만료일자 확인
