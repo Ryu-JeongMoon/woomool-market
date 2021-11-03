@@ -27,20 +27,20 @@ public class RedisUtil {
         stringValueOperations.set(key, String.valueOf(value));
     }
 
-    public String getHashData(String key, String hashKey) {
-        return hashValueOperations.get(key, hashKey);
-    }
-
-    public void setHashData(String key, String hashKey, Object value) {
-        hashValueOperations.put(key, hashKey, String.valueOf(value));
-    }
-
-    public void setDataExpire(String key, Object value, long duration) {
+    public void setDataAndExpiration(String key, Object value, long duration) {
         Duration expireDuration = Duration.ofSeconds(duration);
         stringValueOperations.set(key, String.valueOf(value), expireDuration);
     }
 
     public void deleteData(String key) {
         stringRedisTemplate.delete(key);
+    }
+
+    public String getHashData(String key, String hashKey) {
+        return hashValueOperations.get(key, hashKey);
+    }
+
+    public void setHashData(String key, String hashKey, Object value) {
+        hashValueOperations.put(key, hashKey, String.valueOf(value));
     }
 }
