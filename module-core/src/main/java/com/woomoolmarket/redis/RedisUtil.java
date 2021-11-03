@@ -27,6 +27,10 @@ public class RedisUtil {
         stringValueOperations.set(key, String.valueOf(value));
     }
 
+    public void increment(String key) {
+        stringValueOperations.increment(key, 1L);
+    }
+
     public void setDataAndExpiration(String key, Object value, long duration) {
         Duration expireDuration = Duration.ofSeconds(duration);
         stringValueOperations.set(key, String.valueOf(value), expireDuration);
