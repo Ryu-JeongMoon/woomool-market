@@ -556,7 +556,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_curl">CURL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/products/1' -i -X GET \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/products/8' -i -X GET \
     -H 'Accept: */*'</code></pre>
 </div>
 </div>
@@ -565,7 +565,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_httpie">HTTPie</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ http GET 'https://localhost:8443/api/products/1' \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ http GET 'https://localhost:8443/api/products/8' \
     'Accept:*/*'</code></pre>
 </div>
 </div>
@@ -574,7 +574,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_request_http_example">Request HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/products/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/products/8 HTTP/1.1
 Accept: */*
 Host: localhost:8443</code></pre>
 </div>
@@ -685,23 +685,23 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 999
+Content-Length: 1006
 
 {
   "name" : "panda",
-  "description" : "nice bear",
+  "description" : "panda is bear",
   "productImage" : null,
   "memberResponse" : {
-    "id" : 4,
+    "id" : 29,
     "email" : "panda@naver.com",
     "nickname" : "panda",
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-10-30T21:45:26.455221",
-    "lastModifiedDateTime" : "2021-10-30T21:45:26.455221",
+    "createdDateTime" : "2021-11-03T22:32:12.952604",
+    "lastModifiedDateTime" : "2021-11-03T22:32:12.952604",
     "leaveDateTime" : null,
-    "authority" : null,
+    "authority" : "ROLE_SELLER",
     "address" : {
       "city" : "seoul",
       "street" : "yeonhui",
@@ -711,19 +711,19 @@ Content-Length: 999
     "status" : "ACTIVE"
   },
   "price" : 50000,
-  "stock" : 15000,
-  "createdDateTime" : "2021-10-30T21:45:26.457878",
+  "stock" : 10000,
+  "createdDateTime" : "2021-11-03T22:32:12.954981",
   "productCategory" : "MEAT",
-  "region" : "CHUNGCHEONGBUKDO",
+  "region" : "GANGWONDO",
   "_links" : {
     "self" : {
-      "href" : "https://localhost:8443/api/products/1"
+      "href" : "https://localhost:8443/api/products/8"
     },
     "modify-product" : {
-      "href" : "https://localhost:8443/api/products/1"
+      "href" : "https://localhost:8443/api/products/8"
     },
     "delete-product" : {
-      "href" : "https://localhost:8443/api/products/1"
+      "href" : "https://localhost:8443/api/products/8"
     }
   }
 }</code></pre>
@@ -871,25 +871,25 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1106
+Content-Length: 1112
 
 {
   "_embedded" : {
     "productResponseList" : [ {
       "name" : "panda",
-      "description" : "nice bear",
+      "description" : "panda is bear",
       "productImage" : null,
       "memberResponse" : {
-        "id" : 5,
+        "id" : 30,
         "email" : "panda@naver.com",
         "nickname" : "panda",
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-10-30T21:45:26.495838",
-        "lastModifiedDateTime" : "2021-10-30T21:45:26.495838",
+        "createdDateTime" : "2021-11-03T22:32:13.05516",
+        "lastModifiedDateTime" : "2021-11-03T22:32:13.05516",
         "leaveDateTime" : null,
-        "authority" : null,
+        "authority" : "ROLE_SELLER",
         "address" : {
           "city" : "seoul",
           "street" : "yeonhui",
@@ -899,10 +899,10 @@ Content-Length: 1106
         "status" : "ACTIVE"
       },
       "price" : 50000,
-      "stock" : 15000,
-      "createdDateTime" : "2021-10-30T21:45:26.49807",
+      "stock" : 10000,
+      "createdDateTime" : "2021-11-03T22:32:13.057004",
       "productCategory" : "MEAT",
-      "region" : "CHUNGCHEONGBUKDO"
+      "region" : "GANGWONDO"
     } ]
   },
   "_links" : {
@@ -1099,7 +1099,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_curl_4">CURL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/products/1' -i -X PATCH \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/products/10' -i -X PATCH \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
   "name" : "bear",
@@ -1125,7 +1125,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
   "stock" : null,
   "region" : null,
   "productCategory" : null
-}' | http PATCH 'https://localhost:8443/api/products/1' \
+}' | http PATCH 'https://localhost:8443/api/products/10' \
     'Content-Type:application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1206,7 +1206,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_request_http_example_4">Request HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PATCH /api/products/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PATCH /api/products/10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 161
 Host: localhost:8443
@@ -1242,23 +1242,23 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 825
+Content-Length: 828
 
 {
   "name" : "bear",
   "description" : "good panda",
   "productImage" : null,
   "memberResponse" : {
-    "id" : 6,
+    "id" : 31,
     "email" : "panda@naver.com",
     "nickname" : "panda",
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-10-30T21:45:26.545463",
-    "lastModifiedDateTime" : "2021-10-30T21:45:26.545463",
+    "createdDateTime" : "2021-11-03T22:32:13.175949",
+    "lastModifiedDateTime" : "2021-11-03T22:32:13.175949",
     "leaveDateTime" : null,
-    "authority" : null,
+    "authority" : "ROLE_SELLER",
     "address" : {
       "city" : "seoul",
       "street" : "yeonhui",
@@ -1268,13 +1268,13 @@ Content-Length: 825
     "status" : "ACTIVE"
   },
   "price" : 50000,
-  "stock" : 15000,
-  "createdDateTime" : "2021-10-30T21:45:26.547586",
+  "stock" : 10000,
+  "createdDateTime" : "2021-11-03T22:32:13.17792",
   "productCategory" : "MEAT",
-  "region" : "CHUNGCHEONGBUKDO",
+  "region" : "GANGWONDO",
   "_links" : {
     "self" : {
-      "href" : "https://localhost:8443/api/products/1"
+      "href" : "https://localhost:8443/api/products/10"
     }
   }
 }</code></pre>
@@ -1293,7 +1293,7 @@ Content-Length: 825
 <h4 id="_curl_5">CURL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/products/1' -i -X DELETE</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/products/7' -i -X DELETE</code></pre>
 </div>
 </div>
 </div>
@@ -1301,7 +1301,7 @@ Content-Length: 825
 <h4 id="_httpie_5">HTTPie</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ http DELETE 'https://localhost:8443/api/products/1'</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ http DELETE 'https://localhost:8443/api/products/7'</code></pre>
 </div>
 </div>
 </div>
@@ -1309,7 +1309,7 @@ Content-Length: 825
 <h4 id="_request_http_example_5">Request HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/products/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/products/7 HTTP/1.1
 Host: localhost:8443</code></pre>
 </div>
 </div>
@@ -1469,25 +1469,25 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1113
+Content-Length: 1120
 
 {
   "_embedded" : {
     "productResponseList" : [ {
       "name" : "panda",
-      "description" : "nice bear",
+      "description" : "panda is bear",
       "productImage" : null,
       "memberResponse" : {
-        "id" : 7,
+        "id" : 32,
         "email" : "panda@naver.com",
         "nickname" : "panda",
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-10-30T21:45:26.581263",
-        "lastModifiedDateTime" : "2021-10-30T21:45:26.581263",
+        "createdDateTime" : "2021-11-03T22:32:13.283181",
+        "lastModifiedDateTime" : "2021-11-03T22:32:13.283181",
         "leaveDateTime" : null,
-        "authority" : null,
+        "authority" : "ROLE_SELLER",
         "address" : {
           "city" : "seoul",
           "street" : "yeonhui",
@@ -1497,10 +1497,10 @@ Content-Length: 1113
         "status" : "ACTIVE"
       },
       "price" : 50000,
-      "stock" : 15000,
-      "createdDateTime" : "2021-10-30T21:45:26.584461",
+      "stock" : 10000,
+      "createdDateTime" : "2021-11-03T22:32:13.285107",
       "productCategory" : "MEAT",
-      "region" : "CHUNGCHEONGBUKDO"
+      "region" : "GANGWONDO"
     } ]
   },
   "_links" : {
