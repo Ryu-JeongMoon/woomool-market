@@ -72,6 +72,24 @@ cloud:
 server:
   port: 8443
 
+coolsms:
+  api-key: panda
+  api-secret: yaho
+  phone-number: "01012345678"
+
+mail:
+  smtp:
+    host: smtp.gmail.com
+    port: 587
+    username: panda
+    password: panda
+    auth: true
+    starttls:
+      enable: true
+      required: true
+    socketFactory:
+      class: javax.net.ssl.SSLSocketFactory
+
 jwt:
   header: Authorization
   secret: c3ByaW5nLWJvb3QtdnVlanMtd29vbW9vbC1tYXJrZXQtcHJvamVjdC1zcHJpbmctc2VjdXJpdHktanNvbi13ZWItdG9rZW4tc2VjcmV0LWtleQo=
