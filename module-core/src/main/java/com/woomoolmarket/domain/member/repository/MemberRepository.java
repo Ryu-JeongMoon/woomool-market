@@ -13,6 +13,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     Optional<Member> findByEmailAndStatus(String email, Status status);
 
+    Optional<Member> findByPhoneAndStatus(String phone, Status status);
+
     Optional<Member> findByIdAndStatus(Long id, Status status);
 
 }

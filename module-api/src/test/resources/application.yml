@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth2, aws
+    include: oauth2, aws, sms
     active: test
 
   redis:
@@ -65,6 +65,24 @@ cloud:
 logging:
   level:
     org.hibernate.SQL: debug
+
+coolsms:
+  api-key: panda
+  api-secret: yaho
+  phone-number: "01012345678"
+
+mail:
+  smtp:
+    host: smtp.gmail.com
+    port: 587
+    username: panda
+    password: panda
+    auth: true
+    starttls:
+      enable: true
+      required: true
+    socketFactory:
+      class: javax.net.ssl.SSLSocketFactory
 
 jwt:
   header: Authorization

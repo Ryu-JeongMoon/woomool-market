@@ -68,7 +68,7 @@ public class Member extends BaseEntity {
         this.authority = authority;
     }
 
-    public void encodePassword(String password) {
+    public void changePassword(String password) {
         this.password = password;
     }
 
