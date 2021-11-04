@@ -1,4 +1,4 @@
-package com.woomoolmarket.service.auth.dto;
+package com.woomoolmarket.service.auth.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
