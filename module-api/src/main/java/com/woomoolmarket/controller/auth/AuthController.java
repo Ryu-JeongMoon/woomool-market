@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +49,7 @@ public class AuthController {
         cookie.setPath("/");
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
+        cookie.setDomain("woomool-market");
         return cookie;
     }
 
