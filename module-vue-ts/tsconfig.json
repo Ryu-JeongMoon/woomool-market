@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "allowJs": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -32,6 +33,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
+    "src/types/**/*.d.ts",
     "node_modules/@types/jest/index.d.ts",
     "node_modules/@types/jest/index.d.ts"
   ],
