@@ -19,4 +19,6 @@ public class ExceptionUtil {
 
     public static final String REFRESH_TOKEN_NOT_FOUND = "유효하지 않은 토큰입니다";
     public static final String USER_NOT_LOGIN = "로그아웃 된 사용자입니다";
+
+    public static final String NOT_ENOUGH_BALANCE = "문자를 전송할 수 없는 상태입니다";
 }
