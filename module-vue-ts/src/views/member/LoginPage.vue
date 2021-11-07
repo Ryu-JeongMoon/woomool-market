@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>Login</h1>
+    <h1 class="title">Login</h1>
     <div>
       <LoginForm
         :email="email"
         :password="password"
-        @input="updateEmail"
+        @inputEmail="updateEmail"
         @inputPw="updatePassword"
-        @add="login"
+        @login="login"
       ></LoginForm>
     </div>
   </div>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import LoginForm from "@/components/LoginForm.vue";
+import LoginForm from "@/components/member/LoginForm.vue";
 import { publicInstance } from "@/api";
 
 export default Vue.extend({
@@ -49,4 +49,4 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>
