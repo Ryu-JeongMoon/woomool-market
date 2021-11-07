@@ -9,6 +9,13 @@
           :value="email"
           @input="handleEmailInput"
         />
+        <button @click="sendEmailVerification" type="button">
+          Request Verification
+        </button>
+      </div>
+      <div>
+        <label for="emailAuthString">Email Verification String</label>
+        <input type="text" id="emailAuthString" v-model="emailAuthString" />
       </div>
       <div>
         <label for="password-input">Password:</label>
@@ -55,15 +62,28 @@
           @input="handleZipcodeInput"
         />
       </div>
-      <button type="submit">Signup</button>
+      <div v-if="isVerified">
+        <button type="submit">Signup</button>
+      </div>
+      <div v-else>
+        <button type="submit" disabled>Signup</button>
+      </div>
+      <button @click="verifyEmail" type="button">Verify Email</button>
     </v-form>
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import { publicInstance } from "@/api";
 
 export default Vue.extend({
+  data() {
+    return {
+      emailAuthString: "",
+      isVerified: false,
+    };
+  },
   props: {
     email: {
       type: String,
@@ -117,6 +137,24 @@ export default Vue.extend({
     },
     submitForm() {
       this.$emit("signup");
+    },
+    async sendEmailVerification() {
+      const data = {
+        email: this.email,
+      };
+      await publicInstance.post("/api/auth/email-verification", data);
+    },
+    async verifyEmail() {
+      const data = {
+        authString: this.emailAuthString,
+      };
+      const response = await publicInstance.post(
+        "/api/auth/auth-string-verification",
+        data
+      );
+      if (response.status === 200) {
+        this.isVerified = true;
+      }
     },
   },
 });

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 
 class MemberControllerTest extends ApiControllerConfig {
@@ -67,6 +68,7 @@ class MemberControllerTest extends ApiControllerConfig {
     }
 
     @Test
+    @WithAnonymousUser
     @DisplayName("로그인 성공")
     void loginSuccessTest() throws Exception {
         LoginRequest loginRequest = LoginRequest.builder()
@@ -86,6 +88,7 @@ class MemberControllerTest extends ApiControllerConfig {
     }
 
     @Test
+    @WithAnonymousUser
     @DisplayName("로그인 실패 - 400 @Valid 작동")
     void loginFailTest() throws Exception {
         LoginRequest loginRequest = LoginRequest.builder()
