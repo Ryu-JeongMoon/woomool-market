@@ -1,35 +1,20 @@
 package com.woomoolmarket.config.security;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@EnableWebSecurity
-public class CorsConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
-        source.registerCorsConfiguration("/api/**", config);
-        return new CorsFilter(source);
-    }
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http
-            .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
+    public void addCorsMappings(CorsRegistry registry) {
+        registry
+            .addMapping("/**")
+            .allowedHeaders("*")
+            .allowedMethods("GET", "POST", "PATCH", "DELETE", "OPTIONS")
+            .allowCredentials(true)
+            .allowedOrigins("http://localhost:8081")
+            .maxAge(3600);
     }
 }

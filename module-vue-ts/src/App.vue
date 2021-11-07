@@ -1,14 +1,19 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <v-app>
+    <v-main>
+      <AppHeader />
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
-<style>
-@import "./css/reset.css";
-@import "./css/common.css";
-</style>
+<script lang="ts">
+import Vue from "vue";
+import AppHeader from "@/components/common/AppHeader.vue";
+
+export default Vue.extend({
+  components: { AppHeader },
+});
+</script>
+
+<style lang="scss"></style>

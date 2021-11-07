@@ -3,18 +3,18 @@ import { setInterceptors } from "@/api/common/interceptors";
 
 function createInstance() {
   return axios.create({
-    baseURL: process.env.VUE_BASE_URL,
+    baseURL: process.env.VUE_APP_LOCAL_URL,
   });
 }
 
 function createInstanceWithAuth(url: string) {
   const instance = axios.create({
-    baseURL: `${process.env.VUE_BASE_URL}${url}`,
+    baseURL: `${process.env.VUE_APP_LOCAL_URL}${url}`,
   });
   return setInterceptors(instance);
 }
 
-export const publicInstance = createInstance();
-export const privateInstance = createInstanceWithAuth("");
+const publicInstance = createInstance();
+const privateInstance = createInstanceWithAuth("");
 
-export {};
+export { publicInstance, privateInstance };
