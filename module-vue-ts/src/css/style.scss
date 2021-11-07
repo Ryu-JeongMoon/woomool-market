@@ -1,0 +1,89 @@
+.app-body, .app-header, .v-app-bar, .footer, .app-main-club-tab-header, .search-filter-bar, .club-main-tab, .comment-writer-footer {
+  max-width: 600px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.v-dialog {
+  max-width: 600px !important;
+}
+
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .15s ease;
+}
+
+.component-fade-enter, .component-fade-leave-to {
+  opacity: 0;
+}
+
+.absolute-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mt-30 {
+  margin-top: 30%;
+}
+
+.mt-40 {
+  margin-top: 40%;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.f-09 {
+  font-size: 0.9rem;
+}
+
+.f-08 {
+  font-size: 0.8rem;
+}
+
+.f-07 {
+  font-size: 0.7rem;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.wh-100 {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.pr-1\.5 {
+  padding-right: 6px !important;
+}
+
+.pl-1\.5 {
+  padding-left: 6px !important;
+}
+
+.p-relative {
+  position: relative;
+}
+
+.black-bg {
+  background-color: #0e0e0e !important;
+}
+
+.theme--dark {
+  &.v-application, &.v-sheet, &.v-tabs-items, .app-header, .v-card, .v-list, &.v-tabs > .v-tabs-bar {
+    background-color: #121212 !important;
+  }
+}
+
+.cropper-container, .cropper-crop-box {
+  max-width: 100% !important;
+}
+
+$bgColor: red;

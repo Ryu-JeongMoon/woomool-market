@@ -1,20 +1,20 @@
 <template>
   <div>
     <div>
-      <label for="email-input">Email</label>
       <input
         type="text"
-        id="email-input"
         :value="email"
+        placeholder="email"
         @input="handleEmailInput"
       />
-      <label for="password-input">Password</label>
+      <br />
       <input
-        type="text"
-        id="password-input"
+        type="password"
         :value="password"
+        placeholder="password"
         @input="handlePasswordInput"
       />
+      <br />
       <button @click="login">Login</button>
     </div>
     <div>
@@ -40,15 +40,14 @@ export default Vue.extend({
   methods: {
     handleEmailInput(event: InputEvent) {
       const eventTarget = event.target as HTMLInputElement;
-      this.$emit("input", eventTarget.value);
+      this.$emit("inputEmail", eventTarget.value);
     },
     handlePasswordInput(event: InputEvent) {
       const eventTarget = event.target as HTMLInputElement;
       this.$emit("inputPw", eventTarget.value);
     },
     login() {
-      this.$emit("add");
-      console.log("hello");
+      this.$emit("login");
     },
     oauth2Login() {
       this.$router.push("/oauth2");
@@ -57,4 +56,16 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+input {
+  display: flow;
+  margin: 10px 0;
+  width: 20%;
+  padding: 15px;
+}
+button {
+  margin-top: 20px;
+  width: 10%;
+  cursor: pointer;
+}
+</style>

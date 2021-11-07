@@ -8,7 +8,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class XssConfig implements WebMvcConfigurer {
+public class XssConfig {
 
     @Bean
     public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
