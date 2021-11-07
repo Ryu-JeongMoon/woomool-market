@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +29,8 @@ public class AuthController {
     private final AuthService authService;
     private final ObjectMapper objectMapper;
 
+    // 로그인 요청 중복으로 하지 못하도록 권한 설정
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/login")
     public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult,
         HttpServletResponse response) throws JsonProcessingException {
@@ -54,12 +56,14 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_SELLER', 'ROLE_ADMIN')")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         authService.logout(request);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reissue")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_SELLER', 'ROLE_ADMIN')")
     public ResponseEntity<TokenResponse> reissue(@RequestBody TokenRequest tokenRequest) {
         return ResponseEntity.ok(authService.reissue(tokenRequest));
     }

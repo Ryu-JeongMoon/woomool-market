@@ -1,7 +1,6 @@
 package com.woomoolmarket.service.auth.dto.request;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindIdRequest {
+public class AuthStringRequest {
 
     @NotBlank
-    @Pattern(regexp = "^01(\\d{8,9})$")
-    private String phone;
+    private String authString;
 }
