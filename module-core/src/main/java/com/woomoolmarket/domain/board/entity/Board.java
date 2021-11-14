@@ -4,8 +4,12 @@ import static javax.persistence.FetchType.LAZY;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -39,6 +44,9 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+
     private String title;
 
     @Lob
@@ -55,11 +63,17 @@ public class Board extends BaseEntity {
     private BoardCategory boardCategory;
 
     @Builder
-    public Board(Member member, String title, String content, BoardCategory boardCategory) {
+    public Board(Member member, String title, String content, List<Image> images, BoardCategory boardCategory) {
         this.member = member;
         this.title = title;
         this.content = content;
+        this.images = images;
         this.boardCategory = boardCategory;
+    }
+
+    public void addImages(List<Image> images) {
+        this.images.addAll(images);
+        images.forEach(i -> i.setBoard(this));
     }
 
     public void increaseHit() {

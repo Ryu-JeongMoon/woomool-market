@@ -29,6 +29,7 @@ public class AuthFindService {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
     @Value("${mail.smtp.username}")
     private String WOOMOOL_MARKET_EMAIL;
     @Value("${coolsms.api-key}")
@@ -39,19 +40,35 @@ public class AuthFindService {
     private String WOOMOOL_MARKET_PHONE;
 
     @Transactional
-    public void sendAuthStringToEmail(String email) {
+    public void sendEmailForFinding(String email) {
         Member member = memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
 
         SecureRandom secureRandom = new SecureRandom();
-        int temporaryPassword = secureRandom.nextInt();
-        member.changePassword(passwordEncoder.encode(String.valueOf(temporaryPassword)));
+        String temporaryPassword = String.valueOf(secureRandom.nextInt());
+        member.changePassword(passwordEncoder.encode(temporaryPassword));
 
+        sendAuthStringToEmail(email, "Woomool-Market 임시 비밀번호 안내", "임시 비밀번호 : " + temporaryPassword);
+    }
+
+    public void sendEmailForVerification(String email) {
+        SecureRandom secureRandom = new SecureRandom();
+        String authString = String.valueOf(secureRandom.nextInt());
+        threadLocal.set(authString);
+        sendAuthStringToEmail(email, "Woomool-Market 인증 번호 안내", "인증 번호 : " + authString);
+    }
+
+    public boolean isVerified(String authString) {
+        String threadAuthString = threadLocal.get();
+        return authString.equals(threadAuthString);
+    }
+
+    private void sendAuthStringToEmail(String email, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setFrom(WOOMOOL_MARKET_EMAIL);
-        message.setSubject("Woomool-Market 임시 비밀번호 안내");
-        message.setText("임시 비밀번호 - " + temporaryPassword);
+        message.setSubject(subject);
+        message.setText(text);
 
         CompletableFuture.runAsync(() -> javaMailSender.send(message), woomoolTaskExecutor);
     }
