@@ -8,6 +8,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +26,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<Optional<ExceptionResponse>> illegalArgumentExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = IllegalStateException.class)
+    public ResponseEntity<Optional<ExceptionResponse>> illegalStateExceptionHandler(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<Optional<ExceptionResponse>> authenticationExceptionHandler(Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
     }
 
     @ExceptionHandler(value = EntityNotFoundException.class)
@@ -40,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = JsonProcessingException.class)
     public ResponseEntity<Optional<ExceptionResponse>> jsonProcessingExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

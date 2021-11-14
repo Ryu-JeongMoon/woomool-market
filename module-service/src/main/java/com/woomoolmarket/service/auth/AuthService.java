@@ -6,13 +6,14 @@ import static com.woomoolmarket.security.jwt.TokenConstant.LOGIN_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.LOGOUT_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.REFRESH_TOKEN_EXPIRE_TIME;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.redis.RedisUtil;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.factory.TokenFactory;
-import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import com.woomoolmarket.domain.member.dto.request.LoginRequest;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class AuthService {
             redisUtil.deleteData(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
             return authentication;
         } catch (AuthenticationException e) {
-            memberRepository.findByEmail(authenticationToken.getName())
+            memberRepository.findByEmailAndStatus(authenticationToken.getName(), Status.ACTIVE)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
             redisUtil.increment(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
             throw e;

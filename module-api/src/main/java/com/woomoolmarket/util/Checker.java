@@ -9,7 +9,7 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
-import com.woomoolmarket.service.board.dto.request.BoardRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

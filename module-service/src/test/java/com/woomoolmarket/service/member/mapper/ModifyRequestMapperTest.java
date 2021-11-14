@@ -6,7 +6,7 @@ import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.member.MemberService;
-import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.domain.member.dto.request.ModifyRequest;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
