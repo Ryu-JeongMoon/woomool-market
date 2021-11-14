@@ -9,9 +9,9 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.service.board.BoardService;
-import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.service.board.dto.response.BoardResponse;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.domain.board.dto.response.BoardResponse;
 import com.woomoolmarket.util.PageUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @LogExecutionTime
@@ -75,13 +76,13 @@ public class BoardController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity registerBoard(
-        @Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult) throws JsonProcessingException {
+    public ResponseEntity registerBoard(@Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult,
+        List<MultipartFile> files) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
-        boardService.register(boardRequest);
+        boardService.register(boardRequest, files);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

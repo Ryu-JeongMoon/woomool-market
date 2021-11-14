@@ -3,15 +3,15 @@ package com.woomoolmarket.service.board;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
+import com.woomoolmarket.domain.board.dto.response.BoardResponse;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -28,18 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class BoardServiceTest {
 
-    private static final String MEMBER_1_EMAIL = "panda@naver.com";
-    private static final String MEMBER_2_EMAIL = "tiger@naver.com";
-    private static final String BOARD_1_TITLE = "panda1";
-    private static final String BOARD_1_CONTENT = "bear1";
-    private static final String BOARD_2_TITLE = "panda2";
-    private static final String BOARD_2_CONTENT = "bear2";
-    private static final String BOARD_3_TITLE = "panda3";
-    private static final String BOARD_3_CONTENT = "bear3";
-    private static Long BOARD_1_ID;
-    private static Long BOARD_2_ID;
-    private static Long BOARD_3_ID;
-
+    private final String MEMBER_1_EMAIL = "panda@naver.com";
+    private final String MEMBER_2_EMAIL = "tiger@naver.com";
+    private final String BOARD_1_TITLE = "panda1";
+    private final String BOARD_1_CONTENT = "bear1";
+    private final String BOARD_2_TITLE = "panda2";
+    private final String BOARD_2_CONTENT = "bear2";
+    private final String BOARD_3_TITLE = "panda3";
+    private final String BOARD_3_CONTENT = "bear3";
     @Autowired
     BoardRepository boardRepository;
     @Autowired
@@ -50,19 +46,24 @@ class BoardServiceTest {
     BoardResponseMapper boardResponseMapper;
     @Autowired
     EntityManager em;
+    private Long BOARD_1_ID;
+    private Long BOARD_2_ID;
+    private Long BOARD_3_ID;
+    private Member member1;
+    private Member member2;
 
     @BeforeEach
     void init() {
         boardRepository.deleteAll();
         em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
 
-        Member member1 = Member.builder()
+        member1 = Member.builder()
             .email(MEMBER_1_EMAIL)
             .nickname("bear")
             .password("123456")
             .build();
 
-        Member member2 = Member.builder()
+        member2 = Member.builder()
             .email(MEMBER_2_EMAIL)
             .nickname("cat")
             .password("123456")
@@ -150,7 +151,7 @@ class BoardServiceTest {
             .title("hello")
             .content("hi")
             .build();
-        boardService.register(boardRequest);
+        boardService.register(boardRequest, null);
         assertThat(boardRepository.findById(4L).get()).isNotNull();
     }
 

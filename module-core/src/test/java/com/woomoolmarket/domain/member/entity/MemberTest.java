@@ -52,7 +52,8 @@ class MemberTest {
             .build();
 
         Board board = Board.builder()
-            .title("hello-world")
+            .title("hello")
+            .content("world")
             .build();
 
         Member savedMember = memberRepository.save(member);

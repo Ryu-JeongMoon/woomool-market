@@ -23,8 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 @Getter
@@ -83,7 +81,7 @@ public class Product extends BaseEntity {
 
     public void decreaseStock(Integer quantity) {
         if (this.stock < quantity) {
-            throw new IllegalArgumentException(ExceptionUtil.NOT_ENOUGH_STOCK);
+            throw new IllegalArgumentException(ExceptionUtil.PRODUCT_NOT_ENOUGH_STOCK);
         }
         this.stock -= quantity;
     }

@@ -96,12 +96,8 @@ public class Member extends BaseEntity {
     // updateFromDto 를 쓰고 있는 상황에서 이 메서드가 있을 필요가 있는가
     // core -> service 의존 관계 생기지 않으려면 필요할 듯
     public Member editNicknameAndProfileImage(String nickname, String profileImage) {
-        if (StringUtils.hasText(nickname)) {
-            this.nickname = nickname;
-        }
-        if (StringUtils.hasText(profileImage)) {
-            this.profileImage = profileImage;
-        }
+        this.nickname = StringUtils.hasText(nickname) ? nickname : this.nickname;
+        this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
         return this;
     }
 }

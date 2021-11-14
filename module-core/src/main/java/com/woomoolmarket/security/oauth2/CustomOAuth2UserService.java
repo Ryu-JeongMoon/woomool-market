@@ -1,11 +1,13 @@
 package com.woomoolmarket.security.oauth2;
 
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import java.util.Collections;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,15 +43,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             attributes.getNameAttributeKey());
     }
 
-    private Member registerOrEdit(String registrationId, OAuth2Attributes attributes) {
-        if (memberRepository.findByEmail(attributes.getEmail()).isEmpty()) {
+    public Member registerOrEdit(String registrationId, OAuth2Attributes attributes) {
+        if (memberRepository.findByEmailAndStatus(attributes.getEmail(), Status.ACTIVE).isEmpty()) {
             return registerNewMember(registrationId, attributes);
         }
 
         return editExistingMember(attributes);
     }
 
-    private Member registerNewMember(String registrationId, OAuth2Attributes attributes) {
+    public Member registerNewMember(String registrationId, OAuth2Attributes attributes) {
         Member member = Member.builder()
             .email(attributes.getEmail())
             .nickname(attributes.getNickname())
@@ -61,10 +63,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return memberRepository.save(member);
     }
 
-    private Member editExistingMember(OAuth2Attributes attributes) {
+    public Member editExistingMember(OAuth2Attributes attributes) {
         return memberRepository.findByEmail(attributes.getEmail())
             .map(member -> member.editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage()))
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
     }
 }
-// TODO, register & edit method private 이라 auditing 적용 안 되는 듯함 service module 로 이동 하면서 바꿔야 할 듯

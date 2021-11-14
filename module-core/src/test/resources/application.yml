@@ -91,6 +91,10 @@ mail:
     socketFactory:
       class: javax.net.ssl.SSLSocketFactory
 
+custom:
+  file:
+    path: panda
+
 jwt:
   header: Authorization
   secret: c3ByaW5nLWJvb3QtdnVlanMtd29vbW9vbC1tYXJrZXQtcHJvamVjdC1zcHJpbmctc2VjdXJpdHktanNvbi13ZWItdG9rZW4tc2VjcmV0LWtleQo=

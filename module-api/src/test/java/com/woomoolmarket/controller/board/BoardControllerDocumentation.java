@@ -18,8 +18,8 @@ import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.service.board.dto.request.BoardRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,11 +49,14 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
             .andDo(document("board/get-board",
                 responseFields(
                     fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글 고유 번호"),
-                    subsectionWithPath("memberResponse").type(JsonFieldType.OBJECT).description("작성자"),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
                     fieldWithPath("hit").type(JsonFieldType.NUMBER).description("조회수"),
                     fieldWithPath("boardCategory").type(JsonFieldType.STRING).description("게시글 분류"),
+                    fieldWithPath("startDateTime").type(JsonFieldType.VARIES).description("게시 시작일시"),
+                    fieldWithPath("endDateTime").type(JsonFieldType.VARIES).description("게시 종료일시"),
+                    fieldWithPath("createdDateTime").type(JsonFieldType.VARIES).description("생성일시"),
+                    subsectionWithPath("memberResponse").type(JsonFieldType.OBJECT).description("작성자 정보"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS")
                 )));
     }
@@ -97,8 +100,12 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
                     fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
                         .attributes(key("constraint").value("최대 65535자")),
                     fieldWithPath("boardCategory").type(JsonFieldType.STRING).description("게시글 분류")
-                        .attributes(key("constraint").value("FREE, QNA, NOTICE 중 하나"))
-                )));
+                        .attributes(key("constraint").value("FREE, QNA, NOTICE 중 하나")),
+                    fieldWithPath("startDateTime").type(JsonFieldType.VARIES).description("게시 시작일시")
+                        .attributes(key("constraint").value("종료일시보다 느릴 수 없음")),
+                    fieldWithPath("endDateTime").type(JsonFieldType.VARIES).description("게시 종료일시")
+                        .attributes(key("constraint").value("현재시각보다 앞설 수 없음"))
+                    )));
     }
 
     @Test

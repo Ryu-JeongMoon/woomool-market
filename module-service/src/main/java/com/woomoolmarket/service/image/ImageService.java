@@ -3,7 +3,7 @@ package com.woomoolmarket.service.image;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.image.repository.ImageRepository;
-import com.woomoolmarket.service.image.dto.response.ImageResponse;
+import com.woomoolmarket.domain.image.dto.response.ImageResponse;
 import com.woomoolmarket.service.image.mapper.ImageResponseMapper;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -5,14 +5,16 @@ import com.woomoolmarket.common.util.ExceptionUtil;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
+import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.service.board.dto.request.BoardRequest;
-import com.woomoolmarket.service.board.dto.response.BoardResponse;
+import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
+import com.woomoolmarket.domain.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardRequestMapper;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import com.woomoolmarket.service.board.mapper.BoardModifyMapper;
+import com.woomoolmarket.service.image.ImageProcessor;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
@@ -20,20 +22,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final ImageProcessor imageProcessor;
     private final MemberRepository memberRepository;
-    private final BoardRepository boardRepository;
-    private final BoardResponseMapper boardResponseMapper;
 
+    private final BoardRepository boardRepository;
+    private final BoardModifyMapper boardModifyMapper;
     private final BoardRequestMapper boardRequestMapper;
-    private final BoardModifyMapper modifyBoardRequestMapper;
+    private final BoardResponseMapper boardResponseMapper;
 
     @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByCondition", unless = "#result==null")
@@ -51,6 +56,7 @@ public class BoardService {
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND));
     }
 
+    @Transactional
     public void increaseHit(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND))
@@ -59,17 +65,24 @@ public class BoardService {
 
     // setMember 로 강제 주입 필요, 개선할 수 있을지?
     // 현재로서는 이메일로 찾아서 주입해주는 방법이 최선일 듯..
+    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
-    public void register(BoardRequest boardRequest) {
+    public void register(BoardRequest boardRequest, List<MultipartFile> files) {
         Board board = boardRequestMapper.toEntity(boardRequest);
-        Member member = memberRepository.findByEmail(boardRequest.getEmail())
+
+        Member member = memberRepository.findByEmailAndStatus(boardRequest.getEmail(), Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
         board.setMember(member);
+
+        List<Image> images = imageProcessor.parse(files);
+        board.addImages(images);
+
         boardRepository.save(board);
     }
 
+    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
@@ -77,10 +90,11 @@ public class BoardService {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.BOARD_NOT_FOUND));
 
-        modifyBoardRequestMapper.updateFromDto(modifyRequest, board);
+        boardModifyMapper.updateFromDto(modifyRequest, board);
         return boardResponseMapper.toDto(board);
     }
 
+    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
@@ -90,6 +104,7 @@ public class BoardService {
             .delete();
     }
 
+    @Transactional
     @Caching(evict = {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListBySearchCondition", allEntries = true),
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
