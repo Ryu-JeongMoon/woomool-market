@@ -14,6 +14,7 @@ public class ExceptionUtil {
     public static final String CANNOT_CANCEL = "배송이 완료된 상품은 취소할 수 없습니다";
 
     public static final String BOARD_NOT_FOUND = "존재하지 않는 글입니다";
+    public static final String IMAGE_NOT_FOUND = "존재하지 않는 이미지입니다";
 
     public static final String CART_NOT_FOUND = "존재하지 않는 장바구니입니다";
 
