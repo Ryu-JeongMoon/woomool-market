@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BoardRepositoryCustom {
 
-    List<Board> findByCondition(BoardSearchCondition searchCondition);
+    Page<BoardResponse> findByConditionAndPage(BoardSearchCondition searchCondition, Pageable pageable);
 
     List<Board> findByConditionForAdmin(BoardSearchCondition searchCondition);
 

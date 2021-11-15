@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,13 +40,10 @@ public class BoardService {
     private final BoardRequestMapper boardRequestMapper;
     private final BoardResponseMapper boardResponseMapper;
 
+//    @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByCondition", unless = "#result==null")
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByCondition", unless = "#result==null")
-    public List<BoardResponse> getListBySearchCondition(BoardSearchCondition searchCondition) {
-        return boardRepository.findByCondition(searchCondition)
-            .stream()
-            .map(boardResponseMapper::toDto)
-            .collect(Collectors.toList());
+    public Page<BoardResponse> getListBySearchCondition(BoardSearchCondition searchCondition, Pageable pageable) {
+        return boardRepository.findByConditionAndPage(searchCondition, pageable);
     }
 
     @Transactional(readOnly = true)

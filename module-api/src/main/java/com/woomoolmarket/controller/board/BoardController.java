@@ -53,9 +53,8 @@ public class BoardController {
     public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getListBySearchCondition(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<BoardResponse> boardResponses = boardService.getListBySearchCondition(condition);
-        Page<BoardResponse> responsePage = PageUtil.toPage(boardResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<BoardResponse> boardResponses = boardService.getListBySearchCondition(condition, pageable);
+        return ResponseEntity.ok(assembler.toModel(boardResponses));
     }
 
     @GetMapping("/{id}")
