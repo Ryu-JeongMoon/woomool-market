@@ -1,10 +1,8 @@
 package com.woomoolmarket.service.product.mapper;
 
 import com.woomoolmarket.common.mapper.GenericMapper;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.service.order.dto.response.OrderResponse;
-import com.woomoolmarket.service.product.dto.response.ProductResponse;
+import com.woomoolmarket.domain.purchase.product.dto.response.ProductResponse;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

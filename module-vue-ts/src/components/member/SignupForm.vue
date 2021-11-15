@@ -62,6 +62,7 @@
           @input="handleZipcodeInput"
         />
       </div>
+
       <div v-if="isVerified">
         <button type="submit">Signup</button>
       </div>
@@ -69,6 +70,7 @@
         <button type="submit" disabled>Signup</button>
       </div>
       <button @click="verifyEmail" type="button">Verify Email</button>
+
     </v-form>
   </v-container>
 </template>
@@ -84,6 +86,7 @@ export default Vue.extend({
       isVerified: false,
     };
   },
+
   props: {
     email: {
       type: String,

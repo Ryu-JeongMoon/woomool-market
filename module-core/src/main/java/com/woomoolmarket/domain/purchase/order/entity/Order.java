@@ -66,7 +66,7 @@ public class Order extends BaseTimeEntity {
 
     public void cancel() {
         if (orderStatus == OrderStatus.DELIVERED) {
-            throw new IllegalArgumentException(ExceptionUtil.CANNOT_CANCEL);
+            throw new IllegalArgumentException(ExceptionUtil.ORDER_CANNOT_CANCEL);
         }
 
         orderStatus = OrderStatus.CANCELED;

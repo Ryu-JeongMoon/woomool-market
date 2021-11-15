@@ -6,9 +6,9 @@ import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
-import com.woomoolmarket.service.member.dto.request.ModifyRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpRequest;
-import com.woomoolmarket.service.member.dto.response.MemberResponse;
+import com.woomoolmarket.domain.member.dto.request.ModifyRequest;
+import com.woomoolmarket.domain.member.dto.request.SignUpRequest;
+import com.woomoolmarket.domain.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
@@ -69,7 +69,7 @@ public class MemberService {
     @Transactional
     public Member join(SignUpRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException(ExceptionUtil.DUPLICATED_USER);
+            throw new IllegalArgumentException(ExceptionUtil.MEMBER_EMAIL_DUPLICATED);
         }
 
         Member member = signUpRequestMapper.toEntity(signUpRequest);

@@ -4,11 +4,9 @@ import static org.assertj.core.api.Assertions.*;
 
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.service.member.dto.response.MemberResponse;
+import com.woomoolmarket.domain.member.dto.response.MemberResponse;
 import java.time.LocalDateTime;
 import lombok.extern.log4j.Log4j2;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -6,7 +6,7 @@ import com.woomoolmarket.aop.time.LogExecutionTime;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.service.auth.AuthService;
-import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import com.woomoolmarket.domain.member.dto.request.LoginRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -614,13 +614,6 @@ Host: localhost:8443</code></pre>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">memberResponse</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
@@ -649,6 +642,34 @@ Host: localhost:8443</code></pre>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">startDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 시작일시</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">endDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 종료일시</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">createdDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성일시</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">memberResponse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 정보</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">_links</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
@@ -674,10 +695,17 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 874
+Content-Length: 976
 
 {
   "id" : 1,
+  "title" : "panda is cool",
+  "content" : "yahoo",
+  "hit" : 1,
+  "boardCategory" : "NOTICE",
+  "endDateTime" : null,
+  "startDateTime" : null,
+  "createdDateTime" : "2021-11-14T21:43:01.599481",
   "memberResponse" : {
     "id" : 5,
     "email" : "panda@naver.com",
@@ -685,8 +713,8 @@ Content-Length: 874
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-11-05T22:45:54.450744",
-    "lastModifiedDateTime" : "2021-11-05T22:45:54.450744",
+    "createdDateTime" : "2021-11-14T21:43:01.595323",
+    "lastModifiedDateTime" : "2021-11-14T21:43:01.595323",
     "leaveDateTime" : null,
     "authority" : "ROLE_USER",
     "address" : {
@@ -697,10 +725,6 @@ Content-Length: 874
     "authProvider" : null,
     "status" : "ACTIVE"
   },
-  "title" : "panda is cool",
-  "content" : "yahoo",
-  "hit" : 1,
-  "boardCategory" : "NOTICE",
   "_links" : {
     "self" : {
       "href" : "https://localhost:8443/api/boards/1"
@@ -818,12 +842,19 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 976
+Content-Length: 1090
 
 {
   "_embedded" : {
     "boardResponseList" : [ {
       "id" : 6,
+      "title" : "panda is cool",
+      "content" : "yahoo",
+      "hit" : 0,
+      "boardCategory" : "NOTICE",
+      "endDateTime" : null,
+      "startDateTime" : null,
+      "createdDateTime" : "2021-11-14T21:43:02.040577",
       "memberResponse" : {
         "id" : 9,
         "email" : "panda@naver.com",
@@ -831,8 +862,8 @@ Content-Length: 976
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-11-05T22:45:54.972132",
-        "lastModifiedDateTime" : "2021-11-05T22:45:54.972132",
+        "createdDateTime" : "2021-11-14T21:43:02.038122",
+        "lastModifiedDateTime" : "2021-11-14T21:43:02.038122",
         "leaveDateTime" : null,
         "authority" : "ROLE_USER",
         "address" : {
@@ -842,11 +873,7 @@ Content-Length: 976
         },
         "authProvider" : null,
         "status" : "ACTIVE"
-      },
-      "title" : "panda is cool",
-      "content" : "yahoo",
-      "hit" : 0,
-      "boardCategory" : "NOTICE"
+      }
     } ]
   },
   "_links" : {
@@ -883,7 +910,9 @@ Content-Length: 976
   "email" : "panda@naver.com",
   "title" : "polar",
   "content" : "bear",
-  "boardCategory" : "FREE"
+  "boardCategory" : "FREE",
+  "startDateTime" : null,
+  "endDateTime" : null
 }'</code></pre>
 </div>
 </div>
@@ -896,7 +925,9 @@ Content-Length: 976
   "email" : "panda@naver.com",
   "title" : "polar",
   "content" : "bear",
-  "boardCategory" : "FREE"
+  "boardCategory" : "FREE",
+  "startDateTime" : null,
+  "endDateTime" : null
 }' | http POST 'https://localhost:8443/api/boards' \
     'Content-Type:application/json;charset=UTF-8' \
     'Accept:*/*'</code></pre>
@@ -951,6 +982,20 @@ Content-Length: 976
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 분류</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FREE, QNA, NOTICE 중 하나</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">startDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 시작일시</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료일시보다 느릴 수 없음</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">endDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 종료일시</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재시각보다 앞설 수 없음</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -961,14 +1006,16 @@ Content-Length: 976
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/boards HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: */*
-Content-Length: 104
+Content-Length: 154
 Host: localhost:8443
 
 {
   "email" : "panda@naver.com",
   "title" : "polar",
   "content" : "bear",
-  "boardCategory" : "FREE"
+  "boardCategory" : "FREE",
+  "startDateTime" : null,
+  "endDateTime" : null
 }</code></pre>
 </div>
 </div>
@@ -1274,12 +1321,19 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 981
+Content-Length: 1096
 
 {
   "_embedded" : {
     "boardResponseList" : [ {
       "id" : 8,
+      "title" : "panda is cool",
+      "content" : "yahoo",
+      "hit" : 0,
+      "boardCategory" : "NOTICE",
+      "endDateTime" : null,
+      "startDateTime" : null,
+      "createdDateTime" : "2021-11-14T21:43:02.26207",
       "memberResponse" : {
         "id" : 11,
         "email" : "panda@naver.com",
@@ -1287,8 +1341,8 @@ Content-Length: 981
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-11-05T22:45:55.20981",
-        "lastModifiedDateTime" : "2021-11-05T22:45:55.20981",
+        "createdDateTime" : "2021-11-14T21:43:02.259525",
+        "lastModifiedDateTime" : "2021-11-14T21:43:02.259525",
         "leaveDateTime" : null,
         "authority" : "ROLE_USER",
         "address" : {
@@ -1298,11 +1352,7 @@ Content-Length: 981
         },
         "authProvider" : null,
         "status" : "ACTIVE"
-      },
-      "title" : "panda is cool",
-      "content" : "yahoo",
-      "hit" : 0,
-      "boardCategory" : "NOTICE"
+      }
     } ]
   },
   "_links" : {
@@ -1326,7 +1376,7 @@ Content-Length: 981
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-25 01:35:31 +0900
+Last updated 2021-11-14 19:13:54 +0900
 </div>
 </div>
 </body>
