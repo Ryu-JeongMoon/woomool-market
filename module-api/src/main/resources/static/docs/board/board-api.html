@@ -588,7 +588,96 @@ Host: localhost:8443</code></pre>
 <h3 id="_response">Response</h3>
 <div class="sect3">
 <h4 id="_response_fields">Response Fields</h4>
-
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제한</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시글 고유 번호</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제목</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회수</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boardCategory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시글 분류</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">startDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 시작일시</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">endDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 종료일시</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">createdDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성일시</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">memberResponse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 정보</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_links</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HATEOAS</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_response_http_example">Response HTTP Example</h4>
@@ -606,27 +695,26 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 994
+Content-Length: 976
 
 {
   "id" : 1,
-  "email" : null,
   "title" : "panda is cool",
   "content" : "yahoo",
   "hit" : 1,
   "boardCategory" : "NOTICE",
   "endDateTime" : null,
   "startDateTime" : null,
-  "createdDateTime" : "2021-11-14T21:24:26.580672",
+  "createdDateTime" : "2021-11-14T21:43:01.599481",
   "memberResponse" : {
-    "id" : 1,
+    "id" : 5,
     "email" : "panda@naver.com",
     "nickname" : "panda",
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-11-14T21:24:26.492909",
-    "lastModifiedDateTime" : "2021-11-14T21:24:26.492909",
+    "createdDateTime" : "2021-11-14T21:43:01.595323",
+    "lastModifiedDateTime" : "2021-11-14T21:43:01.595323",
     "leaveDateTime" : null,
     "authority" : "ROLE_USER",
     "address" : {
@@ -766,7 +854,7 @@ Content-Length: 1090
       "boardCategory" : "NOTICE",
       "endDateTime" : null,
       "startDateTime" : null,
-      "createdDateTime" : "2021-11-14T21:05:13.888687",
+      "createdDateTime" : "2021-11-14T21:43:02.040577",
       "memberResponse" : {
         "id" : 9,
         "email" : "panda@naver.com",
@@ -774,8 +862,8 @@ Content-Length: 1090
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-11-14T21:05:13.886577",
-        "lastModifiedDateTime" : "2021-11-14T21:05:13.886577",
+        "createdDateTime" : "2021-11-14T21:43:02.038122",
+        "lastModifiedDateTime" : "2021-11-14T21:43:02.038122",
         "leaveDateTime" : null,
         "authority" : "ROLE_USER",
         "address" : {
@@ -848,7 +936,68 @@ Content-Length: 1090
 </div>
 <div class="sect3">
 <h4 id="_request_fields">Request Fields</h4>
-
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">필수값</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">제한</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">email</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 형식 9-64자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제목</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 255자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 65535자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boardCategory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시글 분류</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FREE, QNA, NOTICE 중 하나</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">startDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 시작일시</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료일시보다 느릴 수 없음</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">endDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시 종료일시</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재시각보다 앞설 수 없음</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_request_http_example_3">Request HTTP Example</h4>
@@ -999,7 +1148,7 @@ Host: localhost:8443
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 405 Method Not Allowed
-Allow: GET, POST
+Allow: POST, GET
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1172,7 +1321,7 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1095
+Content-Length: 1096
 
 {
   "_embedded" : {
@@ -1184,7 +1333,7 @@ Content-Length: 1095
       "boardCategory" : "NOTICE",
       "endDateTime" : null,
       "startDateTime" : null,
-      "createdDateTime" : "2021-11-14T21:05:14.120187",
+      "createdDateTime" : "2021-11-14T21:43:02.26207",
       "memberResponse" : {
         "id" : 11,
         "email" : "panda@naver.com",
@@ -1192,8 +1341,8 @@ Content-Length: 1095
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-11-14T21:05:14.11802",
-        "lastModifiedDateTime" : "2021-11-14T21:05:14.11802",
+        "createdDateTime" : "2021-11-14T21:43:02.259525",
+        "lastModifiedDateTime" : "2021-11-14T21:43:02.259525",
         "leaveDateTime" : null,
         "authority" : "ROLE_USER",
         "address" : {

@@ -27,13 +27,23 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Board> findByCondition(BoardSearchCondition searchCondition) {
-        return queryFactory
-            .selectFrom(board)
-            .leftJoin(board.member, member)
-            .fetchJoin()
-            .where(searchByAll(searchCondition))
-            .fetch();
+    public Page<BoardResponse> findByConditionAndPage(BoardSearchCondition searchCondition, Pageable pageable) {
+        QueryResults<BoardResponse> results = queryFactory
+            .select(new QBoardResponse(
+                board.id, board.title, board.content, board.hit, board.boardCategory, board.member.email,
+                board.endDateTime, board.startDateTime, board.createdDateTime))
+            .from(board)
+            .leftJoin(board.member)
+            .where(
+                searchBy(searchCondition),
+                board.startDateTime.before(LocalDateTime.now()),
+                board.endDateTime.after(LocalDateTime.now()))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(board.id.desc())
+            .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     @Override
@@ -42,7 +52,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             .selectFrom(board)
             .leftJoin(board.member, member)
             .fetchJoin()
-            .where(searchByAllForAdmin(searchCondition))
+            .where(searchForAdminBy(searchCondition))
             .fetch();
     }
 
@@ -86,7 +96,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return QueryDslUtil.nullSafeBuilder(() -> board.boardCategory.eq(category));
     }
 
-    private BooleanBuilder searchByAll(BoardSearchCondition searchCondition) {
+    private BooleanBuilder searchBy(BoardSearchCondition searchCondition) {
         return emailContains(searchCondition.getEmail())
             .and(titleContains(searchCondition.getTitle()))
             .and(contentContains(searchCondition.getContent()))
@@ -94,7 +104,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             .and(categoryEq(searchCondition.getBoardCategory()));
     }
 
-    private BooleanBuilder searchByAllForAdmin(BoardSearchCondition searchCondition) {
+    private BooleanBuilder searchForAdminBy(BoardSearchCondition searchCondition) {
         return emailContains(searchCondition.getEmail())
             .and(titleContains(searchCondition.getTitle()))
             .and(contentContains(searchCondition.getContent()))

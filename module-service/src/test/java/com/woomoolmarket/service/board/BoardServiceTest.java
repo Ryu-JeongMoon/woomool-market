@@ -13,6 +13,7 @@ import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +22,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
@@ -78,6 +81,8 @@ class BoardServiceTest {
             .title(BOARD_1_TITLE)
             .content(BOARD_1_CONTENT)
             .boardCategory(BoardCategory.QNA)
+            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
         Board board2 = Board.builder()
@@ -85,6 +90,8 @@ class BoardServiceTest {
             .title(BOARD_2_TITLE)
             .content(BOARD_2_CONTENT)
             .boardCategory(BoardCategory.FREE)
+            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
         Board board3 = Board.builder()
@@ -92,6 +99,8 @@ class BoardServiceTest {
             .title(BOARD_3_TITLE)
             .content(BOARD_3_CONTENT)
             .boardCategory(BoardCategory.NOTICE)
+            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
         BOARD_1_ID = boardRepository.save(board1).getId();
@@ -103,8 +112,12 @@ class BoardServiceTest {
     @DisplayName("검색 조건 생성하지 않을 시 전체 검색")
     void getListBySearchCondition() {
         BoardSearchCondition boardSearchCondition = new BoardSearchCondition();
-        List<BoardResponse> boardResponses = boardService.getListBySearchCondition(boardSearchCondition);
-        assertThat(boardResponses.size()).isEqualTo(3);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<BoardResponse> boardResponses =
+            boardService.getListBySearchCondition(boardSearchCondition, pageRequest);
+
+        assertThat(boardResponses.getTotalElements()).isEqualTo(3);
     }
 
     @Test
