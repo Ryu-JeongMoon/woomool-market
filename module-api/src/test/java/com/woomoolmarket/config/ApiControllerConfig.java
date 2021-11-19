@@ -3,6 +3,7 @@ package com.woomoolmarket.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
+import com.woomoolmarket.domain.image.repository.ImageRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
@@ -10,6 +11,7 @@ import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.helper.BoardTestHelper;
 import com.woomoolmarket.helper.CartTestHelper;
+import com.woomoolmarket.helper.ImageTestHelper;
 import com.woomoolmarket.helper.MemberTestHelper;
 import com.woomoolmarket.helper.OrderTestHelper;
 import com.woomoolmarket.helper.ProductTestHelper;
@@ -32,35 +34,44 @@ public abstract class ApiControllerConfig {
     protected static Long CART_ID;
     protected static Long ORDER_ID;
     protected static Long BOARD_ID;
+    protected static Long IMAGE_ID;
 
     @Autowired
     protected MockMvc mockMvc;
     @Autowired
     protected ObjectMapper objectMapper;
     @Autowired
-    protected MemberService memberService;
-    @Autowired
     protected PasswordEncoder passwordEncoder;
+    @Autowired
+    protected StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    protected CartRepository cartRepository;
+    @Autowired
+    protected BoardRepository boardRepository;
+    @Autowired
+    protected ImageRepository imageRepository;
     @Autowired
     protected OrderRepository orderRepository;
     @Autowired
     protected MemberRepository memberRepository;
     @Autowired
     protected ProductRepository productRepository;
+
     @Autowired
-    protected CartRepository cartRepository;
+    protected MemberService memberService;
+
     @Autowired
-    protected BoardRepository boardRepository;
+    protected CartTestHelper cartTestHelper;
     @Autowired
-    protected StringRedisTemplate stringRedisTemplate;
+    protected OrderTestHelper orderTestHelper;
+    @Autowired
+    protected BoardTestHelper boardTestHelper;
+    @Autowired
+    protected ImageTestHelper imageTestHelper;
     @Autowired
     protected MemberTestHelper memberTestHelper;
     @Autowired
     protected ProductTestHelper productTestHelper;
-    @Autowired
-    protected BoardTestHelper boardTestHelper;
-    @Autowired
-    protected OrderTestHelper orderTestHelper;
-    @Autowired
-    protected CartTestHelper cartTestHelper;
+
 }

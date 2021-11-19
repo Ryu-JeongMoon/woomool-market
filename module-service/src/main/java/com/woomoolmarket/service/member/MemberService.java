@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.member;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -51,7 +51,7 @@ public class MemberService {
     public MemberResponse findMemberById(Long id) {
         return memberRepository.findById(id)
             .map(memberResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
     }
 
     @Transactional
@@ -69,12 +69,12 @@ public class MemberService {
     @Transactional
     public Member join(SignUpRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException(ExceptionUtil.MEMBER_EMAIL_DUPLICATED);
+            throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
         }
 
         Member member = signUpRequestMapper.toEntity(signUpRequest);
         member.changePassword(passwordEncoder.encode(member.getPassword()));
-        member.registerAuthority(authority);
+        member.assignAuthority(authority);
 
         return memberRepository.save(member);
     }
@@ -83,7 +83,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
     }
 
@@ -92,7 +92,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void leaveSoftly(Long id) {
         memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
             .leave();
     }
 
@@ -100,7 +100,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void restore(Long id) {
         memberRepository.findByIdAndStatus(id, Status.INACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
             .restore();
     }
 

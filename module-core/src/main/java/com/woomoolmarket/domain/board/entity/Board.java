@@ -4,7 +4,7 @@ import static javax.persistence.FetchType.LAZY;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
@@ -70,18 +70,17 @@ public class Board extends BaseEntity {
     private BoardCategory boardCategory;
 
     @Builder
-    public Board(Member member, String title, String content, List<Image> images, BoardCategory boardCategory,
+    public Board(Member member, String title, String content, BoardCategory boardCategory,
         LocalDateTime startDateTime, LocalDateTime endDateTime) {
         this.member = member;
         this.title = title;
         this.content = content;
-        this.images = images;
         this.boardCategory = boardCategory;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
 
         if (startDateTime != null && endDateTime != null && startDateTime.isAfter(endDateTime)) {
-            throw new IllegalArgumentException(ExceptionUtil.BOARD_DATE_NOT_PROPER);
+            throw new IllegalArgumentException(ExceptionConstants.BOARD_DATE_NOT_PROPER);
         }
     }
 

@@ -3,6 +3,7 @@ package com.woomoolmarket.domain.image.entity;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,14 +15,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Image extends BaseTimeEntity {
 
     @Id
