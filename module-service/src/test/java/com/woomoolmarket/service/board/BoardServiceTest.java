@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class BoardServiceTest {
 
+    private static Long BOARD_1_ID;
+    private static Long BOARD_2_ID;
+    private static Long BOARD_3_ID;
+    private static Member member1;
+    private static Member member2;
+
     private final String MEMBER_1_EMAIL = "panda@naver.com";
     private final String MEMBER_2_EMAIL = "tiger@naver.com";
     private final String BOARD_1_TITLE = "panda1";
@@ -39,6 +46,7 @@ class BoardServiceTest {
     private final String BOARD_2_CONTENT = "bear2";
     private final String BOARD_3_TITLE = "panda3";
     private final String BOARD_3_CONTENT = "bear3";
+
     @Autowired
     BoardRepository boardRepository;
     @Autowired
@@ -49,11 +57,6 @@ class BoardServiceTest {
     BoardResponseMapper boardResponseMapper;
     @Autowired
     EntityManager em;
-    private Long BOARD_1_ID;
-    private Long BOARD_2_ID;
-    private Long BOARD_3_ID;
-    private Member member1;
-    private Member member2;
 
     @BeforeEach
     void init() {
@@ -108,6 +111,15 @@ class BoardServiceTest {
         BOARD_3_ID = boardRepository.save(board3).getId();
     }
 
+    @AfterEach
+    void clear() {
+        boardRepository.deleteAll();
+        memberRepository.deleteAll();
+
+        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+    }
+
     @Test
     @DisplayName("검색 조건 생성하지 않을 시 전체 검색")
     void getListBySearchCondition() {
@@ -141,8 +153,7 @@ class BoardServiceTest {
         assertThat(boardResponses.size()).isEqualTo(1);
     }
 
-    // TODO, github actions 에서 터짐
-    //@Test
+    @Test
     @DisplayName("ID & STATUS 조건 검색")
     void getByIdAndStatus() {
         BoardResponse boardResponse = boardService.getByIdAndStatus(BOARD_1_ID, Status.ACTIVE);

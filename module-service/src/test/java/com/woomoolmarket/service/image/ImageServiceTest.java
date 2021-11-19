@@ -16,19 +16,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @Transactional
 @SpringBootTest
 class ImageServiceTest {
 
+    private static Long BOARD_ID;
     private final String MEMBER_EMAIL = "panda@naver.com";
     private final String BOARD_TITLE = "panda";
     private final String BOARD_CONTENT = "bear";
@@ -44,12 +46,8 @@ class ImageServiceTest {
     @Autowired
     EntityManager em;
 
-    private Long BOARD_ID;
-
     @BeforeEach
     void init() {
-        em.createNativeQuery("ALTER TABLE IMAGE ALTER COLUMN `image_id` RESTART WITH 1").executeUpdate();
-
         Member member = Member.builder()
             .email(MEMBER_EMAIL)
             .password("123456")
@@ -76,8 +74,19 @@ class ImageServiceTest {
         BOARD_ID = boardRepository.save(board).getId();
     }
 
+    @AfterEach
+    void clear() {
+        imageRepository.deleteAll();
+        boardRepository.deleteAll();
+        memberRepository.deleteAll();
+
+        em.createNativeQuery("ALTER TABLE IMAGE ALTER COLUMN `image_id` RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+    }
+
     // TODO, 보완 필요, org.springframework.dao.DataIntegrityViolationException 발생
-    //@Test
+    @Test
     @DisplayName("게시글 번호에 의한 이미지 조회 성공")
     void findByBoard() {
         List<ImageResponse> imageResponses = imageService.findByBoard(BOARD_ID);

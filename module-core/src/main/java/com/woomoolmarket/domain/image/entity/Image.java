@@ -15,14 +15,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Image extends BaseTimeEntity {
 
     @Id
