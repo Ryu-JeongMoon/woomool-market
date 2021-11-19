@@ -1,6 +1,6 @@
 package com.woomoolmarket.common.util;
 
-public class ExceptionUtil {
+public class ExceptionConstants {
 
     public static final String MEMBER_NOT_FOUND = "존재하지 않는 회원입니다";
     public static final String MEMBER_BLOCKED = "비밀번호를 5회 이상 틀려 인증이 필요합니다";

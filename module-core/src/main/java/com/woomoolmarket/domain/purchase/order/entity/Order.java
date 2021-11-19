@@ -3,7 +3,7 @@ package com.woomoolmarket.domain.purchase.order.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.embeddable.Delivery;
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "ORDERS")
-//@ToString(exclude = {"orderProducts", "member"}, callSuper = true)
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Order extends BaseTimeEntity {
 
@@ -66,7 +65,7 @@ public class Order extends BaseTimeEntity {
 
     public void cancel() {
         if (orderStatus == OrderStatus.DELIVERED) {
-            throw new IllegalArgumentException(ExceptionUtil.ORDER_CANNOT_CANCEL);
+            throw new IllegalArgumentException(ExceptionConstants.ORDER_CANNOT_CANCEL);
         }
 
         orderStatus = OrderStatus.CANCELED;

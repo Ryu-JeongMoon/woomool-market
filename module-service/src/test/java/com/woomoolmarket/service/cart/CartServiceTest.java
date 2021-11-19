@@ -12,7 +12,9 @@ import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import java.util.List;
+import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,9 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class CartServiceTest {
 
-    private static Long MEMBER_ID;
-    private static Long PRODUCT_ID;
-    private static Long CART_ID;
     @Autowired
     CartRepository cartRepository;
     @Autowired
@@ -36,6 +35,12 @@ class CartServiceTest {
     ProductRepository productRepository;
     @Autowired
     CartService cartService;
+    @Autowired
+    EntityManager em;
+
+    private Long MEMBER_ID;
+    private Long PRODUCT_ID;
+    private Long CART_ID;
 
     @BeforeEach
     void init() {
@@ -43,6 +48,7 @@ class CartServiceTest {
             .email("panda")
             .nickname("bear")
             .build();
+        MEMBER_ID = memberRepository.save(member).getId();
 
         Product product = Product.builder()
             .name("fruit")
@@ -51,16 +57,25 @@ class CartServiceTest {
             .price(10000)
             .productCategory(ProductCategory.FRUIT)
             .build();
+        PRODUCT_ID = productRepository.save(product).getId();
 
         Cart cart = Cart.builder()
             .member(member)
             .product(product)
             .quantity(300)
             .build();
-
-        MEMBER_ID = memberRepository.save(member).getId();
-        PRODUCT_ID = productRepository.save(product).getId();
         CART_ID = cartRepository.save(cart).getId();
+    }
+
+    @AfterEach
+    void clear() {
+        cartRepository.deleteAll();
+        memberRepository.deleteAll();
+        productRepository.deleteAll();
+
+        em.createNativeQuery("ALTER TABLE CART ALTER COLUMN `cart_id` RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
     }
 
     @Test
@@ -90,8 +105,7 @@ class CartServiceTest {
             .build();
 
         Long cartId = cartService.add(cartRequest);
-        CartResponse cartResponse = cartService.getById(cartId);
-        assertThat(cartResponse).isNotNull();
+        assertThat(cartId).isNotNull();
     }
 
     @Test
