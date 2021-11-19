@@ -1,7 +1,9 @@
 package com.woomoolmarket.service.image;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
+import com.woomoolmarket.domain.board.entity.Board;
+import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.image.repository.ImageRepository;
 import com.woomoolmarket.domain.image.dto.response.ImageResponse;
 import com.woomoolmarket.service.image.mapper.ImageResponseMapper;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ImageService {
 
+    private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final ImageResponseMapper imageResponseMapper;
 
@@ -28,9 +31,9 @@ public class ImageService {
             .collect(Collectors.toList());
     }
 
-    public void deleteBy(Long imageId) {
+    public void deleteByImageId(Long imageId) {
         imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.IMAGE_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
             .changeStatus(Status.INACTIVE);
     }
 }

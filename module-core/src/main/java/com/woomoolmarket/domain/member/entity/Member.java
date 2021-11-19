@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Builder;
@@ -64,15 +65,15 @@ public class Member extends BaseEntity {
         this.phone = phone;
         this.license = license;
         this.address = address;
-        this.provider = provider;
-        this.authority = authority;
+        this.provider = provider != null ? provider : AuthProvider.LOCAL;
+        this.authority = authority != null ? authority : Authority.ROLE_USER;
     }
 
     public void changePassword(String password) {
         this.password = password;
     }
 
-    public void registerAuthority(Authority authority) {
+    public void assignAuthority(Authority authority) {
         this.authority = authority;
     }
 

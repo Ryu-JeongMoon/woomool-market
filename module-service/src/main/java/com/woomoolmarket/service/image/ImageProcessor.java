@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class ImageProcessor {
                 multipartFile.transferTo(file);
             } catch (IOException e) {
                 log.error("FAILED :: Can't Transfer a file");
-                throw new IllegalStateException(ExceptionUtil.IMAGE_CANNOT_TRANSFER);
+                throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
             }
 
             file.setWritable(true);
@@ -85,7 +85,7 @@ public class ImageProcessor {
 
             if (!wasSuccessful) {
                 log.error("FAILED :: Can't Create a directory");
-                throw new IllegalStateException(ExceptionUtil.IMAGE_FOLDER_NOT_FOUND);
+                throw new IllegalStateException(ExceptionConstants.IMAGE_FOLDER_NOT_FOUND);
             }
         }
     }
@@ -93,7 +93,7 @@ public class ImageProcessor {
     private void checkFileExtension(MultipartFile multipartFile, String contentType) {
         if (!StringUtils.hasText(contentType)) {
             log.error("FAILED :: {} has no file extension", multipartFile.getOriginalFilename());
-            throw new IllegalArgumentException(ExceptionUtil.IMAGE_NOT_PROPER_EXTENSION);
+            throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
         }
     }
 
@@ -104,7 +104,7 @@ public class ImageProcessor {
             return ".png";
         } else {
             log.error("FAILED :: {} is unsupported file extension", contentType);
-            throw new IllegalArgumentException(ExceptionUtil.IMAGE_NOT_PROPER_EXTENSION);
+            throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
         }
     }
 

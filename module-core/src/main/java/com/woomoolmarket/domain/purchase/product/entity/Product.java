@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
@@ -40,7 +40,7 @@ public class Product extends BaseEntity {
 
     @JsonIgnore
     @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     private String description;
@@ -81,7 +81,7 @@ public class Product extends BaseEntity {
 
     public void decreaseStock(Integer quantity) {
         if (this.stock < quantity) {
-            throw new IllegalArgumentException(ExceptionUtil.PRODUCT_NOT_ENOUGH_STOCK);
+            throw new IllegalArgumentException(ExceptionConstants.PRODUCT_NOT_ENOUGH_STOCK);
         }
         this.stock -= quantity;
     }

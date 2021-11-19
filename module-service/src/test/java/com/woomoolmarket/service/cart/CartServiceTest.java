@@ -25,9 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class CartServiceTest {
 
-    private static Long MEMBER_ID;
-    private static Long PRODUCT_ID;
-    private static Long CART_ID;
     @Autowired
     CartRepository cartRepository;
     @Autowired
@@ -37,12 +34,17 @@ class CartServiceTest {
     @Autowired
     CartService cartService;
 
+    private Long MEMBER_ID;
+    private Long PRODUCT_ID;
+    private Long CART_ID;
+
     @BeforeEach
     void init() {
         Member member = Member.builder()
             .email("panda")
             .nickname("bear")
             .build();
+        MEMBER_ID = memberRepository.save(member).getId();
 
         Product product = Product.builder()
             .name("fruit")
@@ -51,6 +53,7 @@ class CartServiceTest {
             .price(10000)
             .productCategory(ProductCategory.FRUIT)
             .build();
+        PRODUCT_ID = productRepository.save(product).getId();
 
         Cart cart = Cart.builder()
             .member(member)
@@ -58,8 +61,6 @@ class CartServiceTest {
             .quantity(300)
             .build();
 
-        MEMBER_ID = memberRepository.save(member).getId();
-        PRODUCT_ID = productRepository.save(product).getId();
         CART_ID = cartRepository.save(cart).getId();
     }
 
@@ -90,8 +91,7 @@ class CartServiceTest {
             .build();
 
         Long cartId = cartService.add(cartRequest);
-        CartResponse cartResponse = cartService.getById(cartId);
-        assertThat(cartResponse).isNotNull();
+        assertThat(cartId).isNotNull();
     }
 
     @Test

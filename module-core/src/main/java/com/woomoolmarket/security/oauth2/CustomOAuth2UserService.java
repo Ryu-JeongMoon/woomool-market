@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.oauth2;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionUtil;
+import com.woomoolmarket.common.util.ExceptionConstants;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -10,7 +10,6 @@ import java.util.Collections;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -66,6 +65,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public Member editExistingMember(OAuth2Attributes attributes) {
         return memberRepository.findByEmail(attributes.getEmail())
             .map(member -> member.editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage()))
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionUtil.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
     }
 }

@@ -67,7 +67,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .leftJoin(board.member)
                 .where(board.status.eq(status),
                     board.startDateTime.before(LocalDateTime.now()),
-                    board.endDateTime.before(LocalDateTime.now()))
+                    board.endDateTime.after(LocalDateTime.now()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(board.id.desc())
@@ -96,6 +96,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return QueryDslUtil.nullSafeBuilder(() -> board.boardCategory.eq(category));
     }
 
+    // 회원은 활성화된 게시글만 볼 수 있도록 넘어오는 값 사용하지 않음
     private BooleanBuilder searchBy(BoardSearchCondition searchCondition) {
         return emailContains(searchCondition.getEmail())
             .and(titleContains(searchCondition.getTitle()))
@@ -114,8 +115,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 }
 
 /*
-회원은 활성화 되어 있는 게시글만 볼 수 있고
-관리자는 전부 볼 수 있게 하기 위해 메서드 나눠둠
+BooleanBuilder 놈들 분리해둬야 할까?
 
 searchByAll, searchByAllForAdmin 중복
 검색 메서드 추가될 경우 중복 제거하기
