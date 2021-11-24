@@ -85,7 +85,6 @@ class ImageServiceTest {
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
     }
 
-    // TODO, 보완 필요, org.springframework.dao.DataIntegrityViolationException 발생
     @Test
     @DisplayName("게시글 번호에 의한 이미지 조회 성공")
     void findByBoard() {

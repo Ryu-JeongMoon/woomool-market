@@ -20,13 +20,29 @@
     <div>
       <button @click="oauth2Login">Social Login</button>
     </div>
+    <Modal v-if="showModal" @close="showModal = false">
+      <h3 slot="header">
+        삐빅
+        <v-icon>$delete</v-icon>
+      </h3>
+      <h3 slot="body">빈 값을 입력할 수 없습니다</h3>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import Modal from "@/components/common/Modal.vue";
 
 export default Vue.extend({
+  components: { Modal },
+
+  data() {
+    return {
+      showModal: false,
+    };
+  },
+
   props: {
     email: {
       type: String,
@@ -37,6 +53,7 @@ export default Vue.extend({
       required: true,
     },
   },
+
   methods: {
     handleEmailInput(event: InputEvent) {
       const eventTarget = event.target as HTMLInputElement;
@@ -47,7 +64,11 @@ export default Vue.extend({
       this.$emit("inputPw", eventTarget.value);
     },
     login() {
-      this.$emit("login");
+      if (this.email == "" || this.password == "") {
+        this.showModal = !this.showModal;
+      } else {
+        this.$emit("login");
+      }
     },
     oauth2Login() {
       this.$router.push("/oauth2");
@@ -63,6 +84,7 @@ input {
   width: 20%;
   padding: 15px;
 }
+
 button {
   margin-top: 20px;
   width: 10%;
