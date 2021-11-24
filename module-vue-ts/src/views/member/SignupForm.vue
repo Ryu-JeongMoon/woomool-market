@@ -70,14 +70,13 @@
         <button type="submit" disabled>Signup</button>
       </div>
       <button @click="verifyEmail" type="button">Verify Email</button>
-
     </v-form>
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { publicInstance } from "@/api";
+import { publicAxios } from "@/api";
 
 export default Vue.extend({
   data() {
@@ -145,13 +144,13 @@ export default Vue.extend({
       const data = {
         email: this.email,
       };
-      await publicInstance.post("/api/auth/email-verification", data);
+      await publicAxios.post("/api/auth/email-verification", data);
     },
     async verifyEmail() {
       const data = {
         authString: this.emailAuthString,
       };
-      const response = await publicInstance.post(
+      const response = await publicAxios.post(
         "/api/auth/auth-string-verification",
         data
       );
@@ -179,3 +178,8 @@ button {
   cursor: pointer;
 }
 </style>
+
+<!--
+한글 사용 시 validation 엄격하게 하기 위해 props 이용했는데 넘 더러움
+그냥 v-model 로 엮는게 나을듯
+-->

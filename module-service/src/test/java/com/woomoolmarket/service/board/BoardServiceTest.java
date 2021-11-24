@@ -60,7 +60,6 @@ class BoardServiceTest {
 
     @BeforeEach
     void init() {
-        boardRepository.deleteAll();
         em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
 
         member1 = Member.builder()
