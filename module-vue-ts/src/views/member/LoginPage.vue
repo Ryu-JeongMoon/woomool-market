@@ -15,8 +15,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import LoginForm from "@/components/member/LoginForm.vue";
-import { publicInstance } from "@/api";
+import LoginForm from "@/views/member/LoginForm.vue";
+import { publicAxios } from "@/api";
 
 export default Vue.extend({
   data() {
@@ -35,7 +35,7 @@ export default Vue.extend({
         email: this.email,
         password: this.password,
       };
-      publicInstance.post("/api/auth/login", data);
+      publicAxios.post("/api/auth/login", data);
       this.initInput();
     },
     initInput() {

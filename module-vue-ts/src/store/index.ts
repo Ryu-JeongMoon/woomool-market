@@ -1,14 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import state from "@/store/state";
-import actions from "@/store/actions";
-import mutations from "@/store/mutations";
+import modules from "@/store/modules";
+import { WoomoolStore } from "@/store/type/types";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state,
-  actions,
-  mutations,
-  modules: {},
+const store: WoomoolStore = new Vuex.Store({
+  modules,
 });
+
+export default store;
