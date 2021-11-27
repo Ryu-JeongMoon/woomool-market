@@ -6,7 +6,6 @@ jdk:
 branches:
   only:
     - develop
-    - woomool-market-214
 
 cache:
   directories:
