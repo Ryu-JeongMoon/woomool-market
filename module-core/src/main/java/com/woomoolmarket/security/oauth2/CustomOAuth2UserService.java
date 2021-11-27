@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.oauth2;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;

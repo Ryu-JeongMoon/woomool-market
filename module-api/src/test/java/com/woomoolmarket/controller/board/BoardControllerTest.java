@@ -12,11 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.config.ApiControllerConfig;
+import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.domain.board.dto.request.BoardRequest;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -93,6 +94,8 @@ class BoardControllerTest extends ApiControllerConfig {
             .email(MEMBER_EMAIL)
             .title("white")
             .content("black")
+            .startDateTime(LocalDateTime.now())
+            .endDateTime(LocalDateTime.of(2099, 9, 9, 2, 3, 4))
             .boardCategory(BoardCategory.FREE)
             .build();
 

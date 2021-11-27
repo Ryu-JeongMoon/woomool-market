@@ -14,7 +14,9 @@ public class JpaAuditingConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        return () -> context.getAuthentication() != null ? Optional.of(context.getAuthentication().getName()) : Optional.empty();
+        return () -> {
+            SecurityContext context = SecurityContextHolder.getContext();
+            return context.getAuthentication() != null ? Optional.of(context.getAuthentication().getName()) : Optional.empty();
+        };
     }
 }

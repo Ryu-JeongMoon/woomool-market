@@ -11,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Builder;
@@ -35,10 +34,15 @@ public class Member extends BaseEntity {
     private Long id;
 
     private String email;
+
     private String nickname;
+
     private String password;
+
     private String profileImage;
+
     private String phone;
+
     private String license;
 
     private LocalDateTime leaveDateTime;

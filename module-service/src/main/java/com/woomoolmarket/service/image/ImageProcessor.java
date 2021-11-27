@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.common.util.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.io.File;
 import java.io.IOException;

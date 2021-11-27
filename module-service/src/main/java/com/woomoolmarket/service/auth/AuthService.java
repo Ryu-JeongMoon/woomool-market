@@ -7,7 +7,7 @@ import static com.woomoolmarket.security.jwt.TokenConstant.LOGOUT_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.REFRESH_TOKEN_EXPIRE_TIME;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.redis.RedisUtil;
 import com.woomoolmarket.security.dto.TokenRequest;
