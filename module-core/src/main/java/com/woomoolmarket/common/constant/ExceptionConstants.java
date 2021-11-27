@@ -1,4 +1,4 @@
-package com.woomoolmarket.common.util;
+package com.woomoolmarket.common.constant;
 
 public class ExceptionConstants {
 

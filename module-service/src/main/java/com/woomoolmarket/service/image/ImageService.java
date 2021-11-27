@@ -1,8 +1,7 @@
 package com.woomoolmarket.service.image;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionConstants;
-import com.woomoolmarket.domain.board.entity.Board;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.image.repository.ImageRepository;
 import com.woomoolmarket.domain.image.dto.response.ImageResponse;

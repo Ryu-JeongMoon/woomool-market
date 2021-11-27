@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.order;
 
 import com.woomoolmarket.common.embeddable.Delivery;
-import com.woomoolmarket.common.util.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;

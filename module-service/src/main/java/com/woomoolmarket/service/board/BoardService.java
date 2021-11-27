@@ -1,19 +1,19 @@
 package com.woomoolmarket.service.board;
 
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.ExceptionConstants;
+import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.domain.board.dto.request.BoardRequest;
+import com.woomoolmarket.domain.board.dto.response.BoardResponse;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.domain.board.dto.request.BoardRequest;
-import com.woomoolmarket.domain.board.dto.response.BoardResponse;
+import com.woomoolmarket.service.board.mapper.BoardModifyMapper;
 import com.woomoolmarket.service.board.mapper.BoardRequestMapper;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
-import com.woomoolmarket.service.board.mapper.BoardModifyMapper;
 import com.woomoolmarket.service.image.ImageProcessor;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,15 +42,23 @@ public class BoardService {
 
 //    @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByCondition", unless = "#result==null")
     @Transactional(readOnly = true)
-    public Page<BoardResponse> getListBySearchCondition(BoardSearchCondition searchCondition, Pageable pageable) {
+    public Page<BoardResponse> findListBySearchCondition(BoardSearchCondition searchCondition, Pageable pageable) {
         return boardRepository.findByConditionAndPage(searchCondition, pageable);
     }
 
     @Transactional(readOnly = true)
-    public BoardResponse getByIdAndStatus(Long id, Status status) {
+    public BoardResponse findByIdAndStatus(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardResponse> findByMemberAndStatus(String email, Status status) {
+        return boardRepository.findByMemberAndStatus(email, status)
+            .stream()
+            .map(boardResponseMapper::toDto)
+            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -115,7 +123,7 @@ public class BoardService {
     /* FOR ADMIN */
     @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", unless = "#result==null")
-    public List<BoardResponse> getListBySearchConditionForAdmin(BoardSearchCondition condition) {
+    public List<BoardResponse> findListBySearchConditionForAdmin(BoardSearchCondition condition) {
         return boardRepository.findByConditionForAdmin(condition)
             .stream()
             .map(boardResponseMapper::toDto)
