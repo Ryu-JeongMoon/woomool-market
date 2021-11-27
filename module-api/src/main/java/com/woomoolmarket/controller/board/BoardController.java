@@ -50,18 +50,18 @@ public class BoardController {
     private final PagedResourcesAssembler<BoardResponse> assembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getListBySearchCondition(
+    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getBoardList(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<BoardResponse> boardResponses = boardService.getListBySearchCondition(condition, pageable);
+        Page<BoardResponse> boardResponses = boardService.findListBySearchCondition(condition, pageable);
         return ResponseEntity.ok(assembler.toModel(boardResponses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> getActiveBoardById(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<BoardResponse>> getBoard(@PathVariable Long id) {
         boardService.increaseHit(id);
-        BoardResponse boardResponse = boardService.getByIdAndStatus(id, Status.ACTIVE);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getActiveBoardById(id));
+        BoardResponse boardResponse = boardService.findByIdAndStatus(id, Status.ACTIVE);
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBoard(id));
 
         EntityModel<BoardResponse> responseModel =
             EntityModel.of(
@@ -75,7 +75,7 @@ public class BoardController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity registerBoard(@Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult,
+    public ResponseEntity createBoard(@Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult,
         List<MultipartFile> files) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
@@ -87,7 +87,7 @@ public class BoardController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity editBoardInfo(@PathVariable Long id,
+    public ResponseEntity editBoard(@PathVariable Long id,
         @Validated @RequestBody BoardModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
@@ -95,7 +95,7 @@ public class BoardController {
 
         BoardResponse boardResponse = boardService.edit(id, modifyRequest);
         EntityModel<BoardResponse> boardModel =
-            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getActiveBoardById(id)).withSelfRel());
+            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getBoard(id)).withSelfRel());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
     }
@@ -118,10 +118,10 @@ public class BoardController {
     /* FOR ADMIN */
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getListBySearchConditionForAdmin(
+    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getBoardListForAdmin(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<BoardResponse> boardResponses = boardService.getListBySearchConditionForAdmin(condition);
+        List<BoardResponse> boardResponses = boardService.findListBySearchConditionForAdmin(condition);
         Page<BoardResponse> responsePage = PageUtil.toPage(boardResponses, pageable);
         return ResponseEntity.ok(assembler.toModel(responsePage));
     }

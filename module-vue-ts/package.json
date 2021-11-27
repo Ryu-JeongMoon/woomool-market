@@ -10,11 +10,10 @@
     "test": "vue-cli-service test:unit --watchAll"
   },
   "dependencies": {
-    "@mdi/js": "^6.4.95",
-    "@vue/eslint-config-prettier": "^6.0.0",
     "axios": "^0.23.0",
     "core-js": "^3.6.5",
     "lodash": "^4.17.21",
+    "node-sass": "^6.0.1",
     "sass": "^1.43.4",
     "sass-loader": "^10.0.0",
     "vue": "^2.6.11",
@@ -23,6 +22,8 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@mdi/font": "^6.5.95",
+    "@mdi/js": "^6.4.95",
     "@types/lodash": "^4.14.177",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
@@ -33,11 +34,15 @@
     "@vue/cli-plugin-unit-jest": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^1.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
+    "material-design-icons-iconfont": "^6.1.1",
+    "mdi-vue": "^3.0.12",
+    "moment": "^2.29.1",
     "prettier": "^2.2.1",
     "typescript": "~4.1.5",
     "vue-template-compiler": "^2.6.11",

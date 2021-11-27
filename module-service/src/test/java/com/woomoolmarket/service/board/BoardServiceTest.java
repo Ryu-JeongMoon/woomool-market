@@ -15,6 +15,7 @@ import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -126,7 +127,7 @@ class BoardServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         Page<BoardResponse> boardResponses =
-            boardService.getListBySearchCondition(boardSearchCondition, pageRequest);
+            boardService.findListBySearchCondition(boardSearchCondition, pageRequest);
 
         assertThat(boardResponses.getTotalElements()).isEqualTo(3);
     }
@@ -135,10 +136,10 @@ class BoardServiceTest {
     @DisplayName("Admin 전용 검색")
     void getListBySearchConditionForAdmin() {
         BoardSearchCondition searchCondition1 = new BoardSearchCondition();
-        List<BoardResponse> boardResponses1 = boardService.getListBySearchConditionForAdmin(searchCondition1);
+        List<BoardResponse> boardResponses1 = boardService.findListBySearchConditionForAdmin(searchCondition1);
 
         BoardSearchCondition searchCondition2 = BoardSearchCondition.builder().status(Status.INACTIVE).build();
-        List<BoardResponse> boardResponses2 = boardService.getListBySearchConditionForAdmin(searchCondition2);
+        List<BoardResponse> boardResponses2 = boardService.findListBySearchConditionForAdmin(searchCondition2);
 
         assertThat(boardResponses1.size()).isEqualTo(3);
         assertThat(boardResponses2.size()).isEqualTo(0);
@@ -148,14 +149,14 @@ class BoardServiceTest {
     @DisplayName("fetch join 결과")
     void getListBySearchConditionForAdmin2() {
         BoardSearchCondition condition = BoardSearchCondition.builder().email("tiger").build();
-        List<BoardResponse> boardResponses = boardService.getListBySearchConditionForAdmin(condition);
+        List<BoardResponse> boardResponses = boardService.findListBySearchConditionForAdmin(condition);
         assertThat(boardResponses.size()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("ID & STATUS 조건 검색")
     void getByIdAndStatus() {
-        BoardResponse boardResponse = boardService.getByIdAndStatus(BOARD_1_ID, Status.ACTIVE);
+        BoardResponse boardResponse = boardService.findByIdAndStatus(BOARD_1_ID, Status.ACTIVE);
         assertThat(boardResponse.getTitle()).isEqualTo(BOARD_1_TITLE);
     }
 
@@ -176,7 +177,8 @@ class BoardServiceTest {
             .content("hi")
             .build();
         boardService.register(boardRequest, null);
-        assertThat(boardRepository.findById(4L).get()).isNotNull();
+        List<BoardResponse> boardResponses = boardService.findByMemberAndStatus(MEMBER_1_EMAIL, Status.ACTIVE);
+        assertThat(boardResponses.get(0).getId()).isNotNull();
     }
 
     @Test

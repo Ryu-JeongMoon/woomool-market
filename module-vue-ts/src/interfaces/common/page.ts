@@ -5,7 +5,7 @@ export interface Page {
   totalElements: number;
 }
 
-export interface PageRequest {
+export interface Pageable {
   page: number;
   size: number;
 }

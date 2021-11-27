@@ -12,25 +12,121 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/About.vue"),
   },
   {
-    path: PATH.LOGIN,
+    path: PATH.AUTH.LOGIN,
     name: "LoginPage",
-    component: () => import("@/views/member/LoginPage.vue"),
+    component: () => import("@/views/auth/LoginPage.vue"),
   },
   {
-    path: PATH.SIGNUP,
-    name: "SignupPage",
-    component: () => import("@/views/member/SignupPage.vue"),
-  },
-  {
-    path: PATH.OAUTH2,
+    path: PATH.AUTH.OAUTH2,
     name: "OAuth2LoginPage",
     component: () => import("@/views/member/OAuth2LoginPage.vue"),
   },
+
   {
-    path: PATH.BOARDS,
-    name: "BoardListPage",
+    name: "Members",
+    path: PATH.MEMBER.LIST,
+    component: () => import("@/views/member/MemberListPage.vue"),
+  },
+  {
+    name: "SignupMembers",
+    path: PATH.MEMBER.SIGNUP,
+    component: () => import("@/views/member/SignupPage.vue"),
+  },
+  {
+    name: "DetailMembers",
+    path: PATH.MEMBER.DETAIL,
+    component: () => import("@/views/member/MemberDetailPage.vue"),
+  },
+  {
+    name: "ModifyMembers",
+    path: PATH.MEMBER.MODIFY,
+    component: () => import("@/views/member/MemberModifyPage.vue"),
+  },
+
+  {
+    name: "Boards",
+    path: PATH.BOARD.LIST,
     component: () => import("@/views/board/BoardListPage.vue"),
   },
+  {
+    name: "CreateBoards",
+    path: PATH.BOARD.CREATE,
+    component: () => import("@/views/board/BoardCreatePage.vue"),
+  },
+  {
+    name: "DetailBoards",
+    path: PATH.BOARD.DETAIL,
+    component: () => import("@/views/board/BoardDetailPage.vue"),
+  },
+  {
+    name: "ModifyBoards",
+    path: PATH.BOARD.MODIFY,
+    component: () => import("@/views/board/BoardModifyPage.vue"),
+  },
+
+  {
+    name: "Carts",
+    path: PATH.CART.LIST,
+    component: () => import("@/views/cart/CartListPage.vue"),
+  },
+  {
+    name: "CreateCarts",
+    path: PATH.CART.CREATE,
+    component: () => import("@/views/cart/CartCreatePage.vue"),
+  },
+  {
+    name: "DetailCarts",
+    path: PATH.CART.DETAIL,
+    component: () => import("@/views/cart/CartDetailPage.vue"),
+  },
+  {
+    name: "ModifyCarts",
+    path: PATH.CART.MODIFY,
+    component: () => import("@/views/cart/CartModifyPage.vue"),
+  },
+
+  {
+    name: "Products",
+    path: PATH.PRODUCT.LIST,
+    component: () => import("@/views/product/ProductListPage.vue"),
+  },
+  {
+    name: "CreateProducts",
+    path: PATH.PRODUCT.CREATE,
+    component: () => import("@/views/product/ProductCreatePage.vue"),
+  },
+  {
+    name: "DetailProducts",
+    path: PATH.PRODUCT.DETAIL,
+    component: () => import("@/views/product/ProductDetailPage.vue"),
+  },
+  {
+    name: "ModifyProducts",
+    path: PATH.PRODUCT.MODIFY,
+    component: () => import("@/views/product/ProductModifyPage.vue"),
+  },
+
+  {
+    name: "Orders",
+    path: PATH.ORDER.LIST,
+    component: () => import("@/views/order/OrderListPage.vue"),
+  },
+  {
+    name: "CreateOrders",
+    path: PATH.ORDER.CREATE,
+    component: () => import("@/views/order/OrderCreatePage.vue"),
+  },
+  {
+    name: "DetailOrders",
+    path: PATH.ORDER.DETAIL,
+    component: () => import("@/views/order/OrderDetailPage.vue"),
+  },
+  {
+    name: "ModifyOrders",
+    path: PATH.ORDER.MODIFY,
+    component: () => import("@/views/order/OrderModifyPage.vue"),
+  },
+
   {
     path: "*",
     component: () => import("@/views/error/NotFoundPage.vue"),

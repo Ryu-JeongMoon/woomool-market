@@ -1,20 +1,13 @@
 import axios, { AxiosInstance } from "axios";
 import { setInterceptors } from "@/api/common/interceptors";
 
-function createAxiosInstance(): AxiosInstance {
-  return axios.create({
-    baseURL: process.env.VUE_APP_LOCAL_URL,
-  });
-}
+const createInstance = (): AxiosInstance =>
+  axios.create({ baseURL: process.env.VUE_APP_LOCAL_URL });
+const createPrivateInstance = (): AxiosInstance => setInterceptors(publicAxios);
 
-function createAxiosInstanceWithAuth(url: string): AxiosInstance {
-  const instance = axios.create({
-    baseURL: `${process.env.VUE_APP_LOCAL_URL}${url}`,
-  });
-  return setInterceptors(instance);
-}
+export const publicAxios = createInstance();
+export const privateAxios = createPrivateInstance();
 
-const publicAxios = createAxiosInstance();
-const privateAxios = createAxiosInstanceWithAuth("");
-
-export { publicAxios, privateAxios };
+// const instance = axios.create({
+//   baseURL: `${process.env.VUE_APP_LOCAL_URL}${url}`,
+// });

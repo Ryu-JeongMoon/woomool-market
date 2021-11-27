@@ -36,7 +36,9 @@ public class BoardRequest {
     @NotNull
     private BoardCategory boardCategory;
 
+    @NotNull
     private LocalDateTime startDateTime;
 
+    @NotNull
     private LocalDateTime endDateTime;
 }

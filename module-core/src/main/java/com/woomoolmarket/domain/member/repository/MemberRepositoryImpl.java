@@ -5,7 +5,7 @@ import static com.woomoolmarket.domain.member.entity.QMember.member;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.querydsl.QueryDslUtil;
+import com.woomoolmarket.common.util.QueryDslUtil;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;

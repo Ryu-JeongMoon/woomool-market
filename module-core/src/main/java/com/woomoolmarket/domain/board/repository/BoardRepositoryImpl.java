@@ -7,7 +7,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.querydsl.QueryDslUtil;
+import com.woomoolmarket.common.util.QueryDslUtil;
 import com.woomoolmarket.domain.board.dto.response.BoardResponse;
 import com.woomoolmarket.domain.board.dto.response.QBoardResponse;
 import com.woomoolmarket.domain.board.entity.Board;

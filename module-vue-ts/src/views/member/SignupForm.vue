@@ -76,42 +76,22 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { publicAxios } from "@/api";
+import authApi from "@/api/AuthApi";
 
 export default Vue.extend({
   data() {
     return {
       emailAuthString: "",
       isVerified: false,
+      email: "",
+      password: "",
+      nickname: "",
+      city: "",
+      street: "",
+      zipcode: "",
     };
   },
 
-  props: {
-    email: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    nickname: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: false,
-    },
-    street: {
-      type: String,
-      required: false,
-    },
-    zipcode: {
-      type: String,
-      required: false,
-    },
-  },
   methods: {
     handleEmailInput(event: InputEvent) {
       const eventTarget = event.target as HTMLInputElement;
@@ -140,21 +120,13 @@ export default Vue.extend({
     submitForm() {
       this.$emit("signup");
     },
-    async sendEmailVerification() {
-      const data = {
-        email: this.email,
-      };
-      await publicAxios.post("/api/auth/email-verification", data);
+    async sendEmailVerification(email: string) {
+      await authApi.sendEmailVerification(email);
     },
-    async verifyEmail() {
-      const data = {
-        authString: this.emailAuthString,
-      };
-      const response = await publicAxios.post(
-        "/api/auth/auth-string-verification",
-        data
-      );
-      if (response.status === 200) {
+    async verifyEmail(authString: string) {
+      const status = await authApi.verifyEmail(authString);
+
+      if (status === 200) {
         this.isVerified = true;
       }
     },
@@ -167,11 +139,13 @@ label {
   display: inline-block;
   margin-top: 20px;
 }
+
 input {
   margin: 10px 0;
   width: 20%;
   padding: 15px;
 }
+
 button {
   margin-top: 20px;
   width: 10%;

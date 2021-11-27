@@ -6,8 +6,6 @@ import { vuetify } from "@/plugins/vuetify";
 
 import "@/fonts/roboto.css";
 import "@/fonts/fonts.css";
-import "@/css/style.scss";
-import "@/css/vuetify-override.scss";
 
 Vue.config.productionTip = false;
 

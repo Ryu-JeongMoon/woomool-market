@@ -1,13 +1,27 @@
-import { LoginRequest, MemberRequest } from "@/interfaces/member/member";
-import { publicAxios } from "@/api/index";
+import {
+  MemberModelResponse,
+  MemberRequest,
+  PagedMemberResponse,
+} from "@/interfaces/member";
+import { privateAxios, publicAxios } from "@/api/index";
+import ResponseConverter from "@/api/converter/ResponseConverter";
+import { BoardSearchCondition } from "@/interfaces/board";
+import { Pageable } from "@/interfaces/common/page";
 
 const memberApi = {
-  signup(memberRequest: MemberRequest) {
-    return publicAxios.post("/api/members", memberRequest);
+  signup(memberRequest: MemberRequest): Promise<MemberModelResponse> {
+    return publicAxios
+      .post("/api/members", memberRequest)
+      .then(ResponseConverter.retrieveData);
   },
 
-  login(loginRequest: LoginRequest) {
-    return publicAxios.post("/api/auth/login", loginRequest);
+  getMemberList(
+    condition?: BoardSearchCondition,
+    pageRequest?: Pageable
+  ): Promise<PagedMemberResponse> {
+    return privateAxios
+      .get("/api/members/admin", { params: { condition, pageRequest } })
+      .then(ResponseConverter.retrieveData);
   },
 };
 
