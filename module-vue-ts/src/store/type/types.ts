@@ -7,25 +7,34 @@ import {
 } from "@/store/modules/board";
 import {
   MemberActions,
+  MemberGetters,
   MemberMutations,
   MemberState,
 } from "@/store/modules/member";
-import { AuthGetters } from "@/store/modules/auth";
+import {
+  AuthActions,
+  AuthGetters,
+  AuthMutations,
+  AuthState,
+} from "@/store/modules/auth";
 
 export type RootState = {
   ui: UIState;
   board: BoardState;
   member: MemberState;
+  auth: AuthState;
 };
 
-export type MergedGetters = AuthGetters;
+export type MergedGetters = AuthGetters & MemberGetters;
 
 export type MergedMutations = UIMutations &
   BoardMutations &
-  MemberMutations & {
+  MemberMutations &
+  AuthMutations & {
     [key: string]: any;
   };
 export type MergedActions = UIActions &
+  AuthActions &
   BoardActions &
   MemberActions & {
     [key: string]: any;

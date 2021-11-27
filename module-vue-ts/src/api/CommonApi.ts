@@ -6,7 +6,7 @@ const commonApi = {
   postTempImage(formData: FormData): Promise<UploadImageResponse> {
     return axios
       .post("/api/common/temp/file", formData)
-      .then(ResponseConverter.extractData);
+      .then(ResponseConverter.retrieveData);
   },
 };
 

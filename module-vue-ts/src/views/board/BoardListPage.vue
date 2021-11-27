@@ -5,11 +5,13 @@
     </header>
     <main>
       <ul>
-        <ListForm
+        <LoadingSpinner v-if="isLoading" />
+        <BoardListForm
+          v-else
           :boardResponseList="boardResponseList"
           :page="page"
           :links="links"
-        ></ListForm>
+        />
       </ul>
     </main>
   </div>
@@ -17,20 +19,22 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ListForm from "@/views/board/BoardListForm.vue";
-import { BoardResponse, BoardSearchCondition } from "@/interfaces/board/board";
-import { Page, PageRequest } from "@/interfaces/common/page";
-import { Link } from "@/interfaces/common/link";
+import BoardListForm from "@/views/board/BoardListForm.vue";
+import { BoardResponse, BoardSearchCondition } from "@/interfaces/board";
+import { Page, Pageable } from "@/interfaces/common/page";
+import { Links } from "@/interfaces/common/links";
 import boardApi from "@/api/BoardApi";
+import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
 
 export default Vue.extend({
-  components: { ListForm },
+  components: { LoadingSpinner, BoardListForm },
 
   data() {
     return {
       boardResponseList: [] as BoardResponse[],
       page: {} as Page,
-      links: {} as Link,
+      links: {} as Links,
+      isLoading: false,
     };
   },
 
@@ -41,14 +45,27 @@ export default Vue.extend({
   methods: {
     async fetchBoardResponseList(
       condition?: BoardSearchCondition,
-      pageable?: PageRequest
+      pageable?: Pageable
     ) {
-      const response = await boardApi.getBoardResponseList(condition, pageable);
-      console.log(response);
+      this.startLoading();
 
-      this.boardResponseList = response.data._embedded.boardResponseList;
-      this.page = response.data.page;
-      this.links = response.data._links;
+      const boardResponses = await boardApi
+        .getBoardList(condition, pageable)
+        .finally(() => this.endLoading());
+
+      console.log(boardResponses);
+
+      this.boardResponseList = boardResponses._embedded.boardResponseList;
+      this.page = boardResponses.page;
+      this.links = boardResponses._links;
+    },
+
+    startLoading() {
+      this.isLoading = true;
+    },
+
+    endLoading() {
+      this.isLoading = false;
     },
   },
 });

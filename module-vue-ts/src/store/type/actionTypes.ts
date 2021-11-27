@@ -2,9 +2,13 @@ export enum UIActionTypes {
   UPLOAD_TEMP_IMAGE = "common/uploadTempImage",
 }
 
+export enum AuthActionTypes {
+  REQUEST_LOGIN = "/api/",
+}
+
 export enum BoardActionTypes {
   REQUEST_BOARDS = "api/boards",
-  REQUEST_BOARD = "api/boards/${boardId}",
+  REQUEST_BOARD = "api/boards/:boardId",
 }
 
 export enum ClubActionTypes {

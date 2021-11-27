@@ -1,33 +1,30 @@
-function saveAuthToCookie(value: string) {
-  document.cookie = `til_auth=${value}`;
-}
+const ACCESS_TOKEN_KEY = "accessToken";
+const REFRESH_TOKEN_KEY = "refreshToken";
 
-function saveUserToCookie(value: string) {
-  document.cookie = `til_user=${value}`;
-}
+export class CookieUtils {
+  static setAccessTokenToCookie(value: string): void {
+    document.cookie = `${ACCESS_TOKEN_KEY}=${value}`;
+  }
 
-function getAuthFromCookie() {
-  return document.cookie.replace(
-    /(?:(?:^|.*;\s*)til_auth\s*=\s*([^;]*).*$)|^.*$/,
-    "$1"
-  );
-}
+  static setRefreshTokenToCookie(value: string): void {
+    document.cookie = `${REFRESH_TOKEN_KEY}=${value}`;
+  }
 
-function getUserFromCookie() {
-  return document.cookie.replace(
-    /(?:(?:^|.*;\s*)til_user\s*=\s*([^;]*).*$)|^.*$/,
-    "$1"
-  );
-}
+  static getAccessTokenFromCookie(): string {
+    return document.cookie.replace(
+      /(?:(?:^|.*;\s*)accessToken\s*=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+  }
 
-function deleteCookie(value: string) {
-  document.cookie = `${value}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-}
+  static getRefreshTokenFromCookie(): string {
+    return document.cookie.replace(
+      /(?:^|.*;\s*)refreshToken\s*=\s*([^;]*).*$|^.*$/,
+      "$1"
+    );
+  }
 
-export {
-  saveAuthToCookie,
-  saveUserToCookie,
-  getAuthFromCookie,
-  getUserFromCookie,
-  deleteCookie,
-};
+  static deleteCookie(value: string): void {
+    document.cookie = `${value}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+  }
+}

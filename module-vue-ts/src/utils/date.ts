@@ -1,12 +1,17 @@
 export class DateUtils {
-  static getLocalDate(localDateTime: string): string {
-    const localDate = localDateTime.split(" ")[0];
-    const token = localDate.split("-");
+  static getLocalDatetime(localDateTime: string): string {
+    const localDate = localDateTime.split("T")[0];
+    const localTime = localDateTime.split("T")[1];
 
-    if (token.length !== 3) {
+    const dateToken = localDate.split("-");
+    const timeToken = localTime.split(":");
+
+    if (dateToken.length !== 3) {
       throw new Error(`Invalid localDateTime: ${localDateTime}`);
     }
 
-    return `${token[0]}.${token[1]}.${token[2]}`;
+    return `${dateToken[0]}.${dateToken[1]}.${dateToken[2]} ${timeToken[0]}:${timeToken[1]}`;
   }
+
+  // static convertLocalDateTime(date: string): string {}
 }

@@ -1,6 +1,6 @@
 import { Address } from "@/interfaces/common/address";
 import { Page } from "@/interfaces/common/page";
-import { Link } from "@/interfaces/common/link";
+import { Links } from "@/interfaces/common/links";
 
 export interface LoginRequest {
   email: string;
@@ -23,7 +23,7 @@ export interface MemberModifyRequest {
   address: Address;
 }
 
-export interface MemberResponse {
+export interface MemberModelResponse {
   id: number;
   email: string;
   nickname: string;
@@ -37,12 +37,13 @@ export interface MemberResponse {
   address: Address;
   authProvider: string;
   status: string;
+  _links: Links;
 }
 
-export interface MemberResponseList {
+export interface PagedMemberResponse {
   _embedded: {
-    memberResponseList: MemberResponse[];
+    memberResponseList: MemberModelResponse[];
   };
-  _links: Link;
+  _links: Links;
   page: Page;
 }

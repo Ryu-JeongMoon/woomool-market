@@ -5,7 +5,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, woomool-market-206 ]
   pull_request:
     branches: [ develop ]
 

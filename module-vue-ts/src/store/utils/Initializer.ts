@@ -1,6 +1,6 @@
-import { BoardResponse } from "@/interfaces/board/board";
-import { MemberResponse } from "@/interfaces/member/member";
-import { BoardResponseLink, Link } from "@/interfaces/common/link";
+import { BoardResponse } from "@/interfaces/board";
+import { MemberModelResponse } from "@/interfaces/member";
+import { BoardResponseLinks, Links } from "@/interfaces/common/links";
 import { Address } from "@/interfaces/common/address";
 import { Page } from "@/interfaces/common/page";
 
@@ -30,7 +30,7 @@ export default class StateInitializer {
     };
   }
 
-  static memberResponse(): MemberResponse {
+  static memberResponse(): MemberModelResponse {
     return {
       id: 0,
       email: "",
@@ -45,6 +45,7 @@ export default class StateInitializer {
       address: this.address(),
       authProvider: "",
       status: "",
+      _links: {} as Links,
     };
   }
 
@@ -56,7 +57,7 @@ export default class StateInitializer {
     };
   }
 
-  static link(): Link {
+  static link(): Links {
     return {
       self: {
         href: "",
