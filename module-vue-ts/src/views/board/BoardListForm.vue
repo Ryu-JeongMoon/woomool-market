@@ -17,9 +17,15 @@
               v-bind:key="boardResponse.id"
             >
               <td>{{ boardResponse.id }}</td>
-              <td @click="goToDetailBoard(boardResponse.id)">
-                {{ boardResponse.title }}
-              </td>
+              <v-hover v-slot="{ hover }">
+                <td
+                  @click="goToDetailBoard(boardResponse.id)"
+                  class="ui-state-hover"
+                  :elevation="hover ? 12 : 2"
+                >
+                  {{ boardResponse.title }}
+                </td>
+              </v-hover>
               <td>{{ boardResponse.memberResponse.email }}</td>
               <td>{{ boardResponse.hit }}</td>
               <td>{{ boardResponse.boardCategory }}</td>
@@ -29,7 +35,7 @@
         </v-simple-table>
         <span v-for="page in page.totalPages" v-bind:key="page">
           <td>
-            <button>{{ page }}</button>
+            <button @click="goToSpecificPage(page)">{{ page }}</button>
           </td>
         </span>
       </v-container>
@@ -67,6 +73,14 @@ export default Vue.extend({
 
     goToDetailBoard(boardId: number) {
       this.$router.push(`/boards/${boardId}`);
+    },
+
+    goToSpecificPage(page: number) {
+      const pageable = {
+        page: page,
+        size: 10,
+      };
+      this.$router.push(`/boards?pageable=${pageable}`);
     },
   },
 });

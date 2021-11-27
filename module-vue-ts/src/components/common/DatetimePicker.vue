@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="4" sm="6" md="4">
+  <v-col md="6">
     <v-dialog
       ref="dateDialog"
       v-model="dateModal"

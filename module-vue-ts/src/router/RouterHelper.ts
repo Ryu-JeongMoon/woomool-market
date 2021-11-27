@@ -4,11 +4,11 @@ import { generateParamPath, PATH } from "@/router/routes_path";
 import router from "@/router/index";
 
 class RouterHelper {
-  productId = (): number => parseInt(getParams().productId, 10);
-  memberId = (): number => parseInt(getParams().memberId, 10);
-  boardId = (): number => parseInt(getParams().boardId, 10);
-  orderId = (): number => parseInt(getParams().orderId, 10);
   cartId = (): number => parseInt(getParams().cartId, 10);
+  orderId = (): number => parseInt(getParams().orderId, 10);
+  boardId = (): number => parseInt(getParams().boardId, 10);
+  memberId = (): number => parseInt(getParams().memberId, 10);
+  productId = (): number => parseInt(getParams().productId, 10);
 
   async pushWhenException(e: any, path: string) {
     if (!AuthUtils.isUnauthorizedError(e)) {
