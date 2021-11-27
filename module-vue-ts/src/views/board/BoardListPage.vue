@@ -11,6 +11,7 @@
           :boardResponseList="boardResponseList"
           :page="page"
           :links="links"
+          @movePage="movePage"
         />
       </ul>
     </main>
@@ -51,29 +52,31 @@ export default Vue.extend({
   },
 
   created() {
-    this.fetchBoardResponseList();
+    this.fetchBoardResponseList(this.condition, this.pageable);
   },
 
   methods: {
-    async fetchBoardResponseList() {
+    async fetchBoardResponseList(
+      condition?: BoardSearchCondition,
+      pageable?: Pageable
+    ) {
       LoadingHelper.switchLoadingState(this.isLoading);
 
       const boardResponses = await boardApi
-        .getBoardList(this.condition, this.pageable)
+        .getBoardList(condition, pageable)
         .finally(() => LoadingHelper.switchLoadingState(this.isLoading));
 
       this.boardResponseList = boardResponses._embedded.boardResponseList;
       this.page = boardResponses.page;
       this.links = boardResponses._links;
     },
+
+    movePage(pageable: Pageable) {
+      console.log("yaho");
+      this.fetchBoardResponseList(this.condition, pageable);
+    },
   },
 });
 </script>
 
 <style scoped lang="scss"></style>
-
-<!--
-컴포넌트 만들어지면서 created() 시작되고 바로 로딩 시작이니까
-애초에 isLoading 을 true 로 두면 되지 않나?
-DetailPage 에서 도전
--->

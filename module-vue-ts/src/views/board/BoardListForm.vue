@@ -77,10 +77,11 @@ export default Vue.extend({
 
     goToSpecificPage(page: number) {
       const pageable = {
-        page: page,
+        page: page - 1,
         size: 10,
       };
-      this.$router.push(`/boards?pageable=${pageable}`);
+      this.$emit("movePage", pageable);
+      // this.$router.push(`/boards?pageable=${pageable}`);
     },
   },
 });

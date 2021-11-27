@@ -8,7 +8,6 @@ import {
 import { Pageable } from "@/interfaces/common/page";
 import { privateAxios, publicAxios } from "@/api/index";
 import ResponseConverter from "@/api/converter/ResponseConverter";
-import qs from "qs";
 
 const boardApi = {
   getBoard(boardId: number): Promise<BoardResponse> {
@@ -21,11 +20,9 @@ const boardApi = {
     condition?: BoardSearchCondition,
     pageable?: Pageable
   ): Promise<BoardResponseList> {
-    publicAxios.defaults.paramsSerializer = (params) => {
-      return qs.stringify(params);
-    };
     return publicAxios
       .get(`/api/boards`, {
+        // params: { page: pageable?.page, size: pageable?.size },
         params: { ...condition, ...pageable },
       })
       .then(ResponseConverter.retrieveData);
