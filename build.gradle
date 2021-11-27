@@ -148,8 +148,10 @@ subprojects {
 node {
     version = '16.6.1'
     yarnVersion = "1.22.17"
-    workDir = file("./module-vue-ts")
-    yarnWorkDir = file("./module-vue-ts")
+    download = true
+    distBaseUrl = 'https://nodejs.org/dist'
+    workDir = file("./module-vue-ts/nodejs")
+    yarnWorkDir = file("./module-vue-ts/yarn")
     nodeModulesDir = file("./module-vue-ts")
 }
 
