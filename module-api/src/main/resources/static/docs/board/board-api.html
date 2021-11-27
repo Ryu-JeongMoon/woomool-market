@@ -705,7 +705,7 @@ Content-Length: 1010
   "boardCategory" : "NOTICE",
   "endDateTime" : "2099-01-01T01:01:01",
   "startDateTime" : "2021-01-01T01:01:01",
-  "createdDateTime" : "2021-11-25T00:12:05.507689",
+  "createdDateTime" : "2021-11-27T20:51:13.161203",
   "memberResponse" : {
     "id" : 5,
     "email" : "panda@naver.com",
@@ -713,8 +713,8 @@ Content-Length: 1010
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-11-25T00:12:05.496912",
-    "lastModifiedDateTime" : "2021-11-25T00:12:05.496912",
+    "createdDateTime" : "2021-11-27T20:51:13.145707",
+    "lastModifiedDateTime" : "2021-11-27T20:51:13.145707",
     "leaveDateTime" : null,
     "authority" : "ROLE_USER",
     "address" : {
@@ -847,14 +847,14 @@ Content-Length: 959
 {
   "_embedded" : {
     "boardResponseList" : [ {
-      "id" : 6,
+      "id" : 5,
       "title" : "panda is cool",
       "content" : "yahoo",
       "hit" : 0,
       "boardCategory" : "NOTICE",
       "endDateTime" : "2099-01-01T01:01:01",
       "startDateTime" : "2021-01-01T01:01:01",
-      "createdDateTime" : "2021-11-25T00:12:06.217907",
+      "createdDateTime" : "2021-11-27T20:51:13.831076",
       "memberResponse" : {
         "id" : null,
         "email" : "panda@naver.com",
@@ -1023,17 +1023,31 @@ Host: localhost:8443
 <h4 id="_response_http_example_3">Response HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 400 Bad Request
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
+Content-Type: application/hal+json
+Content-Length: 258
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
-X-Frame-Options: SAMEORIGIN</code></pre>
+X-Frame-Options: SAMEORIGIN
+
+[ {
+  "field" : "startDateTime",
+  "objectName" : "boardRequest",
+  "code" : "NotNull",
+  "defaultMessage" : "must not be null"
+}, {
+  "field" : "endDateTime",
+  "objectName" : "boardRequest",
+  "code" : "NotNull",
+  "defaultMessage" : "must not be null"
+} ]</code></pre>
 </div>
 </div>
 </div>
@@ -1167,7 +1181,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_curl_5">CURL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/boards/4' -i -X DELETE \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ curl 'https://localhost:8443/api/boards/3' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: */*'</code></pre>
 </div>
@@ -1177,7 +1191,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_httpie_5">HTTPie</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ http DELETE 'https://localhost:8443/api/boards/4' \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ http DELETE 'https://localhost:8443/api/boards/3' \
     'Content-Type:application/json;charset=UTF-8' \
     'Accept:*/*'</code></pre>
 </div>
@@ -1187,7 +1201,7 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 <h4 id="_request_http_example_5">Request HTTP Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/boards/4 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/boards/3 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: */*
 Host: localhost:8443</code></pre>
@@ -1322,14 +1336,14 @@ Content-Length: 1131
 {
   "_embedded" : {
     "boardResponseList" : [ {
-      "id" : 8,
+      "id" : 7,
       "title" : "panda is cool",
       "content" : "yahoo",
       "hit" : 0,
       "boardCategory" : "NOTICE",
       "endDateTime" : "2099-01-01T01:01:01",
       "startDateTime" : "2021-01-01T01:01:01",
-      "createdDateTime" : "2021-11-25T00:12:06.529177",
+      "createdDateTime" : "2021-11-27T20:51:14.135459",
       "memberResponse" : {
         "id" : 11,
         "email" : "panda@naver.com",
@@ -1337,8 +1351,8 @@ Content-Length: 1131
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-11-25T00:12:06.526141",
-        "lastModifiedDateTime" : "2021-11-25T00:12:06.526141",
+        "createdDateTime" : "2021-11-27T20:51:14.131813",
+        "lastModifiedDateTime" : "2021-11-27T20:51:14.131813",
         "leaveDateTime" : null,
         "authority" : "ROLE_USER",
         "address" : {
