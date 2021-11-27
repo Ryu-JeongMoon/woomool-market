@@ -1,10 +1,10 @@
-export interface Link {
+export interface Links {
   self: {
     href: string;
   };
 }
 
-export interface BoardResponseLink {
+export interface BoardResponseLinks {
   self: {
     href: string;
   };
@@ -16,7 +16,7 @@ export interface BoardResponseLink {
   };
 }
 
-export interface ProductResponseLink {
+export interface ProductResponseLinks {
   self: {
     href: string;
   };
@@ -28,7 +28,7 @@ export interface ProductResponseLink {
   };
 }
 
-export interface CartResponseLink {
+export interface CartResponseLinks {
   self: {
     href: string;
   };

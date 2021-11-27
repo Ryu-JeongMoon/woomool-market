@@ -1,31 +1,20 @@
 import { UIActionTypes } from "@/store/type/actionTypes";
-import { UIActionContext } from "@/store/type/actionContextTypes";
 import { actionsNormalTemplate } from "@/store/utils/actionsTemplate";
 import { UIMutationTypes } from "@/store/type/mutationTypes";
 import { changeThemeAndLoad, isDarkTheme } from "@/utils/theme";
 import { UploadImageResponse } from "@/interfaces/common/common";
 import commonApi from "@/api/CommonApi";
+import {
+  DefaultActionContext,
+  UIActionContext,
+} from "@/store/type/actionContextTypes";
 
 export const state = {
   loading: false as boolean,
   isDarkTheme: isDarkTheme() as boolean,
   width: window.innerWidth as number,
 };
-
 export type UIState = typeof state;
-
-export const actions = {
-  async [UIActionTypes.UPLOAD_TEMP_IMAGE](
-    context: UIActionContext,
-    formData: FormData
-  ): Promise<UploadImageResponse> {
-    return actionsNormalTemplate(async () => {
-      const uploadImageResponse = await commonApi.postTempImage(formData);
-      return { ...uploadImageResponse };
-    });
-  },
-};
-export type UIActions = typeof actions;
 
 export const mutations = {
   [UIMutationTypes.CHANGE_LOADING](state: UIState, value: boolean) {
@@ -40,3 +29,16 @@ export const mutations = {
   },
 };
 export type UIMutations = typeof mutations;
+
+export const actions = {
+  async [UIActionTypes.UPLOAD_TEMP_IMAGE](
+    context: DefaultActionContext,
+    formData: FormData
+  ): Promise<UploadImageResponse> {
+    return actionsNormalTemplate(async () => {
+      const uploadImageResponse = await commonApi.postTempImage(formData);
+      return { ...uploadImageResponse };
+    });
+  },
+};
+export type UIActions = typeof actions;

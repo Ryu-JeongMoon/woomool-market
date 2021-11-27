@@ -1,8 +1,25 @@
-export const memberState = {};
-export type MemberState = typeof memberState;
+export const state = {
+  username: "",
+};
+export type MemberState = typeof state;
 
-export const memberMutations = {};
-export type MemberMutations = typeof memberMutations;
+export const getters = {
+  isLogin() {
+    return state.username !== "";
+  },
+};
+export type MemberGetters = typeof getters;
 
-export const memberActions = {};
-export type MemberActions = typeof memberActions;
+export const mutations = {
+  setUsername(state: MemberState, username: string) {
+    state.username = username;
+  },
+
+  clearUsername(state: MemberState) {
+    state.username = "";
+  },
+};
+export type MemberMutations = typeof mutations;
+
+export const actions = {};
+export type MemberActions = typeof actions;

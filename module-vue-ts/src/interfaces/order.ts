@@ -1,8 +1,8 @@
 import { Page } from "@/interfaces/common/page";
-import { Link } from "@/interfaces/common/link";
-import { ProductResponse } from "@/interfaces/product/product";
+import { Links } from "@/interfaces/common/links";
+import { ProductResponse } from "@/interfaces/product";
 import { Delivery } from "@/interfaces/common/address";
-import { MemberResponse } from "@/interfaces/member/member";
+import { MemberModelResponse } from "@/interfaces/member";
 
 export interface OrderRequest {
   memberId: number;
@@ -12,7 +12,7 @@ export interface OrderRequest {
 
 export interface OrderResponse {
   id: number;
-  memberResponse: MemberResponse;
+  memberResponse: MemberModelResponse;
   orderStatus: string;
   orderProducts: OrderProductResponse[];
   delivery: Delivery;
@@ -22,7 +22,7 @@ export interface OrderResponseList {
   _embedded: {
     orderResponseList: OrderResponse[];
   };
-  _links: Link;
+  _links: Links;
   page: Page;
 }
 

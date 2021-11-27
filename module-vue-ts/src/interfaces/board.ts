@@ -1,13 +1,13 @@
-import { MemberResponse } from "@/interfaces/member/member";
-import { BoardResponseLink, Link } from "@/interfaces/common/link";
+import { MemberModelResponse } from "@/interfaces/member";
+import { BoardResponseLinks, Links } from "@/interfaces/common/links";
 import { Page } from "@/interfaces/common/page";
 
 export interface BoardSearchCondition {
-  email?: string;
-  title?: string;
-  content?: string;
-  status?: string;
-  boardCategory?: string;
+  email: string;
+  title: string;
+  content: string;
+  status: string;
+  boardCategory: string;
 }
 
 // 형식 수정 필요
@@ -20,6 +20,12 @@ export interface BoardRequest {
   endDateTime: string;
 }
 
+export interface BoardModifyRequest {
+  title: string;
+  content: string;
+  boardCategory: string;
+}
+
 export interface BoardResponse {
   id: number;
   title: string;
@@ -29,14 +35,14 @@ export interface BoardResponse {
   startDateTime: string;
   endDateTime: string;
   createdDateTime: string;
-  memberResponse: MemberResponse;
-  _links: BoardResponseLink;
+  memberResponse: MemberModelResponse;
+  _links: BoardResponseLinks;
 }
 
 export interface BoardResponseList {
   _embedded: {
-    boardResponseList: Array<BoardResponse>;
+    boardResponseList: BoardResponse[];
   };
-  _links: Link;
+  _links: Links;
   page: Page;
 }

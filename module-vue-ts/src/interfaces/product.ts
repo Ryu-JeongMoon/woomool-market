@@ -1,5 +1,5 @@
-import { MemberResponse } from "@/interfaces/member/member";
-import { Link, ProductResponseLink } from "@/interfaces/common/link";
+import { MemberModelResponse } from "@/interfaces/member";
+import { Links, ProductResponseLinks } from "@/interfaces/common/links";
 import { Page } from "@/interfaces/common/page";
 
 export interface ProductRequest {
@@ -27,19 +27,19 @@ export interface ProductResponse {
   name: string;
   description: string;
   productImage: string;
-  memberResponse: MemberResponse;
+  memberResponse: MemberModelResponse;
   price: number;
   stock: number;
   createdDateTime: string;
   productCategory: string;
   region: string;
-  _links: ProductResponseLink;
+  _links: ProductResponseLinks;
 }
 
 export interface ProductResponseList {
   _embedded: {
     productResponseList: ProductResponse[];
   };
-  _links: Link;
+  _links: Links;
   page: Page;
 }

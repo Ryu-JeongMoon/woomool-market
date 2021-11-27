@@ -1,75 +1,18 @@
 <template>
   <v-container>
     <h1 class="title">Signup</h1>
-    <SignupForm
-      :email="email"
-      :password="password"
-      :nickname="nickname"
-      :city="city"
-      :street="street"
-      :zipcode="zipcode"
-      @inputEmail="updateEmail"
-      @inputPassword="updatePassword"
-      @inputNickname="updateNickname"
-      @inputCity="updateCity"
-      @inputStreet="updateStreet"
-      @inputZipcode="updateZipcode"
-      @signup="signup"
-    />
+    <SignupForm />
+    <ScrollButton />
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import SignupForm from "@/views/member/SignupForm.vue";
-import { publicAxios } from "@/api";
-import memberApi from "@/api/MemberApi";
+import ScrollButton from "@/components/button/ScrollButton.vue";
 
 export default Vue.extend({
-  data() {
-    return {
-      email: "",
-      password: "",
-      nickname: "",
-      city: "",
-      street: "",
-      zipcode: "",
-    };
-  },
-  methods: {
-    updateEmail(value: string) {
-      this.email = value;
-    },
-    updatePassword(value: string) {
-      this.password = value;
-    },
-    updateNickname(value: string) {
-      this.nickname = value;
-    },
-    updateCity(value: string) {
-      this.city = value;
-    },
-    updateStreet(value: string) {
-      this.street = value;
-    },
-    updateZipcode(value: string) {
-      this.zipcode = value;
-    },
-    async signup() {
-      const memberRequest = {
-        email: this.email,
-        password: this.password,
-        nickname: this.nickname,
-        address: {
-          city: this.city,
-          street: this.street,
-          zipcode: this.zipcode,
-        },
-      };
-      await memberApi.signup(memberRequest);
-    },
-  },
-  components: { SignupForm },
+  components: { ScrollButton, SignupForm },
 });
 </script>
 

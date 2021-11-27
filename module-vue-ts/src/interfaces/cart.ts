@@ -1,6 +1,6 @@
-import { MemberResponse } from "@/interfaces/member/member";
-import { ProductResponse } from "@/interfaces/product/product";
-import { CartResponseLink, Link } from "@/interfaces/common/link";
+import { MemberModelResponse } from "@/interfaces/member";
+import { ProductResponse } from "@/interfaces/product";
+import { CartResponseLinks, Links } from "@/interfaces/common/links";
 import { Page } from "@/interfaces/common/page";
 
 export interface CartRequest {
@@ -12,15 +12,15 @@ export interface CartRequest {
 export interface CartResponse {
   id: number;
   quantity: number;
-  memberResponse: MemberResponse;
+  memberResponse: MemberModelResponse;
   productResponse: ProductResponse;
-  _links: CartResponseLink;
+  _links: CartResponseLinks;
 }
 
 export interface CartResponseList {
   _embedded: {
     cartResponseList: CartResponse[];
   };
-  _links: Link;
+  _links: Links;
   page: Page;
 }

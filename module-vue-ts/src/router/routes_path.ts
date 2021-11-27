@@ -3,14 +3,53 @@ import _ from "lodash";
 export const PATH = {
   ROOT: "/",
   ABOUT: "/about",
-  LOGIN: "/login",
-  SIGNUP: "/signup",
-  OAUTH2: "/oauth2",
 
-  BOARDS: "/boards",
-  BOARD_DETAIL: "/boards/:boardId",
+  AUTH: {
+    LOGIN: "/login",
+    OAUTH2: "/oauth2",
+  },
+
+  MEMBER: {
+    LIST: "/members",
+    SIGNUP: "/members/signup",
+    DETAIL: "/members/:memberId",
+    MODIFY: "/members/:memberId/edit",
+  },
+
+  BOARD: {
+    LIST: "/boards",
+    CREATE: "/boards/write",
+    DETAIL: "/boards/:boardId",
+    MODIFY: "/boards/:boardId/edit",
+  },
+
+  PRODUCT: {
+    LIST: "/products",
+    CREATE: "/products/create",
+    DETAIL: "/products/:productId",
+    MODIFY: "/products/:productId/edit",
+  },
+
+  CART: {
+    LIST: "/carts",
+    CREATE: "/carts/create",
+    DETAIL: "/carts/:cartId",
+    MODIFY: "/carts/:cartId/edit",
+  },
+
+  ORDER: {
+    LIST: "/orders",
+    CREATE: "/orders/create",
+    DETAIL: "/orders/:orderId",
+    MODIFY: "/orders/:orderId/edit",
+  },
 
   BACK: "/back",
+};
+
+export const getChildRoutePath = (path: string): string => {
+  const split = path.split("/");
+  return split[split.length - 1];
 };
 
 export const generateParamPath = (path: string, params: number[]): string => {

@@ -22,7 +22,7 @@ class RouterHelper {
 
   async pushWhenUnauthorizedError() {
     if (!isLoginPage()) {
-      await router.push(PATH.LOGIN).catch((e) => {
+      await router.push(PATH.AUTH.LOGIN).catch((e) => {
         if (e && e.name !== "NavigationDuplicated") {
           throw e;
         }
@@ -30,7 +30,7 @@ class RouterHelper {
     }
   }
 
-  moveToClubMainPage() {
+  moveToMainPage() {
     const boardId = this.boardId();
     if (isNaN(boardId)) {
       throw new Error("Board-Id should be Number");
@@ -40,7 +40,7 @@ class RouterHelper {
 }
 
 const getParams = (): Dictionary<string> => router.currentRoute.params;
-const isLoginPage = () => router.currentRoute.path === PATH.LOGIN;
+const isLoginPage = () => router.currentRoute.path === PATH.AUTH.LOGIN;
 
 const routerHelper = new RouterHelper();
 export default routerHelper;
