@@ -47,6 +47,10 @@ const routes: Array<RouteConfig> = [
     name: "Boards",
     path: PATH.BOARD.LIST,
     component: () => import("@/views/board/BoardListPage.vue"),
+    props: (route) => ({
+      condition: route.query.condition,
+      pageable: route.query.pageable,
+    }),
   },
   {
     name: "CreateBoards",
@@ -57,6 +61,9 @@ const routes: Array<RouteConfig> = [
     name: "DetailBoards",
     path: PATH.BOARD.DETAIL,
     component: () => import("@/views/board/BoardDetailPage.vue"),
+    props: (route) => ({
+      boardId: Number(route.params.boardId),
+    }),
   },
   {
     name: "ModifyBoards",

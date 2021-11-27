@@ -1,11 +1,7 @@
 <template>
   <div class="contents">
     <h1 class="page-header">Create Page</h1>
-    <v-form
-      ref="createBoardForm"
-      class="board-create-form"
-      @submit.prevent="submit"
-    >
+    <v-form ref="createBoardForm" class="board-form" @submit.prevent="submit">
       <v-text-field v-model="email" hide-details outlined label="작성자" />
       <v-text-field v-model="title" hide-details outlined label="게시글 제목" />
       <v-select
@@ -101,12 +97,6 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.board-create-form {
-  padding-top: 1.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
 .scroll-to-top {
   position: fixed;
   bottom: 20px;

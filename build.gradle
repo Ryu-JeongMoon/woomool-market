@@ -71,7 +71,7 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-validation'
         implementation 'org.springframework.boot:spring-boot-starter-undertow'
         implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-        implementation ('org.springframework.boot:spring-boot-starter-web') {
+        implementation('org.springframework.boot:spring-boot-starter-web') {
             exclude module: 'spring-boot-starter-tomcat'
         }
         implementation 'org.springframework.boot:spring-boot-starter-log4j2'
@@ -147,20 +147,22 @@ subprojects {
 
 node {
     version = '16.6.1'
-    npmVersion = "7.20.3"
-    workDir = file("./module-vue-ts")
-    npmWorkDir = file("./module-vue-ts")
+    yarnVersion = "1.22.17"
+    download = true
+    distBaseUrl = 'https://nodejs.org/dist'
+    workDir = file("./module-vue-ts/nodejs")
+    yarnWorkDir = file("./module-vue-ts/yarn")
     nodeModulesDir = file("./module-vue-ts")
 }
 
-task setUp(type: NpmTask) {
+task setUp(type: YarnTask) {
     description = "Install Node.js packages"
     args = ['install']
     inputs.files file('package.json')
     outputs.files file('node_modules')
 }
 
-task buildVue(type: NpmTask, dependsOn: setUp) {
+task buildVue(type: YarnTask, dependsOn: setUp) {
     description = "Build vue.js"
     args = ['run', 'build']
 }
