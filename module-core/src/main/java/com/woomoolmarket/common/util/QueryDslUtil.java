@@ -1,4 +1,4 @@
-package com.woomoolmarket.common.querydsl;
+package com.woomoolmarket.common.util;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
