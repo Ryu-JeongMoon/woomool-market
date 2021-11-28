@@ -86,11 +86,16 @@
   max-width: 100% !important;
 }
 
-.board-form {
+.form {
   padding-top: 1.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
   max-width: 600px !important;
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+div[aria-required=true].v-input .v-label::after {
+  content: "*";
+  color: red;
 }

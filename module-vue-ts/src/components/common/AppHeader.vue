@@ -7,7 +7,7 @@
     <div class="navigations">
       <template v-if="isLogin">
         <span>{{ $store.state.member.username }}</span> |
-        <a href="javascript;" @click="logout">Logout</a>
+        <a href="#" @click="logout">Logout</a>
       </template>
       <template v-else>
         <router-link to="/login">Login</router-link> |
@@ -28,7 +28,7 @@ export default Vue.extend({
   },
   methods: {
     logout() {
-      this.$store.commit("clearUsername");
+      this.$store.dispatch("LOGOUT");
       this.$router.push("/login");
     },
   },

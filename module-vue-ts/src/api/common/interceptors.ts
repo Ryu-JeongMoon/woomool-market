@@ -7,7 +7,7 @@ const TOKEN_TYPE = "Bearer ";
  * config.headers!.Authorization, type assertion
  * setting Authorization for specific http requests
  */
-export const setInterceptors = (instance: AxiosInstance) => {
+export const setInterceptors = (instance: AxiosInstance): AxiosInstance => {
   instance.interceptors.request.use(
     (config: AxiosRequestConfig) => {
       if (store.state.auth.accessToken !== "") {

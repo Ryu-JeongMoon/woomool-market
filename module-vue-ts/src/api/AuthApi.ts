@@ -1,5 +1,5 @@
 import { LoginRequest } from "@/interfaces/member";
-import { publicAxios } from "@/api/index";
+import { privateAxios, publicAxios } from "@/api/index";
 import { TokenResponse } from "@/interfaces/common/auth";
 import ResponseConverter from "@/api/converter/ResponseConverter";
 
@@ -8,6 +8,12 @@ const authApi = {
     return publicAxios
       .post("/api/auth/login", loginRequest)
       .then(ResponseConverter.retrieveData);
+  },
+
+  logout(): Promise<number> {
+    return privateAxios
+      .post("/api/auth/logout")
+      .then(ResponseConverter.retrieveStatus);
   },
 
   sendEmailVerification(email: string): Promise<number> {

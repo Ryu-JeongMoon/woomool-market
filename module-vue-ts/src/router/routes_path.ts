@@ -7,11 +7,11 @@ export const PATH = {
   AUTH: {
     LOGIN: "/login",
     OAUTH2: "/oauth2",
+    SIGNUP: "/signup",
   },
 
   MEMBER: {
     LIST: "/members",
-    SIGNUP: "/members/signup",
     DETAIL: "/members/:memberId",
     MODIFY: "/members/:memberId/edit",
   },
