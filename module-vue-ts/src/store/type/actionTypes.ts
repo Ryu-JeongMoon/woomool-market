@@ -7,8 +7,10 @@ export enum AuthActionTypes {
 }
 
 export enum BoardActionTypes {
-  REQUEST_BOARDS = "api/boards",
-  REQUEST_BOARD = "api/boards/:boardId",
+  REQUEST_BOARD_LIST = "boards/requestBoardList",
+  REQUEST_BOARD_CREATE = "boards/requestBoardCreate",
+  REQUEST_BOARD_MODIFY = "boards/requestBoardModify",
+  REQUEST_BOARD_DELETE = "boards/requestBoardDelete",
 }
 
 export enum ClubActionTypes {

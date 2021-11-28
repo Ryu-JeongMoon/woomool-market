@@ -13,24 +13,24 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: PATH.AUTH.LOGIN,
-    name: "LoginPage",
+    name: "Login",
     component: () => import("@/views/auth/LoginPage.vue"),
   },
   {
     path: PATH.AUTH.OAUTH2,
-    name: "OAuth2LoginPage",
+    name: "OAuth2Login",
     component: () => import("@/views/member/OAuth2LoginPage.vue"),
+  },
+  {
+    name: "Signup",
+    path: PATH.AUTH.SIGNUP,
+    component: () => import("@/views/member/SignupPage.vue"),
   },
 
   {
     name: "Members",
     path: PATH.MEMBER.LIST,
     component: () => import("@/views/member/MemberListPage.vue"),
-  },
-  {
-    name: "SignupMembers",
-    path: PATH.MEMBER.SIGNUP,
-    component: () => import("@/views/member/SignupPage.vue"),
   },
   {
     name: "DetailMembers",

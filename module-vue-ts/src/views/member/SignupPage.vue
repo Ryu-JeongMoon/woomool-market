@@ -1,18 +1,17 @@
 <template>
-  <v-container>
-    <h1 class="title">Signup</h1>
+  <div class="form-container">
     <SignupForm />
-    <ScrollButton />
-  </v-container>
+    <ScrollToTop />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import SignupForm from "@/views/member/SignupForm.vue";
-import ScrollButton from "@/components/button/ScrollButton.vue";
+import ScrollToTop from "@/components/button/ScrollToTop.vue";
 
 export default Vue.extend({
-  components: { ScrollButton, SignupForm },
+  components: { ScrollToTop, SignupForm },
 });
 </script>
 

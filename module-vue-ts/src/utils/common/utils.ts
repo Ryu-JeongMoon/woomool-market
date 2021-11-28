@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any */
 const numericReg = /^[+-]?\d+$/;
 
 export function isNumeric(value: any): boolean {

@@ -20,9 +20,9 @@ import {
 
 export type RootState = {
   ui: UIState;
+  auth: AuthState;
   board: BoardState;
   member: MemberState;
-  auth: AuthState;
 };
 
 export type MergedGetters = AuthGetters & MemberGetters;

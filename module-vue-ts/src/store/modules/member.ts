@@ -1,21 +1,23 @@
+import { LocalStorageUtils } from "@/utils/localstorage";
+
 export const state = {
-  username: "",
+  username: LocalStorageUtils.getUsernameFromLocalStorage() || "",
 };
 export type MemberState = typeof state;
 
 export const getters = {
-  isLogin() {
+  isLogin(): boolean {
     return state.username !== "";
   },
 };
 export type MemberGetters = typeof getters;
 
 export const mutations = {
-  setUsername(state: MemberState, username: string) {
+  setUsername(state: MemberState, username: string): void {
     state.username = username;
   },
 
-  clearUsername(state: MemberState) {
+  clearUsername(state: MemberState): void {
     state.username = "";
   },
 };
