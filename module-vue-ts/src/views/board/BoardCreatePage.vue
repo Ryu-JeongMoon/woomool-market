@@ -1,6 +1,7 @@
 <template>
   <div class="form-container">
-    <BoardCreateForm />
+    <BoardCreateForm :submitClickCallback="submit" @back="moveToMainPage" />
+    <ScrollToTop />
   </div>
 </template>
 
@@ -8,9 +9,12 @@
 import Vue from "vue";
 import routerHelper from "@/router/RouterHelper";
 import BoardCreateForm from "@/views/board/BoardCreateForm.vue";
+import ScrollToTop from "@/components/button/ScrollToTop.vue";
+import { BoardRequest } from "@/interfaces/board";
+import { BoardActionTypes } from "@/store/type/actionTypes";
 
 export default Vue.extend({
-  components: { BoardCreateForm },
+  components: { ScrollToTop, BoardCreateForm },
 
   data() {
     return {
@@ -21,6 +25,15 @@ export default Vue.extend({
   methods: {
     moveToMainPage() {
       routerHelper.moveToMainPage();
+    },
+
+    submit(boardRequest: BoardRequest) {
+      return this.$store
+        .dispatch(BoardActionTypes.REQUEST_BOARD_CREATE, boardRequest)
+        .then(() => {
+          this.$store.dispatch(BoardActionTypes.REQUEST_BOARD_LIST);
+          this.moveToMainPage();
+        });
     },
   },
 });
