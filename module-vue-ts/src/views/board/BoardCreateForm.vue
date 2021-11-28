@@ -1,42 +1,65 @@
 <template>
   <div class="contents">
     <h1 class="page-header">Create Page</h1>
-    <v-form ref="createBoardForm" class="board-form" @submit.prevent="submit">
-      <v-text-field v-model="email" hide-details outlined label="작성자" />
-      <v-text-field v-model="title" hide-details outlined label="게시글 제목" />
-      <v-select
-        v-model="boardCategory"
-        :items="boardCategoryNames"
-        hide-details
-        label="카테고리"
-        outlined
-        dense
-      />
-      <v-textarea
-        v-model="content"
-        label="내용을 작성해주세요"
-        hide-details
-        outlined
-      />
-
+    <v-form ref="createBoardForm" class="form" @submit.prevent="submit">
       <v-row>
-        <DatetimePicker
-          :label="start"
-          :setDateTime="setStartDateTime"
-        ></DatetimePicker>
-        <DatetimePicker
-          :label="end"
-          :minDatetime="this.startDateTime"
-          :setDateTime="setEndDateTime"
-        ></DatetimePicker>
+        <v-col cols="12">
+          <v-text-field
+            v-model="email"
+            disabled
+            outlined
+            filled
+            label="Writer"
+            class="mt-4"
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-text-field
+            v-model="title"
+            :rules="RULES.BOARD_TITLE"
+            outlined
+            label="Title"
+            class="mt-4"
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-select
+            v-model="boardCategory"
+            :items="boardCategoryNames"
+            :rules="RULES.BOARD_CATEGORY"
+            label="Category"
+            class="mt-4"
+            outlined
+            dense
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea
+            v-model="content"
+            :rules="RULES.BOARD_CONTENT"
+            label="Content"
+            class="mt-4"
+            outlined
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-row>
+            <DatetimePicker
+              :label="start"
+              @setDateTime="setStartDateTime"
+            ></DatetimePicker>
+            <DatetimePicker
+              :label="end"
+              :minDatetime="this.startDateTime"
+              @setDateTime="setEndDateTime"
+            ></DatetimePicker>
+          </v-row>
+        </v-col>
+        <v-col>
+          <v-btn type="submit" color="info">Submit</v-btn>
+        </v-col>
       </v-row>
-
-      <v-btn type="submit" color="info">Submit</v-btn>
     </v-form>
-
-    <v-btn class="scroll-to-top mx-2" fab @click="$vuetify.goTo(0, options)">
-      <v-icon color="primary">mdi-checkbox-marked-circle</v-icon>
-    </v-btn>
   </div>
 </template>
 
@@ -46,6 +69,7 @@ import { BoardRequest } from "@/interfaces/board";
 import boardApi from "@/api/BoardApi";
 import moment from "moment";
 import DatetimePicker from "@/components/common/DatetimePicker.vue";
+import { RULES } from "@/utils/constant/rules";
 
 export default Vue.extend({
   components: { DatetimePicker },
@@ -58,38 +82,48 @@ export default Vue.extend({
   },
 
   data: () => ({
+    RULES,
     start: "시작일시",
     end: "종료일시",
     email: "",
     title: "",
     content: "",
     boardCategory: "",
-    startDateTime: moment().format().toString(),
-    endDateTime: moment().format().toString(),
+    startDateTime: "",
+    endDateTime: "",
     headerTitle: "게시글 작성",
     boardCategoryNames: ["NOTICE", "QNA", "FREE"],
     menu1: false,
     menu2: false,
   }),
 
+  created() {
+    this.email = this.$store.state.member.username;
+  },
+
   methods: {
     async submit() {
-      const boardRequest: BoardRequest = {
-        email: this.email,
-        title: this.title,
-        content: this.content,
-        boardCategory: this.boardCategory,
-        startDateTime: moment(this.startDateTime).format().substr(0, 19),
-        endDateTime: moment(this.endDateTime).format().substr(0, 19),
-      };
-      await boardApi.createBoard(boardRequest);
+      const createBoardForm = this.$refs.createBoardForm as HTMLFormElement;
+      if (createBoardForm.validate()) {
+        const boardRequest: BoardRequest = {
+          email: this.email,
+          title: this.title,
+          content: this.content,
+          boardCategory: this.boardCategory,
+          startDateTime: moment(this.startDateTime).format().substr(0, 19),
+          endDateTime: moment(this.endDateTime).format().substr(0, 19),
+        };
+        await boardApi.createBoard(boardRequest);
+      }
     },
 
     setStartDateTime(date: string, time: string) {
+      console.log("panda");
       this.startDateTime = date.concat(" " + time);
     },
 
     setEndDateTime(date: string, time: string) {
+      console.log("bear");
       this.endDateTime = date.concat(" " + time);
     },
   },
@@ -97,9 +131,7 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.scroll-to-top {
-  position: fixed;
-  bottom: 20px;
-  right: 5vw;
+.v-text-field {
+  margin: 12px 0;
 }
 </style>
