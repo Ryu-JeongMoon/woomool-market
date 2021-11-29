@@ -1,7 +1,7 @@
 package com.woomoolmarket.exception.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.woomoolmarket.aop.exception.LogForException;
+import com.woomoolmarket.aop.annotation.LogForException;
 import com.woomoolmarket.errors.ExceptionResponse;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;

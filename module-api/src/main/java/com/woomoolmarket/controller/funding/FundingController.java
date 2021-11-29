@@ -1,6 +1,6 @@
 package com.woomoolmarket.controller.funding;
 
-import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.web.bind.annotation.RequestMapping;
