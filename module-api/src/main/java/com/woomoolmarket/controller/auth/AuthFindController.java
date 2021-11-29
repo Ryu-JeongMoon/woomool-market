@@ -2,7 +2,7 @@ package com.woomoolmarket.controller.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.service.auth.AuthFindService;
 import com.woomoolmarket.domain.auth.dto.request.AuthStringRequest;
 import com.woomoolmarket.domain.auth.dto.request.EmailRequest;

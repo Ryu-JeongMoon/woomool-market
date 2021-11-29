@@ -1,6 +1,6 @@
 package com.woomoolmarket.controller.image;
 
-import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.domain.image.dto.response.ImageResponse;
 import com.woomoolmarket.service.image.ImageService;
 import java.util.List;

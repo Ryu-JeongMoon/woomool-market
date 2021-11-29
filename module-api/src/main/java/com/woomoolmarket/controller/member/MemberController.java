@@ -5,7 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.domain.member.dto.request.ModifyRequest;

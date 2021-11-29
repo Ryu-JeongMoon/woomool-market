@@ -3,7 +3,7 @@ package com.woomoolmarket.controller.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.aop.time.LogExecutionTime;
+import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.service.order.OrderService;
 import com.woomoolmarket.domain.purchase.order.dto.request.OrderDeleteRequest;
