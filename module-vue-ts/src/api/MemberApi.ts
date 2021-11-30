@@ -15,6 +15,12 @@ const memberApi = {
       .then(ResponseConverter.retrieveData);
   },
 
+  getMemberModelResponse(memberId: number): Promise<MemberModelResponse> {
+    return privateAxios
+      .get(`/api/members/${memberId}`)
+      .then(ResponseConverter.retrieveData);
+  },
+
   getMemberList(
     condition?: BoardSearchCondition,
     pageRequest?: Pageable

@@ -36,11 +36,17 @@ const routes: Array<RouteConfig> = [
     name: "DetailMembers",
     path: PATH.MEMBER.DETAIL,
     component: () => import("@/views/member/MemberDetailPage.vue"),
+    props: (route) => ({
+      memberId: route.params.memberId,
+    }),
   },
   {
     name: "ModifyMembers",
     path: PATH.MEMBER.MODIFY,
     component: () => import("@/views/member/MemberModifyPage.vue"),
+    props: (route) => ({
+      memberId: route.params.memberId,
+    }),
   },
 
   {

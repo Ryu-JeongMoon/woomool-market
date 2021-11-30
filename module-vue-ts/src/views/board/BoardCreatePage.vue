@@ -24,7 +24,7 @@ export default Vue.extend({
 
   methods: {
     moveToMainPage() {
-      routerHelper.moveToMainPage();
+      routerHelper.goToBoardsPage();
     },
 
     submit(boardRequest: BoardRequest) {

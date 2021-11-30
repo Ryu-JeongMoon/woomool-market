@@ -1,7 +1,7 @@
 <template>
   <header>
     <div>
-      <router-link to="/">Home</router-link> |
+      <router-link to="/"><v-icon>home</v-icon></router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <div class="navigations">
@@ -10,8 +10,13 @@
         <a href="#" @click="logout">Logout</a>
       </template>
       <template v-else>
-        <router-link to="/login">Login</router-link> |
-        <router-link to="/signup">Signup</router-link>
+        <router-link to="/login">Login<v-icon>login</v-icon></router-link> |
+        <router-link to="/signup">Signup<v-icon>3p</v-icon></router-link> |
+        <router-link to="/chat">Chat<v-icon>message</v-icon></router-link>
+      </template>
+      <template>
+        <router-link to="#">Day<v-icon>light_mode</v-icon></router-link>
+        <router-link to="#">Night<v-icon>bedtime</v-icon></router-link>
       </template>
     </div>
   </header>
@@ -59,4 +64,6 @@ store/type/types.ts 가서 보면 하위로 member... 등등 가지고 있으니
 
 <span>{{ $store.state.member.username }}</span>
 요래 꺼내야한다
+
+day, night 으로 다크 테마 적용하기
 -->

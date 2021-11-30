@@ -30,12 +30,12 @@ class RouterHelper {
     }
   }
 
-  moveToMainPage() {
-    const boardId = this.boardId();
-    if (isNaN(boardId)) {
-      throw new Error("Board-Id should be Number");
-    }
-    return router.push(generateParamPath(PATH.ROOT, [boardId]));
+  goToBoardsPage() {
+    return router.push(PATH.BOARD.LIST);
+  }
+
+  goToMainPage() {
+    return router.push(PATH.ROOT);
   }
 }
 
