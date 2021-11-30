@@ -1,63 +1,27 @@
 <template>
   <div>
     <v-container>
-      <v-form class="board-form">
-        <v-text-field
-          v-model="boardResponse.memberResponse.email"
-          readonly
-          hide-details
-          outlined
-          filled
-          dense
-          label="작성자"
+      <v-form class="form">
+        <ReadonlyField
+          :label="'Writer'"
+          :props="boardResponse.memberResponse.email"
         />
-        <v-text-field
-          v-model="boardResponse.title"
-          readonly
-          hide-details
-          outlined
-          filled
-          dense
-          label="제목"
+        <ReadonlyField
+          :label="'Title'"
+          :props="boardResponse.createdDateTime"
         />
-        <v-textarea
-          v-model="boardResponse.content"
-          readonly
-          hide-details
-          outlined
-          filled
-          dense
-          label="내용"
+        <ReadonlyField :label="'Content'" :props="boardResponse.title" />
+        <ReadonlyField
+          :label="'Category'"
+          :props="boardResponse.createdDateTime"
         />
-        <v-text-field
-          v-model="boardResponse.boardCategory"
-          readonly
-          hide-details
-          outlined
-          filled
-          dense
-          label="카테고리"
-        />
-        <v-text-field
-          v-model="boardResponse.hit"
-          readonly
-          hide-details
-          outlined
-          filled
-          dense
-          label="조회수"
-        />
-        <v-text-field
-          v-model="boardResponse.createdDateTime"
-          readonly
-          hide-details
-          outlined
-          filled
-          dense
-          label="작성일"
-        />
+        <ReadonlyField :label="'Hit'" :props="boardResponse.hit" />
+        <ReadonlyField :label="'Date'" :props="boardResponse.createdDateTime" />
+        <v-btn @click="submitCallback" color="info" class="mt-4">
+          <v-icon>arrow_back</v-icon>
+          Back
+        </v-btn>
       </v-form>
-      <v-btn type="button" color="info" @click="goToListPage">Back</v-btn>
     </v-container>
   </div>
 </template>
@@ -66,11 +30,18 @@
 import Vue, { PropType } from "vue";
 import { BoardResponse } from "@/interfaces/board";
 import { DateUtils } from "@/utils/date";
+import ReadonlyField from "@/components/common/ReadonlyField.vue";
 
 export default Vue.extend({
+  components: { ReadonlyField },
+
   props: {
     boardResponse: {
       type: {} as PropType<BoardResponse>,
+      required: true,
+    },
+    submitCallback: {
+      type: Function as PropType<() => Promise<void>>,
       required: true,
     },
   },
@@ -79,12 +50,6 @@ export default Vue.extend({
     this.boardResponse.createdDateTime = DateUtils.getLocalDatetime(
       this.boardResponse.createdDateTime
     );
-  },
-
-  methods: {
-    goToListPage() {
-      this.$router.push("/boards");
-    },
   },
 });
 </script>

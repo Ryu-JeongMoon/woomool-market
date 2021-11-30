@@ -3,7 +3,10 @@
     <header>상세 페이지</header>
     <v-main>
       <LoadingSpinner v-if="isLoading" />
-      <BoardDetailForm :boardResponse="boardResponse" />
+      <BoardDetailForm
+        :submit-callback="goToBoardsPage"
+        :boardResponse="boardResponse"
+      />
     </v-main>
   </div>
 </template>
@@ -15,6 +18,8 @@ import boardApi from "@/api/BoardApi";
 import { BoardResponse } from "@/interfaces/board";
 import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
 import { LoadingHelper } from "@/utils/loading";
+import CommonHeader from "@/components/header/CommonHeader.vue";
+import routerHelper from "@/router/RouterHelper";
 
 export default Vue.extend({
   components: { BoardDetailForm, LoadingSpinner },
@@ -43,6 +48,10 @@ export default Vue.extend({
       this.boardResponse = await boardApi
         .getBoard(this.boardId)
         .finally(() => LoadingHelper.switchLoadingState(this.isLoading));
+    },
+
+    goToBoardsPage() {
+      routerHelper.goToBoardsPage();
     },
   },
 });

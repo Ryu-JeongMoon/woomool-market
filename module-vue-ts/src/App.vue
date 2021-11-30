@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import AppHeader from "@/components/common/AppHeader.vue";
+import AppHeader from "@/components/header/AppHeader.vue";
 
 export default Vue.extend({
   components: { AppHeader },
@@ -30,5 +30,9 @@ button {
 }
 .shadow {
   box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
+}
+v-file-input {
+  border-style: groove;
+  width: 200px;
 }
 </style>

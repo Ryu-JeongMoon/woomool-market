@@ -13,35 +13,35 @@ export const PATH = {
   MEMBER: {
     LIST: "/members",
     DETAIL: "/members/:memberId",
-    MODIFY: "/members/:memberId/edit",
+    MODIFY: "/members/:memberId/modify",
   },
 
   BOARD: {
     LIST: "/boards",
     CREATE: "/boards/write",
     DETAIL: "/boards/:boardId",
-    MODIFY: "/boards/:boardId/edit",
+    MODIFY: "/boards/:boardId/modify",
   },
 
   PRODUCT: {
     LIST: "/products",
     CREATE: "/products/create",
     DETAIL: "/products/:productId",
-    MODIFY: "/products/:productId/edit",
+    MODIFY: "/products/:productId/modify",
   },
 
   CART: {
     LIST: "/carts",
     CREATE: "/carts/create",
     DETAIL: "/carts/:cartId",
-    MODIFY: "/carts/:cartId/edit",
+    MODIFY: "/carts/:cartId/modify",
   },
 
   ORDER: {
     LIST: "/orders",
     CREATE: "/orders/create",
     DETAIL: "/orders/:orderId",
-    MODIFY: "/orders/:orderId/edit",
+    MODIFY: "/orders/:orderId/modify",
   },
 
   BACK: "/back",
