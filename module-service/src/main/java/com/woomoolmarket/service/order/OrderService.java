@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.order;
 
 import com.woomoolmarket.common.embeddable.Delivery;
-import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstant;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
@@ -52,10 +52,10 @@ public class OrderService {
     @Transactional
     public void orderOne(OrderRequest orderRequest) {
         Member member = memberRepository.findById(orderRequest.getMemberId())
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
 
         Product product = productRepository.findById(orderRequest.getProductId())
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
             .receiver(member.getEmail())
@@ -78,7 +78,7 @@ public class OrderService {
     @Transactional
     public void orderMultiples(OrderRequest orderRequest) {
         Member member = memberRepository.findById(orderRequest.getMemberId())
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
 
         Delivery delivery = Delivery.builder()
             .receiver(member.getEmail())
@@ -104,7 +104,7 @@ public class OrderService {
     @Transactional
     public void cancel(Long orderId) {
         orderRepository.findById(orderId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.ORDER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.ORDER_NOT_FOUND))
             .cancel();
     }
 

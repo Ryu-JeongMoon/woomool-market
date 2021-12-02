@@ -16,8 +16,10 @@ public class Address {
 
     @Pattern(regexp = "^[\\w]{2,24}$")
     private String city;
+
     @Pattern(regexp = "^[\\w]{2,24}$")
     private String street;
+
     @Pattern(regexp = "^[\\d]{5,6}$")
     private String zipcode;
 }

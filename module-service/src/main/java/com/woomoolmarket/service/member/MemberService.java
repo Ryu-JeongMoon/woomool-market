@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.member;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstant;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -51,7 +51,7 @@ public class MemberService {
     public MemberResponse findMemberById(Long id) {
         return memberRepository.findById(id)
             .map(memberResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class MemberService {
     @Transactional
     public Member join(SignUpRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
+            throw new IllegalArgumentException(ExceptionConstant.MEMBER_EMAIL_DUPLICATED);
         }
 
         Member member = signUpRequestMapper.toEntity(signUpRequest);
@@ -83,7 +83,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
     }
 
@@ -92,7 +92,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void leaveSoftly(Long id) {
         memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND))
             .leave();
     }
 
@@ -100,7 +100,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
     public void restore(Long id) {
         memberRepository.findByIdAndStatus(id, Status.INACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND))
             .restore();
     }
 
@@ -117,4 +117,7 @@ public class MemberService {
 
 /*
 앞뒤 번호 고민..
+TODO, stream 일일이 돌려서 DTO List 만들고 있는 로직 memberResponseMapper - toDtoList 메서드 활용하자
+orElseGet() 인텔리센스가 orElse() 로 바꾸라고 알려준다
+성능 상 orElseGet() 이 낫다고 알고 있는데 자바 11 이후로 동작이 바뀌었나? -> 알아볼 것
  */
