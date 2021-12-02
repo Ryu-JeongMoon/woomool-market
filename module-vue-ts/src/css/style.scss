@@ -86,6 +86,10 @@ a {
   }
 }
 
+.ui-state-hover {
+  cursor: default;
+}
+
 .cropper-container, .cropper-crop-box {
   max-width: 100% !important;
 }

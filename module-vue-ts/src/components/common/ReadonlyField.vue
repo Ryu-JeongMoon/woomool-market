@@ -7,7 +7,7 @@
       filled
       dense
       :label="`${label}`"
-      class="mt-4"
+      class="mt-2"
     />
   </div>
 </template>

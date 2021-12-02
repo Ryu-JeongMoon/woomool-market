@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export class DateUtils {
   static getLocalDatetime(localDateTime: string): string {
     const localDate = localDateTime.split("T")[0];
@@ -13,5 +15,9 @@ export class DateUtils {
     return `${dateToken[0]}.${dateToken[1]}.${dateToken[2]} ${timeToken[0]}:${timeToken[1]}`;
   }
 
-  // static convertLocalDateTime(date: string): string {}
+  static convertDateFormat(date: string, time: string): string {
+    return moment(date + " " + time)
+      .format()
+      .substr(0, 19);
+  }
 }

@@ -6,13 +6,14 @@
       dense
       :type="`${type}`"
       :label="`${label}`"
-      class="mt-4"
+      :rules="rules"
     />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
+import { Rule, RULES } from "@/utils/constant/rules";
 
 export default Vue.extend({
   props: {
@@ -32,6 +33,11 @@ export default Vue.extend({
     multiple: {
       type: String,
       required: false,
+    },
+    rules: {
+      type: Function as PropType<Rule>,
+      required: false,
+      default: RULES.EMPTY_RULE,
     },
   },
 });

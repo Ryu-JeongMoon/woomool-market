@@ -1,6 +1,6 @@
 import { AuthUtils } from "@/utils/auth";
 import { Dictionary } from "vue-router/types/router";
-import { generateParamPath, PATH } from "@/router/routes_path";
+import { PATH } from "@/router/routes_path";
 import router from "@/router/index";
 
 class RouterHelper {

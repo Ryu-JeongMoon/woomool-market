@@ -39,9 +39,9 @@
 import Vue, { PropType } from "vue";
 import { MemberModelResponse } from "@/interfaces/member";
 import ReadonlyField from "@/components/common/ReadonlyField.vue";
-import { PATH } from "@/router/routes_path";
+import { WoomoolVueRefs } from "@/types";
 
-export default Vue.extend({
+export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
   components: { ReadonlyField },
 
   props: {

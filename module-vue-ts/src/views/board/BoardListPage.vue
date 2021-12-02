@@ -1,20 +1,16 @@
 <template>
   <div>
-    <header>
-      <h1 class="title">List</h1>
-    </header>
-    <main>
-      <ul>
-        <LoadingSpinner v-if="isLoading" />
-        <BoardListForm
-          v-else
-          :boardResponseList="boardResponseList"
-          :page="page"
-          :links="links"
-          @movePage="movePage"
-        />
-      </ul>
-    </main>
+    <v-app-bar-title class="title">List</v-app-bar-title>
+    <v-main>
+      <LoadingSpinner v-if="isLoading" />
+      <BoardListForm
+        v-else
+        :boardResponseList="boardResponseList"
+        :page="page"
+        :links="links"
+        @movePage="movePage"
+      />
+    </v-main>
   </div>
 </template>
 
@@ -72,7 +68,6 @@ export default Vue.extend({
     },
 
     movePage(pageable: Pageable) {
-      console.log("yaho");
       this.fetchBoardResponseList(this.condition, pageable);
     },
   },
