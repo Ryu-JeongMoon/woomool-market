@@ -19,7 +19,7 @@ public class OrderTestHelper {
         Order order = Order.builder()
             .member(member)
             .orderProducts(List.of(orderProduct))
-            .delivery(new Delivery(member.getEmail(), member.getAddress(), member.getPhone()))
+            .delivery(new Delivery(member.getEmail(), member.getPhone(), member.getAddress()))
             .build();
         return orderRepository.save(order);
     }

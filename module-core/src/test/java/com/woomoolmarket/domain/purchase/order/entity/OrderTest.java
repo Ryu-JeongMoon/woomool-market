@@ -47,7 +47,7 @@ class OrderTest {
 
         Order order = Order.builder()
             .orderProducts(List.of(orderProduct))
-            .delivery(new Delivery("panda", new Address("1", "2", "3"), "010101010"))
+            .delivery(new Delivery("panda", "010101010", new Address("1", "2", "3")))
             .build();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ONGOING);
 
