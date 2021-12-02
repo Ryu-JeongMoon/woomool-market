@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.board;
 
-import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constant.ExceptionConstant;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.domain.board.dto.request.BoardRequest;
@@ -50,7 +50,7 @@ public class BoardService {
     public BoardResponse findByIdAndStatus(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -64,7 +64,7 @@ public class BoardService {
     @Transactional
     public void increaseHit(Long id) {
         boardRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
             .increaseHit();
     }
 
@@ -78,7 +78,7 @@ public class BoardService {
         Board board = boardRequestMapper.toEntity(boardRequest);
 
         Member member = memberRepository.findByEmailAndStatus(boardRequest.getEmail(), Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
         board.setMember(member);
 
         List<Image> images = imageProcessor.parse(files);
@@ -93,7 +93,7 @@ public class BoardService {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
     public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
         Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND));
 
         boardModifyMapper.updateFromDto(modifyRequest, board);
         return boardResponseMapper.toDto(board);
@@ -105,7 +105,7 @@ public class BoardService {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
     public void deleteSoftly(Long id) {
         boardRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
             .delete();
     }
 
@@ -115,7 +115,7 @@ public class BoardService {
         @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)})
     public void restore(Long id) {
         boardRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
             .restore();
     }
 

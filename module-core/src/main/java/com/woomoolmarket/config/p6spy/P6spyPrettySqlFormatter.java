@@ -24,7 +24,7 @@ public class P6spyPrettySqlFormatter implements MessageFormattingStrategy {
         StringBuilder callStackBuilder = new StringBuilder();
         int order = 1;
         while (callStack.size() != 0) {
-            callStackBuilder.append("\n\t\t" + (order++) + ". " + callStack.pop());
+            callStackBuilder.append("\n\t\t").append(order++).append(". ").append(callStack.pop());
         }
 
         String message = new StringBuilder().append("\n\n\tConnection ID: ").append(connectionId)

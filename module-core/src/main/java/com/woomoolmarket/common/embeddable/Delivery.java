@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Delivery {
 
+    private String phone;
+
     private String receiver;
 
     @Embedded
     private Address address;
-
-    private String phone;
 
 }
