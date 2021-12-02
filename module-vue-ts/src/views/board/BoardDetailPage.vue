@@ -18,7 +18,6 @@ import boardApi from "@/api/BoardApi";
 import { BoardResponse } from "@/interfaces/board";
 import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
 import { LoadingHelper } from "@/utils/loading";
-import CommonHeader from "@/components/header/CommonHeader.vue";
 import routerHelper from "@/router/RouterHelper";
 
 export default Vue.extend({

@@ -1,45 +1,55 @@
 <template>
   <div>
-    <div>
-      <v-container>
-        <v-simple-table>
-          <thead>
-            <th>NO.</th>
-            <th>TITLE.</th>
-            <th>WRITER.</th>
-            <th>HIT.</th>
-            <th>CATEGORY.</th>
-            <th>DATE.</th>
-          </thead>
-          <tbody>
-            <tr
-              v-for="boardResponse in boardResponseList"
-              v-bind:key="boardResponse.id"
+    <v-container>
+      <v-simple-table>
+        <thead>
+          <th>NO.</th>
+          <th>TITLE.</th>
+          <th>WRITER.</th>
+          <th>HIT.</th>
+          <th>CATEGORY.</th>
+          <th>DATE.</th>
+        </thead>
+        <tbody>
+          <tr
+            v-for="boardResponse in boardResponseList"
+            v-bind:key="boardResponse.id"
+          >
+            <td>{{ boardResponse.id }}</td>
+            <v-hover
+              v-slot:default="{ hover }"
+              open-delay="100"
+              class="slide-enter-active slide-leave-active"
             >
-              <td>{{ boardResponse.id }}</td>
-              <v-hover v-slot="{ hover }">
-                <td
-                  @click="goToDetailBoard(boardResponse.id)"
-                  class="ui-state-hover"
-                  :elevation="hover ? 12 : 2"
-                >
-                  {{ boardResponse.title }}
-                </td>
-              </v-hover>
-              <td>{{ boardResponse.memberResponse.email }}</td>
-              <td>{{ boardResponse.hit }}</td>
-              <td>{{ boardResponse.boardCategory }}</td>
-              <td>{{ getLocalDate(boardResponse.createdDateTime) }}</td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-        <span v-for="page in page.totalPages" v-bind:key="page">
-          <td>
-            <button @click="goToSpecificPage(page)">{{ page }}</button>
-          </td>
-        </span>
-      </v-container>
-    </div>
+              <td
+                @click="goToDetailBoard(boardResponse.id)"
+                class="ui-state-hover"
+                :elevation="hover ? 12 : 2"
+              >
+                <a>{{ boardResponse.title }}</a>
+              </td>
+            </v-hover>
+            <td>{{ boardResponse.memberResponse.email }}</td>
+            <td>{{ boardResponse.hit }}</td>
+            <td>{{ boardResponse.boardCategory }}</td>
+            <td>{{ getLocalDate(boardResponse.createdDateTime) }}</td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+      <span v-for="page in page.totalPages" v-bind:key="page">
+        <td>
+          <v-btn
+            small
+            rounded
+            color="info"
+            @click="goToSpecificPage(page)"
+            class="mr-1 mt-4"
+          >
+            {{ page }}
+          </v-btn>
+        </td>
+      </span>
+    </v-container>
   </div>
 </template>
 
@@ -101,3 +111,7 @@ export default Vue.extend({
   transform: translate(0, -100%);
 }
 </style>
+
+<!--
+v-data-table 로 추후 변경할 것
+-->

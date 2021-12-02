@@ -1,65 +1,50 @@
 <template>
   <div class="contents">
     <h1 class="page-header">Create Page</h1>
-    <v-form ref="createBoardForm" class="form" @submit.prevent="submit">
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            v-model="email"
-            disabled
-            outlined
-            filled
-            label="Writer"
-            class="mt-4"
+    <v-container>
+      <v-form ref="form" class="form" @submit.prevent="submit">
+        <ReadonlyField :label="'Writer'" :props="email" />
+        <v-text-field
+          v-model="title"
+          outlined
+          dense
+          :label="'Title'"
+          :rules="RULES.BOARD_TITLE"
+          class="mt-4"
+        />
+        <v-select
+          v-model="boardCategory"
+          :items="boardCategoryNames"
+          :rules="RULES.BOARD_CATEGORY"
+          label="Category"
+          class="mt-4"
+          outlined
+          dense
+        />
+        <v-textarea
+          v-model="content"
+          :rules="RULES.BOARD_CONTENT"
+          label="Content"
+          class="mt-4"
+          outlined
+          dense
+        />
+        <v-row>
+          <DatetimePicker :label="start" @setDateTime="setStartDateTime" />
+          <DatetimePicker
+            :label="end"
+            :minDatetime="this.startDateTime"
+            @setDateTime="setEndDateTime"
           />
-        </v-col>
-        <v-col cols="12">
-          <v-text-field
-            v-model="title"
-            :rules="RULES.BOARD_TITLE"
-            outlined
-            label="Title"
-            class="mt-4"
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-select
-            v-model="boardCategory"
-            :items="boardCategoryNames"
-            :rules="RULES.BOARD_CATEGORY"
-            label="Category"
-            class="mt-4"
-            outlined
-            dense
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-textarea
-            v-model="content"
-            :rules="RULES.BOARD_CONTENT"
-            label="Content"
-            class="mt-4"
-            outlined
-          />
-        </v-col>
-        <v-col cols="12">
-          <v-row>
-            <DatetimePicker
-              :label="start"
-              @setDateTime="setStartDateTime"
-            ></DatetimePicker>
-            <DatetimePicker
-              :label="end"
-              :minDatetime="this.startDateTime"
-              @setDateTime="setEndDateTime"
-            ></DatetimePicker>
-          </v-row>
-        </v-col>
+        </v-row>
         <v-col>
-          <v-btn type="submit" color="info">Submit</v-btn>
+          <v-btn type="submit" color="info">
+            <v-icon>edit</v-icon>
+            Submit
+          </v-btn>
         </v-col>
-      </v-row>
-    </v-form>
+      </v-form>
+    </v-container>
   </div>
 </template>
 
@@ -67,12 +52,15 @@
 import Vue, { PropType } from "vue";
 import { BoardRequest } from "@/interfaces/board";
 import boardApi from "@/api/BoardApi";
-import moment from "moment";
 import DatetimePicker from "@/components/common/DatetimePicker.vue";
 import { RULES } from "@/utils/constant/rules";
+import ReadonlyField from "@/components/common/ReadonlyField.vue";
+import { DateUtils } from "@/utils/date";
+import routerHelper from "@/router/RouterHelper";
+import { WoomoolVueRefs } from "@/types";
 
-export default Vue.extend({
-  components: { DatetimePicker },
+export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
+  components: { ReadonlyField, DatetimePicker },
 
   props: {
     submitClickCallback: {
@@ -103,35 +91,31 @@ export default Vue.extend({
 
   methods: {
     async submit() {
-      const createBoardForm = this.$refs.createBoardForm as HTMLFormElement;
-      if (createBoardForm.validate()) {
+      const form = this.$refs.form;
+      if (form.validate()) {
         const boardRequest: BoardRequest = {
           email: this.email,
           title: this.title,
           content: this.content,
           boardCategory: this.boardCategory,
-          startDateTime: moment(this.startDateTime).format().substr(0, 19),
-          endDateTime: moment(this.endDateTime).format().substr(0, 19),
+          startDateTime: this.startDateTime,
+          endDateTime: this.endDateTime,
         };
-        await boardApi.createBoard(boardRequest);
+        await boardApi
+          .createBoard(boardRequest)
+          .then(routerHelper.goToBoardsPage);
       }
     },
 
     setStartDateTime(date: string, time: string) {
-      console.log("panda");
-      this.startDateTime = date.concat(" " + time);
+      this.startDateTime = DateUtils.convertDateFormat(date, time);
     },
 
     setEndDateTime(date: string, time: string) {
-      console.log("bear");
-      this.endDateTime = date.concat(" " + time);
+      this.endDateTime = DateUtils.convertDateFormat(date, time);
     },
   },
 });
 </script>
 
-<style scoped lang="scss">
-.v-text-field {
-  margin: 12px 0;
-}
-</style>
+<style scoped lang="scss"></style>

@@ -1,6 +1,9 @@
 <template>
-  <div class="form-container">
-    <SignupForm />
+  <div>
+    <header class="page-header">Signup</header>
+    <v-main>
+      <SignupForm />
+    </v-main>
     <ScrollToTop />
   </div>
 </template>
