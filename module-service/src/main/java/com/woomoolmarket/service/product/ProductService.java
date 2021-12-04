@@ -48,18 +48,18 @@ public class ProductService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void create(ProductRequest productRequest) {
         Product product = productRequestMapper.toEntity(productRequest);
         productRepository.save(product);
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public ProductResponse edit(Long id, ProductModifyRequest modifyRequest) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND));
@@ -68,9 +68,9 @@ public class ProductService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void deleteSoftly(Long id) {
         productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND))
@@ -78,9 +78,9 @@ public class ProductService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void restore(Long id) {
         productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND))

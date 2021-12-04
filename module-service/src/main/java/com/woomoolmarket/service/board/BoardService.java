@@ -68,9 +68,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards", allEntries = true),
+//        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
     public void register(BoardRequest boardRequest, List<MultipartFile> files) {
         Board board = boardRequestMapper.toEntity(boardRequest);
 
@@ -97,9 +97,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards", allEntries = true),
+//        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
     public void deleteSoftly(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
@@ -107,9 +107,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards", allEntries = true),
+//        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
     public void restore(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
