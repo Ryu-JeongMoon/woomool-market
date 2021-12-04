@@ -135,7 +135,7 @@ subprojects {
 
     jacoco {
         toolVersion = "0.8.7"
-        reportsDir = file("$buildDir/customJacocoReportDir")
+        reportsDirectory = file("$buildDir/customJacocoReportDir")
     }
 
     jacocoTestReport {
