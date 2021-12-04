@@ -1,7 +1,5 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 class HS512TokenFactoryTest {

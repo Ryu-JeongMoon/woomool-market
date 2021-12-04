@@ -1,7 +1,6 @@
 package com.woomoolmarket.security.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
