@@ -6,14 +6,14 @@ import static com.woomoolmarket.security.jwt.TokenConstant.LOGIN_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.LOGOUT_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.REFRESH_TOKEN_EXPIRE_TIME;
 
-import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.redis.RedisUtil;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.factory.TokenFactory;
-import com.woomoolmarket.domain.member.dto.request.LoginRequest;
+import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

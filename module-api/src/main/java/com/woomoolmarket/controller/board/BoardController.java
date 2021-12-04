@@ -7,11 +7,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.board.query.BoardQueryResponse;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.service.board.BoardService;
-import com.woomoolmarket.domain.board.dto.request.BoardRequest;
-import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.domain.board.dto.response.BoardResponse;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.service.board.dto.request.BoardRequest;
+import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.util.PageUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -48,13 +49,14 @@ public class BoardController {
     private final BoardService boardService;
     private final ObjectMapper objectMapper;
     private final PagedResourcesAssembler<BoardResponse> assembler;
+    private final PagedResourcesAssembler<BoardQueryResponse> queryAssembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getBoardList(
+    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getBoardList(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<BoardResponse> boardResponses = boardService.findListBySearchCondition(condition, pageable);
-        return ResponseEntity.ok(assembler.toModel(boardResponses));
+        Page<BoardQueryResponse> boardQueryResponses = boardService.findListBySearchCondition(condition, pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(boardQueryResponses));
     }
 
     @GetMapping("/{id}")

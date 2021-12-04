@@ -14,9 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.dto.request.LoginRequest;
-import com.woomoolmarket.domain.member.dto.request.ModifyRequest;
-import com.woomoolmarket.domain.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

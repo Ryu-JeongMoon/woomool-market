@@ -2,7 +2,7 @@ package com.woomoolmarket.service.member.mapper;
 
 import com.woomoolmarket.common.mapper.GenericMapper;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.service.auth.AuthFindService;
-import com.woomoolmarket.domain.auth.dto.request.AuthStringRequest;
-import com.woomoolmarket.domain.auth.dto.request.EmailRequest;
-import com.woomoolmarket.domain.auth.dto.request.PhoneRequest;
-import com.woomoolmarket.domain.auth.dto.response.BalanceResponse;
+import com.woomoolmarket.service.auth.dto.request.AuthStringRequest;
+import com.woomoolmarket.service.auth.dto.request.EmailRequest;
+import com.woomoolmarket.service.auth.dto.request.PhoneRequest;
+import com.woomoolmarket.service.auth.dto.response.BalanceResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,8 @@ public class AuthFindController {
 
     @PostMapping("/auth-string-verification")
     public ResponseEntity<Void> verifyAuthString(@RequestBody AuthStringRequest authStringRequest) {
-        return authFindService.isVerified(authStringRequest.getAuthString()) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+        return authFindService.isVerified(authStringRequest.getAuthString()) ? ResponseEntity.ok().build()
+            : ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/id")
