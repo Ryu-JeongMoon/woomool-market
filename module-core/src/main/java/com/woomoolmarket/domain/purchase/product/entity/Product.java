@@ -2,9 +2,9 @@ package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.common.constant.ExceptionConstant;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.constant.ExceptionConstant;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
 import javax.persistence.Column;

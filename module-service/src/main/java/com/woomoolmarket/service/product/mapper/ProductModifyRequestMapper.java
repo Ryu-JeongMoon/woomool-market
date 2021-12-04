@@ -2,7 +2,7 @@ package com.woomoolmarket.service.product.mapper;
 
 import com.woomoolmarket.common.mapper.GenericMapper;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.dto.request.ProductModifyRequest;
+import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

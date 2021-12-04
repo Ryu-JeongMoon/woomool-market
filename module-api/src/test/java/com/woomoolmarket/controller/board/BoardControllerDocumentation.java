@@ -18,8 +18,8 @@ import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.domain.board.dto.request.BoardRequest;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +70,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.ALL))
             .andDo(document("board/get-boards",
                 relaxedResponseFields(
-                    subsectionWithPath("_embedded.boardResponseList").type(JsonFieldType.ARRAY).description("게시글 리스트"),
+                    subsectionWithPath("_embedded").type(JsonFieldType.OBJECT).description("게시글 리스트"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
                     subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
                 )));
@@ -105,7 +105,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
                         .attributes(key("constraint").value("종료일시보다 느릴 수 없음")),
                     fieldWithPath("endDateTime").type(JsonFieldType.VARIES).description("게시 종료일시")
                         .attributes(key("constraint").value("현재시각보다 앞설 수 없음"))
-                    )));
+                )));
     }
 
     @Test

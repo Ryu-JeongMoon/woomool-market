@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.mapper.SignUpRequestMapperImpl;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;

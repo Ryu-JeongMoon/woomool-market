@@ -1,8 +1,8 @@
 package com.woomoolmarket.controller.image;
 
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
-import com.woomoolmarket.domain.image.dto.response.ImageResponse;
 import com.woomoolmarket.service.image.ImageService;
+import com.woomoolmarket.service.image.dto.response.ImageResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;

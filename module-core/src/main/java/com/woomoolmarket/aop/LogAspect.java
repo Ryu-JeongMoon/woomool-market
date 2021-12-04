@@ -1,5 +1,6 @@
 package com.woomoolmarket.aop;
 
+import com.nimbusds.jose.shaded.json.JSONObject;
 import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -12,7 +13,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;

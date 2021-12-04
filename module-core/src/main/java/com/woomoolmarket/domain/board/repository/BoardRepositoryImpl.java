@@ -8,10 +8,10 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.QueryDslUtil;
-import com.woomoolmarket.domain.board.dto.response.BoardResponse;
-import com.woomoolmarket.domain.board.dto.response.QBoardResponse;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.board.query.BoardQueryResponse;
+import com.woomoolmarket.domain.board.query.QBoardQueryResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<BoardResponse> findByConditionAndPage(BoardSearchCondition searchCondition, Pageable pageable) {
-        QueryResults<BoardResponse> results = queryFactory
-            .select(new QBoardResponse(
+    public Page<BoardQueryResponse> findByConditionAndPage(BoardSearchCondition searchCondition, Pageable pageable) {
+        QueryResults<BoardQueryResponse> results = queryFactory
+            .select(new QBoardQueryResponse(
                 board.id, board.title, board.content, board.hit, board.boardCategory, board.member.email,
                 board.endDateTime, board.startDateTime, board.createdDateTime))
             .from(board)
@@ -57,10 +57,10 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public Page<BoardResponse> findByStatus(Pageable pageable, Status status) {
-        QueryResults<BoardResponse> results =
+    public Page<BoardQueryResponse> findByStatus(Pageable pageable, Status status) {
+        QueryResults<BoardQueryResponse> results =
             queryFactory
-                .select(new QBoardResponse(
+                .select(new QBoardQueryResponse(
                     board.id, board.title, board.content, board.hit, board.boardCategory, board.member.email,
                     board.endDateTime, board.startDateTime, board.createdDateTime))
                 .from(board)

@@ -3,19 +3,19 @@ package com.woomoolmarket.service.board;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.domain.board.dto.request.BoardModifyRequest;
-import com.woomoolmarket.domain.board.dto.request.BoardRequest;
-import com.woomoolmarket.domain.board.dto.response.BoardResponse;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.board.query.BoardQueryResponse;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
+import com.woomoolmarket.service.board.dto.request.BoardRequest;
+import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -126,7 +126,7 @@ class BoardServiceTest {
         BoardSearchCondition boardSearchCondition = new BoardSearchCondition();
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        Page<BoardResponse> boardResponses =
+        Page<BoardQueryResponse> boardResponses =
             boardService.findListBySearchCondition(boardSearchCondition, pageRequest);
 
         assertThat(boardResponses.getTotalElements()).isEqualTo(3);
