@@ -85,7 +85,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
             .and(nicknameContains(searchCondition.getNickname()))
             .and(phoneContains(searchCondition.getPhone()))
             .and(licenseContains(searchCondition.getLicense()))
-            .and(licenseContains(searchCondition.getLicense()))
             .and(statusEq(searchCondition.getStatus()))
             .and(authorityEq(searchCondition.getAuthority()))
             .and(authProviderEq(searchCondition.getProvider()));

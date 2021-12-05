@@ -15,17 +15,17 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.ResourceLocks;
 
 @Log4j2
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Execution(ExecutionMode.CONCURRENT)
 class MemberServiceTest extends ServiceTestConfig {
 
     private static String MEMBER_EMAIL;
-    private static Long MEMBER_ID;
     private static Long SELLER_ID;
 
     @BeforeEach
@@ -40,6 +40,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @AfterEach
     void clear() {
+        memberRepository.deleteAll();
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
@@ -123,34 +124,53 @@ class MemberServiceTest extends ServiceTestConfig {
         assertThat(nextId).isGreaterThan(originId);
     }
 
-    @Order(1)
     @Test
     @DisplayName("어드민 - 전체 조회")
-    void getListForAdminTest() {
-        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(new MemberSearchCondition());
+    @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
+    void getListByAllTest() {
+        MemberSearchCondition condition = MemberSearchCondition
+            .builder()
+            .build();
+        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
+        for (MemberResponse memberResponse : memberResponses) {
+            log.info("memberResponse : {}", memberResponse);
+        }
+        log.info("memberResponse size : {}", memberResponses.size());
+        log.info("SecondParallelUnitTest start => {}", Thread.currentThread().getName());
         assertThat(memberResponses.size()).isEqualTo(2);
     }
 
-    @Order(2)
     @Test
-    @DisplayName("어드민  - 전체 회원 조회")
-    void getMemberListTest() {
+    @DisplayName("어드민 - 권한으로 검색")
+    @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
+    void getListByAuthorityTest() {
         MemberSearchCondition condition = MemberSearchCondition
             .builder()
             .authority(Authority.ROLE_USER)
             .build();
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
+        for (MemberResponse memberResponse : memberResponses) {
+            log.info("memberResponse : {}", memberResponse);
+        }
+        log.info("memberResponse size : {}", memberResponses.size());
+        log.info("SecondParallelUnitTest start => {}", Thread.currentThread().getName());
         assertThat(memberResponses.size()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("어드민 - 이메일로 검색")
+    @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
     void getListByEmailTest() {
         MemberSearchCondition condition = MemberSearchCondition
             .builder()
             .email("nav")
             .build();
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
+        for (MemberResponse memberResponse : memberResponses) {
+            log.info("memberResponse : {}", memberResponse);
+        }
+        log.info("memberResponse size : {}", memberResponses.size());
+        log.info("SecondParallelUnitTest start => {}", Thread.currentThread().getName());
         assertThat(memberResponses.size()).isEqualTo(1);
     }
 }
