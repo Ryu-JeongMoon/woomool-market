@@ -14,13 +14,16 @@ import com.woomoolmarket.service.member.dto.request.SignUpRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
@@ -40,12 +43,11 @@ class MemberServiceTest {
     MemberResponseMapper memberResponseMapper;
     @Autowired
     EntityManager em;
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
 
     @BeforeEach
     void init() {
-        memberRepository.deleteAll();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-
         SignUpRequest member = SignUpRequest.builder()
             .email(MEMBER_EMAIL)
             .nickname("nick")
@@ -61,6 +63,13 @@ class MemberServiceTest {
 
         memberService.joinAsMember(member);
         memberService.joinAsSeller(seller);
+    }
+
+    @AfterEach
+    void clear() {
+        memberRepository.deleteAll();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test

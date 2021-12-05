@@ -16,6 +16,7 @@ import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
@@ -58,6 +60,8 @@ class BoardServiceTest {
     BoardResponseMapper boardResponseMapper;
     @Autowired
     EntityManager em;
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
 
     @BeforeEach
     void init() {
@@ -115,6 +119,8 @@ class BoardServiceTest {
     void clear() {
         boardRepository.deleteAll();
         memberRepository.deleteAll();
+
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
 
         em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();

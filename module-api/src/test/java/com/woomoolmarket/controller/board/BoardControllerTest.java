@@ -18,6 +18,8 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +36,11 @@ class BoardControllerTest extends ApiControllerConfig {
 
         Board board = boardTestHelper.createBoard(member);
         BOARD_ID = board.getId();
+    }
 
-        stringRedisTemplate.keys("*").forEach(k -> stringRedisTemplate.delete(k));
+    @AfterEach
+    void clear() {
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     // TODO, Caching 적용 테스트 형태 변경 필요
@@ -46,11 +51,11 @@ class BoardControllerTest extends ApiControllerConfig {
                 get("/api/boards")
                     .accept(MediaType.ALL))
             .andExpect(status().isOk())
-//            .andExpect(jsonPath("_embedded.boardResponseList[0].id").value(BOARD_ID))
-//            .andExpect(jsonPath("_embedded.boardResponseList[0].title").value(BOARD_TITLE))
-//            .andExpect(jsonPath("_embedded.boardResponseList[0].content").value(BOARD_CONTENT))
-//            .andExpect(jsonPath("_embedded.boardResponseList[0].hit").value(0))
-//            .andExpect(jsonPath("_embedded.boardResponseList[0].boardCategory").value("NOTICE"))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].id").value(BOARD_ID))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].title").value(BOARD_TITLE))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].content").value(BOARD_CONTENT))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].hit").value(0))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].boardCategory").value("NOTICE"))
             .andExpect(jsonPath("_embedded").exists())
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());

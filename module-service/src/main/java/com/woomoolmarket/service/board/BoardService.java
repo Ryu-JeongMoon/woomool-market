@@ -85,9 +85,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards"),
-        @CacheEvict(value = "boardsForAdmin")})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards"),
+//        @CacheEvict(value = "boardsForAdmin")})
     public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND));
