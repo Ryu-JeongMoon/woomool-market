@@ -22,7 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Log4j2
-class MemberServiceTestTest extends ServiceTestConfig {
+class MemberServiceTest extends ServiceTestConfig {
 
     private static final String MEMBER_EMAIL = "panda@naver.com";
     private static Long MEMBER_ID;

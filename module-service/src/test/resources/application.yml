@@ -2,10 +2,6 @@ spring:
   profiles:
     active: test
 
-  test:
-    database:
-      replace: none
-
   redis:
     port: 6381
     host: localhost
@@ -19,7 +15,6 @@ spring:
 
   jpa:
     generate-ddl: true
-    database-platform: org.hibernate.dialect.H2Dialect
     properties:
       hibernate:
         format_sql: true
