@@ -123,6 +123,7 @@ class MemberServiceTest extends ServiceTestConfig {
         assertThat(nextId).isGreaterThan(originId);
     }
 
+    @Order(1)
     @Test
     @DisplayName("어드민 - 전체 조회")
     void getListForAdminTest() {
@@ -130,7 +131,7 @@ class MemberServiceTest extends ServiceTestConfig {
         assertThat(memberResponses.size()).isEqualTo(2);
     }
 
-    @Order(1)
+    @Order(2)
     @Test
     @DisplayName("어드민  - 전체 회원 조회")
     void getMemberListTest() {
@@ -142,7 +143,6 @@ class MemberServiceTest extends ServiceTestConfig {
         assertThat(memberResponses.size()).isEqualTo(1);
     }
 
-    @Order(2)
     @Test
     @DisplayName("어드민 - 이메일로 검색")
     void getListByEmailTest() {
