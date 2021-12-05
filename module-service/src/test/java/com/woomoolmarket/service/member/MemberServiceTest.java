@@ -129,14 +129,14 @@ class MemberServiceTest extends ServiceTestConfig {
         assertEquals(nextId, nextMember.getId());
     }
 
-    @Test
+//    @Test
     @DisplayName("어드민 - 전체 조회")
     void getListForAdminTest() {
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(new MemberSearchCondition());
         assertThat(memberResponses.size()).isEqualTo(2);
     }
 
-    @Test
+//    @Test
     @DisplayName("어드민  - 전체 회원 조회")
     void getMemberListTest() {
         MemberSearchCondition condition = MemberSearchCondition
