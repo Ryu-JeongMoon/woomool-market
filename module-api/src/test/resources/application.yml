@@ -4,11 +4,11 @@ spring:
     active: test
 
   redis:
-    port: 6380
+    port: 6379
     host: localhost
 
   cache:
-    type: none
+    type: redis
 
   jpa:
     generate-ddl: true

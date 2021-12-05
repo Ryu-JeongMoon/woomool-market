@@ -21,7 +21,7 @@ spring:
       replace: none
 
   cache:
-    type: none
+    type: redis
 
   jackson:
     deserialization:
