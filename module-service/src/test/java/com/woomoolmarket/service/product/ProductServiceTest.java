@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Log4j2
-class ProductServiceTestTest extends ServiceTestConfig {
+class ProductServiceTest extends ServiceTestConfig {
 
     private static Long PRODUCT1_ID;
     private static Long PRODUCT2_ID;
@@ -95,7 +95,8 @@ class ProductServiceTestTest extends ServiceTestConfig {
             .productCategory(ProductCategory.CEREAL).build();
         productService.create(productRequest);
 
-        assertThat(productRepository.findById(3L).get()).isNotNull();
+        Product product = productRepository.findByName("dog").get();
+        assertThat(product.getId()).isNotNull();
     }
 
     @Test
