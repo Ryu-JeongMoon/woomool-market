@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public abstract class ServiceConfig {
+public abstract class ServiceTestConfig {
 
     protected static Long MEMBER_ID;
     protected static Long BOARD_ID;

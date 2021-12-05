@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.config.ServiceConfig;
+import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Log4j2
-class ProductServiceTest extends ServiceConfig {
+class ProductServiceTestTest extends ServiceTestConfig {
 
     private static Long PRODUCT1_ID;
     private static Long PRODUCT2_ID;

@@ -28,4 +28,16 @@ public class BoardTestHelper {
             .build();
         return boardRepository.save(board);
     }
+
+    public Board createCustomBoard(Member member, String title, String content, BoardCategory boardCategory) {
+        Board board = Board.builder()
+            .member(member)
+            .title(title)
+            .content(content)
+            .boardCategory(boardCategory)
+            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
+            .build();
+        return boardRepository.save(board);
+    }
 }

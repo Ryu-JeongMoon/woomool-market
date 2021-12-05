@@ -4,7 +4,7 @@ spring:
     active: test
 
   redis:
-    port: 6379
+    port: 6380
     host: localhost
 
   cache:
@@ -15,8 +15,8 @@ spring:
     properties:
       hibernate:
         ddl-auto: create
-        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
 
   jackson:
     deserialization:

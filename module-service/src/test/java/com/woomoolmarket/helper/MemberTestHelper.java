@@ -18,6 +18,12 @@ public class MemberTestHelper {
     public static final String MEMBER_PHONE = "01012345678";
     public static final Address MEMBER_ADDRESS = new Address("seoul", "yeonhui", "01023");
 
+    public static final String SELLER_EMAIL = "bear@gmail.com";
+    public static final String SELLER_PASSWORD = "123456";
+    public static final String SELLER_NICKNAME = "bear";
+    public static final String SELLER_PHONE = "01087654321";
+    public static final Address SELLER_ADDRESS = new Address("incheon", "yeonhui", "45678");
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -35,12 +41,12 @@ public class MemberTestHelper {
 
     public Member createSeller() {
         Member member = Member.builder()
-            .email(MEMBER_EMAIL)
-            .nickname(MEMBER_NICKNAME)
+            .email(SELLER_EMAIL)
+            .nickname(SELLER_NICKNAME)
             .authority(Authority.ROLE_SELLER)
-            .password(passwordEncoder.encode(MEMBER_PASSWORD))
-            .phone(MEMBER_PHONE)
-            .address(MEMBER_ADDRESS)
+            .password(passwordEncoder.encode(SELLER_PASSWORD))
+            .phone(SELLER_PHONE)
+            .address(SELLER_ADDRESS)
             .build();
         return memberRepository.save(member);
     }
