@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ImageService {
 
@@ -30,6 +29,7 @@ public class ImageService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteByImageId(Long imageId) {
         imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.IMAGE_NOT_FOUND))

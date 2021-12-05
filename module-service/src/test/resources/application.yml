@@ -19,7 +19,6 @@ spring:
       hibernate:
         format_sql: true
         ddl-auto: create
-        dialect: org.hibernate.dialect.H2Dialect
 
   security:
     oauth2:

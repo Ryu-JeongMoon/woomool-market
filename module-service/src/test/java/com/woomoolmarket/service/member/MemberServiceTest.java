@@ -1,46 +1,45 @@
 package com.woomoolmarket.service.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
-import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
-import com.woomoolmarket.service.member.mapper.MemberResponseMapperImpl;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @Log4j2
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MemberServiceTest extends ServiceTestConfig {
 
-    private static final String MEMBER_EMAIL = "panda@naver.com";
+    private static String MEMBER_EMAIL;
     private static Long MEMBER_ID;
     private static Long SELLER_ID;
-    MemberResponseMapper memberResponseMapper = new MemberResponseMapperImpl();
 
     @BeforeEach
     void init() {
         Member member = memberTestHelper.createUser();
         Member seller = memberTestHelper.createSeller();
 
+        MEMBER_EMAIL = member.getEmail();
         MEMBER_ID = member.getId();
         SELLER_ID = seller.getId();
     }
 
     @AfterEach
     void clear() {
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
@@ -48,8 +47,8 @@ class MemberServiceTest extends ServiceTestConfig {
     @DisplayName("회원 가입 시 USER 권한")
     void joinTest() {
         MemberResponse memberResponse = memberService.findMemberById(MEMBER_ID);
-        assertEquals(MEMBER_EMAIL, memberResponse.getEmail());
-        assertEquals(memberResponse.getAuthority(), Authority.ROLE_USER);
+        assertThat(MEMBER_EMAIL).isEqualTo(memberResponse.getEmail());
+        assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_USER);
     }
 
     @Test
@@ -92,51 +91,47 @@ class MemberServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("이전, 다음 아이디 찾아온다")
     void findIdTest() {
-        for (int i = 9; i < 12; i++) {
+        for (int i = 0; i < 3; i++) {
             Member member = Member.builder()
                 .email("panda@naver.com" + i)
-                .nickname("nick" + i)
-                .password("123456")
-                .address(new Address("seoul", "yeonhui", "1234"))
                 .build();
-
             memberRepository.save(member);
         }
 
-        Member member1 = memberRepository.findByEmail("panda@naver.com9").get();
-        Member member2 = memberRepository.findByEmail("panda@naver.com10").get();
-        Member member3 = memberRepository.findByEmail("panda@naver.com11").get();
+        Member member2 = memberRepository.findByEmail("panda@naver.com1").get();
+        Long originId = member2.getId();
+        Long nextId = memberService.findNextId(originId);
+        Long previousId = memberService.findPreviousId(originId);
 
-        Long nextId = memberService.findNextId(memberResponseMapper.toDto(member2).getId());
-        Long previousId = memberService.findPreviousId(memberResponseMapper.toDto(member2).getId());
-
-        assertEquals(nextId, member3.getId());
-        assertEquals(previousId, member1.getId());
+        assertThat(nextId).isGreaterThan(originId);
+        assertThat(previousId).isLessThan(originId);
     }
 
     @Test
     @DisplayName("다음 회원 번호 찾기")
     void findNextIdTest() {
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 2; i++) {
             Member member = Member.builder()
-                .email("rjrj" + i)
+                .email("panda" + i)
                 .build();
             memberRepository.save(member);
         }
 
-        Long nextId = memberService.findNextId(5L);
-        MemberResponse nextMember = memberService.findMemberById(nextId);
-        assertEquals(nextId, nextMember.getId());
+        Member member = memberRepository.findByEmail("panda0").get();
+        Long originId = member.getId();
+        Long nextId = memberService.findNextId(originId);
+        assertThat(nextId).isGreaterThan(originId);
     }
 
-//    @Test
+    @Test
     @DisplayName("어드민 - 전체 조회")
     void getListForAdminTest() {
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(new MemberSearchCondition());
         assertThat(memberResponses.size()).isEqualTo(2);
     }
 
-//    @Test
+    @Order(1)
+    @Test
     @DisplayName("어드민  - 전체 회원 조회")
     void getMemberListTest() {
         MemberSearchCondition condition = MemberSearchCondition
@@ -147,6 +142,7 @@ class MemberServiceTest extends ServiceTestConfig {
         assertThat(memberResponses.size()).isEqualTo(1);
     }
 
+    @Order(2)
     @Test
     @DisplayName("어드민 - 이메일로 검색")
     void getListByEmailTest() {

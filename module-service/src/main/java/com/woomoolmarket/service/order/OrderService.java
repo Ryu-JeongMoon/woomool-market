@@ -24,15 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class OrderService {
 
-    private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
+    private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final OrderResponseMapper orderResponseMapper;
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> getListByMemberId(Long memberId) {
         return orderRepository.findByMemberId(memberId)
             .stream()
@@ -40,6 +40,7 @@ public class OrderService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void order(OrderRequest orderRequest) {
         if (orderRequest.getProductId() != null) {
             orderMultiples(orderRequest);
@@ -110,6 +111,7 @@ public class OrderService {
 
 
     /* FOR ADMIN */
+    @Transactional(readOnly = true)
     public List<OrderResponse> getListBySearchCondition(OrderSearchCondition condition) {
         return orderRepository.findByConditionForAdmin(condition)
             .stream()

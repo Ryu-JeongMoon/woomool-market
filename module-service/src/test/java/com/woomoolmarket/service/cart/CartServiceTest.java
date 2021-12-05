@@ -73,15 +73,7 @@ class CartServiceTest {
 
     @AfterEach
     void clear() {
-        cartRepository.deleteAll();
-        memberRepository.deleteAll();
-        productRepository.deleteAll();
-
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-
-        em.createNativeQuery("ALTER TABLE CART ALTER COLUMN `cart_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
     }
 
     @Test
