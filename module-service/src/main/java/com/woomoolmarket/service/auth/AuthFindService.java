@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.auth;
 
-import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import java.security.SecureRandom;

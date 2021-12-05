@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.member.entity;
 
+import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
+public class Address implements Serializable {
 
     @Pattern(regexp = "^[\\w]{2,24}$")
     private String city;

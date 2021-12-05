@@ -3,7 +3,6 @@ package com.woomoolmarket.domain.image.entity;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

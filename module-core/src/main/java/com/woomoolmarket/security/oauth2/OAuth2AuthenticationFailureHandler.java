@@ -5,7 +5,6 @@ import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationReq
 
 import com.woomoolmarket.security.util.CookieUtils;
 import java.io.IOException;
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

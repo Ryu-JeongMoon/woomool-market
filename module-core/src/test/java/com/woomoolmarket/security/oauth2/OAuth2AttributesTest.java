@@ -2,7 +2,6 @@ package com.woomoolmarket.security.oauth2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.domain.member.entity.Member;
 import java.util.Map;
 import java.util.function.BiFunction;
 import org.junit.jupiter.api.BeforeEach;

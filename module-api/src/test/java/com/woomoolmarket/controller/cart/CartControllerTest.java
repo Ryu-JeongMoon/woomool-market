@@ -13,6 +13,7 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ class CartControllerTest extends ApiControllerConfig {
 
         Cart cart = cartTestHelper.createCart(member, product);
         CART_ID = cart.getId();
+
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test

@@ -20,7 +20,6 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,13 +40,13 @@ public class BoardService {
     private final BoardResponseMapper boardResponseMapper;
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "boards", cacheManager = "jdkCacheManager")
+//    @Cacheable(keyGenerator = "customKeyGenerator", value = "boards", cacheManager = "jdkCacheManager")
     public Page<BoardQueryResponse> findListBySearchCondition(BoardSearchCondition searchCondition, Pageable pageable) {
         return boardRepository.findByConditionAndPage(searchCondition, pageable);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "panda", cacheManager = "jsonCacheManager")
+//    @Cacheable(keyGenerator = "customKeyGenerator", value = "panda", cacheManager = "jsonCacheManager")
     public BoardResponse findByIdAndStatus(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
@@ -69,9 +68,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards", allEntries = true),
+//        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
     public void register(BoardRequest boardRequest, List<MultipartFile> files) {
         Board board = boardRequestMapper.toEntity(boardRequest);
 
@@ -86,9 +85,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards"),
-        @CacheEvict(value = "boardsForAdmin")})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards"),
+//        @CacheEvict(value = "boardsForAdmin")})
     public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND));
@@ -98,9 +97,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards", allEntries = true),
+//        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
     public void deleteSoftly(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
@@ -108,9 +107,9 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
+//    @Caching(evict = {
+//        @CacheEvict(value = "boards", allEntries = true),
+//        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
     public void restore(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND))
@@ -120,7 +119,7 @@ public class BoardService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", unless = "#result==null", cacheManager = "cacheManager")
+//    @Cacheable(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", unless = "#result==null", cacheManager = "cacheManager")
     public List<BoardResponse> findListBySearchConditionForAdmin(BoardSearchCondition condition) {
         List<Board> boards = boardRepository.findByConditionForAdmin(condition);
         return boardResponseMapper.toDtoList(boards);

@@ -22,6 +22,7 @@ import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignUpRequest;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,8 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     @BeforeEach
     void init() {
         MEMBER_ID = memberTestHelper.createUser().getId();
+
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test

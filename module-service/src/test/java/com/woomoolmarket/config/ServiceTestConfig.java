@@ -13,29 +13,32 @@ import com.woomoolmarket.helper.ImageTestHelper;
 import com.woomoolmarket.helper.MemberTestHelper;
 import com.woomoolmarket.helper.OrderTestHelper;
 import com.woomoolmarket.helper.ProductTestHelper;
+import com.woomoolmarket.service.board.BoardService;
+import com.woomoolmarket.service.cart.CartService;
+import com.woomoolmarket.service.image.ImageService;
 import com.woomoolmarket.service.member.MemberService;
+import com.woomoolmarket.service.order.OrderService;
+import com.woomoolmarket.service.product.ProductService;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-public abstract class ApiControllerConfig {
+public abstract class ServiceTestConfig {
 
     protected static Long MEMBER_ID;
-    protected static Long PRODUCT_ID;
-    protected static Long CART_ID;
-    protected static Long ORDER_ID;
     protected static Long BOARD_ID;
     protected static Long IMAGE_ID;
+    protected static Long CART_ID;
+    protected static Long ORDER_ID;
+    protected static Long PRODUCT_ID;
 
     @Autowired
-    protected MockMvc mockMvc;
+    protected EntityManager em;
     @Autowired
     protected ObjectMapper objectMapper;
     @Autowired
@@ -44,31 +47,42 @@ public abstract class ApiControllerConfig {
     protected StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    protected CartRepository cartRepository;
+    protected MemberRepository memberRepository;
     @Autowired
     protected BoardRepository boardRepository;
     @Autowired
     protected ImageRepository imageRepository;
     @Autowired
-    protected OrderRepository orderRepository;
+    protected CartRepository cartRepository;
     @Autowired
-    protected MemberRepository memberRepository;
+    protected OrderRepository orderRepository;
     @Autowired
     protected ProductRepository productRepository;
 
     @Autowired
     protected MemberService memberService;
+    @Autowired
+    protected BoardService boardService;
+    @Autowired
+    protected ImageService imageService;
+    @Autowired
+    protected CartService cartService;
+    @Autowired
+    protected OrderService orderService;
+    @Autowired
+    protected ProductService productService;
+
 
     @Autowired
-    protected CartTestHelper cartTestHelper;
-    @Autowired
-    protected OrderTestHelper orderTestHelper;
+    protected MemberTestHelper memberTestHelper;
     @Autowired
     protected BoardTestHelper boardTestHelper;
     @Autowired
     protected ImageTestHelper imageTestHelper;
     @Autowired
-    protected MemberTestHelper memberTestHelper;
+    protected CartTestHelper cartTestHelper;
+    @Autowired
+    protected OrderTestHelper orderTestHelper;
     @Autowired
     protected ProductTestHelper productTestHelper;
 

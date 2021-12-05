@@ -4,55 +4,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.board.entity.BoardCategory;
-import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.image.entity.Image;
-import com.woomoolmarket.domain.image.repository.ImageRepository;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.image.dto.response.ImageResponse;
-import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.EntityManager;
+import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @Log4j2
-@Transactional
-@SpringBootTest
-class ImageServiceTest {
-
-    private static Long BOARD_ID;
-    private final String MEMBER_EMAIL = "panda@naver.com";
-    private final String BOARD_TITLE = "panda";
-    private final String BOARD_CONTENT = "bear";
-
-    @Autowired
-    ImageService imageService;
-    @Autowired
-    ImageRepository imageRepository;
-    @Autowired
-    BoardRepository boardRepository;
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    EntityManager em;
+class ImageServiceTestTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        Member member = Member.builder()
-            .email(MEMBER_EMAIL)
-            .password("123456")
-            .build();
-        memberRepository.save(member);
+        Member member = memberTestHelper.createUser();
+        Board board = boardTestHelper.createBoard(member);
+        BOARD_ID = board.getId();
 
         Image image = Image.builder()
             .fileName("fileName")
@@ -60,29 +33,16 @@ class ImageServiceTest {
             .filePath("filePath")
             .fileSize(5000L)
             .build();
-
-        Board board = Board.builder()
-            .member(member)
-            .title(BOARD_TITLE)
-            .content(BOARD_CONTENT)
-            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
-            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
-            .boardCategory(BoardCategory.FREE)
-            .build();
-
         board.addImages(List.of(image));
-        BOARD_ID = boardRepository.save(board).getId();
     }
 
     @AfterEach
     void clear() {
-        imageRepository.deleteAll();
-        boardRepository.deleteAll();
-        memberRepository.deleteAll();
-
         em.createNativeQuery("ALTER TABLE IMAGE ALTER COLUMN `image_id` RESTART WITH 1").executeUpdate();
         em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test

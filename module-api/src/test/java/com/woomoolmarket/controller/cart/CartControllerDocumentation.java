@@ -12,13 +12,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +38,8 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
 
         Cart cart = cartTestHelper.createCart(member, product);
         CART_ID = cart.getId();
+
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test
@@ -98,9 +99,9 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
     @DisplayName("장바구니 단건 조회")
     void getOneById() throws Exception {
         mockMvc.perform(
-            get("/api/carts/" + MEMBER_ID + "/" + CART_ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.ALL))
+                get("/api/carts/" + MEMBER_ID + "/" + CART_ID)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.ALL))
             .andDo(document("cart/get-cart",
                 responseFields(
                     fieldWithPath("id").type(JsonFieldType.NUMBER).description("장바구니 고유 번호"),
@@ -115,7 +116,7 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
     @DisplayName("장바구니 단건 삭제")
     void removeOne() throws Exception {
         mockMvc.perform(
-                delete("/api/carts/" + MEMBER_ID + "/"  + CART_ID)
+                delete("/api/carts/" + MEMBER_ID + "/" + CART_ID)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.ALL))
             .andExpect(status().isNoContent())

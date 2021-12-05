@@ -8,15 +8,15 @@ spring:
     host: localhost
 
   cache:
-    type: none
+    type: redis
 
   jpa:
     generate-ddl: true
     properties:
       hibernate:
         ddl-auto: create
-        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
 
   jackson:
     deserialization:

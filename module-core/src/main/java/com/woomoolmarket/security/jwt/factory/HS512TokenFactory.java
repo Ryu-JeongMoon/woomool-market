@@ -1,6 +1,7 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.security.jwt.TokenConstant.*;
+import static com.woomoolmarket.security.jwt.TokenConstant.AUTHORITIES_KEY;
+import static com.woomoolmarket.security.jwt.TokenConstant.LOGOUT_KEY_PREFIX;
 
 import com.woomoolmarket.redis.RedisUtil;
 import io.jsonwebtoken.Claims;

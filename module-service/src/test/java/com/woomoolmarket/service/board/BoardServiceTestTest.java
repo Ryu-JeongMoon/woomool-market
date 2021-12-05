@@ -3,44 +3,34 @@ package com.woomoolmarket.service.board;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
-import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
-import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
-import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.EntityManager;
+import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
-@Transactional
-@SpringBootTest
-class BoardServiceTest {
+class BoardServiceTestTest extends ServiceTestConfig {
 
     private static Long BOARD_1_ID;
     private static Long BOARD_2_ID;
     private static Long BOARD_3_ID;
-    private static Member member1;
-    private static Member member2;
+    private static String MEMBER_1_EMAIL;
+    private static String MEMBER_2_EMAIL;
 
-    private final String MEMBER_1_EMAIL = "panda@naver.com";
-    private final String MEMBER_2_EMAIL = "tiger@naver.com";
     private final String BOARD_1_TITLE = "panda1";
     private final String BOARD_1_CONTENT = "bear1";
     private final String BOARD_2_TITLE = "panda2";
@@ -48,76 +38,27 @@ class BoardServiceTest {
     private final String BOARD_3_TITLE = "panda3";
     private final String BOARD_3_CONTENT = "bear3";
 
-    @Autowired
-    BoardRepository boardRepository;
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    BoardService boardService;
-    @Autowired
-    BoardResponseMapper boardResponseMapper;
-    @Autowired
-    EntityManager em;
-
     @BeforeEach
     void init() {
-        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
+        Member member1 = memberTestHelper.createUser();
+        Member member2 = memberTestHelper.createSeller();
+        MEMBER_1_EMAIL = member1.getEmail();
+        MEMBER_2_EMAIL = member2.getEmail();
 
-        member1 = Member.builder()
-            .email(MEMBER_1_EMAIL)
-            .nickname("bear")
-            .password("123456")
-            .build();
-
-        member2 = Member.builder()
-            .email(MEMBER_2_EMAIL)
-            .nickname("cat")
-            .password("123456")
-            .build();
-
-        memberRepository.save(member1);
-        memberRepository.save(member2);
-        em.flush();
-
-        Board board1 = Board.builder()
-            .member(member1)
-            .title(BOARD_1_TITLE)
-            .content(BOARD_1_CONTENT)
-            .boardCategory(BoardCategory.QNA)
-            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
-            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
-            .build();
-
-        Board board2 = Board.builder()
-            .member(member1)
-            .title(BOARD_2_TITLE)
-            .content(BOARD_2_CONTENT)
-            .boardCategory(BoardCategory.FREE)
-            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
-            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
-            .build();
-
-        Board board3 = Board.builder()
-            .member(member2)
-            .title(BOARD_3_TITLE)
-            .content(BOARD_3_CONTENT)
-            .boardCategory(BoardCategory.NOTICE)
-            .startDateTime(LocalDateTime.of(2021, 1, 1, 1, 1, 1))
-            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
-            .build();
-
-        BOARD_1_ID = boardRepository.save(board1).getId();
-        BOARD_2_ID = boardRepository.save(board2).getId();
-        BOARD_3_ID = boardRepository.save(board3).getId();
+        Board board1 = boardTestHelper.createCustomBoard(member1, BOARD_1_TITLE, BOARD_1_CONTENT, BoardCategory.QNA);
+        Board board2 = boardTestHelper.createCustomBoard(member1, BOARD_2_TITLE, BOARD_2_CONTENT, BoardCategory.FREE);
+        Board board3 = boardTestHelper.createCustomBoard(member2, BOARD_3_TITLE, BOARD_3_CONTENT, BoardCategory.NOTICE);
+        BOARD_1_ID = board1.getId();
+        BOARD_2_ID = board2.getId();
+        BOARD_3_ID = board3.getId();
     }
 
     @AfterEach
     void clear() {
-        boardRepository.deleteAll();
-        memberRepository.deleteAll();
-
         em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
         em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test
@@ -148,7 +89,9 @@ class BoardServiceTest {
     @Test
     @DisplayName("fetch join 결과")
     void getListBySearchConditionForAdmin2() {
-        BoardSearchCondition condition = BoardSearchCondition.builder().email("tiger").build();
+        BoardSearchCondition condition = BoardSearchCondition.builder()
+            .email("bear")
+            .build();
         List<BoardResponse> boardResponses = boardService.findListBySearchConditionForAdmin(condition);
         assertThat(boardResponses.size()).isEqualTo(1);
     }
@@ -163,8 +106,8 @@ class BoardServiceTest {
     @Test
     @DisplayName("조회수 증가")
     void increaseHit() {
-        boardService.increaseHit(1L);
-        Board board = boardRepository.findById(1L).get();
+        boardService.increaseHit(BOARD_2_ID);
+        Board board = boardRepository.findById(BOARD_2_ID).get();
         assertThat(board.getHit()).isEqualTo(1);
     }
 
@@ -176,6 +119,7 @@ class BoardServiceTest {
             .title("hello")
             .content("hi")
             .build();
+
         boardService.register(boardRequest, null);
         List<BoardResponse> boardResponses = boardService.findByMemberAndStatus(MEMBER_1_EMAIL, Status.ACTIVE);
         assertThat(boardResponses.get(0).getId()).isNotNull();
@@ -189,7 +133,7 @@ class BoardServiceTest {
             .boardCategory(BoardCategory.FREE)
             .build();
 
-        BoardResponse boardResponse = boardService.edit(1L, modifyRequest);
+        BoardResponse boardResponse = boardService.edit(BOARD_1_ID, modifyRequest);
 
         assertThat(boardResponse.getTitle()).isEqualTo("hello");
         assertThat(boardResponse.getBoardCategory()).isEqualTo(BoardCategory.FREE);
@@ -198,8 +142,8 @@ class BoardServiceTest {
     @Test
     @DisplayName("게시글 soft 삭제")
     void deleteSoftly() {
-        boardService.deleteSoftly(2L);
-        Board board = boardRepository.findById(2L).get();
+        boardService.deleteSoftly(BOARD_2_ID);
+        Board board = boardRepository.findById(BOARD_2_ID).get();
 
         assertThat(board.getStatus()).isEqualTo(Status.INACTIVE);
         assertThat(board.getDeletedDateTime()).isNotNull();
@@ -208,8 +152,8 @@ class BoardServiceTest {
     @Test
     @DisplayName("삭제된 게시글 복구")
     void restore() {
-        boardService.deleteSoftly(2L);
-        boardService.restore(2L);
+        boardService.deleteSoftly(BOARD_3_ID);
+        boardService.restore(BOARD_3_ID);
 
         Board board = boardRepository.findById(2L).get();
 

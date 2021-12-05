@@ -4,66 +4,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
 import java.util.List;
-import javax.persistence.EntityManager;
+import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
-@Transactional
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTestTest extends ServiceTestConfig {
 
-    private static final String MEMBER_EMAIL = "panda@naver.com";
     private static Long PRODUCT1_ID;
     private static Long PRODUCT2_ID;
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    ProductRepository productRepository;
-    @Autowired
-    ProductService productService;
+
     @Autowired
     ProductResponseMapper productResponseMapper;
-    @Autowired
-    EntityManager em;
 
     @BeforeEach
     void init() {
-        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
+        Member member = memberTestHelper.createUser();
+        MEMBER_ID = member.getId();
 
-        Member member = Member.builder()
-            .email(MEMBER_EMAIL)
-            .nickname("bear")
-            .password("123456")
-            .build();
-
-        memberRepository.save(member);
-
-        Product product1 = Product.builder()
-            .name("panda")
-            .member(member)
-            .price(50000)
-            .stock(3000)
-            .productCategory(ProductCategory.CEREAL)
-            .description("panda bear")
-            .region(Region.JEJUDO)
-            .build();
+        Product product1 = productTestHelper.createProduct(member);
+        PRODUCT1_ID = product1.getId();
 
         Product product2 = Product.builder()
             .name("tiger")
@@ -74,9 +48,13 @@ class ProductServiceTest {
             .description("tiger cat")
             .region(Region.GANGWONDO)
             .build();
-
-        PRODUCT1_ID = productRepository.save(product1).getId();
         PRODUCT2_ID = productRepository.save(product2).getId();
+    }
+
+    @AfterEach
+    void clear() {
+        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     @Test
