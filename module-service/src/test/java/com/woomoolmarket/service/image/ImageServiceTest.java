@@ -19,7 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Log4j2
-class ImageServiceTestTest extends ServiceTestConfig {
+class ImageServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
@@ -38,10 +38,6 @@ class ImageServiceTestTest extends ServiceTestConfig {
 
     @AfterEach
     void clear() {
-        em.createNativeQuery("ALTER TABLE IMAGE ALTER COLUMN `image_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 

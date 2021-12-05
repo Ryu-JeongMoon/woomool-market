@@ -1,11 +1,14 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.security.jwt.TokenConstant.*;
+import static com.woomoolmarket.security.jwt.TokenConstant.ACCESS_TOKEN_EXPIRE_TIME;
+import static com.woomoolmarket.security.jwt.TokenConstant.AUTHORITIES_KEY;
+import static com.woomoolmarket.security.jwt.TokenConstant.AUTHORIZATION_HEADER;
+import static com.woomoolmarket.security.jwt.TokenConstant.BEARER_TYPE;
+import static com.woomoolmarket.security.jwt.TokenConstant.REFRESH_TOKEN_EXPIRE_TIME;
 
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.dto.UserPrincipal;
-import com.woomoolmarket.security.jwt.TokenConstant;
 import io.jsonwebtoken.Claims;
 import java.util.Arrays;
 import java.util.Collection;

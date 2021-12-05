@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MemberTestHelper {
 
-    public static final String MEMBER_EMAIL = "panda@naver.com";
-    public static final String MEMBER_PASSWORD = "123456";
-    public static final String MEMBER_NICKNAME = "panda";
-    public static final String MEMBER_PHONE = "01012345678";
-    public static final Address MEMBER_ADDRESS = new Address("seoul", "yeonhui", "01023");
+    private static final String MEMBER_EMAIL = "panda@naver.com";
+    private static final String MEMBER_PASSWORD = "123456";
+    private static final String MEMBER_NICKNAME = "panda";
+    private static final String MEMBER_PHONE = "01012345678";
+    private static final Address MEMBER_ADDRESS = new Address("seoul", "yeonhui", "01023");
 
-    public static final String SELLER_EMAIL = "bear@gmail.com";
-    public static final String SELLER_PASSWORD = "123456";
-    public static final String SELLER_NICKNAME = "bear";
-    public static final String SELLER_PHONE = "01087654321";
-    public static final Address SELLER_ADDRESS = new Address("incheon", "yeonhui", "45678");
+    private static final String SELLER_EMAIL = "bear@gmail.com";
+    private static final String SELLER_PASSWORD = "123456";
+    private static final String SELLER_NICKNAME = "bear";
+    private static final String SELLER_PHONE = "01087654321";
+    private static final Address SELLER_ADDRESS = new Address("incheon", "yeonhui", "45678");
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;

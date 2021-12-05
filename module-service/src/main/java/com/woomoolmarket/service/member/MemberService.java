@@ -13,7 +13,6 @@ import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,13 +29,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private final MemberResponseMapper memberResponseMapper;
     private final SignUpRequestMapper signUpRequestMapper;
     private final ModifyRequestMapper modifyRequestMapper;
+    private final MemberResponseMapper memberResponseMapper;
 
-    // 앞뒤 번호 찾을 때 캐시 안 쓰면 쿼리 3방 나간다 이건 어떻게 해결해야 할까?!
-    // orElseGet -> else 일 때만 실행, orElse -> 무조건 실행, 성능 상 유리하니 orElseGet 씁시다
     @Transactional(readOnly = true)
     public Long findPreviousId(Long id) {
         return memberRepository.findPreviousId(id)
@@ -57,13 +53,13 @@ public class MemberService {
     }
 
     @Transactional
-//    @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public MemberResponse joinAsMember(SignUpRequest signUpRequest) {
         return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_USER));
     }
 
     @Transactional
-//    @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public MemberResponse joinAsSeller(SignUpRequest signUpRequest) {
         return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_SELLER));
     }
@@ -82,7 +78,7 @@ public class MemberService {
     }
 
     @Transactional
-//    @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
@@ -91,7 +87,7 @@ public class MemberService {
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
     @Transactional
-//    @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public void leaveSoftly(Long id) {
         memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND))
@@ -99,7 +95,7 @@ public class MemberService {
     }
 
     @Transactional
-//    @CacheEvict(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public void restore(Long id) {
         memberRepository.findByIdAndStatus(id, Status.INACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND))
@@ -108,19 +104,10 @@ public class MemberService {
 
 
     /* FOR ADMIN */
-//    @Cacheable(keyGenerator = "customKeyGenerator", value = "getListByConditionForAdmin", unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "membersForAdmin", unless = "#result==null", cacheManager = "cacheManager")
     @Transactional(readOnly = true)
     public List<MemberResponse> getListBySearchConditionForAdmin(MemberSearchCondition condition) {
-        return memberRepository.findByConditionForAdmin(condition)
-            .stream()
-            .map(memberResponseMapper::toDto)
-            .collect(Collectors.toList());
+        List<Member> members = memberRepository.findByConditionForAdmin(condition);
+        return memberResponseMapper.toDtoList(members);
     }
 }
-
-/*
-앞뒤 번호 고민..
-TODO, stream 일일이 돌려서 DTO List 만들고 있는 로직 memberResponseMapper - toDtoList 메서드 활용하자
-orElseGet() 인텔리센스가 orElse() 로 바꾸라고 알려준다
-성능 상 orElseGet() 이 낫다고 알고 있는데 자바 11 이후로 동작이 바뀌었나? -> 알아볼 것
- */
