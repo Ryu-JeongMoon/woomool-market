@@ -62,7 +62,7 @@ export default Vue.extend({
         .getBoardList(condition, pageable)
         .finally(() => LoadingHelper.switchLoadingState(this.isLoading));
 
-      this.boardResponseList = boardResponses._embedded.boardResponseList;
+      this.boardResponseList = boardResponses._embedded.boardQueryResponseList;
       this.page = boardResponses.page;
       this.links = boardResponses._links;
     },

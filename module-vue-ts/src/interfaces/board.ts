@@ -41,7 +41,7 @@ export interface BoardResponse {
 
 export interface BoardResponseList {
   _embedded: {
-    boardResponseList: BoardResponse[];
+    boardQueryResponseList: BoardResponse[];
   };
   _links: Links;
   page: Page;
