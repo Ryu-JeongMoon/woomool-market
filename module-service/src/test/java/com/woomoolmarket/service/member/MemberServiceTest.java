@@ -25,8 +25,10 @@ import org.junit.jupiter.api.parallel.ResourceLocks;
 @Execution(ExecutionMode.CONCURRENT)
 class MemberServiceTest extends ServiceTestConfig {
 
-    private static String MEMBER_EMAIL;
     private static Long SELLER_ID;
+    private static String MEMBER_EMAIL;
+    private static String NICKNAME = "nick";
+    private static String PASSWORD = "pass";
 
     @BeforeEach
     void init() {
@@ -94,12 +96,14 @@ class MemberServiceTest extends ServiceTestConfig {
     void findIdTest() {
         for (int i = 0; i < 3; i++) {
             Member member = Member.builder()
-                .email("panda@naver.com" + i)
+                .email(MEMBER_EMAIL + i)
+                .nickname(NICKNAME)
+                .password(PASSWORD)
                 .build();
             memberRepository.save(member);
         }
 
-        Member member2 = memberRepository.findByEmail("panda@naver.com1").get();
+        Member member2 = memberRepository.findByEmail(MEMBER_EMAIL + 1).get();
         Long originId = member2.getId();
         Long nextId = memberService.findNextId(originId);
         Long previousId = memberService.findPreviousId(originId);
@@ -113,12 +117,14 @@ class MemberServiceTest extends ServiceTestConfig {
     void findNextIdTest() {
         for (int i = 0; i < 2; i++) {
             Member member = Member.builder()
-                .email("panda" + i)
+                .email(MEMBER_EMAIL + i)
+                .nickname(NICKNAME)
+                .password(PASSWORD)
                 .build();
             memberRepository.save(member);
         }
 
-        Member member = memberRepository.findByEmail("panda0").get();
+        Member member = memberRepository.findByEmail(MEMBER_EMAIL + 0).get();
         Long originId = member.getId();
         Long nextId = memberService.findNextId(originId);
         assertThat(nextId).isGreaterThan(originId);
@@ -132,11 +138,6 @@ class MemberServiceTest extends ServiceTestConfig {
             .builder()
             .build();
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        for (MemberResponse memberResponse : memberResponses) {
-            log.info("memberResponse : {}", memberResponse);
-        }
-        log.info("memberResponse size : {}", memberResponses.size());
-        log.info("SecondParallelUnitTest start => {}", Thread.currentThread().getName());
         assertThat(memberResponses.size()).isEqualTo(2);
     }
 
@@ -149,11 +150,6 @@ class MemberServiceTest extends ServiceTestConfig {
             .authority(Authority.ROLE_USER)
             .build();
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        for (MemberResponse memberResponse : memberResponses) {
-            log.info("memberResponse : {}", memberResponse);
-        }
-        log.info("memberResponse size : {}", memberResponses.size());
-        log.info("SecondParallelUnitTest start => {}", Thread.currentThread().getName());
         assertThat(memberResponses.size()).isEqualTo(1);
     }
 
@@ -166,11 +162,6 @@ class MemberServiceTest extends ServiceTestConfig {
             .email("nav")
             .build();
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        for (MemberResponse memberResponse : memberResponses) {
-            log.info("memberResponse : {}", memberResponse);
-        }
-        log.info("memberResponse size : {}", memberResponses.size());
-        log.info("SecondParallelUnitTest start => {}", Thread.currentThread().getName());
         assertThat(memberResponses.size()).isEqualTo(1);
     }
 }

@@ -32,6 +32,7 @@ class JwtAuthenticationFilterTest {
 
     private final PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
     private final String EMAIL = "panda@naver.com";
+    private final String NICKNAME = "panda";
     private final String PASSWORD = "123456";
 
     @Autowired
@@ -49,6 +50,7 @@ class JwtAuthenticationFilterTest {
     void init() {
         Member member = Member.builder()
             .email(EMAIL)
+            .nickname(NICKNAME)
             .password(passwordEncoder.encode(PASSWORD))
             .authority(Authority.ROLE_USER)
             .build();

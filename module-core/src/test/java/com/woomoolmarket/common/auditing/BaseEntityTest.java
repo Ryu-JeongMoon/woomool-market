@@ -24,7 +24,9 @@ class BaseEntityTest {
     @DisplayName("EntityListeners 속성 상속된다")
     void baseEntityTest() {
         Member member = Member.builder()
-            .email("panda")
+            .email("panda-bear")
+            .nickname("nick")
+            .password("pass")
             .build();
 
         Member result = memberRepository.save(member);

@@ -2,6 +2,7 @@ package com.woomoolmarket.domain.purchase.cart.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -41,15 +42,19 @@ class CartRepositoryTest {
     @BeforeEach
     void init() {
         member = Member.builder()
-            .email("panda")
-            .password("1234").build();
+            .email("pandabear")
+            .nickname("nickname")
+            .password("1234")
+            .build();
 
         product = Product.builder()
-            .name("panda-bear")
+            .name("panda-bear-panda")
             .description("panda")
-            .productCategory(ProductCategory.MEAT)
             .stock(5000)
-            .price(10000).build();
+            .price(10000)
+            .region(Region.JEJUDO)
+            .productCategory(ProductCategory.MEAT)
+            .build();
 
         Cart cart = Cart.builder()
             .member(member)
@@ -65,7 +70,6 @@ class CartRepositoryTest {
     @Test
     @DisplayName("회원 장바구니 찾기")
     void findByMember() {
-
         List<Cart> carts = cartRepository.findByMember(member);
         assertThat(carts.get(0).getId()).isEqualTo(CART_ID);
     }

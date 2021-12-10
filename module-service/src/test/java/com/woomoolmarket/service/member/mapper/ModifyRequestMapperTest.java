@@ -21,19 +21,22 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class ModifyRequestMapperTest {
 
+    private static final String EMAIL = "pandabear";
+
+    @Autowired
+    EntityManager em;
     @Autowired
     MemberService memberService;
     @Autowired
-    ModifyRequestMapper modifyRequestMapper;
-    @Autowired
     MemberRepository memberRepository;
     @Autowired
-    EntityManager em;
+    ModifyRequestMapper modifyRequestMapper;
 
     @BeforeEach
     void init() {
         Member member = Member.builder()
-            .email("panda")
+            .email(EMAIL)
+            .nickname("nick")
             .password("1234")
             .profileImage("panda")
             .phone("1234")
@@ -48,11 +51,11 @@ class ModifyRequestMapperTest {
     @DisplayName("updateFromDto 동작한다")
     void updateTest() {
         ModifyRequest modifyRequest = createModifyDto();
-        Member saveResult = memberRepository.findByEmail("panda").get();
+        Member saveResult = memberRepository.findByEmail(EMAIL).get();
 
         modifyRequestMapper.updateFromDto(modifyRequest, saveResult);
 
-        Member findResult = memberRepository.findByEmail("panda")
+        Member findResult = memberRepository.findByEmail(EMAIL)
             .orElseGet(() -> Member.builder().password("0000").profileImage("0000").license("0000").build());
 
         assertEquals(findResult.getPassword(), modifyRequest.getPassword());
@@ -65,10 +68,10 @@ class ModifyRequestMapperTest {
     @DisplayName("editInfo() 동작한다")
     void updateMemberTest() {
         ModifyRequest modifyRequest = createModifyDto();
-        Member member = memberRepository.findByEmail("panda").get();
+        Member member = memberRepository.findByEmail(EMAIL).get();
         memberService.editMemberInfo(member.getId(), modifyRequest);
 
-        Member findResult = memberRepository.findByEmail("panda").get();
+        Member findResult = memberRepository.findByEmail(EMAIL).get();
 
         assertEquals(findResult.getPassword(), modifyRequest.getPassword());
         assertEquals(findResult.getProfileImage(), modifyRequest.getProfileImage());

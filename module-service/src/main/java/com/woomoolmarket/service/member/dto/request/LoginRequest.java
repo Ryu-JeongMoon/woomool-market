@@ -1,6 +1,5 @@
 package com.woomoolmarket.service.member.dto.request;
 
-import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -15,7 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest implements Serializable {
+public class LoginRequest {
 
     @Email
     @NotBlank

@@ -16,7 +16,7 @@ import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ class MemberControllerTest extends ApiControllerConfig {
     @Test
     @DisplayName("회원가입 성공")
     void signUpSuccessTest() throws Exception {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
+        SignupRequest signUpRequest = SignupRequest.builder()
             .email("pandabear@gogo.com")
             .nickname("nick")
             .password("123456")
@@ -56,7 +56,7 @@ class MemberControllerTest extends ApiControllerConfig {
     @Test
     @DisplayName("회원가입 실패 - 400 @Valid 동작")
     void signUpFailTest() throws Exception {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
+        SignupRequest signUpRequest = SignupRequest.builder()
             .email("pandabear@gogo.com")
             .nickname("nick")
             .password("123")

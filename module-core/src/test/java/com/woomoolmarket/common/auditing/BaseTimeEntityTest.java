@@ -24,7 +24,9 @@ class BaseTimeEntityTest {
     @DisplayName("JPA auditing 동작한다")
     void baseTimeTest() {
         Member member = Member.builder()
-            .email("panda")
+            .email("panda-bear")
+            .nickname("nick")
+            .password("pass")
             .build();
 
         Member result = memberRepository.save(member);

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,14 +36,21 @@ public class Image extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Size(max = 255)
+    @Column(nullable = false)
     private String originalFileName;
 
+    @Size(max = 255)
+    @Column(nullable = false)
     private String fileName;
 
+    @Size(max = 255)
+    @Column(nullable = false)
     private String filePath;
 
     private Long fileSize;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 

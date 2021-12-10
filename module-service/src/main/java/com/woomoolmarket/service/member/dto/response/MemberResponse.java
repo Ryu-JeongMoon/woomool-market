@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResponse implements Serializable {
+public class MemberResponse {
 
     private Long id;
 

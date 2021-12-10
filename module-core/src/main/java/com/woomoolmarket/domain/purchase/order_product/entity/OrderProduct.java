@@ -44,7 +44,10 @@ public class OrderProduct extends BaseTimeEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
     private int totalPrice;
 
     @Builder
