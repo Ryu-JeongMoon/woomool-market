@@ -58,7 +58,7 @@ class ImageServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("이미지 번호에 의한 삭제 성공")
     void deleteByImageId() {
-        Image image = imageRepository.findByBoardIdAndStatus(BOARD_ID, Status.ACTIVE).get();
+        Image image = imageRepository.findByBoardIdAndStatus(BOARD_ID, Status.ACTIVE).get(0);
         imageService.deleteByImageId(image.getId());
 
         List<ImageResponse> imageResponses = imageService.findByBoard(BOARD_ID);

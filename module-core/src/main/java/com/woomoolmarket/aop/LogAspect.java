@@ -58,7 +58,7 @@ public class LogAspect {
             log.error("LoggerAspect error", e);
         }
 
-        log.info("[WOOMOOL-REQUEST] : {}", params);
+        log.info("[WOOMOOL-REQUEST] :: {}", params);
         return result;
     }
 
@@ -75,8 +75,8 @@ public class LogAspect {
 
     @AfterReturning(value = "@within(com.woomoolmarket.aop.annotation.LogForException)", returning = "response")
     public void logForException(JoinPoint joinPoint, Object response) {
-        log.error("[WOOMOOL-ERROR] : method -> {}", joinPoint.getSignature().toShortString());
-        log.error("[WOOMOOL-ERROR] : target -> {}", joinPoint.getTarget());
-        log.error("[WOOMOOL-ERROR] : response -> {}", response);
+        log.error("[WOOMOOL-ERROR] :: method -> {}", joinPoint.getSignature().toShortString());
+        log.error("[WOOMOOL-ERROR] :: target -> {}", joinPoint.getTarget());
+        log.error("[WOOMOOL-ERROR] :: response -> {}", response);
     }
 }

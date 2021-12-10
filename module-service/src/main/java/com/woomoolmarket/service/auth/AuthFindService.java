@@ -30,12 +30,13 @@ public class AuthFindService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
-    @Value("${mail.smtp.username}")
-    private String WOOMOOL_MARKET_EMAIL;
+
     @Value("${coolsms.api-key}")
     private String COOL_SMS_KEY;
     @Value("${coolsms.api-secret}")
     private String COOL_SMS_SECRET;
+    @Value("${mail.smtp.username}")
+    private String WOOMOOL_MARKET_EMAIL;
     @Value("${coolsms.phone-number}")
     private String WOOMOOL_MARKET_PHONE;
 

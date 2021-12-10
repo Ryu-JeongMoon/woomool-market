@@ -81,9 +81,15 @@ public class Image extends BaseTimeEntity {
         }
     }
 
-    public void changeStatus(Status status) {
+    public void delete() {
+        changeStatus(Status.INACTIVE);
+    }
+
+    public void restore() {
+        changeStatus(Status.ACTIVE);
+    }
+
+    private void changeStatus(Status status) {
         this.status = status;
     }
 }
-
-// TODO, member / board / product 에서 공용으로 사용할 수 있어야 할 듯
