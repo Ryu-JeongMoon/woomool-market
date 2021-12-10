@@ -23,7 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 @Log4j2
-class BoardServiceTestTest extends ServiceTestConfig {
+class BoardServiceTest extends ServiceTestConfig {
 
     private static Long BOARD_1_ID;
     private static Long BOARD_2_ID;

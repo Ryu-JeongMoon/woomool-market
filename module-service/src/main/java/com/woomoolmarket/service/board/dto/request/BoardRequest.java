@@ -33,7 +33,6 @@ public class BoardRequest {
     @NotBlank
     private String content;
 
-    @NotNull
     private BoardCategory boardCategory;
 
     @NotNull

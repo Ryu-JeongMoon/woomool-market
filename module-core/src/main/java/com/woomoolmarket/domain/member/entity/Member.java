@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,16 +34,24 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(min = 9, max = 64)
+    @Column(nullable = false)
     private String email;
 
+    @Size(min = 4, max = 24)
+    @Column(nullable = false)
     private String nickname;
 
+    @Size(min = 4, max = 255)
+    @Column(nullable = false)
     private String password;
 
     private String profileImage;
 
+    @Size(max = 11)
     private String phone;
 
+    @Size(max = 10)
     private String license;
 
     private LocalDateTime leaveDateTime;
@@ -50,12 +59,15 @@ public class Member extends BaseEntity {
     @Embedded
     private Address address;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Authority authority = Authority.ROLE_USER;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 

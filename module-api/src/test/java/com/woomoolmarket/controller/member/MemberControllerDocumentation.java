@@ -21,7 +21,7 @@ import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.member.entity.Address;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,7 +70,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     @Test
     @DisplayName("회원가입")
     public void signUpSuccessTest() throws Exception {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
+        SignupRequest signUpRequest = SignupRequest.builder()
             .email("pandabear@gogo.com")
             .nickname("horagin")
             .password("123456")
@@ -185,7 +185,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     @DisplayName("어드민 전용 단건 조회")
     @WithMockUser(roles = "ADMIN")
     void adminFindMemberTest() throws Exception {
-        SignUpRequest signUpRequest = SignUpRequest.builder()
+        SignupRequest signUpRequest = SignupRequest.builder()
             .email("panda@gmail.com")
             .nickname("nick")
             .password("123456")
@@ -223,7 +223,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
     @WithMockUser(roles = "ADMIN")
     void adminFindMembersTest() throws Exception {
         for (int i = 0; i < 5; i++) {
-            SignUpRequest signUpRequest = SignUpRequest.builder()
+            SignupRequest signUpRequest = SignupRequest.builder()
                 .email(String.format("panda-%d@naver.com", i + 1))
                 .nickname("nick" + i + 1)
                 .password("123456")

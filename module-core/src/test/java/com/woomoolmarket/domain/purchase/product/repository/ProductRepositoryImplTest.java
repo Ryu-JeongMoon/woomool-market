@@ -2,6 +2,7 @@ package com.woomoolmarket.domain.purchase.product.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
@@ -26,19 +27,28 @@ class ProductRepositoryImplTest {
     void init() {
         Product product1 = Product.builder()
             .name("panda")
+            .description("DESC")
             .price(15000)
+            .stock(500)
+            .region(Region.GANGWONDO)
             .productCategory(ProductCategory.FISH)
             .build();
 
         Product product2 = Product.builder()
             .name("panda")
+            .description("DESC")
             .price(35000)
+            .stock(500)
+            .region(Region.CHUNGCHEONGBUKDO)
             .productCategory(ProductCategory.FISH)
             .build();
 
         Product product3 = Product.builder()
             .name("panda")
+            .description("DESC")
             .price(56000)
+            .stock(500)
+            .region(Region.GYEONGGIDO)
             .productCategory(ProductCategory.FISH)
             .build();
 

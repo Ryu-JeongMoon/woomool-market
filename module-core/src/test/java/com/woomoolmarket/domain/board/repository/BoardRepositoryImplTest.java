@@ -7,6 +7,7 @@ import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.entity.QBoard;
+import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,8 @@ class BoardRepositoryImplTest {
             .title("panda1")
             .content("bear1")
             .boardCategory(BoardCategory.QNA)
+            .startDateTime(LocalDateTime.now())
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
         boardRepository.save(board);
@@ -50,9 +53,3 @@ class BoardRepositoryImplTest {
         assertThat(board).isNotNull();
     }
 }
-
-/*
-QueryDSL 사용 주의, like 로 하니 원하는 결과 안 나옴
-like -> same totally
-contains -> same partially
- */

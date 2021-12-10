@@ -7,11 +7,11 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
-import com.woomoolmarket.service.member.mapper.SignUpRequestMapper;
+import com.woomoolmarket.service.member.mapper.SignupRequestMapper;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SignUpRequestMapper signUpRequestMapper;
+    private final SignupRequestMapper signUpRequestMapper;
     private final ModifyRequestMapper modifyRequestMapper;
     private final MemberResponseMapper memberResponseMapper;
 
@@ -54,18 +54,18 @@ public class MemberService {
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
-    public MemberResponse joinAsMember(SignUpRequest signUpRequest) {
+    public MemberResponse joinAsMember(SignupRequest signUpRequest) {
         return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_USER));
     }
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
-    public MemberResponse joinAsSeller(SignUpRequest signUpRequest) {
+    public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
         return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_SELLER));
     }
 
     @Transactional
-    public Member join(SignUpRequest signUpRequest, Authority authority) {
+    public Member join(SignupRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException(ExceptionConstant.MEMBER_EMAIL_DUPLICATED);
         }

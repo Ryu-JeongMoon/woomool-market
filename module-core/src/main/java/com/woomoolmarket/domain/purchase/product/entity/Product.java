@@ -16,7 +16,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,6 +37,8 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(max = 24)
+    @Column(nullable = false)
     private String name;
 
     @JsonIgnore
@@ -42,34 +46,42 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @Lob
+    @Column(nullable = false)
     private String description;
 
+    @Size(max = 255)
     private String productImage;
 
+    @Column(nullable = false, columnDefinition = "integer default 1000")
     private Integer price;
 
+    @Column(nullable = false, columnDefinition = "integer default 100")
     private Integer stock;
 
     private LocalDateTime deletedDateTime;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Region region;
 
     @Builder
-    public Product(Member member, String name, Integer price, Integer stock, String description, String productImg,
+    public Product(Member member, String name, Integer price, Integer stock, String description, String productImage,
         ProductCategory productCategory, Region region) {
         this.member = member;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.description = description;
-        this.productImage = productImg;
+        this.productImage = productImage;
         this.productCategory = productCategory;
         this.region = region;
     }

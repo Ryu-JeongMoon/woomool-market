@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
+import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.member.entity.Member;
+import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,8 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 @Import(TestConfig.class)
 class MemberRepositoryTest {
+
+    private final String MEMBER_EMAIL = "panda-bear@gmail.com";
 
     @Autowired
     EntityManager em;
@@ -39,14 +43,19 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("sql-dialect auto-increment 는 테이블 간 sequence 를 공유하지 않는다")
-    void sequenceTest() throws Exception {
+    void sequenceTest() {
         Member member = Member.builder()
+            .email(MEMBER_EMAIL)
+            .password("123456")
             .nickname("panda")
             .build();
 
         Board board = Board.builder()
             .title("hello")
             .content("world")
+            .boardCategory(BoardCategory.FREE)
+            .startDateTime(LocalDateTime.now())
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
         Member savedMember = memberRepository.save(member);
@@ -59,7 +68,7 @@ class MemberRepositoryTest {
     @Test
     void joinTest() {
         Member member = Member.builder()
-            .email("rjrj")
+            .email(MEMBER_EMAIL + 1)
             .nickname("dldld")
             .password("1234")
             .build();
@@ -74,15 +83,13 @@ class MemberRepositoryTest {
     @DisplayName("삭제된 회원 찾으려 하면 에러난다")
     void deleteTest() {
         Member member = Member.builder()
-            .email("rjrj")
-            .nickname("dldld")
-            .password("1234")
+            .email(MEMBER_EMAIL)
+            .password("123456")
+            .nickname("panda")
             .build();
-
         Member savedMember = memberRepository.save(member);
-        assertEquals(savedMember, member);
         memberRepository.delete(savedMember);
-        assertThrows(RuntimeException.class, () -> memberRepository.findByEmail(member.getEmail())
+        assertThrows(RuntimeException.class, () -> memberRepository.findByEmail(savedMember.getEmail())
             .orElseThrow(() -> new RuntimeException("x")));
     }
 
@@ -91,13 +98,15 @@ class MemberRepositoryTest {
     void findPreviousIdTest() {
         for (int i = 0; i < 3; i++) {
             Member member = Member.builder()
-                .email("rjrj" + i)
+                .email(MEMBER_EMAIL + i)
+                .nickname("nick")
+                .password("pass")
                 .build();
             memberRepository.save(member);
         }
 
-        Member member1 = memberRepository.findByEmail("rjrj1").get();
-        Member member2 = memberRepository.findByEmail("rjrj2").get();
+        Member member1 = memberRepository.findByEmail(MEMBER_EMAIL + 1).get();
+        Member member2 = memberRepository.findByEmail(MEMBER_EMAIL + 2).get();
 
         Long previousId = memberRepository.findPreviousId(member2.getId())
             .orElseThrow(() -> new RuntimeException("전 회원 없음?!"));

@@ -31,19 +31,19 @@ class OrderRepositoryTest {
     @BeforeEach
     void init() {
         Member member = Member.builder()
-            .email("panda")
+            .email("cleancode")
             .nickname("bear")
             .password("1234")
             .build();
 
         Member member1 = Member.builder()
-            .email("pepsi")
+            .email("testdriven")
             .nickname("coke")
             .password("1234")
             .build();
 
         Member member2 = Member.builder()
-            .email("horangi")
+            .email("effectivejava")
             .nickname("blue")
             .password("1234")
             .build();
@@ -73,8 +73,18 @@ class OrderRepositoryTest {
     void findByConditionForAdmin_Id() {
         OrderSearchCondition condition = OrderSearchCondition.builder()
             .orderStatus(OrderStatus.ONGOING)
-            .email("pan")
             .memberId(MEMBER_ID)
+            .build();
+
+        List<Order> orders = orderRepository.findByConditionForAdmin(condition);
+        assertThat(orders.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("이메일로 조회")
+    void findByEmail() {
+        OrderSearchCondition condition = OrderSearchCondition.builder()
+            .email("clea")
             .build();
 
         List<Order> orders = orderRepository.findByConditionForAdmin(condition);

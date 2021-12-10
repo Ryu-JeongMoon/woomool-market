@@ -10,12 +10,16 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartResponse {
 
     private Long id;
+
+    private int quantity;
+
     private MemberResponse memberResponse;
+
     private ProductResponse productResponse;
-    private Integer quantity;
+
 }

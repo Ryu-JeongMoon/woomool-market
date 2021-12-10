@@ -9,7 +9,7 @@ import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
-import com.woomoolmarket.service.member.dto.request.SignUpRequest;
+import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.util.PageUtil;
 import java.net.URI;
@@ -65,7 +65,7 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity joinMember(
-        @Validated @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
+        @Validated @RequestBody SignupRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }

@@ -22,7 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import lombok.AccessLevel;
+import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,8 +32,8 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
 
     @Id
@@ -48,6 +48,7 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
+    @Size(max = 255)
     @Column(nullable = false)
     private String title;
 
@@ -57,6 +58,7 @@ public class Board extends BaseEntity {
 
     private int hit;
 
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
@@ -66,6 +68,7 @@ public class Board extends BaseEntity {
 
     private LocalDateTime deletedDateTime;
 
+    @Column(length = 50)
     @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
 

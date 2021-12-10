@@ -38,10 +38,11 @@ public class Cart extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    private Integer quantity;
+    @Column(nullable = false)
+    private int quantity;
 
     @Builder
-    public Cart(Member member, Product product, Integer quantity) {
+    public Cart(Member member, Product product, int quantity) {
         this.member = member;
         this.product = product;
         this.quantity = quantity;

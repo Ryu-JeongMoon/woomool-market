@@ -138,6 +138,7 @@ class ProductControllerTest extends ApiControllerConfig {
     void editProduct() throws Exception {
         ProductModifyRequest modifyRequest = ProductModifyRequest.builder()
             .name("brown bear")
+            .description("bear bear")
             .build();
 
         mockMvc.perform(
