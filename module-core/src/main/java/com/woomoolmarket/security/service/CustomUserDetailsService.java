@@ -1,6 +1,6 @@
 package com.woomoolmarket.security.service;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         return memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
             .map(this::createUserDetails)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
     }
 
     private UserPrincipal createUserDetails(Member member) {

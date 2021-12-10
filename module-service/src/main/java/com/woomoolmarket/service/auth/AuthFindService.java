@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.auth;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -42,7 +42,7 @@ public class AuthFindService {
     @Transactional
     public void sendEmailForFinding(String email) {
         Member member = memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
         SecureRandom secureRandom = new SecureRandom();
         String temporaryPassword = String.valueOf(secureRandom.nextInt());
@@ -76,7 +76,7 @@ public class AuthFindService {
     @Transactional(readOnly = true)
     public void sendAuthStringToPhone(String phone) {
         Member member = memberRepository.findByPhoneAndStatus(phone, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
         Message message = new Message(COOL_SMS_KEY, COOL_SMS_SECRET);
 
@@ -90,7 +90,7 @@ public class AuthFindService {
         CompletableFuture.supplyAsync(this::checkBalance, woomoolTaskExecutor)
             .thenAccept(balance -> {
                 if (balance < 20) {
-                    throw new RuntimeException(ExceptionConstant.NOT_ENOUGH_BALANCE);
+                    throw new RuntimeException(ExceptionConstants.NOT_ENOUGH_BALANCE);
                 }
 
                 try {

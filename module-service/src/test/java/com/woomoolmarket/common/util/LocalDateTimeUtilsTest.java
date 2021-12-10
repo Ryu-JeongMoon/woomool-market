@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Log4j2
-class LocalDateTimeUtilTest {
+class LocalDateTimeUtilsTest {
 
     @Test
     @DisplayName("LocalDateTime 달 비교")
@@ -28,7 +28,7 @@ class LocalDateTimeUtilTest {
     @DisplayName("compareMonth 달 비교")
     void compareMonthTest() {
         LocalDateTime someDay = LocalDateTime.of(2021, 3, 5, 14, 34, 42);
-        boolean canBeCanceled = LocalDateTimeUtil.compareMonthWithNow(someDay, 5);
+        boolean canBeCanceled = LocalDateTimeUtils.compareMonthWithNow(someDay, 5);
 
         assertTrue(canBeCanceled);
     }
@@ -45,13 +45,13 @@ class LocalDateTimeUtilTest {
     @DisplayName("compareDays 일 비교")
     void compareDaysWithNowTest() {
         LocalDateTime date = LocalDateTime.of(2021, 9, 21, 2, 2, 3);
-        assertTrue(LocalDateTimeUtil.compareDaysWithNow(date, 3));
+        assertTrue(LocalDateTimeUtils.compareDaysWithNow(date, 3));
     }
 
     @Test
     @DisplayName("잘못된 입력 값은 오류 터트린다")
     void timeUtilFailTest() {
-        assertThrows(DateTimeException.class, () -> LocalDateTimeUtil.compareMonthWithNow(
+        assertThrows(DateTimeException.class, () -> LocalDateTimeUtils.compareMonthWithNow(
             LocalDateTime.of(2021, 16, 5, 14, 34, 42), 5));
     }
 }

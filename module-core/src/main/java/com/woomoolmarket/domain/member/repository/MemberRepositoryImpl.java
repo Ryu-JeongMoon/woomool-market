@@ -5,7 +5,7 @@ import static com.woomoolmarket.domain.member.entity.QMember.member;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.QueryDslUtil;
+import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -53,31 +53,31 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     private BooleanBuilder emailContains(String email) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.email.contains(email));
+        return QueryDslUtils.nullSafeBuilder(() -> member.email.contains(email));
     }
 
     private BooleanBuilder nicknameContains(String nickname) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.nickname.contains(nickname));
+        return QueryDslUtils.nullSafeBuilder(() -> member.nickname.contains(nickname));
     }
 
     private BooleanBuilder phoneContains(String phone) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.phone.contains(phone));
+        return QueryDslUtils.nullSafeBuilder(() -> member.phone.contains(phone));
     }
 
     private BooleanBuilder licenseContains(String license) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.license.contains(license));
+        return QueryDslUtils.nullSafeBuilder(() -> member.license.contains(license));
     }
 
     private BooleanBuilder statusEq(Status status) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.status.eq(status));
+        return QueryDslUtils.nullSafeBuilder(() -> member.status.eq(status));
     }
 
     private BooleanBuilder authProviderEq(AuthProvider provider) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.provider.eq(provider));
+        return QueryDslUtils.nullSafeBuilder(() -> member.provider.eq(provider));
     }
 
     private BooleanBuilder authorityEq(Authority authority) {
-        return QueryDslUtil.nullSafeBuilder(() -> member.authority.eq(authority));
+        return QueryDslUtils.nullSafeBuilder(() -> member.authority.eq(authority));
     }
 
     private BooleanBuilder searchByAllForAdmin(MemberSearchCondition searchCondition) {

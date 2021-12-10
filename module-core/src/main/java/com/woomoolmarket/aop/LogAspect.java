@@ -34,24 +34,6 @@ public class LogAspect {
         return jsonObject;
     }
 
-    @Around("@within(com.woomoolmarket.aop.annotation.LogExecutionTime)")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start(String.valueOf(joinPoint.getSignature()));
-        Object proceed = joinPoint.proceed();
-        stopWatch.stop();
-
-        log.info(stopWatch.prettyPrint());
-        return proceed;
-    }
-
-    @AfterReturning(value = "@within(com.woomoolmarket.aop.annotation.LogForException)", returning = "response")
-    public void logForException(JoinPoint joinPoint, Object response) {
-        log.error("method -> {}", joinPoint.getSignature().toShortString());
-        log.error("target -> {}", joinPoint.getTarget());
-        log.error("response -> {}", response);
-    }
-
     @Around(value = "bean(*Controller)")
     public Object logForRequest(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object result = proceedingJoinPoint.proceed();
@@ -74,7 +56,25 @@ public class LogAspect {
             log.error("LoggerAspect error", e);
         }
 
-        log.info("params : {}", params);
+        log.info("[WOOMOOL-REQUEST] : {}", params);
         return result;
+    }
+
+    @Around("@within(com.woomoolmarket.aop.annotation.LogExecutionTime)")
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(String.valueOf(joinPoint.getSignature()));
+        Object proceed = joinPoint.proceed();
+        stopWatch.stop();
+
+        log.info(stopWatch.prettyPrint());
+        return proceed;
+    }
+
+    @AfterReturning(value = "@within(com.woomoolmarket.aop.annotation.LogForException)", returning = "response")
+    public void logForException(JoinPoint joinPoint, Object response) {
+        log.error("[WOOMOOL-ERROR] : method -> {}", joinPoint.getSignature().toShortString());
+        log.error("[WOOMOOL-ERROR] : target -> {}", joinPoint.getTarget());
+        log.error("[WOOMOOL-ERROR] : response -> {}", response);
     }
 }

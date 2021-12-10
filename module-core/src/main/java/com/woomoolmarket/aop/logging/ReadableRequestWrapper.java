@@ -1,5 +1,7 @@
 package com.woomoolmarket.aop.logging;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,7 +37,12 @@ public class ReadableRequestWrapper extends HttpServletRequestWrapper {
         this.params.putAll(request.getParameterMap()); // 원래의 파라미터를 저장
 
         String characterEncoding = request.getCharacterEncoding(); // 인코딩 설정
-        this.encoding = StringUtils.isBlank(characterEncoding) ? StandardCharsets.UTF_8 : Charset.forName(characterEncoding);
+        this.encoding = hasText(characterEncoding) ? Charset.forName(characterEncoding) : StandardCharsets.UTF_8;
+
+        String contentType = request.getContentType();
+        if (contentType != null && contentType.contains(ContentType.MULTIPART_FORM_DATA.getMimeType())) { // 파일 업로드시 로깅제외
+            return;
+        }
 
         try (InputStream is = request.getInputStream()) {
             this.rawData = IOUtils.toByteArray(is); // InputStream 을 별도로 저장한 다음 getReader() 에서 새 스트림으로 생성
@@ -45,10 +52,7 @@ public class ReadableRequestWrapper extends HttpServletRequestWrapper {
             if (StringUtils.isEmpty(collect)) { // body 가 없을경우 로깅 제외
                 return;
             }
-            if (request.getContentType() != null && request.getContentType()
-                .contains(ContentType.MULTIPART_FORM_DATA.getMimeType())) { // 파일 업로드시 로깅제외
-                return;
-            }
+
             JSONParser jsonParser = new JSONParser();
             Object parse = jsonParser.parse(collect);
             if (parse instanceof JSONArray) {

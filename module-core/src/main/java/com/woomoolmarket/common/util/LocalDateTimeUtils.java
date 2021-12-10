@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class LocalDateTimeUtil {
+public class LocalDateTimeUtils {
 
     public static boolean compareMonthWithNow(LocalDateTime comparison, int months) {
         return LocalDateTime.now().isAfter(comparison.plusMonths(months));

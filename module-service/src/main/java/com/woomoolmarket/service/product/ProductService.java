@@ -2,7 +2,7 @@ package com.woomoolmarket.service.product;
 
 import static java.util.stream.Collectors.toList;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
@@ -32,7 +32,7 @@ public class ProductService {
     public ProductResponse getByIdAndStatus(Long id, Status status) {
         return productRepository.findByIdAndStatus(id, status)
             .map(productResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -59,7 +59,7 @@ public class ProductService {
 //        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public ProductResponse edit(Long id, ProductModifyRequest modifyRequest) {
         Product product = productRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
         productModifyRequestMapper.updateFromDto(modifyRequest, product);
         return productResponseMapper.toDto(product);
     }
@@ -70,7 +70,7 @@ public class ProductService {
 //        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void deleteSoftly(Long id) {
         productRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
             .delete();
     }
 
@@ -80,7 +80,7 @@ public class ProductService {
 //        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void restore(Long id) {
         productRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
             .restore();
     }
 

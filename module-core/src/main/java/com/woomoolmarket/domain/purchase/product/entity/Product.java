@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -92,7 +92,7 @@ public class Product extends BaseEntity {
 
     public void decreaseStock(Integer quantity) {
         if (this.stock < quantity) {
-            throw new IllegalArgumentException(ExceptionConstant.PRODUCT_NOT_ENOUGH_STOCK);
+            throw new IllegalArgumentException(ExceptionConstants.PRODUCT_NOT_ENOUGH_STOCK);
         }
         this.stock -= quantity;
     }

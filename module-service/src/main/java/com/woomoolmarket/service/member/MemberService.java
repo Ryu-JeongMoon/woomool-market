@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.member;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -49,7 +49,7 @@ public class MemberService {
     public MemberResponse findMemberById(Long id) {
         return memberRepository.findById(id)
             .map(memberResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class MemberService {
     @Transactional
     public Member join(SignupRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException(ExceptionConstant.MEMBER_EMAIL_DUPLICATED);
+            throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
         }
 
         Member member = signUpRequestMapper.toEntity(signUpRequest);
@@ -81,7 +81,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
         modifyRequestMapper.updateFromDto(modifyRequest, member);
     }
 
@@ -90,7 +90,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public void leaveSoftly(Long id) {
         memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
             .leave();
     }
 
@@ -98,7 +98,7 @@ public class MemberService {
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public void restore(Long id) {
         memberRepository.findByIdAndStatus(id, Status.INACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
             .restore();
     }
 
