@@ -2,7 +2,7 @@ package com.woomoolmarket.redis.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import lombok.extern.log4j.Log4j2;

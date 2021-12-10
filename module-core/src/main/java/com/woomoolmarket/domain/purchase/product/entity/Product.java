@@ -5,8 +5,12 @@ import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +22,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -29,7 +36,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = {"id", "name"}, callSuper = false)
+@Table(uniqueConstraints = {@UniqueConstraint(name = "unique_product_name", columnNames = "name")})
 public class Product extends BaseEntity {
 
     @Id
@@ -37,7 +45,7 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 24)
+    @Size(max = 255)
     @Column(nullable = false)
     private String name;
 
@@ -45,6 +53,9 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
     @Lob
     @Column(nullable = false)
@@ -61,15 +72,15 @@ public class Product extends BaseEntity {
 
     private LocalDateTime deletedDateTime;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Region region;
 

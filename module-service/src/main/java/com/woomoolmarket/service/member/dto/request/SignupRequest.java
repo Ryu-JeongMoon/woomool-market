@@ -1,6 +1,7 @@
 package com.woomoolmarket.service.member.dto.request;
 
-import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.common.constant.RegexpConstants;
+import com.woomoolmarket.common.embeddable.Address;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -19,15 +20,17 @@ public class SignupRequest {
     @Email
     @NotBlank
     @Size(min = 9, max = 64)
-    @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+    @Pattern(regexp = RegexpConstants.EMAIL)
     private String email;
 
+    @Size(min = 4, max = 96)
     @NotBlank
-    @Pattern(regexp = "^[\\w]{4,24}$")
+    @Pattern(regexp = RegexpConstants.LETTER_ONLY)
     private String nickname;
 
+    @Size(min = 4, max = 255)
     @NotBlank
-    @Pattern(regexp = "^[\\w]{4,24}$")
+    @Pattern(regexp = RegexpConstants.SPECIAL_LETTER_INCLUDE)
     private String password;
 
     private Address address;

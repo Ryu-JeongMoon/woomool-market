@@ -1,5 +1,6 @@
 package com.woomoolmarket.service.product.dto.request;
 
+import com.woomoolmarket.common.constant.RegexpConstants;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import javax.persistence.Lob;
@@ -20,13 +21,14 @@ import lombok.NoArgsConstructor;
 public class ProductRequest {
 
     @NotBlank
-    @Pattern(regexp = "^[\\w ]{4,24}$", message = "상품 이름은 6 - 24자 사이로 입력 가능합니다")
+    @Size(min = 4, max = 96)
+    @Pattern(regexp = RegexpConstants.SPECIAL_LETTER_INCLUDE, message = "상품 이름은 1 - 24자 사이로 입력 가능합니다")
     private String name;
 
     @Email
     @NotBlank
     @Size(min = 9, max = 64)
-    @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+    @Pattern(regexp = RegexpConstants.EMAIL)
     private String email;
 
     @Lob
@@ -34,7 +36,7 @@ public class ProductRequest {
     private String description;
 
     @Size(max = 255)
-    @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자까지 입력 가능합니다")
+    @Pattern(regexp = RegexpConstants.LETTER_AND_NUMBER, message = "파일 이름은 63자까지 입력 가능합니다")
     private String productImage;
 
     @Min(value = 1000L)

@@ -93,7 +93,7 @@ class ProductControllerTest extends ApiControllerConfig {
     @WithMockUser(roles = "ADMIN")
     void create() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
-            .name("panda")
+            .name("panda-bear")
             .email("panda@naver.com")
             .productImage("yahoo")
             .productCategory(ProductCategory.CEREAL)

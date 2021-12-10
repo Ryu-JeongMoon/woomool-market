@@ -2,7 +2,7 @@ package com.woomoolmarket.dto.member.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.mapper.SignupRequestMapperImpl;

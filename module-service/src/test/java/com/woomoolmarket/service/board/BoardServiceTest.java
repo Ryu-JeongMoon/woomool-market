@@ -12,6 +12,7 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
@@ -118,6 +119,9 @@ class BoardServiceTest extends ServiceTestConfig {
             .email(MEMBER_1_EMAIL)
             .title("hello")
             .content("hi")
+            .boardCategory(BoardCategory.FREE)
+            .startDateTime(LocalDateTime.now())
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
         boardService.register(boardRequest, null);
@@ -155,7 +159,7 @@ class BoardServiceTest extends ServiceTestConfig {
         boardService.deleteSoftly(BOARD_3_ID);
         boardService.restore(BOARD_3_ID);
 
-        Board board = boardRepository.findById(2L).get();
+        Board board = boardRepository.findById(BOARD_3_ID).get();
 
         assertThat(board.getStatus()).isEqualTo(Status.ACTIVE);
         assertThat(board.getDeletedDateTime()).isNull();

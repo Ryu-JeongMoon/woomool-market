@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.member.dto.request;
 
-import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.common.embeddable.Address;
 import javax.persistence.Embedded;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

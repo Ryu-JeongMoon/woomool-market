@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.config.ApiControllerConfig;
-import com.woomoolmarket.domain.member.entity.Address;
+import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;

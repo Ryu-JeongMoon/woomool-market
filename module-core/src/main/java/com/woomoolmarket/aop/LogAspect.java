@@ -13,6 +13,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -21,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Log4j2
 @Aspect
 @Component
+@Profile(value = {"local", "mysql", "ec2"})
 public class LogAspect {
 
     private static JSONObject getParams(HttpServletRequest request) {
