@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,40 +22,44 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class ImageProcessor {
 
+    private final Executor woomoolTaskExecutor;
+    private final ImageCompressor imageCompressor;
+
     @Value("${custom.file.path}")
-    private String PATH;
+    private String ROOT_PATH;
 
     public List<Image> parse(List<MultipartFile> files) {
-        if (CollectionUtils.isEmpty(files) || files == null) {
-            log.warn("FAILED :: There is no files");
+        if (CollectionUtils.isEmpty(files)) {
+            log.warn("[WOOMOOL-FAILED] :: There is no files");
             return Collections.emptyList();
         }
 
         List<Image> imageList = new ArrayList<>();
 
         String currentDateString = getCurrentDateString();
-        String path = PATH + File.separator + currentDateString;
+        String path = ROOT_PATH + File.separator + currentDateString;
         File file = new File(path);
 
         checkFileExistence(file);
 
         for (MultipartFile multipartFile : files) {
-            String originalFilename = multipartFile.getOriginalFilename();
 
+            String originalFilename = multipartFile.getOriginalFilename();
             if (!StringUtils.hasText(originalFilename)) {
-                log.warn("FAILED :: There is no files");
+                log.warn("[WOOMOOL-FAILED] :: There is no files");
                 continue;
             }
 
-            String currentTimeString = getCurrentTimeString();
             String contentType = multipartFile.getContentType();
+            checkFileExtension(originalFilename, Objects.requireNonNull(contentType));
+
+            String currentTimeString = getCurrentTimeString();
             String fileNameWithoutExtension = originalFilename.substring(0, originalFilename.indexOf("."));
+            String convertedFileExtension = getFileExtension(Objects.requireNonNull(contentType));
 
-            checkFileExtension(multipartFile, contentType);
-
-            String convertedFileExtension = getFileExtension(contentType);
             String fileName = currentTimeString + fileNameWithoutExtension + convertedFileExtension;
 
             Image image = Image.builder()
@@ -60,23 +68,27 @@ public class ImageProcessor {
                 .filePath(File.separator + currentDateString)
                 .fileSize(multipartFile.getSize())
                 .build();
-
             imageList.add(image);
 
-            file = new File(path + File.separator + fileName);
-
-            try {
-                multipartFile.transferTo(file);
-            } catch (IOException e) {
-                log.error("FAILED :: Can't Transfer a file");
-                throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
-            }
-
-            file.setWritable(true);
-            file.setReadable(true);
+            String pathname = path + File.separator + fileName;
+            saveFile(pathname, multipartFile);
         }
 
         return imageList;
+    }
+
+    private void saveFile(String path, MultipartFile multipartFile) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                imageCompressor.compressAndSave(multipartFile.getBytes(), path);
+                File file = new File(path);
+                file.setWritable(true);
+                file.setReadable(true);
+            } catch (IOException e) {
+                log.error("[WOOMOOL-FAILED] :: Can't Transfer a file");
+                throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
+            }
+        }, woomoolTaskExecutor);
     }
 
     private void checkFileExistence(File file) {
@@ -84,15 +96,15 @@ public class ImageProcessor {
             boolean wasSuccessful = file.mkdirs();
 
             if (!wasSuccessful) {
-                log.error("FAILED :: Can't Create a directory");
+                log.error("[WOOMOOL-FAILED] :: Can't Create a directory");
                 throw new IllegalStateException(ExceptionConstants.IMAGE_FOLDER_NOT_FOUND);
             }
         }
     }
 
-    private void checkFileExtension(MultipartFile multipartFile, String contentType) {
+    private void checkFileExtension(String originalFilename, String contentType) {
         if (!StringUtils.hasText(contentType)) {
-            log.error("FAILED :: {} has no file extension", multipartFile.getOriginalFilename());
+            log.error("[WOOMOOL-FAILED] :: {} has no file extension", originalFilename);
             throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
         }
     }
@@ -103,7 +115,7 @@ public class ImageProcessor {
         } else if (contentType.contains("image/png")) {
             return ".png";
         } else {
-            log.error("FAILED :: {} is unsupported file extension", contentType);
+            log.error("[WOOMOOL-FAILED] :: {} is unsupported file extension", contentType);
             throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
         }
     }

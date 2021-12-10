@@ -3,9 +3,12 @@ package com.woomoolmarket.service.s3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constant.LogConstants;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +28,7 @@ public class S3Uploader {
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)
-            .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionConstants.CONVERT_FAILED));
 
         return upload(uploadFile, dirName);
     }
@@ -45,14 +48,14 @@ public class S3Uploader {
 
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
+            log.info(LogConstants.DELETE_COMPLETED, targetFile.getName());
         } else {
-            log.info("파일이 삭제되지 못했습니다.");
+            log.info(LogConstants.DELETE_FAILED, targetFile.getName());
         }
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(file.getOriginalFilename());
+        File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());

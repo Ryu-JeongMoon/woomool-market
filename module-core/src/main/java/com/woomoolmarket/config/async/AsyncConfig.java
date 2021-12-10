@@ -14,9 +14,9 @@ public class AsyncConfig {
     @Bean
     public Executor woomoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(4);
-        executor.setMaxPoolSize(8);
-        executor.setQueueCapacity(4);
+        executor.setCorePoolSize(12);
+        executor.setMaxPoolSize(36);
+        executor.setQueueCapacity(24);
         executor.setThreadNamePrefix("woomool-market async-");
         executor.setRejectedExecutionHandler(new CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);
