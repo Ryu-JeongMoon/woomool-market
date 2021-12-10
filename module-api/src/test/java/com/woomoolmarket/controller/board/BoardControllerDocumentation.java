@@ -20,6 +20,7 @@ import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,6 +87,8 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
             .email(MEMBER_EMAIL)
             .title("polar")
             .content("bear")
+            .startDateTime(LocalDateTime.now())
+            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .boardCategory(BoardCategory.FREE)
             .build();
 

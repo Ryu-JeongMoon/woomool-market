@@ -1,4 +1,4 @@
-package com.woomoolmarket.domain.member.entity;
+package com.woomoolmarket.common.embeddable;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;

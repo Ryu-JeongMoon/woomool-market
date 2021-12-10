@@ -1,8 +1,11 @@
 package com.woomoolmarket.domain.member.entity;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.image.entity.Image;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
@@ -45,6 +49,9 @@ public class Member extends BaseEntity {
     @Size(min = 4, max = 255)
     @Column(nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private Image image;
 
     private String profileImage;
 

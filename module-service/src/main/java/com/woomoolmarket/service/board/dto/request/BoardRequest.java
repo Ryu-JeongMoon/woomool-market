@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -35,9 +34,7 @@ public class BoardRequest {
 
     private BoardCategory boardCategory;
 
-    @NotNull
     private LocalDateTime startDateTime;
 
-    @NotNull
     private LocalDateTime endDateTime;
 }

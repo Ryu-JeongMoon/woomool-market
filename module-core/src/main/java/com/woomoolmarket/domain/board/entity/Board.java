@@ -1,7 +1,5 @@
 package com.woomoolmarket.domain.board.entity;
 
-import static javax.persistence.FetchType.LAZY;
-
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
@@ -15,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,11 +40,11 @@ public class Board extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
     @Size(max = 255)
@@ -62,13 +61,15 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
+    @Column(nullable = false)
     private LocalDateTime startDateTime;
 
+    @Column(nullable = false)
     private LocalDateTime endDateTime;
 
     private LocalDateTime deletedDateTime;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
 

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
-import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

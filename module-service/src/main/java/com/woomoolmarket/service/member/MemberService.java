@@ -29,7 +29,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SignupRequestMapper signUpRequestMapper;
+    private final SignupRequestMapper signupRequestMapper;
     private final ModifyRequestMapper modifyRequestMapper;
     private final MemberResponseMapper memberResponseMapper;
 
@@ -70,7 +70,7 @@ public class MemberService {
             throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
         }
 
-        Member member = signUpRequestMapper.toEntity(signUpRequest);
+        Member member = signupRequestMapper.toEntity(signUpRequest);
         member.changePassword(passwordEncoder.encode(member.getPassword()));
         member.assignAuthority(authority);
 
