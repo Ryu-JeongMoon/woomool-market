@@ -3,7 +3,7 @@ package com.woomoolmarket.domain.board.entity;
 import static javax.persistence.FetchType.LAZY;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
@@ -83,7 +83,7 @@ public class Board extends BaseEntity {
         this.endDateTime = endDateTime;
 
         if (startDateTime != null && endDateTime != null && startDateTime.isAfter(endDateTime)) {
-            throw new IllegalArgumentException(ExceptionConstant.BOARD_DATE_NOT_PROPER);
+            throw new IllegalArgumentException(ExceptionConstants.BOARD_DATE_NOT_PROPER);
         }
     }
 

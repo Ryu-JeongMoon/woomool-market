@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class QueryDslUtil {
+public class QueryDslUtils {
 
     public static BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
         try {

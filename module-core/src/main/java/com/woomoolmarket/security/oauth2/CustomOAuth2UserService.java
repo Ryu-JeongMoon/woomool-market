@@ -1,6 +1,6 @@
 package com.woomoolmarket.security.oauth2;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
@@ -65,6 +65,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public Member editExistingMember(OAuth2Attributes attributes) {
         return memberRepository.findByEmail(attributes.getEmail())
             .map(member -> member.editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage()))
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
     }
 }

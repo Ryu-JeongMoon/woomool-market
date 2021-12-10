@@ -1,6 +1,6 @@
 package com.woomoolmarket.util;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
@@ -26,21 +26,21 @@ public class Checker {
 
     public boolean isSelf(Long memberId) {
         Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
         return check(member.getEmail());
     }
 
     public boolean isSelfByBoardId(Long boardId) {
         Board board = boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.BOARD_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
 
         return check(board.getMember().getEmail());
     }
 
     public boolean isSelfByProductId(Long productId) {
         Product product = productRepository.findByIdAndStatus(productId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.PRODUCT_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
 
         return check(product.getMember().getEmail());
     }

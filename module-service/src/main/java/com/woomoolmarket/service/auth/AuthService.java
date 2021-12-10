@@ -6,7 +6,7 @@ import static com.woomoolmarket.security.jwt.TokenConstant.LOGIN_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.LOGOUT_KEY_PREFIX;
 import static com.woomoolmarket.security.jwt.TokenConstant.REFRESH_TOKEN_EXPIRE_TIME;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.redis.RedisUtil;
@@ -54,7 +54,7 @@ public class AuthService {
         String loginFailureCount = redisUtil.getData(LOGIN_FAILED_KEY_PREFIX + loginRequest.getEmail());
 
         if (StringUtils.hasText(loginFailureCount) && Integer.parseInt(loginFailureCount) >= 5) {
-            throw new AccessDeniedException(ExceptionConstant.MEMBER_BLOCKED);
+            throw new AccessDeniedException(ExceptionConstants.MEMBER_BLOCKED);
         }
     }
 
@@ -65,7 +65,7 @@ public class AuthService {
             return authentication;
         } catch (AuthenticationException e) {
             memberRepository.findByEmailAndStatus(authenticationToken.getName(), Status.ACTIVE)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
             redisUtil.increment(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
             throw e;
         }
@@ -83,7 +83,7 @@ public class AuthService {
         String username = authentication.getName();
 
         if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(redisUtil.getData(LOGIN_KEY_PREFIX + username))) {
-            throw new AccessDeniedException(ExceptionConstant.REFRESH_TOKEN_NOT_FOUND);
+            throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_FOUND);
         }
 
         TokenResponse tokenResponse = tokenFactory.createToken(authentication);

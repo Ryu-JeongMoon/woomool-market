@@ -5,7 +5,7 @@ import static com.woomoolmarket.domain.purchase.order.entity.QOrder.order;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woomoolmarket.common.util.QueryDslUtil;
+import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import java.util.List;
@@ -27,15 +27,15 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     private BooleanBuilder memberIdEq(Long memberId) {
-        return QueryDslUtil.nullSafeBuilder(() -> order.member.id.eq(memberId));
+        return QueryDslUtils.nullSafeBuilder(() -> order.member.id.eq(memberId));
     }
 
     private BooleanBuilder emailContains(String email) {
-        return QueryDslUtil.nullSafeBuilder(() -> order.member.email.contains(email));
+        return QueryDslUtils.nullSafeBuilder(() -> order.member.email.contains(email));
     }
 
     private BooleanBuilder statusEq(OrderStatus orderStatus) {
-        return QueryDslUtil.nullSafeBuilder(() -> order.orderStatus.eq(orderStatus));
+        return QueryDslUtils.nullSafeBuilder(() -> order.orderStatus.eq(orderStatus));
     }
 
     private BooleanBuilder searchByAll(OrderSearchCondition searchCondition) {

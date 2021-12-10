@@ -7,7 +7,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.QueryDslUtil;
+import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import java.util.List;
@@ -47,11 +47,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     }
 
     private BooleanBuilder priceLoe(int maxPrice) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.price.loe(maxPrice));
+        return QueryDslUtils.nullSafeBuilder(() -> product.price.loe(maxPrice));
     }
 
     private BooleanBuilder priceGoe(int minPrice) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.price.goe(minPrice));
+        return QueryDslUtils.nullSafeBuilder(() -> product.price.goe(minPrice));
     }
 
     private BooleanBuilder searchByPriceRange(Integer minPrice, Integer maxPrice) {
@@ -60,23 +60,23 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     }
 
     private BooleanBuilder nameContains(String name) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.name.contains(name));
+        return QueryDslUtils.nullSafeBuilder(() -> product.name.contains(name));
     }
 
     private BooleanBuilder emailContains(String email) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.member.email.contains(email));
+        return QueryDslUtils.nullSafeBuilder(() -> product.member.email.contains(email));
     }
 
     private BooleanBuilder regionEq(Region region) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.region.eq(region));
+        return QueryDslUtils.nullSafeBuilder(() -> product.region.eq(region));
     }
 
     private BooleanBuilder statusEq(Status status) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.status.eq(status));
+        return QueryDslUtils.nullSafeBuilder(() -> product.status.eq(status));
     }
 
     private BooleanBuilder categoryEq(ProductCategory category) {
-        return QueryDslUtil.nullSafeBuilder(() -> product.productCategory.eq(category));
+        return QueryDslUtils.nullSafeBuilder(() -> product.productCategory.eq(category));
     }
 
     private BooleanBuilder searchedByAll(ProductSearchCondition searchCondition) {

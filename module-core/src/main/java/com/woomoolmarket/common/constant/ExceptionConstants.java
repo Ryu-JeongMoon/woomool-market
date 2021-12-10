@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExceptionConstant {
+public class ExceptionConstants {
 
     public static final String MEMBER_NOT_FOUND = "존재하지 않는 회원입니다";
     public static final String MEMBER_BLOCKED = "비밀번호를 5회 이상 틀려 인증이 필요합니다";

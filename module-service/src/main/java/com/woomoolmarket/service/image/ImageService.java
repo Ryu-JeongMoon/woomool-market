@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.common.constant.ExceptionConstant;
+import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.image.repository.ImageRepository;
@@ -32,7 +32,7 @@ public class ImageService {
     @Transactional
     public void deleteByImageId(Long imageId) {
         imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstant.IMAGE_NOT_FOUND))
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
             .changeStatus(Status.INACTIVE);
     }
 }

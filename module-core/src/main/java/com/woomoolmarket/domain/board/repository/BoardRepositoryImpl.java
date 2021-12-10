@@ -7,7 +7,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.QueryDslUtil;
+import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
@@ -77,23 +77,23 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     private BooleanBuilder emailContains(String email) {
-        return QueryDslUtil.nullSafeBuilder(() -> board.member.email.contains(email));
+        return QueryDslUtils.nullSafeBuilder(() -> board.member.email.contains(email));
     }
 
     private BooleanBuilder titleContains(String title) {
-        return QueryDslUtil.nullSafeBuilder(() -> board.title.contains(title));
+        return QueryDslUtils.nullSafeBuilder(() -> board.title.contains(title));
     }
 
     private BooleanBuilder contentContains(String content) {
-        return QueryDslUtil.nullSafeBuilder(() -> board.content.contains(content));
+        return QueryDslUtils.nullSafeBuilder(() -> board.content.contains(content));
     }
 
     private BooleanBuilder statusEq(Status status) {
-        return QueryDslUtil.nullSafeBuilder(() -> board.status.eq(status));
+        return QueryDslUtils.nullSafeBuilder(() -> board.status.eq(status));
     }
 
     private BooleanBuilder categoryEq(BoardCategory category) {
-        return QueryDslUtil.nullSafeBuilder(() -> board.boardCategory.eq(category));
+        return QueryDslUtils.nullSafeBuilder(() -> board.boardCategory.eq(category));
     }
 
     // 회원은 활성화된 게시글만 볼 수 있도록 넘어오는 값 사용하지 않음

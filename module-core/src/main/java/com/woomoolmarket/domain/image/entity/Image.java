@@ -74,3 +74,5 @@ public class Image extends BaseTimeEntity {
         this.status = status;
     }
 }
+
+// TODO, member / board / product 에서 공용으로 사용할 수 있어야 할 듯
