@@ -43,7 +43,6 @@ class BoardControllerTest extends ApiControllerConfig {
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
-    // TODO, Caching 적용 테스트 형태 변경 필요
     @Test
     @DisplayName("게시글 목록 조회 성공")
     void getListBySearchCondition() throws Exception {
@@ -218,10 +217,10 @@ class BoardControllerTest extends ApiControllerConfig {
                 get("/api/boards/admin"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.boardResponseList[0].id").value(BOARD_ID))
-            .andExpect(jsonPath("_embedded.boardResponseList[0].title").value(BOARD_TITLE))
-            .andExpect(jsonPath("_embedded.boardResponseList[0].content").value(BOARD_CONTENT))
-            .andExpect(jsonPath("_embedded.boardResponseList[0].hit").value(0));
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].id").value(BOARD_ID))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].title").value(BOARD_TITLE))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].content").value(BOARD_CONTENT))
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].hit").value(0));
     }
 
     @Test
@@ -232,6 +231,6 @@ class BoardControllerTest extends ApiControllerConfig {
                 get("/api/boards/admin?boardCategory=" + BoardCategory.FREE))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.boardResponseList[0].id").doesNotExist());
+            .andExpect(jsonPath("_embedded.boardQueryResponseList[0].id").doesNotExist());
     }
 }

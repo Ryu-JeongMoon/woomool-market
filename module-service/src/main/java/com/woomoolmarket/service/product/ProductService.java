@@ -1,10 +1,9 @@
 package com.woomoolmarket.service.product;
 
-import static java.util.stream.Collectors.toList;
-
 import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
@@ -13,9 +12,13 @@ import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductModifyRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductRequestMapper;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
-import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,45 +32,41 @@ public class ProductService {
     private final ProductModifyRequestMapper productModifyRequestMapper;
 
     @Transactional(readOnly = true)
-    public ProductResponse getByIdAndStatus(Long id, Status status) {
+    public ProductResponse findBy(Long id, Status status) {
         return productRepository.findByIdAndStatus(id, status)
             .map(productResponseMapper::toDto)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-//    @Cacheable(keyGenerator = "customKeyGenerator", value = "products", unless = "#result == null", cacheManager = "cacheManager")
-    public List<ProductResponse> getListBySearchConditionForMember(ProductSearchCondition searchCondition) {
-        return productRepository.findByCondition(searchCondition)
-            .stream()
-            .map(productResponseMapper::toDto)
-            .collect(toList());
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "products", unless = "#result == null", cacheManager = "cacheManager")
+    public Page<ProductQueryResponse> searchBy(ProductSearchCondition condition, Pageable pageable) {
+        return productRepository.searchBy(condition, pageable);
     }
 
     @Transactional
-//    @Caching(evict = {
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+    @Caching(evict = {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void create(ProductRequest productRequest) {
         Product product = productRequestMapper.toEntity(productRequest);
         productRepository.save(product);
     }
 
     @Transactional
-//    @Caching(evict = {
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
-    public ProductResponse edit(Long id, ProductModifyRequest modifyRequest) {
+    @Caching(evict = {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+    public void edit(Long id, ProductModifyRequest modifyRequest) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
         productModifyRequestMapper.updateFromDto(modifyRequest, product);
-        return productResponseMapper.toDto(product);
     }
 
     @Transactional
-//    @Caching(evict = {
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+    @Caching(evict = {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void deleteSoftly(Long id) {
         productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
@@ -75,9 +74,9 @@ public class ProductService {
     }
 
     @Transactional
-//    @Caching(evict = {
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-//        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+    @Caching(evict = {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
     public void restore(Long id) {
         productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
@@ -86,11 +85,8 @@ public class ProductService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-//    @Cacheable(keyGenerator = "customKeyGenerator", value = "productsForAdmin", unless = "#result == null", cacheManager = "cacheManager")
-    public List<ProductResponse> getListBySearchConditionForAdmin(ProductSearchCondition searchCondition) {
-        return productRepository.findByConditionForAdmin(searchCondition)
-            .stream()
-            .map(productResponseMapper::toDto)
-            .collect(toList());
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "productsForAdmin", unless = "#result == null", cacheManager = "cacheManager")
+    public Page<ProductQueryResponse> searchByAdmin(ProductSearchCondition condition, Pageable pageable) {
+        return productRepository.searchByAdmin(condition, pageable);
     }
 }

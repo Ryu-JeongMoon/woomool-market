@@ -50,19 +50,19 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.ALL))
             .andDo(document("product/get-products",
                 relaxedResponseFields(
-                    fieldWithPath("_embedded.productResponseList[].name").type(JsonFieldType.STRING).description("상품 이름"),
-                    subsectionWithPath("_embedded.productResponseList[].memberResponse").type(JsonFieldType.OBJECT)
+                    fieldWithPath("_embedded.productQueryResponseList[0].name").type(JsonFieldType.STRING).description("상품 이름"),
+                    subsectionWithPath("_embedded.productQueryResponseList[0].memberQueryResponse").type(JsonFieldType.OBJECT)
                         .description("판매자"),
-                    fieldWithPath("_embedded.productResponseList[].description").type(JsonFieldType.STRING).description("설명"),
-                    fieldWithPath("_embedded.productResponseList[].productImage").type(JsonFieldType.STRING).description("사진")
+                    fieldWithPath("_embedded.productQueryResponseList[0].description").type(JsonFieldType.STRING).description("설명"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].productImage").type(JsonFieldType.STRING).description("사진")
                         .optional(),
-                    fieldWithPath("_embedded.productResponseList[].price").type(JsonFieldType.NUMBER).description("가격"),
-                    fieldWithPath("_embedded.productResponseList[].stock").type(JsonFieldType.NUMBER).description("재고"),
-                    fieldWithPath("_embedded.productResponseList[].createdDateTime").type(JsonFieldType.VARIES)
+                    fieldWithPath("_embedded.productQueryResponseList[0].price").type(JsonFieldType.NUMBER).description("가격"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].stock").type(JsonFieldType.NUMBER).description("재고"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].createdDateTime").type(JsonFieldType.VARIES)
                         .description("상품 등록일"),
-                    fieldWithPath("_embedded.productResponseList[].productCategory").type(JsonFieldType.STRING)
+                    fieldWithPath("_embedded.productQueryResponseList[0].productCategory").type(JsonFieldType.STRING)
                         .description("상품 분류"),
-                    fieldWithPath("_embedded.productResponseList[].region").type(JsonFieldType.STRING).description("지역")
+                    fieldWithPath("_embedded.productQueryResponseList[0].region").type(JsonFieldType.STRING).description("지역")
                 )));
     }
 
@@ -174,16 +174,16 @@ class ProductControllerDocumentation extends ApiDocumentationConfig {
                     .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(document("product/admin-get-products",
                 relaxedResponseFields(
-                    fieldWithPath("_embedded.productResponseList[].name").type(JsonFieldType.STRING).description("상풍 이름"),
-                    fieldWithPath("_embedded.productResponseList[].description").type(JsonFieldType.STRING).description("상품 설명"),
-                    fieldWithPath("_embedded.productResponseList[].price").type(JsonFieldType.NUMBER).description("가격"),
-                    fieldWithPath("_embedded.productResponseList[].stock").type(JsonFieldType.NUMBER).description("재고"),
-                    fieldWithPath("_embedded.productResponseList[].region").type(JsonFieldType.STRING).description("지역"),
-                    fieldWithPath("_embedded.productResponseList[].productCategory").type(JsonFieldType.STRING)
+                    fieldWithPath("_embedded.productQueryResponseList[0].name").type(JsonFieldType.STRING).description("상풍 이름"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].description").type(JsonFieldType.STRING).description("상품 설명"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].price").type(JsonFieldType.NUMBER).description("가격"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].stock").type(JsonFieldType.NUMBER).description("재고"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].region").type(JsonFieldType.STRING).description("지역"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].productCategory").type(JsonFieldType.STRING)
                         .description("판매자"),
-                    fieldWithPath("_embedded.productResponseList[].productImage").type(JsonFieldType.STRING).description("상품 이미지")
+                    fieldWithPath("_embedded.productQueryResponseList[0].productImage").type(JsonFieldType.STRING).description("상품 이미지")
                         .optional(),
-                    subsectionWithPath("_embedded.productResponseList[].memberResponse").type(JsonFieldType.OBJECT)
+                    subsectionWithPath("_embedded.productQueryResponseList[0].memberQueryResponse").type(JsonFieldType.OBJECT)
                         .description("판매자")
                 )));
     }

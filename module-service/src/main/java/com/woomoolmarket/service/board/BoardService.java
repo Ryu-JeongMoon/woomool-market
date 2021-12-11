@@ -42,23 +42,22 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "boards", cacheManager = "jdkCacheManager")
-    public Page<BoardQueryResponse> findListBySearchCondition(BoardSearchCondition searchCondition, Pageable pageable) {
-        return boardRepository.findByConditionAndPage(searchCondition, pageable);
+    public Page<BoardQueryResponse> searchBy(BoardSearchCondition searchCondition, Pageable pageable) {
+        return boardRepository.searchBy(searchCondition, pageable);
     }
 
     @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "board", cacheManager = "jsonCacheManager")
-    public BoardResponse findByIdAndStatus(Long id, Status status) {
+    public BoardResponse findBy(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    public List<BoardResponse> findByMemberAndStatus(String email, Status status) {
+    public List<BoardResponse> findBy(String email, Status status) {
         List<Board> boards = boardRepository.findByMemberAndStatus(email, status);
         return boardResponseMapper.toDtoList(boards);
-
     }
 
     @Transactional
@@ -122,9 +121,8 @@ public class BoardService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", unless = "#result==null", cacheManager = "cacheManager")
-    public List<BoardResponse> findListBySearchConditionForAdmin(BoardSearchCondition condition) {
-        List<Board> boards = boardRepository.findByConditionForAdmin(condition);
-        return boardResponseMapper.toDtoList(boards);
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", unless = "#result==null", cacheManager = "jdkCacheManager")
+    public Page<BoardQueryResponse> searchByAdmin(BoardSearchCondition condition, Pageable pageable) {
+        return boardRepository.searchByAdmin(condition, pageable);
     }
 }

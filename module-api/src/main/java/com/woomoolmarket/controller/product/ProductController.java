@@ -7,13 +7,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.ProductService;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
-import com.woomoolmarket.util.PageUtil;
-import java.util.List;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,19 +46,19 @@ public class ProductController {
     private final ObjectMapper objectMapper;
     private final ProductService productService;
     private final PagedResourcesAssembler<ProductResponse> assembler;
+    private final PagedResourcesAssembler<ProductQueryResponse> queryAssembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getListBySearchConditionForMember(
+    public ResponseEntity<PagedModel<EntityModel<ProductQueryResponse>>> getPageForMember(
         ProductSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<ProductResponse> productResponses = productService.getListBySearchConditionForMember(condition);
-        Page<ProductResponse> responsePage = PageUtil.toPage(productResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<ProductQueryResponse> queryResponsePage = productService.searchBy(condition, pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_SELLER', 'ROLE_ADMIN'})")
-    public ResponseEntity create(@Validated @RequestBody ProductRequest productRequest, BindingResult bindingResult)
+    public ResponseEntity createProduct(@Validated @RequestBody ProductRequest productRequest, BindingResult bindingResult)
         throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
@@ -70,9 +70,9 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<EntityModel<ProductResponse>> getById(@PathVariable Long productId) {
-        ProductResponse productResponse = productService.getByIdAndStatus(productId, Status.ACTIVE);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getById(productId));
+    public ResponseEntity<EntityModel<ProductResponse>> getProduct(@PathVariable Long productId) {
+        ProductResponse productResponse = productService.findBy(productId, Status.ACTIVE);
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getProduct(productId));
 
         EntityModel<ProductResponse> productModel =
             EntityModel.of(
@@ -92,12 +92,10 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
+        productService.edit(productId, modifyRequest);
 
-        ProductResponse productResponse = productService.edit(productId, modifyRequest);
-        EntityModel<ProductResponse> productModel =
-            EntityModel.of(productResponse, linkTo(methodOn(ProductController.class).getById(productId)).withSelfRel());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
+        URI uri = linkTo(methodOn(ProductController.class).getProduct(productId)).withSelfRel().toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("/{productId}")
@@ -111,15 +109,10 @@ public class ProductController {
     /* FOR ADMIN */
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<ProductResponse>>> getListBySearchConditionForAdmin(
+    public ResponseEntity<PagedModel<EntityModel<ProductQueryResponse>>> getPageForAdmin(
         ProductSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<ProductResponse> productResponses = productService.getListBySearchConditionForAdmin(condition);
-        Page<ProductResponse> responsePage = PageUtil.toPage(productResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<ProductQueryResponse> queryResponsePage = productService.searchByAdmin(condition, pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
     }
 }
-
-/*
-어드민을 위한 메서드의 경우 다른 Controller 에 작성하는 것이 좋을듯
- */

@@ -8,12 +8,12 @@ import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
-import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Log4j2
 class ProductServiceTest extends ServiceTestConfig {
@@ -60,7 +62,7 @@ class ProductServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("상품 번호로 조회")
     void getByIdAndStatus() {
-        ProductResponse productResponse = productService.getByIdAndStatus(PRODUCT1_ID, Status.ACTIVE);
+        ProductResponse productResponse = productService.findBy(PRODUCT1_ID, Status.ACTIVE);
         assertThat(productResponse.getPrice()).isEqualTo(50000);
     }
 
@@ -70,8 +72,8 @@ class ProductServiceTest extends ServiceTestConfig {
         ProductSearchCondition condition = ProductSearchCondition.builder()
             .name("an")
             .build();
-        List<ProductResponse> productResponses = productService.getListBySearchConditionForMember(condition);
-        assertThat(productResponses.size()).isEqualTo(1);
+        Page<ProductQueryResponse> products = productService.searchBy(condition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -80,7 +82,8 @@ class ProductServiceTest extends ServiceTestConfig {
         ProductSearchCondition condition = ProductSearchCondition.builder()
             .category(ProductCategory.FISH)
             .build();
-        List<ProductResponse> productResponses = productService.getListBySearchConditionForMember(condition);
+        Page<ProductQueryResponse> products = productService.searchBy(condition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -105,8 +108,9 @@ class ProductServiceTest extends ServiceTestConfig {
         ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
             .price(90000)
             .build();
-        ProductResponse productResponse = productService.edit(PRODUCT1_ID, productModifyRequest);
-        assertThat(productResponse.getPrice()).isEqualTo(90000);
+        productService.edit(PRODUCT1_ID, productModifyRequest);
+        Product product = productRepository.findById(PRODUCT1_ID).get();
+        assertThat(product.getPrice()).isEqualTo(90000);
     }
 
     @Test
@@ -126,7 +130,7 @@ class ProductServiceTest extends ServiceTestConfig {
             .email("pa")
             .build();
 
-        List<ProductResponse> productResponses = productService.getListBySearchConditionForAdmin(condition);
-        assertThat(productResponses.size()).isEqualTo(2);
+        Page<ProductQueryResponse> products = productService.searchByAdmin(condition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(2);
     }
 }

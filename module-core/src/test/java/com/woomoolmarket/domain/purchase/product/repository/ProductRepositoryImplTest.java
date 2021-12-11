@@ -7,6 +7,7 @@ import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Log4j2
 @DataJpaTest
@@ -59,8 +62,12 @@ class ProductRepositoryImplTest {
     @Test
     @DisplayName("범위 값 동적 쿼리 조회")
     void priceRangeTest() {
-        List<Product> products = productRepository.findByPriceRange(12000, 55000);
-        assertThat(products.size()).isEqualTo(2);
+        ProductSearchCondition condition = ProductSearchCondition.builder()
+            .minPrice(12000)
+            .maxPrice(55000)
+            .build();
+        Page<ProductQueryResponse> page = productRepository.searchBy(condition, Pageable.ofSize(10));
+        assertThat(page.getTotalElements()).isEqualTo(2);
     }
 
     @Test
@@ -69,8 +76,8 @@ class ProductRepositoryImplTest {
         ProductSearchCondition searchCondition = ProductSearchCondition.builder()
             .build();
 
-        List<Product> products = productRepository.findByConditionForAdmin(searchCondition);
-        assertThat(products.size()).isEqualTo(3);
+        Page<ProductQueryResponse> products = productRepository.searchByAdmin(searchCondition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(3);
     }
 
     @Test
@@ -79,8 +86,8 @@ class ProductRepositoryImplTest {
         ProductSearchCondition condition = ProductSearchCondition.builder()
             .region(Region.GANGWONDO)
             .build();
-        List<Product> products = productRepository.findByConditionForAdmin(condition);
-        assertThat(products.size()).isEqualTo(1);
+        Page<ProductQueryResponse> products = productRepository.searchByAdmin(condition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -89,8 +96,8 @@ class ProductRepositoryImplTest {
         ProductSearchCondition condition = ProductSearchCondition.builder()
             .category(ProductCategory.FISH)
             .build();
-        List<Product> products = productRepository.findByConditionForAdmin(condition);
-        assertThat(products.size()).isEqualTo(1);
+        Page<ProductQueryResponse> products = productRepository.searchByAdmin(condition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -99,7 +106,37 @@ class ProductRepositoryImplTest {
         ProductSearchCondition condition = ProductSearchCondition.builder()
             .status(Status.INACTIVE)
             .build();
-        List<Product> products = productRepository.findByConditionForAdmin(condition);
-        assertThat(products.size()).isEqualTo(0);
+        Page<ProductQueryResponse> products = productRepository.searchByAdmin(condition, Pageable.ofSize(10));
+        assertThat(products.getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("상품명 검색 페이지 형식")
+    void findTemplate() {
+        ProductSearchCondition condition = ProductSearchCondition.builder()
+            .name("da3")
+            .build();
+        Page<ProductQueryResponse> queryResponsePage = productRepository.searchBy(condition, Pageable.ofSize(10));
+        assertThat(queryResponsePage.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("지역 검색 페이지 형식")
+    void findPageByCondition() {
+        ProductSearchCondition condition = ProductSearchCondition.builder()
+            .region(Region.GYEONGGIDO)
+            .build();
+        Page<ProductQueryResponse> page = productRepository.searchBy(condition, Pageable.ofSize(10));
+        assertThat(page.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("상태 검색 페이지 형식")
+    void findPageByConditionForAdmin() {
+        ProductSearchCondition condition = ProductSearchCondition.builder()
+            .status(Status.INACTIVE)
+            .build();
+        Page<ProductQueryResponse> page = productRepository.searchByAdmin(condition, Pageable.ofSize(10));
+        assertThat(page.getTotalElements()).isEqualTo(0);
     }
 }
