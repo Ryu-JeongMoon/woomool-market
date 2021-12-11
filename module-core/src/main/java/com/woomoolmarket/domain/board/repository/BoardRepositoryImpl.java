@@ -1,19 +1,16 @@
 package com.woomoolmarket.domain.board.repository;
 
 import static com.woomoolmarket.domain.board.entity.QBoard.board;
-import static com.woomoolmarket.domain.member.entity.QMember.member;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.QueryDslUtils;
-import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
 import com.woomoolmarket.domain.board.query.QBoardQueryResponse;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,18 +23,14 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    @Override
-    public Page<BoardQueryResponse> findByConditionAndPage(BoardSearchCondition searchCondition, Pageable pageable) {
+    private Page<BoardQueryResponse> findByTemplate(Pageable pageable, BooleanBuilder booleanBuilder) {
         QueryResults<BoardQueryResponse> results = queryFactory
             .select(new QBoardQueryResponse(
                 board.id, board.title, board.content, board.hit, board.boardCategory, board.member.email,
                 board.endDateTime, board.startDateTime, board.createdDateTime))
             .from(board)
             .leftJoin(board.member)
-            .where(
-                searchBy(searchCondition),
-                board.startDateTime.before(LocalDateTime.now()),
-                board.endDateTime.after(LocalDateTime.now()))
+            .where(booleanBuilder)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .orderBy(board.id.desc())
@@ -47,33 +40,31 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Board> findByConditionForAdmin(BoardSearchCondition searchCondition) {
-        return queryFactory
-            .selectFrom(board)
-            .leftJoin(board.member, member)
-            .fetchJoin()
-            .where(searchForAdminBy(searchCondition))
-            .fetch();
+    public Page<BoardQueryResponse> searchBy(BoardSearchCondition condition, Pageable pageable) {
+        return findByTemplate(pageable, combineBy(condition));
     }
 
     @Override
-    public Page<BoardQueryResponse> findByStatus(Pageable pageable, Status status) {
-        QueryResults<BoardQueryResponse> results =
-            queryFactory
-                .select(new QBoardQueryResponse(
-                    board.id, board.title, board.content, board.hit, board.boardCategory, board.member.email,
-                    board.endDateTime, board.startDateTime, board.createdDateTime))
-                .from(board)
-                .leftJoin(board.member)
-                .where(board.status.eq(status),
-                    board.startDateTime.before(LocalDateTime.now()),
-                    board.endDateTime.after(LocalDateTime.now()))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(board.id.desc())
-                .fetchResults();
+    public Page<BoardQueryResponse> searchByAdmin(BoardSearchCondition condition, Pageable pageable) {
+        return findByTemplate(pageable, combineForAdminBy(condition));
+    }
 
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    private BooleanBuilder combineBy(BoardSearchCondition condition) {
+        return emailContains(condition.getEmail())
+            .and(titleContains(condition.getTitle()))
+            .and(contentContains(condition.getContent()))
+            .and(statusEq(Status.ACTIVE))
+            .and(categoryEq(condition.getBoardCategory()))
+            .and(board.startDateTime.before(LocalDateTime.now()))
+            .and(board.endDateTime.after(LocalDateTime.now()));
+    }
+
+    private BooleanBuilder combineForAdminBy(BoardSearchCondition condition) {
+        return emailContains(condition.getEmail())
+            .and(titleContains(condition.getTitle()))
+            .and(contentContains(condition.getContent()))
+            .and(statusEq(condition.getStatus()))
+            .and(categoryEq(condition.getBoardCategory()));
     }
 
     private BooleanBuilder emailContains(String email) {
@@ -95,28 +86,4 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private BooleanBuilder categoryEq(BoardCategory category) {
         return QueryDslUtils.nullSafeBuilder(() -> board.boardCategory.eq(category));
     }
-
-    // 회원은 활성화된 게시글만 볼 수 있도록 넘어오는 값 사용하지 않음
-    private BooleanBuilder searchBy(BoardSearchCondition searchCondition) {
-        return emailContains(searchCondition.getEmail())
-            .and(titleContains(searchCondition.getTitle()))
-            .and(contentContains(searchCondition.getContent()))
-            .and(statusEq(Status.ACTIVE))
-            .and(categoryEq(searchCondition.getBoardCategory()));
-    }
-
-    private BooleanBuilder searchForAdminBy(BoardSearchCondition searchCondition) {
-        return emailContains(searchCondition.getEmail())
-            .and(titleContains(searchCondition.getTitle()))
-            .and(contentContains(searchCondition.getContent()))
-            .and(statusEq(searchCondition.getStatus()))
-            .and(categoryEq(searchCondition.getBoardCategory()));
-    }
 }
-
-/*
-BooleanBuilder 놈들 분리해둬야 할까?
-
-searchByAll, searchByAllForAdmin 중복
-검색 메서드 추가될 경우 중복 제거하기
- */

@@ -74,7 +74,7 @@ class ProductControllerTest extends ApiControllerConfig {
                 get("/api/products"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.productResponseList[0].name").value(PRODUCT_NAME))
+            .andExpect(jsonPath("_embedded.productQueryResponseList[0].name").value(PRODUCT_NAME))
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());
     }
@@ -191,9 +191,9 @@ class ProductControllerTest extends ApiControllerConfig {
                 get("/api/products/admin"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.productResponseList[0].name").value(PRODUCT_NAME))
-            .andExpect(jsonPath("_embedded.productResponseList[0].description").value(PRODUCT_DESCRIPTION))
-            .andExpect(jsonPath("_embedded.productResponseList[0].price").value(PRODUCT_PRICE))
+            .andExpect(jsonPath("_embedded.productQueryResponseList[0].name").value(PRODUCT_NAME))
+            .andExpect(jsonPath("_embedded.productQueryResponseList[0].description").value(PRODUCT_DESCRIPTION))
+            .andExpect(jsonPath("_embedded.productQueryResponseList[0].price").value(PRODUCT_PRICE))
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());
     }

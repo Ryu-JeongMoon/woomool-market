@@ -1,17 +1,20 @@
 package com.woomoolmarket.domain.purchase.product.repository;
 
-import static com.woomoolmarket.domain.member.entity.QMember.member;
 import static com.woomoolmarket.domain.purchase.product.entity.QProduct.product;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.QueryDslUtils;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
-import java.util.List;
+import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
+import com.woomoolmarket.domain.purchase.product.query.QProductQueryResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,43 +23,58 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    @Override
-    public List<Product> findByPriceRange(Integer minPrice, Integer maxPrice) {
-        return queryFactory
-            .selectFrom(product)
-            .where(searchByPriceRange(minPrice, maxPrice))
-            .fetch();
+    private Page<ProductQueryResponse> findByTemplate(BooleanBuilder booleanBuilder, Pageable pageable) {
+        QueryResults<ProductQueryResponse> results = queryFactory
+            .select(new QProductQueryResponse(
+                product.id, product.name, product.description, product.productImage, product.price, product.stock,
+                product.status, product.region, product.createdDateTime, product.productCategory, product.member.email))
+            .from(product)
+            .leftJoin(product.member)
+            .where(booleanBuilder)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(product.id.desc())
+            .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     @Override
-    public List<Product> findByCondition(ProductSearchCondition searchCondition) {
-        return queryFactory.selectFrom(product)
-            .leftJoin(product.member, member)
-            .fetchJoin()
-            .where(searchedByAll(searchCondition))
-            .fetch();
+    public Page<ProductQueryResponse> searchBy(ProductSearchCondition condition, Pageable pageable) {
+        return findByTemplate(combineBy(condition), pageable);
     }
 
     @Override
-    public List<Product> findByConditionForAdmin(ProductSearchCondition searchCondition) {
-        return queryFactory.selectFrom(product)
-            .leftJoin(product.member, member)
-            .fetchJoin()
-            .where(searchedByAllForAdmin(searchCondition))
-            .fetch();
+    public Page<ProductQueryResponse> searchByAdmin(ProductSearchCondition condition, Pageable pageable) {
+        return findByTemplate(combineForAdminBy(condition), pageable);
     }
 
-    private BooleanBuilder priceLoe(int maxPrice) {
+    private BooleanBuilder combineBy(ProductSearchCondition condition) {
+        return nameContains(condition.getName())
+            .and(emailContains(condition.getEmail()))
+            .and(regionEq(condition.getRegion()))
+            .and(statusEq(Status.ACTIVE))
+            .and(categoryEq(condition.getCategory()))
+            .and(priceLoe(condition.getMaxPrice()))
+            .and(priceGoe(condition.getMinPrice()));
+    }
+
+    private BooleanBuilder combineForAdminBy(ProductSearchCondition condition) {
+        return nameContains(condition.getName())
+            .and(emailContains(condition.getEmail()))
+            .and(regionEq(condition.getRegion()))
+            .and(statusEq(condition.getStatus()))
+            .and(categoryEq(condition.getCategory()))
+            .and(priceLoe(condition.getMaxPrice()))
+            .and(priceGoe(condition.getMinPrice()));
+    }
+
+    private BooleanBuilder priceLoe(Integer maxPrice) {
         return QueryDslUtils.nullSafeBuilder(() -> product.price.loe(maxPrice));
     }
 
-    private BooleanBuilder priceGoe(int minPrice) {
+    private BooleanBuilder priceGoe(Integer minPrice) {
         return QueryDslUtils.nullSafeBuilder(() -> product.price.goe(minPrice));
-    }
-
-    private BooleanBuilder searchByPriceRange(Integer minPrice, Integer maxPrice) {
-        return priceGoe(minPrice)
-            .and(priceLoe(maxPrice));
     }
 
     private BooleanBuilder nameContains(String name) {
@@ -78,26 +96,4 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private BooleanBuilder categoryEq(ProductCategory category) {
         return QueryDslUtils.nullSafeBuilder(() -> product.productCategory.eq(category));
     }
-
-    private BooleanBuilder searchedByAll(ProductSearchCondition searchCondition) {
-        return nameContains(searchCondition.getName())
-            .and(emailContains(searchCondition.getEmail()))
-            .and(regionEq(searchCondition.getRegion()))
-            .and(statusEq(Status.ACTIVE))
-            .and(categoryEq(searchCondition.getCategory()));
-    }
-
-    private BooleanBuilder searchedByAllForAdmin(ProductSearchCondition searchCondition) {
-        return nameContains(searchCondition.getName())
-            .and(emailContains(searchCondition.getEmail()))
-            .and(regionEq(searchCondition.getRegion()))
-            .and(statusEq(searchCondition.getStatus()))
-            .and(categoryEq(searchCondition.getCategory()));
-    }
 }
-
-/*
-TODO eq -> contains 검색 조건 변경 필요
-메서드 많아서 지저분해 보인당
-해결 방법이 있을 것인가?!
- */

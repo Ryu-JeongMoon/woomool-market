@@ -173,7 +173,7 @@ public class BoardControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.ALL))
             .andDo(document("board/admin-get-boards",
                 relaxedResponseFields(
-                    subsectionWithPath("_embedded.boardResponseList").type(JsonFieldType.ARRAY).description("게시글 리스트"),
+                    subsectionWithPath("_embedded.boardQueryResponseList").type(JsonFieldType.ARRAY).description("게시글 리스트"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
                     subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
                 )));

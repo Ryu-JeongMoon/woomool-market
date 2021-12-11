@@ -22,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Log4j2
 class BoardServiceTest extends ServiceTestConfig {
@@ -69,7 +70,7 @@ class BoardServiceTest extends ServiceTestConfig {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         Page<BoardQueryResponse> boardResponses =
-            boardService.findListBySearchCondition(boardSearchCondition, pageRequest);
+            boardService.searchBy(boardSearchCondition, pageRequest);
 
         assertThat(boardResponses.getTotalElements()).isEqualTo(3);
     }
@@ -78,13 +79,13 @@ class BoardServiceTest extends ServiceTestConfig {
     @DisplayName("Admin 전용 검색")
     void getListBySearchConditionForAdmin() {
         BoardSearchCondition searchCondition1 = new BoardSearchCondition();
-        List<BoardResponse> boardResponses1 = boardService.findListBySearchConditionForAdmin(searchCondition1);
+        Page<BoardQueryResponse> page1 = boardService.searchByAdmin(searchCondition1, Pageable.ofSize(10));
 
         BoardSearchCondition searchCondition2 = BoardSearchCondition.builder().status(Status.INACTIVE).build();
-        List<BoardResponse> boardResponses2 = boardService.findListBySearchConditionForAdmin(searchCondition2);
+        Page<BoardQueryResponse> page2 = boardService.searchByAdmin(searchCondition2, Pageable.ofSize(10));
 
-        assertThat(boardResponses1.size()).isEqualTo(3);
-        assertThat(boardResponses2.size()).isEqualTo(0);
+        assertThat(page1.getTotalElements()).isEqualTo(3);
+        assertThat(page2.getTotalElements()).isEqualTo(0);
     }
 
     @Test
@@ -93,14 +94,14 @@ class BoardServiceTest extends ServiceTestConfig {
         BoardSearchCondition condition = BoardSearchCondition.builder()
             .email("bear")
             .build();
-        List<BoardResponse> boardResponses = boardService.findListBySearchConditionForAdmin(condition);
-        assertThat(boardResponses.size()).isEqualTo(1);
+        Page<BoardQueryResponse> page = boardService.searchByAdmin(condition, Pageable.ofSize(10));
+        assertThat(page.getTotalElements()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("ID & STATUS 조건 검색")
     void getByIdAndStatus() {
-        BoardResponse boardResponse = boardService.findByIdAndStatus(BOARD_1_ID, Status.ACTIVE);
+        BoardResponse boardResponse = boardService.findBy(BOARD_1_ID, Status.ACTIVE);
         assertThat(boardResponse.getTitle()).isEqualTo(BOARD_1_TITLE);
     }
 
@@ -125,7 +126,7 @@ class BoardServiceTest extends ServiceTestConfig {
             .build();
 
         boardService.register(boardRequest, null);
-        List<BoardResponse> boardResponses = boardService.findByMemberAndStatus(MEMBER_1_EMAIL, Status.ACTIVE);
+        List<BoardResponse> boardResponses = boardService.findBy(MEMBER_1_EMAIL, Status.ACTIVE);
         assertThat(boardResponses.get(0).getId()).isNotNull();
     }
 

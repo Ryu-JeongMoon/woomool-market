@@ -13,7 +13,6 @@ import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
-import com.woomoolmarket.util.PageUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,14 +54,14 @@ public class BoardController {
     public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getBoardList(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<BoardQueryResponse> boardQueryResponses = boardService.findListBySearchCondition(condition, pageable);
+        Page<BoardQueryResponse> boardQueryResponses = boardService.searchBy(condition, pageable);
         return ResponseEntity.ok(queryAssembler.toModel(boardQueryResponses));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<BoardResponse>> getBoard(@PathVariable Long id) {
         boardService.increaseHit(id);
-        BoardResponse boardResponse = boardService.findByIdAndStatus(id, Status.ACTIVE);
+        BoardResponse boardResponse = boardService.findBy(id, Status.ACTIVE);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBoard(id));
 
         EntityModel<BoardResponse> responseModel =
@@ -120,11 +119,10 @@ public class BoardController {
     /* FOR ADMIN */
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<BoardResponse>>> getBoardListForAdmin(
+    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getBoardListForAdmin(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<BoardResponse> boardResponses = boardService.findListBySearchConditionForAdmin(condition);
-        Page<BoardResponse> responsePage = PageUtil.toPage(boardResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<BoardQueryResponse> queryResponsePage = boardService.searchByAdmin(condition, pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
     }
 }

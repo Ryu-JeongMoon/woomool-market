@@ -13,11 +13,15 @@ import lombok.NoArgsConstructor;
 public class BoardSearchCondition {
 
     private String email;
+
     private String title;
+
     private String content;
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
 
     @Builder

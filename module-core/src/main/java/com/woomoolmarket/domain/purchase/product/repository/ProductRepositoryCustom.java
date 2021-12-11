@@ -1,14 +1,12 @@
 package com.woomoolmarket.domain.purchase.product.repository;
 
-import com.woomoolmarket.domain.purchase.product.entity.Product;
-import java.util.List;
+import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductRepositoryCustom {
 
-    List<Product> findByPriceRange(Integer minPrice, Integer maxPrice);
+    Page<ProductQueryResponse> searchBy(ProductSearchCondition condition, Pageable pageable);
 
-    List<Product> findByCondition(ProductSearchCondition searchCondition);
-
-    List<Product> findByConditionForAdmin(ProductSearchCondition searchCondition);
-
+    Page<ProductQueryResponse> searchByAdmin(ProductSearchCondition condition, Pageable pageable);
 }
