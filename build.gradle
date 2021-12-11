@@ -55,6 +55,11 @@ subprojects {
         all {
             exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
             exclude module: 'spring-boot-starter-tomcat'
+            resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+                if (details.requested.group == 'org.apache.logging.log4j') {
+                    details.useVersion '2.15.0'
+                }
+            }
         }
     }
 
