@@ -54,8 +54,10 @@ public class CacheConfig {
             .build();
     }
 
-    @Bean(name = "cacheManager")
-    public RedisCacheManager cacheManager() {
+    @Bean(name = "gsonCacheManager")
+    public RedisCacheManager gsonCacheManager() {
+        objectMapper.deactivateDefaultTyping();
+
         RedisCacheConfiguration configuration = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()

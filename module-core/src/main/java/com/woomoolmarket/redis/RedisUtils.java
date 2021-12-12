@@ -7,13 +7,13 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RedisUtil {
+public class RedisUtils {
 
     private final StringRedisTemplate stringRedisTemplate;
     private final ValueOperations<String, String> stringValueOperations;
     private final HashOperations<String, String, String> hashValueOperations;
 
-    public RedisUtil(StringRedisTemplate stringRedisTemplate) {
+    public RedisUtils(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.hashValueOperations = stringRedisTemplate.opsForHash();
         this.stringValueOperations = stringRedisTemplate.opsForValue();

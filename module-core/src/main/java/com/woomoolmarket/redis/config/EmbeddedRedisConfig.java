@@ -68,7 +68,7 @@ public class EmbeddedRedisConfig {
             }
 
         } catch (Exception e) {
-            log.error(e);
+            log.info(e);
         }
 
         return StringUtils.hasText(pidInfo.toString());

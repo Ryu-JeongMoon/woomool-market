@@ -97,7 +97,7 @@ public class AuthFindService {
                 try {
                     message.send(smsParams);
                 } catch (CoolsmsException e) {
-                    log.error(e);
+                    log.info(e);
                 }
             });
     }
@@ -108,7 +108,7 @@ public class AuthFindService {
         try {
             return Integer.parseInt(message.balance().get("point").toString());
         } catch (CoolsmsException e) {
-            log.error(e);
+            log.info(e);
             return 0;
         }
     }

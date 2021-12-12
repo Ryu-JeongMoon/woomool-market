@@ -71,7 +71,7 @@ class JwtAuthenticationFilterTest {
                     .content(mapper.writeValueAsString(loginRequest)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("grantType").value("Bearer"))
+            .andExpect(jsonPath("grantType").value(TokenConstants.BEARER_TYPE))
             .andExpect(jsonPath("accessToken").exists())
             .andExpect(jsonPath("refreshToken").exists())
             .andExpect(jsonPath("accessTokenExpiresIn").exists());

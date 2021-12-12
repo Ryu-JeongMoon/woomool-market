@@ -33,7 +33,7 @@ public class ImageProcessor {
 
     public List<Image> parse(List<MultipartFile> files) {
         if (CollectionUtils.isEmpty(files)) {
-            log.warn("[WOOMOOL-FAILED] :: There is no files");
+            log.info("[WOOMOOL-ERROR] :: There is no files => {}", files);
             return Collections.emptyList();
         }
 
@@ -49,7 +49,7 @@ public class ImageProcessor {
 
             String originalFilename = multipartFile.getOriginalFilename();
             if (!StringUtils.hasText(originalFilename)) {
-                log.warn("[WOOMOOL-FAILED] :: There is no files");
+                log.info("[WOOMOOL-ERROR] :: There is no files => {}", originalFilename);
                 continue;
             }
 
@@ -85,7 +85,7 @@ public class ImageProcessor {
                 file.setWritable(true);
                 file.setReadable(true);
             } catch (IOException e) {
-                log.error("[WOOMOOL-FAILED] :: Can't Transfer a file");
+                log.info("[WOOMOOL-ERROR] :: Can't Transfer a file => {}", e.getMessage());
                 throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
             }
         }, woomoolTaskExecutor);
@@ -96,7 +96,7 @@ public class ImageProcessor {
             boolean wasSuccessful = file.mkdirs();
 
             if (!wasSuccessful) {
-                log.error("[WOOMOOL-FAILED] :: Can't Create a directory");
+                log.info("[WOOMOOL-ERROR] :: Can't Create a directory");
                 throw new IllegalStateException(ExceptionConstants.IMAGE_FOLDER_NOT_FOUND);
             }
         }
@@ -104,7 +104,7 @@ public class ImageProcessor {
 
     private void checkFileExtension(String originalFilename, String contentType) {
         if (!StringUtils.hasText(contentType)) {
-            log.error("[WOOMOOL-FAILED] :: {} has no file extension", originalFilename);
+            log.info("[WOOMOOL-ERROR] :: {} has no file extension", originalFilename);
             throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
         }
     }
@@ -115,7 +115,7 @@ public class ImageProcessor {
         } else if (contentType.contains("image/png")) {
             return ".png";
         } else {
-            log.error("[WOOMOOL-FAILED] :: {} is unsupported file extension", contentType);
+            log.info("[WOOMOOL-ERROR] :: {} is unsupported file extension", contentType);
             throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
         }
     }

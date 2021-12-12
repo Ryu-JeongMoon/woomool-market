@@ -39,7 +39,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "products", unless = "#result == null", cacheManager = "cacheManager")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "products", unless = "#result == null")
     public Page<ProductQueryResponse> searchBy(ProductSearchCondition condition, Pageable pageable) {
         return productRepository.searchBy(condition, pageable);
     }
@@ -85,7 +85,7 @@ public class ProductService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "productsForAdmin", unless = "#result == null", cacheManager = "cacheManager")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "productsForAdmin", unless = "#result == null")
     public Page<ProductQueryResponse> searchByAdmin(ProductSearchCondition condition, Pageable pageable) {
         return productRepository.searchByAdmin(condition, pageable);
     }

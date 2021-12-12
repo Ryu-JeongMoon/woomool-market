@@ -55,7 +55,7 @@ public class LogAspect {
             params.put("params", getParams(request));
             params.put("log-time", LocalDateTime.now());
         } catch (Exception e) {
-            log.error("LoggerAspect error", e);
+            log.info("[WOOMOOL-ERROR] :: Log Error => {}", e.getMessage());
         }
 
         log.info("[WOOMOOL-REQUEST] :: {}", params);
@@ -69,14 +69,14 @@ public class LogAspect {
         Object proceed = joinPoint.proceed();
         stopWatch.stop();
 
-        log.info(stopWatch.prettyPrint());
+        log.info("[WOOMOOL-STOPWATCH] :: -> {}", stopWatch.prettyPrint());
         return proceed;
     }
 
     @AfterReturning(value = "@within(com.woomoolmarket.aop.annotation.LogForException)", returning = "response")
     public void logForException(JoinPoint joinPoint, Object response) {
-        log.error("[WOOMOOL-ERROR] :: method -> {}", joinPoint.getSignature().toShortString());
-        log.error("[WOOMOOL-ERROR] :: target -> {}", joinPoint.getTarget());
-        log.error("[WOOMOOL-ERROR] :: response -> {}", response);
+        log.info("[WOOMOOL-ERROR] :: method -> {}", joinPoint.getSignature().toShortString());
+        log.info("[WOOMOOL-ERROR] :: target -> {}", joinPoint.getTarget());
+        log.info("[WOOMOOL-ERROR] :: response -> {}", response);
     }
 }

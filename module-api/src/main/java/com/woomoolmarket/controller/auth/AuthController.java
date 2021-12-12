@@ -3,11 +3,12 @@ package com.woomoolmarket.controller.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
+import com.woomoolmarket.common.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
+import com.woomoolmarket.security.jwt.TokenConstants;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -40,19 +41,10 @@ public class AuthController {
         }
 
         TokenResponse tokenResponse = authService.login(loginRequest);
-        Cookie cookie = prepareCookie(tokenResponse);
-        response.addCookie(cookie);
+        CookieUtils.addCookie(response, TokenConstants.REFRESH_TOKEN,
+            tokenResponse.getRefreshToken(), TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS);
+        response.setHeader(TokenConstants.AUTHORIZATION_HEADER, tokenResponse.getAccessToken());
         return ResponseEntity.ok(tokenResponse);
-    }
-
-    private Cookie prepareCookie(TokenResponse tokenResponse) {
-        Cookie cookie = new Cookie("refreshToken", tokenResponse.getRefreshToken());
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setPath("/");
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setDomain("woomool-market");
-        return cookie;
     }
 
     @PostMapping("/logout")

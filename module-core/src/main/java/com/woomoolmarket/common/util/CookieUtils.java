@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.util;
+package com.woomoolmarket.common.util;
 
 import java.util.Base64;
 import java.util.Optional;
@@ -26,8 +26,10 @@ public class CookieUtils {
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
+        cookie.setDomain("woomool-market");
         response.addCookie(cookie);
     }
 

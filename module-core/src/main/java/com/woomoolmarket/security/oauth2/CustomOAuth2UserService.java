@@ -19,13 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
@@ -42,6 +42,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             attributes.getNameAttributeKey());
     }
 
+    @Transactional
     public Member registerOrEdit(String registrationId, OAuth2Attributes attributes) {
         if (memberRepository.findByEmailAndStatus(attributes.getEmail(), Status.ACTIVE).isEmpty()) {
             return registerNewMember(registrationId, attributes);
@@ -50,6 +51,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return editExistingMember(attributes);
     }
 
+    @Transactional
     public Member registerNewMember(String registrationId, OAuth2Attributes attributes) {
         Member member = Member.builder()
             .email(attributes.getEmail())
@@ -62,6 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public Member editExistingMember(OAuth2Attributes attributes) {
         return memberRepository.findByEmail(attributes.getEmail())
             .map(member -> member.editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage()))

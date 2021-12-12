@@ -25,7 +25,7 @@ public class ImageCompressor {
         try {
             source.toFile(path);
         } catch (IOException e) {
-            log.error("[WOOMOOL-FAILED] :: Can't Write a File => {}", e.getCause());
+            log.info("[WOOMOOL-ERROR] :: Can't Write a File => {}", e.getMessage());
         }
     }
 }
