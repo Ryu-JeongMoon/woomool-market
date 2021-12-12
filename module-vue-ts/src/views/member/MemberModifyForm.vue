@@ -3,38 +3,71 @@
     <v-container>
       <v-form ref="form" class="form">
         <ReadonlyField :label="'Email'" :props="memberResponse.email" />
-        <TextField
-          :label="'Nickname'"
-          :props="memberResponse.nickname"
+        <v-text-field
+          v-model="memberModifyRequest.nickname"
+          :placeholder="memberResponse.nickname"
           :rules="RULES.MEMBER_EMAIL"
-        />
-        <TextField
-          :label="'Password'"
-          :props="password"
-          :type="'password'"
-          :rules="RULES.MEMBER_PASSWORD"
-        />
-        <TextField
-          :label="'Phone'"
-          :props="memberResponse.phone"
-          :rules="RULES.MEMBER_PHONE"
-        />
-        <VFileInput
-          prepend-icon="upload_file"
-          multiple
-          v-model="image"
-          show-size
-          :label="'Profile Image'"
-          outlined
+          label="Nickname"
           class="mt-2"
-        ></VFileInput>
+          dense
+          outlined
+        />
+        <v-text-field
+          v-model="memberModifyRequest.password"
+          :rules="RULES.MEMBER_PASSWORD"
+          label="Password"
+          type="password"
+          class="mt-2"
+          dense
+          outlined
+        />
+        <v-text-field
+          v-model="memberModifyRequest.phone"
+          :placeholder="memberResponse.phone"
+          :rules="RULES.MEMBER_PHONE"
+          label="Phone"
+          class="mt-2"
+          dense
+          outlined
+        />
+        <v-file-input
+          v-model="image"
+          :label="'Profile Image'"
+          prepend-icon="upload_file"
+          class="mt-2"
+          dense
+          multiple
+          show-size
+          outlined
+        />
         <ReadonlyField
           :label="'Signup Date'"
           :props="memberResponse.createdDateTime"
         />
-        <TextField :label="'City'" :props="memberResponse.address.city" />
-        <TextField :label="'Address'" :props="memberResponse.address.street" />
-        <TextField :label="'Zipcode'" :props="memberResponse.address.zipcode" />
+        <v-text-field
+          v-model="memberModifyRequest.address.city"
+          :placeholder="memberResponse.address.city"
+          dense
+          outlined
+          class="mt-2"
+          label="City"
+        />
+        <v-text-field
+          v-model="memberModifyRequest.address.street"
+          :placeholder="memberResponse.address.street"
+          dense
+          outlined
+          class="mt-2"
+          label="Address"
+        />
+        <v-text-field
+          v-model="memberModifyRequest.address.zipcode"
+          :placeholder="memberResponse.address.zipcode"
+          dense
+          outlined
+          class="mt-2"
+          label="Zipcode"
+        />
         <v-btn @click="submitCallback" color="info" class="mt-2 mr-4">
           <v-icon>arrow_back</v-icon>
           Main
@@ -50,14 +83,14 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import TextField from "@/components/common/TextField.vue";
 import { MemberModelResponse, MemberModifyRequest } from "@/interfaces/member";
 import ReadonlyField from "@/components/common/ReadonlyField.vue";
 import { RULES } from "@/utils/constant/rules";
 import { WoomoolVueRefs } from "@/types";
+import { Address } from "@/interfaces/common/address";
 
 export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
-  components: { ReadonlyField, TextField },
+  components: { ReadonlyField },
 
   props: {
     memberResponse: {
@@ -65,7 +98,7 @@ export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
       required: true,
     },
     submitCallback: {
-      type: Function as PropType<() => Promise<void>>,
+      type: Function as PropType<() => void>,
       required: true,
     },
   },
@@ -73,29 +106,39 @@ export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
   data: () => ({
     RULES,
     password: "" as string,
-    image: File,
+    image: File || [],
+    memberModifyRequest: {
+      nickname: "" as string,
+      password: "" as string,
+      profileImage: "" as string,
+      phone: "" as string,
+      license: "" as string,
+      address: {
+        city: "" as string,
+        street: "" as string,
+        zipcode: "" as string,
+      } as Address,
+    } as MemberModifyRequest,
   }),
 
   methods: {
     async modify() {
       const form = this.$refs.form;
-
-      const modifyRequest: MemberModifyRequest = {
-        nickname: this.memberResponse.nickname,
-        password: this.password,
-        profileImage: this.memberResponse.profileImage,
-        phone: this.memberResponse.phone,
-        license: this.memberResponse.license,
-        address: {
-          city: this.memberResponse.address.city,
-          street: this.memberResponse.address.street,
-          zipcode: this.memberResponse.address.zipcode,
-        },
-      };
-
+      const modifyRequest: MemberModifyRequest = this.memberModifyRequest;
       if (form.validate()) {
-        await this.$store.dispatch("REQUEST_MEMBER_MODIFY", modifyRequest);
+        await this.$store
+          .dispatch("REQUEST_MEMBER_MODIFY", modifyRequest)
+          .then(() => this.goToDetailPage());
+      } else {
+        alert("입력이 잘못되었습니다");
       }
+    },
+
+    goToDetailPage() {
+      this.$router.push({
+        name: "DetailMembers",
+        params: { memberId: String(this.memberResponse.id) },
+      });
     },
   },
 });

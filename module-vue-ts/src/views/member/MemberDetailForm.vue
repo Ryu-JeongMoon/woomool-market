@@ -50,7 +50,7 @@ export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
       required: true,
     },
     submitCallback: {
-      type: Function as PropType<() => Promise<void>>,
+      type: Function as PropType<() => void>,
       required: true,
     },
   },
