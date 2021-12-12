@@ -18,9 +18,10 @@ import { MemberModelResponse } from "@/interfaces/member";
 import { LoadingHelper } from "@/utils/loading";
 import memberApi from "@/api/MemberApi";
 import routerHelper from "@/router/RouterHelper";
+import LoadingSpinner from "@/components/common/LoadingSpinner.vue";
 
 export default Vue.extend({
-  components: { MemberModifyForm },
+  components: { LoadingSpinner, MemberModifyForm },
 
   data() {
     return {
@@ -56,7 +57,3 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss"></style>
-
-<!--
-회원 상세 페이지 갈때랑 똑같다?!
--->
