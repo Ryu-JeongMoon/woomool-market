@@ -17,7 +17,6 @@ public class XssConfig implements WebMvcConfigurer {
 
     @Bean
     public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
-//        ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().build();
         objectMapper.getFactory().setCharacterEscapes(new HTMLCharacterEscapes());
         return new MappingJackson2HttpMessageConverter(objectMapper);
     }
