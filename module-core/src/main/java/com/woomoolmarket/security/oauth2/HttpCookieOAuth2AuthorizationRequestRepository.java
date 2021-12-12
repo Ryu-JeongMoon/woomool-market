@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.oauth2;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
-import com.woomoolmarket.security.util.CookieUtils;
+import com.woomoolmarket.common.util.CookieUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;

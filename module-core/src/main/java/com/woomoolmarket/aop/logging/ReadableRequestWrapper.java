@@ -66,7 +66,7 @@ public class ReadableRequestWrapper extends HttpServletRequestWrapper {
                 }
             }
         } catch (Exception e) {
-            log.error("ReadableRequestWrapper init error", e);
+            log.info("[WOOMOOL-FAILED] :: Can't initialize ReadableRequestWrapper => {}", e.getMessage());
         }
     }
 

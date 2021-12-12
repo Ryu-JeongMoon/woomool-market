@@ -104,7 +104,7 @@ public class MemberService {
 
 
     /* FOR ADMIN */
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "membersForAdmin", unless = "#result==null", cacheManager = "cacheManager")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "membersForAdmin", unless = "#result==null", cacheManager = "gsonCacheManager")
     @Transactional(readOnly = true)
     public List<MemberResponse> getListBySearchConditionForAdmin(MemberSearchCondition condition) {
         List<Member> members = memberRepository.findByConditionForAdmin(condition);

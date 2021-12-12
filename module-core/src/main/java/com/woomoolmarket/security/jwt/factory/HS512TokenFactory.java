@@ -1,9 +1,9 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.security.jwt.TokenConstant.AUTHORITIES_KEY;
-import static com.woomoolmarket.security.jwt.TokenConstant.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.security.jwt.TokenConstants.AUTHORITIES_KEY;
+import static com.woomoolmarket.security.jwt.TokenConstants.LOGOUT_KEY_PREFIX;
 
-import com.woomoolmarket.redis.RedisUtil;
+import com.woomoolmarket.redis.RedisUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class HS512TokenFactory extends TokenFactory {
 
-    private final RedisUtil redisUtil;
+    private final RedisUtils redisUtils;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -65,17 +65,16 @@ public class HS512TokenFactory extends TokenFactory {
                 .parseClaimsJws(accessToken)
                 .getBody();
         } catch (ExpiredJwtException e) {
+            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
             return e.getClaims();
         }
     }
 
-    // redis block list 에 해당 토큰 있는지 확인
     @Override
     protected boolean isBlocked(String token) {
-        return StringUtils.hasText(token) && StringUtils.hasText(redisUtil.getData(LOGOUT_KEY_PREFIX + token));
+        return StringUtils.hasText(token) && StringUtils.hasText(redisUtils.getData(LOGOUT_KEY_PREFIX + token));
     }
 
-    // 토큰의 유효성 + 만료일자 확인
     @Override
     protected boolean isValid(String token) {
         try {
@@ -85,7 +84,7 @@ public class HS512TokenFactory extends TokenFactory {
                 .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
         }
         return false;
     }

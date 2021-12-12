@@ -10,11 +10,11 @@ class TokenConstantTest {
     @Test
     @DisplayName("올바른 상수 값 반환")
     void constantTest() {
-        assertThat(TokenConstant.LOGOUT_KEY_PREFIX).isEqualTo("logout:");
-        assertThat(TokenConstant.BEARER_TYPE).isEqualTo("Bearer");
-        assertThat(TokenConstant.AUTHORITIES_KEY).isEqualTo("auth");
-        assertThat(TokenConstant.AUTHORIZATION_HEADER).isEqualTo("Authorization");
-        assertThat(TokenConstant.ACCESS_TOKEN_EXPIRE_TIME).isEqualTo(1000 * 60 * 30);
-        assertThat(TokenConstant.REFRESH_TOKEN_EXPIRE_TIME).isEqualTo(1000 * 60 * 60 * 24 * 7);
+        assertThat(TokenConstants.LOGOUT_KEY_PREFIX).isEqualTo("logout:");
+        assertThat(TokenConstants.BEARER_TYPE).isEqualTo("Bearer ");
+        assertThat(TokenConstants.AUTHORITIES_KEY).isEqualTo("auth");
+        assertThat(TokenConstants.AUTHORIZATION_HEADER).isEqualTo("Authorization");
+        assertThat(TokenConstants.ACCESS_TOKEN_EXPIRE_MILLIS).isEqualTo(1000 * 60 * 30);
+        assertThat(TokenConstants.REFRESH_TOKEN_EXPIRE_MILLIS).isEqualTo(1000 * 60 * 60 * 24 * 7);
     }
 }
