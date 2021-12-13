@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication(scanBasePackages = "com.woomoolmarket", exclude = {
     org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration.class,
     org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
-    org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class})
+    org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class,
+})
 public class ModuleApiApplication {
 
     public static void main(String[] args) {
