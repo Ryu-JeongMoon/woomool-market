@@ -3,6 +3,8 @@ package com.woomoolmarket.config.datasource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,6 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Profile("mysql")
 @Configuration
 @RequiredArgsConstructor
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class DatabaseConfig {
 
     private final DataSource datasource;

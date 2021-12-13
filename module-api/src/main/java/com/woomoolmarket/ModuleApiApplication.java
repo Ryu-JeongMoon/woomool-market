@@ -8,14 +8,12 @@ import com.woomoolmarket.config.format.DateTimeFormatModule;
 import com.woomoolmarket.errors.JsonBindingResultModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(scanBasePackages = "com.woomoolmarket", exclude = {
     org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration.class,
     org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
     org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class,
-    DataSourceAutoConfiguration.class
 })
 public class ModuleApiApplication {
 
