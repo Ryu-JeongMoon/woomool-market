@@ -1,13 +1,16 @@
-dependencies {
-    implementation 'net.nurigo:javaSDK:2.2'
-    implementation 'com.tinify:tinify:1.6.4'
+jar {
+    enabled = true
 }
 
 bootJar {
     enabled = false
 }
 
-jar {
-    enabled = true
-}
+dependencies {
+    implementation project(':module-core')
 
+    implementation 'net.nurigo:javaSDK:2.2'
+    implementation 'com.tinify:tinify:1.6.4'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+}

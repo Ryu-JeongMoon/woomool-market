@@ -2,9 +2,6 @@ buildscript {
     ext {
         springBootVersion = '2.5.3.RELEASE'
     }
-    repositories {
-        mavenCentral()
-    }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}'
         classpath 'io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE'
@@ -24,20 +21,12 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    all {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-        exclude module: 'spring-boot-starter-tomcat'
-    }
-}
-
 group = 'com.woomool-market'
 version = '1.0'
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
 subprojects {
-
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'org.asciidoctor.jvm.convert'
@@ -68,57 +57,29 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-mail'
-        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-        implementation 'org.springframework.security.oauth:spring-security-oauth2'
-        implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
-        implementation 'org.springframework.boot:spring-boot-starter-validation'
         implementation 'org.springframework.boot:spring-boot-starter-undertow'
-        implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
         implementation('org.springframework.boot:spring-boot-starter-web') {
             exclude module: 'spring-boot-starter-tomcat'
         }
+
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
         implementation 'org.springframework.boot:spring-boot-starter-cache'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
         implementation 'org.springframework.boot:spring-boot-starter-log4j2:2.6.1'
+
         implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'org.springframework.boot:spring-boot-devtools'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.security.oauth:spring-security-oauth2'
+        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+        implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
+        implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-        // file upload
-        implementation 'commons-io:commons-io:2.11.0'
-        implementation 'commons-fileupload:commons-fileupload:1.4'
-
-        // monitoring
-        implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'de.codecentric:spring-boot-admin-starter-client:2.5.2'
-
-        implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
-        implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
-
-        implementation 'org.springframework.session:spring-session-core'
-        implementation 'com.googlecode.json-simple:json-simple:1.1.1'
         implementation 'org.mapstruct:mapstruct:1.4.1.Final'
         implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
-        implementation 'org.springframework.cloud:spring-cloud-starter-config'
-        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-
-        implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
-        implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
-        implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
-
-        // 테스트용 Redis
-        implementation 'it.ozimov:embedded-redis:0.7.3'
-        // Argon2PasswordEncoder 쓸라면 넣어줘야 됨
-        implementation 'org.bouncycastle:bcprov-jdk15on:1.69'
 
         runtimeOnly 'com.h2database:h2'
         runtimeOnly 'mysql:mysql-connector-java'
-        implementation 'org.mariadb.jdbc:mariadb-java-client'
-
-        // lombok -> mapstruct -> binding 순서 안 맞추면 안 돌아감... 주의
         compileOnly 'org.projectlombok:lombok:1.18.20'
         annotationProcessor 'org.projectlombok:lombok'
         annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
@@ -126,10 +87,9 @@ subprojects {
 
         testCompileOnly 'org.projectlombok:lombok:1.18.20'
         testAnnotationProcessor 'org.projectlombok:lombok'
-
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.2'
         testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.2'
     }
 
     dependencyManagement {
@@ -179,22 +139,6 @@ task buildVue(type: YarnTask, dependsOn: setUp) {
 }
 
 processResources.dependsOn 'buildVue'
-
-project(':module-api') {
-    dependencies {
-        implementation project(':module-core')
-    }
-}
-project(':module-api') {
-    dependencies {
-        implementation project(':module-service')
-    }
-}
-project(':module-service') {
-    dependencies {
-        implementation project(':module-core')
-    }
-}
 
 bootJar {
     mainClassName = 'com.woomoolmarket.ModuleApiApplication'
