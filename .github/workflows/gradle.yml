@@ -5,30 +5,61 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, woomool-market-266 ]
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, woomool-market-266 ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+    - name: Checkout
+      uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
     - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
         distribution: 'adopt'
+        java-version: 11
+        cache: gradle
+
+    - name: Setup Gradle Dependencies Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+
+    - name: Setup Gradle Wrapper Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle-wrapper.properties') }}
+
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          PROPERTIES="$(./gradlew properties --console=plain -q)"
+          VERSION="$(echo "$PROPERTIES" | grep "^version:" | cut -f2- -d ' ')"
+          NAME="$(echo "$PROPERTIES" | grep "^name:" | cut -f2- -d ' ')"
+          CHANGELOG="$(./gradlew getChangelog --unreleased --no-header --console=plain -q)"
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          ARTIFACT="${NAME}-${VERSION}.zip"
+          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=name::$NAME"
+          echo "::set-output name=changelog::$CHANGELOG"
+          echo "::set-output name=artifact::$ARTIFACT"
+
+    - name: Confirm ~/.gradle/caches directory has been made
+      run: |
+        if [ ! -d ~/.gradle/caches ]; then
+          echo "yahoo"
+          exit 1
+        fi
+        ls ~/.gradle/caches/
 
     - name: Start Redis
       uses: supercharge/redis-github-action@1.1.0
