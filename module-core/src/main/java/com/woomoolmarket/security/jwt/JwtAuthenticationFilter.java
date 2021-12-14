@@ -5,8 +5,6 @@ import com.woomoolmarket.security.jwt.factory.TokenFactory;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,31 +13,34 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenFactory tokenFactory;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc) throws ServletException, IOException {
-        String accessToken = TokenUtils.resolveAccessTokenFrom((HttpServletRequest) request);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
+
+        String accessToken = TokenUtils.resolveAccessTokenFrom(request);
         if (StringUtils.hasText(accessToken) && tokenFactory.validate(accessToken)) {
             Authentication authentication = tokenFactory.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        String refreshToken = TokenUtils.resolveRefreshTokenFrom((HttpServletRequest) request);
+        String refreshToken = TokenUtils.resolveRefreshTokenFrom(request);
         if (StringUtils.hasText(accessToken) && !tokenFactory.validate(accessToken) && tokenFactory.validate(refreshToken)) {
             Authentication authentication = tokenFactory.getAuthentication(accessToken);
             accessToken = tokenFactory.reissueAccessToken(authentication);
-            ((HttpServletResponse) response).setHeader(TokenConstants.AUTHORIZATION_HEADER, accessToken);
+            response.setHeader(TokenConstants.AUTHORIZATION_HEADER, accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        fc.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }
