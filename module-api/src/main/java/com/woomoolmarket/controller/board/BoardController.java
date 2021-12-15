@@ -47,11 +47,10 @@ public class BoardController {
 
     private final BoardService boardService;
     private final ObjectMapper objectMapper;
-    private final PagedResourcesAssembler<BoardResponse> assembler;
     private final PagedResourcesAssembler<BoardQueryResponse> queryAssembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getBoardList(
+    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageBy(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
         Page<BoardQueryResponse> boardQueryResponses = boardService.searchBy(condition, pageable);
@@ -59,10 +58,10 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> getBoard(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<BoardResponse>> getBy(@PathVariable Long id) {
         boardService.increaseHit(id);
         BoardResponse boardResponse = boardService.findBy(id, Status.ACTIVE);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBoard(id));
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBy(id));
 
         EntityModel<BoardResponse> responseModel =
             EntityModel.of(
@@ -76,7 +75,7 @@ public class BoardController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity createBoard(@Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult,
+    public ResponseEntity create(@Validated @RequestBody BoardRequest boardRequest, BindingResult bindingResult,
         List<MultipartFile> files) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
@@ -88,7 +87,7 @@ public class BoardController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity editBoard(@PathVariable Long id,
+    public ResponseEntity edit(@PathVariable Long id,
         @Validated @RequestBody BoardModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
@@ -96,21 +95,21 @@ public class BoardController {
 
         BoardResponse boardResponse = boardService.edit(id, modifyRequest);
         EntityModel<BoardResponse> boardModel =
-            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getBoard(id)).withSelfRel());
+            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getBy(id)).withSelfRel());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         boardService.deleteSoftly(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/deleted/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> restoreBoard(@PathVariable Long id) {
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
         boardService.restore(id);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -119,7 +118,7 @@ public class BoardController {
     /* FOR ADMIN */
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getBoardListForAdmin(
+    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageForAdminBy(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
         Page<BoardQueryResponse> queryResponsePage = boardService.searchByAdmin(condition, pageable);

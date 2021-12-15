@@ -26,7 +26,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             .fetch();
     }
 
-    private BooleanBuilder memberIdEq(Long memberId) {
+    private BooleanBuilder memberIdEquals(Long memberId) {
         return QueryDslUtils.nullSafeBuilder(() -> order.member.id.eq(memberId));
     }
 
@@ -34,13 +34,13 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         return QueryDslUtils.nullSafeBuilder(() -> order.member.email.contains(email));
     }
 
-    private BooleanBuilder statusEq(OrderStatus orderStatus) {
+    private BooleanBuilder statusEquals(OrderStatus orderStatus) {
         return QueryDslUtils.nullSafeBuilder(() -> order.orderStatus.eq(orderStatus));
     }
 
     private BooleanBuilder searchByAll(OrderSearchCondition searchCondition) {
-        return memberIdEq(searchCondition.getMemberId())
+        return memberIdEquals(searchCondition.getMemberId())
             .and(emailContains(searchCondition.getEmail()))
-            .and(statusEq(searchCondition.getOrderStatus()));
+            .and(statusEquals(searchCondition.getOrderStatus()));
     }
 }

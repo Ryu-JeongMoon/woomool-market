@@ -66,10 +66,10 @@ class CartControllerTest extends ApiControllerConfig {
                 get("/api/carts/" + MEMBER_ID))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.cartResponseList[0].id").value(CART_ID))
-            .andExpect(jsonPath("_embedded.cartResponseList[0].quantity").value(CART_QUANTITY))
-            .andExpect(jsonPath("_embedded.cartResponseList[0].memberResponse").exists())
-            .andExpect(jsonPath("_embedded.cartResponseList[0].productResponse").exists());
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].id").value(CART_ID))
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].quantity").value(CART_QUANTITY))
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].memberQueryResponse").exists())
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].productQueryResponse").exists());
     }
 
     @Test

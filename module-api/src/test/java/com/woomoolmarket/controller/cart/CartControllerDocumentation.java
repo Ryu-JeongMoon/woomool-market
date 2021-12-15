@@ -51,11 +51,11 @@ class CartControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.ALL))
             .andDo(document("cart/get-carts",
                 relaxedResponseFields(
-                    fieldWithPath("_embedded.cartResponseList[].id").type(JsonFieldType.NUMBER).description("장바구니 고유 번호"),
-                    fieldWithPath("_embedded.cartResponseList[].quantity").type(JsonFieldType.NUMBER).description("주문 수량"),
-                    subsectionWithPath("_embedded.cartResponseList[].memberResponse").type(JsonFieldType.OBJECT)
+                    fieldWithPath("_embedded.cartQueryResponseList[].id").type(JsonFieldType.NUMBER).description("장바구니 고유 번호"),
+                    fieldWithPath("_embedded.cartQueryResponseList[].quantity").type(JsonFieldType.NUMBER).description("주문 수량"),
+                    subsectionWithPath("_embedded.cartQueryResponseList[].memberQueryResponse").type(JsonFieldType.OBJECT)
                         .description("주문 회원"),
-                    subsectionWithPath("_embedded.cartResponseList[].productResponse").type(JsonFieldType.OBJECT)
+                    subsectionWithPath("_embedded.cartQueryResponseList[].productQueryResponse").type(JsonFieldType.OBJECT)
                         .description("주문 상품")
                 )));
     }

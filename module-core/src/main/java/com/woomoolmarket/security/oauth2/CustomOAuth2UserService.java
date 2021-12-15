@@ -58,7 +58,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .nickname(attributes.getNickname())
             .profileImage(attributes.getProfileImage())
             .authority(Authority.ROLE_USER)
-            .provider(AuthProvider.valueOf(registrationId.toUpperCase()))
+            .authProvider(AuthProvider.valueOf(registrationId.toUpperCase()))
             .build();
 
         return memberRepository.save(member);

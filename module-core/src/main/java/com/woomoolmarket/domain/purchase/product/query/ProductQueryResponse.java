@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
+import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -54,5 +55,20 @@ public class ProductQueryResponse implements Serializable {
         this.createdDateTime = createdDateTime;
         this.productCategory = productCategory;
         this.memberQueryResponse = MemberQueryResponse.from(email);
+    }
+
+    public static ProductQueryResponse of(Product product) {
+        return ProductQueryResponse.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .description(product.getDescription())
+            .productImage(product.getProductImage())
+            .price(product.getPrice())
+            .stock(product.getStock())
+            .status(product.getStatus())
+            .region(product.getRegion())
+            .createdDateTime(product.getCreatedDateTime())
+            .productCategory(product.getProductCategory())
+            .build();
     }
 }

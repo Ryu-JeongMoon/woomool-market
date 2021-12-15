@@ -23,7 +23,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    private Page<BoardQueryResponse> findByTemplate(Pageable pageable, BooleanBuilder booleanBuilder) {
+    private Page<BoardQueryResponse> searchByTemplate(BooleanBuilder booleanBuilder, Pageable pageable) {
         QueryResults<BoardQueryResponse> results = queryFactory
             .select(new QBoardQueryResponse(
                 board.id, board.title, board.content, board.hit, board.boardCategory, board.member.email,
@@ -41,20 +41,20 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public Page<BoardQueryResponse> searchBy(BoardSearchCondition condition, Pageable pageable) {
-        return findByTemplate(pageable, combineBy(condition));
+        return searchByTemplate(combineBy(condition), pageable);
     }
 
     @Override
     public Page<BoardQueryResponse> searchByAdmin(BoardSearchCondition condition, Pageable pageable) {
-        return findByTemplate(pageable, combineForAdminBy(condition));
+        return searchByTemplate(combineForAdminBy(condition), pageable);
     }
 
     private BooleanBuilder combineBy(BoardSearchCondition condition) {
         return emailContains(condition.getEmail())
             .and(titleContains(condition.getTitle()))
             .and(contentContains(condition.getContent()))
-            .and(statusEq(Status.ACTIVE))
-            .and(categoryEq(condition.getBoardCategory()))
+            .and(statusEquals(Status.ACTIVE))
+            .and(categoryEquals(condition.getBoardCategory()))
             .and(board.startDateTime.before(LocalDateTime.now()))
             .and(board.endDateTime.after(LocalDateTime.now()));
     }
@@ -63,8 +63,8 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return emailContains(condition.getEmail())
             .and(titleContains(condition.getTitle()))
             .and(contentContains(condition.getContent()))
-            .and(statusEq(condition.getStatus()))
-            .and(categoryEq(condition.getBoardCategory()));
+            .and(statusEquals(condition.getStatus()))
+            .and(categoryEquals(condition.getBoardCategory()));
     }
 
     private BooleanBuilder emailContains(String email) {
@@ -79,11 +79,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return QueryDslUtils.nullSafeBuilder(() -> board.content.contains(content));
     }
 
-    private BooleanBuilder statusEq(Status status) {
+    private BooleanBuilder statusEquals(Status status) {
         return QueryDslUtils.nullSafeBuilder(() -> board.status.eq(status));
     }
 
-    private BooleanBuilder categoryEq(BoardCategory category) {
+    private BooleanBuilder categoryEquals(BoardCategory category) {
         return QueryDslUtils.nullSafeBuilder(() -> board.boardCategory.eq(category));
     }
 }

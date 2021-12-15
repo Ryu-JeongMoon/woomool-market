@@ -54,12 +54,6 @@ public class BoardService {
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
     }
 
-    @Transactional(readOnly = true)
-    public List<BoardResponse> findBy(String email, Status status) {
-        List<Board> boards = boardRepository.findByMemberAndStatus(email, status);
-        return boardResponseMapper.toDtoList(boards);
-    }
-
     @Transactional
     public void increaseHit(Long id) {
         boardRepository.findById(id)

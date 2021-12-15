@@ -73,7 +73,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     private BooleanBuilder authProviderEq(AuthProvider provider) {
-        return QueryDslUtils.nullSafeBuilder(() -> member.provider.eq(provider));
+        return QueryDslUtils.nullSafeBuilder(() -> member.authProvider.eq(provider));
     }
 
     private BooleanBuilder authorityEq(Authority authority) {
