@@ -13,7 +13,6 @@ import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -126,8 +125,11 @@ class BoardServiceTest extends ServiceTestConfig {
             .build();
 
         boardService.register(boardRequest, null);
-        List<BoardResponse> boardResponses = boardService.findBy(MEMBER_1_EMAIL, Status.ACTIVE);
-        assertThat(boardResponses.get(0).getId()).isNotNull();
+        BoardSearchCondition condition = BoardSearchCondition.builder()
+            .email(MEMBER_1_EMAIL)
+            .build();
+        Page<BoardQueryResponse> boardQueryResponses = boardService.searchBy(condition, Pageable.ofSize(10));
+        assertThat(boardQueryResponses.getContent().get(0).getId()).isNotNull();
     }
 
     @Test

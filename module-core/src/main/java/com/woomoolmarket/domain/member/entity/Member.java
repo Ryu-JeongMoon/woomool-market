@@ -68,7 +68,7 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AuthProvider provider;
+    private AuthProvider authProvider;
 
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
@@ -80,7 +80,7 @@ public class Member extends BaseEntity {
 
     @Builder
     public Member(String email, String nickname, String password, String profileImage,
-        String phone, String license, Address address, AuthProvider provider, Authority authority) {
+        String phone, String license, Address address, AuthProvider authProvider, Authority authority) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
@@ -88,7 +88,7 @@ public class Member extends BaseEntity {
         this.phone = phone;
         this.license = license;
         this.address = address;
-        this.provider = provider != null ? provider : AuthProvider.LOCAL;
+        this.authProvider = authProvider != null ? authProvider : AuthProvider.LOCAL;
         this.authority = authority != null ? authority : Authority.ROLE_USER;
     }
 

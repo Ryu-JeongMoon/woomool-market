@@ -5,21 +5,21 @@ import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
+import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import com.woomoolmarket.service.cart.mapper.CartResponseMapper;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CartService {
 
@@ -29,24 +29,24 @@ public class CartService {
     private final CartResponseMapper cartResponseMapper;
 
     @Transactional(readOnly = true)
-    public CartResponse getById(Long cartId) {
+    public CartResponse findBy(Long cartId) {
         return cartRepository.findById(cartId)
             .map(cartResponseMapper::toDto)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    public List<CartResponse> getListByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-
-        return cartRepository.findByMember(member)
-            .stream()
-            .map(cartResponseMapper::toDto)
-            .collect(Collectors.toList());
+    public Page<CartQueryResponse> searchBy(Pageable pageable) {
+        return cartRepository.searchBy(pageable);
     }
 
-    public Long add(CartRequest cartRequest) {
+    @Transactional(readOnly = true)
+    public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
+        return cartRepository.searchBy(memberId, pageable);
+    }
+
+    @Transactional
+    public Long addBy(CartRequest cartRequest) {
         Member member = memberRepository.findByIdAndStatus(cartRequest.getMemberId(), Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
@@ -62,14 +62,16 @@ public class CartService {
         return cartRepository.save(cart).getId();
     }
 
-    public void removeByCartId(Long cartId) {
-        Cart cart = cartRepository.findById(cartId)
+    @Transactional
+    public void removeBy(Long cartId) {
+        cartRepository.findById(cartId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
 
-        cartRepository.delete(cart);
+        cartRepository.deleteById(cartId);
     }
 
-    public void removeAllByMemberId(Long memberId) {
+    @Transactional
+    public void removeAllBy(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 

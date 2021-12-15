@@ -5,12 +5,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.service.cart.CartService;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
-import com.woomoolmarket.util.PageUtil;
 import java.net.URI;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,61 +37,65 @@ public class CartController {
 
     private final ObjectMapper objectMapper;
     private final CartService cartService;
-    private final PagedResourcesAssembler<CartResponse> assembler;
+    private final PagedResourcesAssembler<CartQueryResponse> queryAssembler;
 
     @GetMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<CartResponse>>> getListByMember(
+    public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageBy(
         @PathVariable Long memberId, @PageableDefault Pageable pageable) {
 
-        List<CartResponse> cartResponses = cartService.getListByMember(memberId);
-        Page<CartResponse> responsePage = PageUtil.toPage(cartResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(memberId, pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(cartQueryResponses));
     }
 
     @PostMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity addToCart(@PathVariable Long memberId, @Valid @RequestBody CartRequest cartRequest,
+    public ResponseEntity addBy(@PathVariable Long memberId, @Valid @RequestBody CartRequest cartRequest,
         BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
-        Long cartId = cartService.add(cartRequest);
-        URI createdUri = linkTo(methodOn(CartController.class).getOneById(memberId, cartId)).toUri();
+        Long cartId = cartService.addBy(cartRequest);
+        URI createdUri = linkTo(methodOn(CartController.class).getBy(memberId, cartId)).toUri();
         return ResponseEntity.created(createdUri).build();
     }
 
     @DeleteMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
-        cartService.removeAllByMemberId(memberId);
+        cartService.removeAllBy(memberId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{memberId}/{cartId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<CartResponse>> getOneById(@PathVariable Long memberId, @PathVariable Long cartId) {
-        CartResponse cartResponse = cartService.getById(cartId);
+    public ResponseEntity<EntityModel<CartResponse>> getBy(@PathVariable Long memberId, @PathVariable Long cartId) {
+        CartResponse cartResponse = cartService.findBy(cartId);
 
         EntityModel<CartResponse> responseModel = EntityModel.of(
             cartResponse,
-            linkTo(methodOn(CartController.class).getOneById(memberId, cartId)).withSelfRel(),
-            linkTo(methodOn(CartController.class).getListByMember(memberId, Pageable.unpaged())).withRel("cart-list"));
+            linkTo(methodOn(CartController.class).getBy(memberId, cartId)).withSelfRel(),
+            linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel("cart-list"));
 
         return ResponseEntity.ok().body(responseModel);
     }
 
     @DeleteMapping("/{memberId}/{cartId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> removeOne(@PathVariable Long memberId, @PathVariable Long cartId) {
-        cartService.removeByCartId(cartId);
+    public ResponseEntity<Void> remove(@PathVariable Long memberId, @PathVariable Long cartId) {
+        cartService.removeBy(cartId);
         return ResponseEntity.noContent().build();
     }
-}
 
-/*
-hasRole 로 Admin 일일이 정해주는게 중복이 너무 많다
-admin-default 모든 메서드에 접근 가능하게 할 수 없을까?!
- */
+
+    /* FOR ADMIN */
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageForAdminBy(@PageableDefault Pageable pageable) {
+
+        Page<CartQueryResponse> queryResponsePage = cartService.searchBy(pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
+    }
+}

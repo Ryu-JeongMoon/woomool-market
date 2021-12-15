@@ -52,9 +52,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private BooleanBuilder combineBy(ProductSearchCondition condition) {
         return nameContains(condition.getName())
             .and(emailContains(condition.getEmail()))
-            .and(regionEq(condition.getRegion()))
-            .and(statusEq(Status.ACTIVE))
-            .and(categoryEq(condition.getCategory()))
+            .and(regionEquals(condition.getRegion()))
+            .and(statusEquals(Status.ACTIVE))
+            .and(categoryEquals(condition.getCategory()))
             .and(priceLoe(condition.getMaxPrice()))
             .and(priceGoe(condition.getMinPrice()));
     }
@@ -62,9 +62,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private BooleanBuilder combineForAdminBy(ProductSearchCondition condition) {
         return nameContains(condition.getName())
             .and(emailContains(condition.getEmail()))
-            .and(regionEq(condition.getRegion()))
-            .and(statusEq(condition.getStatus()))
-            .and(categoryEq(condition.getCategory()))
+            .and(regionEquals(condition.getRegion()))
+            .and(statusEquals(condition.getStatus()))
+            .and(categoryEquals(condition.getCategory()))
             .and(priceLoe(condition.getMaxPrice()))
             .and(priceGoe(condition.getMinPrice()));
     }
@@ -85,15 +85,15 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return QueryDslUtils.nullSafeBuilder(() -> product.member.email.contains(email));
     }
 
-    private BooleanBuilder regionEq(Region region) {
+    private BooleanBuilder regionEquals(Region region) {
         return QueryDslUtils.nullSafeBuilder(() -> product.region.eq(region));
     }
 
-    private BooleanBuilder statusEq(Status status) {
+    private BooleanBuilder statusEquals(Status status) {
         return QueryDslUtils.nullSafeBuilder(() -> product.status.eq(status));
     }
 
-    private BooleanBuilder categoryEq(ProductCategory category) {
+    private BooleanBuilder categoryEquals(ProductCategory category) {
         return QueryDslUtils.nullSafeBuilder(() -> product.productCategory.eq(category));
     }
 }
