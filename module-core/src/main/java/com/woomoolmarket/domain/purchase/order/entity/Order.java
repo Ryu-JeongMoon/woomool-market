@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.embeddable.Delivery;
+import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import java.util.ArrayList;
@@ -60,7 +61,16 @@ public class Order extends BaseTimeEntity {
     public Order(Member member, Delivery delivery, List<OrderProduct> orderProducts) {
         this.member = member;
         this.delivery = delivery;
-        this.orderProducts = orderProducts;
+        this.addOrderProducts(orderProducts);
+    }
+
+    public void addOrderProducts(List<OrderProduct> orderProducts) {
+        if (orderProducts == null || orderProducts.isEmpty()) {
+            return;
+        }
+
+        this.orderProducts.addAll(orderProducts);
+        orderProducts.forEach(o -> o.setOrder(this));
     }
 
     public void cancel() {

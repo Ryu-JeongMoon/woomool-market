@@ -83,6 +83,7 @@ class OrderRepositoryTest {
             .build();
         Page<OrderQueryResponse> orderQueryResponses = orderRepository.searchForAdminBy(condition, Pageable.ofSize(10));
         OrderQueryResponse order = orderQueryResponses.getContent().get(0);
+        System.out.println("order.getOrderProducts() = " + order.getOrderProducts());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.ONGOING);
     }
 

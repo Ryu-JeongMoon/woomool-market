@@ -644,7 +644,7 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1013
+Content-Length: 997
 
 {
   "id" : 1,
@@ -656,8 +656,8 @@ Content-Length: 1013
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-12-10T18:05:18.19463",
-    "lastModifiedDateTime" : "2021-12-10T18:05:18.19463",
+    "createdDateTime" : "2021-12-15 19:48:21",
+    "lastModifiedDateTime" : "2021-12-15 19:48:21",
     "leaveDateTime" : null,
     "authority" : "ROLE_USER",
     "address" : {
@@ -665,7 +665,7 @@ Content-Length: 1013
       "street" : "yeonhui",
       "zipcode" : "01023"
     },
-    "authProvider" : null,
+    "authProvider" : "LOCAL",
     "status" : "ACTIVE"
   },
   "productResponse" : {
@@ -675,7 +675,7 @@ Content-Length: 1013
     "memberResponse" : null,
     "price" : 50000,
     "stock" : 10000,
-    "createdDateTime" : "2021-12-10T18:05:18.196917",
+    "createdDateTime" : "2021-12-15 19:48:21",
     "productCategory" : "MEAT",
     "region" : "GANGWONDO"
   },
@@ -754,28 +754,28 @@ Host: localhost:8443</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartResponseList[].id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartQueryResponseList[].id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">장바구니 고유 번호</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartResponseList[].quantity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartQueryResponseList[].quantity</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 수량</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartResponseList[].memberResponse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartQueryResponseList[].memberQueryResponse</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 회원</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartResponseList[].productResponse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.cartQueryResponseList[].productQueryResponse</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 상품</p></td>
@@ -800,22 +800,21 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1234
+Content-Length: 1288
 
 {
   "_embedded" : {
-    "cartResponseList" : [ {
+    "cartQueryResponseList" : [ {
       "id" : 2,
-      "quantity" : 500,
-      "memberResponse" : {
+      "memberQueryResponse" : {
         "id" : 34,
         "email" : "panda@naver.com",
         "nickname" : "panda",
         "profileImage" : null,
         "phone" : "01012345678",
         "license" : null,
-        "createdDateTime" : "2021-12-10T18:05:18.278589",
-        "lastModifiedDateTime" : "2021-12-10T18:05:18.278589",
+        "createdDateTime" : "2021-12-15 19:48:21",
+        "lastModifiedDateTime" : "2021-12-15 19:48:21",
         "leaveDateTime" : null,
         "authority" : "ROLE_USER",
         "address" : {
@@ -823,25 +822,28 @@ Content-Length: 1234
           "street" : "yeonhui",
           "zipcode" : "01023"
         },
-        "authProvider" : null,
+        "authProvider" : "LOCAL",
         "status" : "ACTIVE"
       },
-      "productResponse" : {
+      "productQueryResponse" : {
+        "id" : 13,
         "name" : "panda",
         "description" : "panda is bear",
         "productImage" : null,
-        "memberResponse" : null,
         "price" : 50000,
         "stock" : 10000,
-        "createdDateTime" : "2021-12-10T18:05:18.280645",
+        "status" : "ACTIVE",
+        "region" : "GANGWONDO",
+        "createdDateTime" : "2021-12-15 19:48:21",
         "productCategory" : "MEAT",
-        "region" : "GANGWONDO"
-      }
+        "memberQueryResponse" : null
+      },
+      "quantity" : 500
     } ]
   },
   "_links" : {
     "self" : {
-      "href" : "https://localhost:8443/api/carts/34?page=0&amp;size=10"
+      "href" : "https://localhost:8443/api/carts/34?page=0&amp;amp;size=10"
     }
   },
   "page" : {

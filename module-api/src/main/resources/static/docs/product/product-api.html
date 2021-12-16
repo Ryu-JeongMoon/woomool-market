@@ -685,7 +685,7 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1005
+Content-Length: 988
 
 {
   "name" : "panda",
@@ -698,8 +698,8 @@ Content-Length: 1005
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-12-10T18:05:16.253443",
-    "lastModifiedDateTime" : "2021-12-10T18:05:16.253443",
+    "createdDateTime" : "2021-12-15 19:48:20",
+    "lastModifiedDateTime" : "2021-12-15 19:48:20",
     "leaveDateTime" : null,
     "authority" : "ROLE_SELLER",
     "address" : {
@@ -707,12 +707,12 @@ Content-Length: 1005
       "street" : "yeonhui",
       "zipcode" : "01023"
     },
-    "authProvider" : null,
+    "authProvider" : "LOCAL",
     "status" : "ACTIVE"
   },
   "price" : 50000,
   "stock" : 10000,
-  "createdDateTime" : "2021-12-10T18:05:16.25599",
+  "createdDateTime" : "2021-12-15 19:48:20",
   "productCategory" : "MEAT",
   "region" : "GANGWONDO",
   "_links" : {
@@ -790,63 +790,63 @@ Host: localhost:8443</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].memberResponse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].memberQueryResponse</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">판매자</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].description</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].productImage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].productImage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사진</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].price</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].price</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가격</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].stock</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].stock</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">재고</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].createdDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].createdDateTime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 등록일</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].productCategory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].productCategory</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 분류</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].region</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지역</p></td>
@@ -871,43 +871,41 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1114
+Content-Length: 996
 
 {
   "_embedded" : {
-    "productResponseList" : [ {
+    "productQueryResponseList" : [ {
+      "id" : 9,
       "name" : "panda",
       "description" : "panda is bear",
       "productImage" : null,
-      "memberResponse" : {
-        "id" : 30,
-        "email" : "panda@naver.com",
-        "nickname" : "panda",
-        "profileImage" : null,
-        "phone" : "01012345678",
-        "license" : null,
-        "createdDateTime" : "2021-12-10T18:05:16.339224",
-        "lastModifiedDateTime" : "2021-12-10T18:05:16.339224",
-        "leaveDateTime" : null,
-        "authority" : "ROLE_SELLER",
-        "address" : {
-          "city" : "seoul",
-          "street" : "yeonhui",
-          "zipcode" : "01023"
-        },
-        "authProvider" : null,
-        "status" : "ACTIVE"
-      },
       "price" : 50000,
       "stock" : 10000,
-      "createdDateTime" : "2021-12-10T18:05:16.341782",
+      "status" : "ACTIVE",
+      "region" : "GANGWONDO",
+      "createdDateTime" : "2021-12-15 19:48:20",
       "productCategory" : "MEAT",
-      "region" : "GANGWONDO"
+      "memberQueryResponse" : {
+        "id" : null,
+        "email" : "panda@naver.com",
+        "nickname" : null,
+        "profileImage" : null,
+        "phone" : null,
+        "license" : null,
+        "createdDateTime" : null,
+        "lastModifiedDateTime" : null,
+        "leaveDateTime" : null,
+        "authority" : null,
+        "address" : null,
+        "authProvider" : null,
+        "status" : null
+      }
     } ]
   },
   "_links" : {
     "self" : {
-      "href" : "https://localhost:8443/api/products?page=0&amp;size=10"
+      "href" : "https://localhost:8443/api/products?page=0&amp;amp;size=10"
     }
   },
   "page" : {
@@ -1234,50 +1232,14 @@ Host: localhost:8443
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/hal+json
+Location: https://localhost:8443/api/products/10
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
-X-Frame-Options: SAMEORIGIN
-Content-Length: 829
-
-{
-  "name" : "bear",
-  "description" : "good panda",
-  "productImage" : null,
-  "memberResponse" : {
-    "id" : 31,
-    "email" : "panda@naver.com",
-    "nickname" : "panda",
-    "profileImage" : null,
-    "phone" : "01012345678",
-    "license" : null,
-    "createdDateTime" : "2021-12-10T18:05:16.427549",
-    "lastModifiedDateTime" : "2021-12-10T18:05:16.427549",
-    "leaveDateTime" : null,
-    "authority" : "ROLE_SELLER",
-    "address" : {
-      "city" : "seoul",
-      "street" : "yeonhui",
-      "zipcode" : "01023"
-    },
-    "authProvider" : null,
-    "status" : "ACTIVE"
-  },
-  "price" : 50000,
-  "stock" : 10000,
-  "createdDateTime" : "2021-12-10T18:05:16.429674",
-  "productCategory" : "MEAT",
-  "region" : "GANGWONDO",
-  "_links" : {
-    "self" : {
-      "href" : "https://localhost:8443/api/products/10"
-    }
-  }
-}</code></pre>
+X-Frame-Options: SAMEORIGIN</code></pre>
 </div>
 </div>
 </div>
@@ -1395,56 +1357,56 @@ Host: localhost:8443</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상풍 이름</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].description</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 설명</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].price</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].price</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">가격</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].stock</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].stock</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">재고</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].region</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지역</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].productCategory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].productCategory</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">판매자</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].productImage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].productImage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 이미지</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productResponseList[].memberResponse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.productQueryResponseList[0].memberQueryResponse</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">판매자</p></td>
@@ -1469,43 +1431,41 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1120
+Content-Length: 1003
 
 {
   "_embedded" : {
-    "productResponseList" : [ {
+    "productQueryResponseList" : [ {
+      "id" : 11,
       "name" : "panda",
       "description" : "panda is bear",
       "productImage" : null,
-      "memberResponse" : {
-        "id" : 32,
-        "email" : "panda@naver.com",
-        "nickname" : "panda",
-        "profileImage" : null,
-        "phone" : "01012345678",
-        "license" : null,
-        "createdDateTime" : "2021-12-10T18:05:16.512271",
-        "lastModifiedDateTime" : "2021-12-10T18:05:16.512271",
-        "leaveDateTime" : null,
-        "authority" : "ROLE_SELLER",
-        "address" : {
-          "city" : "seoul",
-          "street" : "yeonhui",
-          "zipcode" : "01023"
-        },
-        "authProvider" : null,
-        "status" : "ACTIVE"
-      },
       "price" : 50000,
       "stock" : 10000,
-      "createdDateTime" : "2021-12-10T18:05:16.514594",
+      "status" : "ACTIVE",
+      "region" : "GANGWONDO",
+      "createdDateTime" : "2021-12-15 19:48:20",
       "productCategory" : "MEAT",
-      "region" : "GANGWONDO"
+      "memberQueryResponse" : {
+        "id" : null,
+        "email" : "panda@naver.com",
+        "nickname" : null,
+        "profileImage" : null,
+        "phone" : null,
+        "license" : null,
+        "createdDateTime" : null,
+        "lastModifiedDateTime" : null,
+        "leaveDateTime" : null,
+        "authority" : null,
+        "address" : null,
+        "authProvider" : null,
+        "status" : null
+      }
     } ]
   },
   "_links" : {
     "self" : {
-      "href" : "https://localhost:8443/api/products/admin?page=0&amp;size=10"
+      "href" : "https://localhost:8443/api/products/admin?page=0&amp;amp;size=10"
     }
   },
   "page" : {

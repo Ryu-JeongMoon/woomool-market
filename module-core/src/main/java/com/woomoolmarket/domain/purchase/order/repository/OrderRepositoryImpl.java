@@ -1,7 +1,6 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
 import static com.woomoolmarket.domain.purchase.order.entity.QOrder.order;
-import static com.woomoolmarket.domain.purchase.order_product.entity.QOrderProduct.*;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
@@ -10,7 +9,6 @@ import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.query.QOrderQueryResponse;
-import com.woomoolmarket.domain.purchase.order_product.entity.QOrderProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,9 +24,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     public Page<OrderQueryResponse> searchTemplateBy(BooleanBuilder booleanBuilder, Pageable pageable) {
         QueryResults<OrderQueryResponse> results =
             queryFactory.select(
-                    new QOrderQueryResponse(order.id, order.member.email, order.delivery, order.orderStatus, order.orderProducts))
+                    new QOrderQueryResponse(order))
                 .from(order)
-                .join(order.orderProducts, orderProduct)
                 .join(order.member)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
