@@ -121,7 +121,7 @@ public class BoardController {
     public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageForAdminBy(
         BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<BoardQueryResponse> queryResponsePage = boardService.searchByAdmin(condition, pageable);
+        Page<BoardQueryResponse> queryResponsePage = boardService.searchForAdminBy(condition, pageable);
         return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
     }
 }

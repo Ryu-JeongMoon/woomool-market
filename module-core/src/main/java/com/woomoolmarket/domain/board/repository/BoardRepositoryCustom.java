@@ -8,5 +8,5 @@ public interface BoardRepositoryCustom {
 
     Page<BoardQueryResponse> searchBy(BoardSearchCondition condition, Pageable pageable);
 
-    Page<BoardQueryResponse> searchByAdmin(BoardSearchCondition condition, Pageable pageable);
+    Page<BoardQueryResponse> searchForAdminBy(BoardSearchCondition condition, Pageable pageable);
 }

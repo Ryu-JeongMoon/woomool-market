@@ -1,15 +1,18 @@
 package com.woomoolmarket.domain.purchase.order.repository;
 
-import static com.woomoolmarket.domain.member.entity.QMember.member;
 import static com.woomoolmarket.domain.purchase.order.entity.QOrder.order;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.util.QueryDslUtils;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
-import java.util.List;
+import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
+import com.woomoolmarket.domain.purchase.order.query.QOrderQueryResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,12 +21,29 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Order> findByConditionForAdmin(OrderSearchCondition searchCondition) {
-        return queryFactory.selectFrom(order)
-            .leftJoin(order.member, member)
-            .fetchJoin()
-            .where(searchByAll(searchCondition))
-            .fetch();
+    public Page<OrderQueryResponse> searchTemplateBy(BooleanBuilder booleanBuilder, Pageable pageable) {
+        QueryResults<OrderQueryResponse> results =
+            queryFactory.select(
+                    new QOrderQueryResponse(order))
+                .from(order)
+                .join(order.member)
+                .where(booleanBuilder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(order.id.desc())
+                .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable) {
+        return searchTemplateBy(combineForSelfBy(memberId), pageable);
+    }
+
+    @Override
+    public Page<OrderQueryResponse> searchForAdminBy(OrderSearchCondition condition, Pageable pageable) {
+        return searchTemplateBy(combineForAdminBy(condition), pageable);
     }
 
     private BooleanBuilder memberIdEquals(Long memberId) {
@@ -38,9 +58,13 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         return QueryDslUtils.nullSafeBuilder(() -> order.orderStatus.eq(orderStatus));
     }
 
-    private BooleanBuilder searchByAll(OrderSearchCondition searchCondition) {
-        return memberIdEquals(searchCondition.getMemberId())
-            .and(emailContains(searchCondition.getEmail()))
-            .and(statusEquals(searchCondition.getOrderStatus()));
+    private BooleanBuilder combineForSelfBy(Long memberId) {
+        return memberIdEquals(memberId);
+    }
+
+    private BooleanBuilder combineForAdminBy(OrderSearchCondition condition) {
+        return memberIdEquals(condition.getMemberId())
+            .and(emailContains(condition.getEmail()))
+            .and(statusEquals(condition.getOrderStatus()));
     }
 }

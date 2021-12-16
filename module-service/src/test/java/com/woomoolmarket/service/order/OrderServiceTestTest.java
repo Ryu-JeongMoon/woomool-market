@@ -6,11 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
+import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
-import com.woomoolmarket.service.order.dto.response.OrderResponse;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +17,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Log4j2
 class OrderServiceTestTest extends ServiceTestConfig {
@@ -89,7 +90,7 @@ class OrderServiceTestTest extends ServiceTestConfig {
     @Test
     @DisplayName("주문 내역 조회")
     void findOrdersByMemberIdTest() {
-        assertThat(orderService.getListByMemberId(MEMBER_ID)).isNotNull();
+        assertThat(orderService.searchBy(MEMBER_ID, Pageable.ofSize(10))).isNotNull();
     }
 
     @Test
@@ -105,7 +106,7 @@ class OrderServiceTestTest extends ServiceTestConfig {
             .orderStatus(OrderStatus.ONGOING)
             .build();
 
-        List<OrderResponse> orderResponses = orderService.getListBySearchCondition(condition);
-        assertThat(orderResponses.size()).isEqualTo(1);
+        Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, Pageable.ofSize(10));
+        assertThat(orderQueryResponses.getTotalElements()).isEqualTo(1);
     }
 }

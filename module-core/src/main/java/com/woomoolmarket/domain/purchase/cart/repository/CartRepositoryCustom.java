@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CartRepositoryCustom {
 
-    Page<CartQueryResponse> searchBy(Pageable pageable);
-
     Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable);
+
+    Page<CartQueryResponse> searchForAdminBy(Pageable pageable);
 }

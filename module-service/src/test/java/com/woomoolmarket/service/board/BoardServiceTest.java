@@ -78,10 +78,10 @@ class BoardServiceTest extends ServiceTestConfig {
     @DisplayName("Admin 전용 검색")
     void getListBySearchConditionForAdmin() {
         BoardSearchCondition searchCondition1 = new BoardSearchCondition();
-        Page<BoardQueryResponse> page1 = boardService.searchByAdmin(searchCondition1, Pageable.ofSize(10));
+        Page<BoardQueryResponse> page1 = boardService.searchForAdminBy(searchCondition1, Pageable.ofSize(10));
 
         BoardSearchCondition searchCondition2 = BoardSearchCondition.builder().status(Status.INACTIVE).build();
-        Page<BoardQueryResponse> page2 = boardService.searchByAdmin(searchCondition2, Pageable.ofSize(10));
+        Page<BoardQueryResponse> page2 = boardService.searchForAdminBy(searchCondition2, Pageable.ofSize(10));
 
         assertThat(page1.getTotalElements()).isEqualTo(3);
         assertThat(page2.getTotalElements()).isEqualTo(0);
@@ -93,7 +93,7 @@ class BoardServiceTest extends ServiceTestConfig {
         BoardSearchCondition condition = BoardSearchCondition.builder()
             .email("bear")
             .build();
-        Page<BoardQueryResponse> page = boardService.searchByAdmin(condition, Pageable.ofSize(10));
+        Page<BoardQueryResponse> page = boardService.searchForAdminBy(condition, Pageable.ofSize(10));
         assertThat(page.getTotalElements()).isEqualTo(1);
     }
 

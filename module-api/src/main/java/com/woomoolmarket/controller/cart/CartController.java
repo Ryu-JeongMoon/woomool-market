@@ -57,7 +57,7 @@ public class CartController {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
-        Long cartId = cartService.addBy(cartRequest);
+        Long cartId = cartService.add(cartRequest);
         URI createdUri = linkTo(methodOn(CartController.class).getBy(memberId, cartId)).toUri();
         return ResponseEntity.created(createdUri).build();
     }
@@ -65,7 +65,7 @@ public class CartController {
     @DeleteMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
-        cartService.removeAllBy(memberId);
+        cartService.removeAll(memberId);
         return ResponseEntity.noContent().build();
     }
 
@@ -85,7 +85,7 @@ public class CartController {
     @DeleteMapping("/{memberId}/{cartId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> remove(@PathVariable Long memberId, @PathVariable Long cartId) {
-        cartService.removeBy(cartId);
+        cartService.remove(cartId);
         return ResponseEntity.noContent().build();
     }
 
@@ -95,7 +95,7 @@ public class CartController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageForAdminBy(@PageableDefault Pageable pageable) {
 
-        Page<CartQueryResponse> queryResponsePage = cartService.searchBy(pageable);
+        Page<CartQueryResponse> queryResponsePage = cartService.searchForAdminBy(pageable);
         return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
     }
 }

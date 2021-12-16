@@ -4,13 +4,12 @@ package com.woomoolmarket.controller.order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
+import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.service.order.OrderService;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
-import com.woomoolmarket.util.PageUtil;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,16 +40,15 @@ public class OrderController {
 
     private final ObjectMapper objectMapper;
     private final OrderService orderService;
-    private final PagedResourcesAssembler<OrderResponse> assembler;
+    private final PagedResourcesAssembler<OrderQueryResponse> queryAssembler;
 
     @GetMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<OrderResponse>>> getOrders(
+    public ResponseEntity<PagedModel<EntityModel<OrderQueryResponse>>> getPageBy(
         @PathVariable Long memberId, @PageableDefault Pageable pageable) {
 
-        List<OrderResponse> orderResponses = orderService.getListByMemberId(memberId);
-        Page<OrderResponse> responsePage = PageUtil.toPage(orderResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<OrderQueryResponse> orderQueryResponsePage = orderService.searchBy(memberId, pageable);
+        return ResponseEntity.ok(queryAssembler.toModel(orderQueryResponsePage));
     }
 
     @PostMapping
@@ -83,11 +81,10 @@ public class OrderController {
     /* FOR ADMIN */
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<OrderResponse>>> getListBySearchConditionForAdmin(
+    public ResponseEntity<PagedModel<EntityModel<OrderQueryResponse>>> getPageForAdminBy(
         OrderSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<OrderResponse> orderResponses = orderService.getListBySearchCondition(condition);
-        Page<OrderResponse> responsePage = PageUtil.toPage(orderResponses, pageable);
-        return ResponseEntity.ok().body(assembler.toModel(responsePage));
+        Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, pageable);
+        return ResponseEntity.ok().body(queryAssembler.toModel(orderQueryResponses));
     }
 }

@@ -53,12 +53,12 @@ class OrderControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.ALL))
             .andDo(document("order/get-orders",
                 relaxedResponseFields(
-                    fieldWithPath("_embedded.orderResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
-                    fieldWithPath("_embedded.orderResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
-                    subsectionWithPath("_embedded.orderResponseList[].orderProducts").type(JsonFieldType.ARRAY)
+                    fieldWithPath("_embedded.orderQueryResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
+                    fieldWithPath("_embedded.orderQueryResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
+                    subsectionWithPath("_embedded.orderQueryResponseList[].orderProducts").type(JsonFieldType.ARRAY)
                         .description("주문 상품 목록"),
-                    fieldWithPath("_embedded.orderResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
-                    subsectionWithPath("_embedded.orderResponseList[].memberResponse").type(JsonFieldType.OBJECT)
+                    fieldWithPath("_embedded.orderQueryResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
+                    subsectionWithPath("_embedded.orderQueryResponseList[].email").type(JsonFieldType.STRING)
                         .description("주문 회원"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
                     subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
@@ -119,12 +119,12 @@ class OrderControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.ALL))
             .andDo(document("order/admin-get-orders",
                 relaxedResponseFields(
-                    fieldWithPath("_embedded.orderResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
-                    fieldWithPath("_embedded.orderResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
-                    subsectionWithPath("_embedded.orderResponseList[].orderProducts").type(JsonFieldType.ARRAY)
+                    fieldWithPath("_embedded.orderQueryResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
+                    fieldWithPath("_embedded.orderQueryResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
+                    subsectionWithPath("_embedded.orderQueryResponseList[].orderProducts").type(JsonFieldType.ARRAY)
                         .description("주문 상품 목록"),
-                    fieldWithPath("_embedded.orderResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
-                    subsectionWithPath("_embedded.orderResponseList[].memberResponse").type(JsonFieldType.OBJECT)
+                    fieldWithPath("_embedded.orderQueryResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
+                    subsectionWithPath("_embedded.orderQueryResponseList[].email").type(JsonFieldType.STRING)
                         .description("주문 회원"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
                     subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")

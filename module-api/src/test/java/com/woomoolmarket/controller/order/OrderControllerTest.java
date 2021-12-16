@@ -51,10 +51,11 @@ class OrderControllerTest extends ApiControllerConfig {
                 get("/api/orders/" + MEMBER_ID)
                     .accept(MediaType.ALL))
             .andDo(print())
-            .andExpect(jsonPath("_embedded.orderResponseList[0].id").value(ORDER_ID))
-            .andExpect(jsonPath("_embedded.orderResponseList[0].orderStatus").value("ONGOING"))
-            .andExpect(jsonPath("_embedded.orderResponseList[0].orderProducts").exists())
-            .andExpect(jsonPath("_embedded.orderResponseList[0].delivery").exists())
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].id").value(ORDER_ID))
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderStatus").value("ONGOING"))
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderProducts").exists())
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].delivery").exists())
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].email").exists())
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());
     }
@@ -145,11 +146,11 @@ class OrderControllerTest extends ApiControllerConfig {
                     .contentType(MediaType.ALL))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.orderResponseList[0].id").value(ORDER_ID))
-            .andExpect(jsonPath("_embedded.orderResponseList[0].orderStatus").value("ONGOING"))
-            .andExpect(jsonPath("_embedded.orderResponseList[0].orderProducts").exists())
-            .andExpect(jsonPath("_embedded.orderResponseList[0].delivery").exists())
-            .andExpect(jsonPath("_embedded.orderResponseList[0].memberResponse").exists())
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].id").value(ORDER_ID))
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderStatus").value("ONGOING"))
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderProducts").exists())
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].delivery").exists())
+            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].email").exists())
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());
     }
