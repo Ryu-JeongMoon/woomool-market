@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class OrderSearchCondition {
 
     private Long memberId;
+
     private String email;
+
     private OrderStatus orderStatus;
 }

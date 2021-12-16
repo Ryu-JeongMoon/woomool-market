@@ -64,14 +64,14 @@ class CartServiceTest extends ServiceTestConfig {
             .quantity(500)
             .build();
 
-        Long cartId = cartService.addBy(cartRequest);
+        Long cartId = cartService.add(cartRequest);
         assertThat(cartId).isNotNull();
     }
 
     @Test
     @DisplayName("장바구니 단건 삭제")
     void remove() {
-        cartService.removeBy(CART_ID);
+        cartService.remove(CART_ID);
         Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
         assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
     }
@@ -79,7 +79,7 @@ class CartServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("장바구니 다건 삭제")
     void removeAll() {
-        cartService.removeAllBy(MEMBER_ID);
+        cartService.removeAll(MEMBER_ID);
         Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
         assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
     }

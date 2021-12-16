@@ -36,17 +36,12 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CartQueryResponse> searchBy(Pageable pageable) {
-        return cartRepository.searchBy(pageable);
-    }
-
-    @Transactional(readOnly = true)
     public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
         return cartRepository.searchBy(memberId, pageable);
     }
 
     @Transactional
-    public Long addBy(CartRequest cartRequest) {
+    public Long add(CartRequest cartRequest) {
         Member member = memberRepository.findByIdAndStatus(cartRequest.getMemberId(), Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
@@ -63,7 +58,7 @@ public class CartService {
     }
 
     @Transactional
-    public void removeBy(Long cartId) {
+    public void remove(Long cartId) {
         cartRepository.findById(cartId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
 
@@ -71,10 +66,17 @@ public class CartService {
     }
 
     @Transactional
-    public void removeAllBy(Long memberId) {
+    public void removeAll(Long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
         cartRepository.deleteByMember(member);
+    }
+
+
+    /* FOR ADMIN */
+    @Transactional(readOnly = true)
+    public Page<CartQueryResponse> searchForAdminBy(Pageable pageable) {
+        return cartRepository.searchForAdminBy(pageable);
     }
 }

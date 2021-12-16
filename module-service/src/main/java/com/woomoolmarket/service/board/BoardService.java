@@ -116,7 +116,7 @@ public class BoardService {
     /* FOR ADMIN */
     @Transactional(readOnly = true)
     @Cacheable(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", unless = "#result==null")
-    public Page<BoardQueryResponse> searchByAdmin(BoardSearchCondition condition, Pageable pageable) {
-        return boardRepository.searchByAdmin(condition, pageable);
+    public Page<BoardQueryResponse> searchForAdminBy(BoardSearchCondition condition, Pageable pageable) {
+        return boardRepository.searchForAdminBy(condition, pageable);
     }
 }

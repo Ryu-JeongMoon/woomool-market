@@ -6,6 +6,7 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
+import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +36,8 @@ public class OrderService {
     private final OrderResponseMapper orderResponseMapper;
 
     @Transactional(readOnly = true)
-    public List<OrderResponse> getListByMemberId(Long memberId) {
-        return orderRepository.findByMemberId(memberId)
-            .stream()
-            .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList());
+    public Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable) {
+        return orderRepository.searchBy(memberId, pageable);
     }
 
     @Transactional
@@ -112,11 +112,8 @@ public class OrderService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-    public List<OrderResponse> getListBySearchCondition(OrderSearchCondition condition) {
-        return orderRepository.findByConditionForAdmin(condition)
-            .stream()
-            .map(orderResponseMapper::toDto)
-            .collect(Collectors.toList());
+    public Page<OrderQueryResponse> searchForAdminBy(OrderSearchCondition condition, Pageable pageable) {
+        return orderRepository.searchForAdminBy(condition, pageable);
     }
 }
 

@@ -20,7 +20,7 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    private Page<CartQueryResponse> searchByTemplate(BooleanBuilder booleanBuilder, Pageable pageable) {
+    private Page<CartQueryResponse> searchTemplateBy(BooleanBuilder booleanBuilder, Pageable pageable) {
         QueryResults<CartQueryResponse> results = queryFactory
             .select(new QCartQueryResponse(cart.id, cart.member, cart.product, cart.quantity))
             .from(cart)
@@ -36,13 +36,13 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
     }
 
     @Override
-    public Page<CartQueryResponse> searchBy(Pageable pageable) {
-        return searchByTemplate(new BooleanBuilder(), pageable);
+    public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
+        return searchTemplateBy(memberIdEquals(memberId), pageable);
     }
 
     @Override
-    public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
-        return searchByTemplate(memberIdEquals(memberId), pageable);
+    public Page<CartQueryResponse> searchForAdminBy(Pageable pageable) {
+        return searchTemplateBy(null, pageable);
     }
 
     private BooleanBuilder memberIdEquals(Long memberId) {
