@@ -12,6 +12,7 @@ import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.util.PageUtil;
+import com.woomoolmarket.util.constant.MemberConstants;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +57,8 @@ public class MemberController {
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             defaultLink.withSelfRel(),
-            defaultLink.withRel("modify-member"),
-            defaultLink.withRel("leave-member")
+            defaultLink.withRel(MemberConstants.MODIFY),
+            defaultLink.withRel(MemberConstants.LEAVE)
         );
 
         return ResponseEntity.ok(responseModel);
@@ -118,9 +119,9 @@ public class MemberController {
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel(),
-            linkTo(methodOn(MemberController.class).getMember(previousId)).withRel("previous-member"),
-            linkTo(methodOn(MemberController.class).getMember(nextId)).withRel("next-member"),
-            linkTo(methodOn(MemberController.class).getMember(id)).withRel("modify-member"));
+            linkTo(methodOn(MemberController.class).getMember(previousId)).withRel(MemberConstants.PREVIOUS_MEMBER),
+            linkTo(methodOn(MemberController.class).getMember(nextId)).withRel(MemberConstants.NEXT_MEMBER),
+            linkTo(methodOn(MemberController.class).getMember(id)).withRel(MemberConstants.MODIFY));
 
         return ResponseEntity.ok().body(responseModel);
     }

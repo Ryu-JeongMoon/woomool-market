@@ -13,6 +13,7 @@ import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
+import com.woomoolmarket.util.constant.BoardConstants;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -67,8 +68,8 @@ public class BoardController {
             EntityModel.of(
                 boardResponse,
                 defaultLink.withSelfRel(),
-                defaultLink.withRel("modify-board"),
-                defaultLink.withRel("delete-board"));
+                defaultLink.withRel(BoardConstants.MODIFY),
+                defaultLink.withRel(BoardConstants.DELETE));
 
         return ResponseEntity.ok(responseModel);
     }

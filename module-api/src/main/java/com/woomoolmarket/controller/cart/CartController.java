@@ -9,6 +9,7 @@ import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.service.cart.CartService;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
+import com.woomoolmarket.util.constant.CartConstants;
 import java.net.URI;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +78,7 @@ public class CartController {
         EntityModel<CartResponse> responseModel = EntityModel.of(
             cartResponse,
             linkTo(methodOn(CartController.class).getBy(memberId, cartId)).withSelfRel(),
-            linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel("cart-list"));
+            linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel(CartConstants.LIST));
 
         return ResponseEntity.ok().body(responseModel);
     }
