@@ -13,6 +13,7 @@ import com.woomoolmarket.service.product.ProductService;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
+import com.woomoolmarket.util.constant.ProductConstants;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,6 @@ public class ProductController {
 
     private final ObjectMapper objectMapper;
     private final ProductService productService;
-    private final PagedResourcesAssembler<ProductResponse> assembler;
     private final PagedResourcesAssembler<ProductQueryResponse> queryAssembler;
 
     @GetMapping
@@ -78,8 +78,8 @@ public class ProductController {
             EntityModel.of(
                 productResponse,
                 defaultLink.withSelfRel(),
-                defaultLink.withRel("modify-product"),
-                defaultLink.withRel("delete-product"));
+                defaultLink.withRel(ProductConstants.MODIFY),
+                defaultLink.withRel(ProductConstants.DELETE));
 
         return ResponseEntity.ok(productModel);
     }
