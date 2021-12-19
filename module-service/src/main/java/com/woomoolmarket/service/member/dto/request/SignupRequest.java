@@ -2,6 +2,7 @@ package com.woomoolmarket.service.member.dto.request;
 
 import com.woomoolmarket.common.constant.RegexpConstants;
 import com.woomoolmarket.common.embeddable.Address;
+import javax.annotation.Nullable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -32,6 +33,11 @@ public class SignupRequest {
     @NotBlank
     @Pattern(regexp = RegexpConstants.SPECIAL_LETTER_INCLUDE)
     private String password;
+
+    @Size(min = 10, max = 10)
+    @Nullable
+    @Pattern(regexp = RegexpConstants.NUMBER_ONLY)
+    private String license;
 
     private Address address;
 }
