@@ -238,7 +238,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(document("member/admin-get-members",
                 relaxedResponseFields(
-                    subsectionWithPath("_embedded.memberResponseList").type(JsonFieldType.ARRAY).description("회원 리스트"),
+                    subsectionWithPath("_embedded.memberQueryResponseList").type(JsonFieldType.ARRAY).description("회원 리스트"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
                     subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
                 )));

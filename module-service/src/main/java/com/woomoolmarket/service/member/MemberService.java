@@ -4,6 +4,7 @@ import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
@@ -12,12 +13,13 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignupRequestMapper;
-import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,13 +57,15 @@ public class MemberService {
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public MemberResponse joinAsMember(SignupRequest signUpRequest) {
-        return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_USER));
+        Member member = join(signUpRequest, Authority.ROLE_USER);
+        return memberResponseMapper.toDto(member);
     }
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
     public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
-        return memberResponseMapper.toDto(join(signUpRequest, Authority.ROLE_SELLER));
+        Member member = join(signUpRequest, Authority.ROLE_SELLER);
+        return memberResponseMapper.toDto(member);
     }
 
     @Transactional
@@ -73,7 +77,6 @@ public class MemberService {
         Member member = signupRequestMapper.toEntity(signUpRequest);
         member.changePassword(passwordEncoder.encode(member.getPassword()));
         member.assignAuthority(authority);
-
         return memberRepository.save(member);
     }
 
@@ -104,10 +107,9 @@ public class MemberService {
 
 
     /* FOR ADMIN */
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "membersForAdmin", unless = "#result==null", cacheManager = "gsonCacheManager")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "membersForAdmin", unless = "#result==null")
     @Transactional(readOnly = true)
-    public List<MemberResponse> getListBySearchConditionForAdmin(MemberSearchCondition condition) {
-        List<Member> members = memberRepository.findByConditionForAdmin(condition);
-        return memberResponseMapper.toDtoList(members);
+    public Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable) {
+        return memberRepository.searchForAdminBy(condition, pageable);
     }
 }

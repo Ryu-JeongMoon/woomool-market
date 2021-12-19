@@ -705,7 +705,7 @@ Content-Length: 992
   "boardCategory" : "NOTICE",
   "endDateTime" : "2099-01-01 01:01:01",
   "startDateTime" : "2021-01-01 01:01:01",
-  "createdDateTime" : "2021-12-17 18:32:16",
+  "createdDateTime" : "2021-12-20 01:00:11",
   "memberResponse" : {
     "id" : 5,
     "email" : "panda@naver.com",
@@ -713,8 +713,8 @@ Content-Length: 992
     "profileImage" : null,
     "phone" : "01012345678",
     "license" : null,
-    "createdDateTime" : "2021-12-17 18:32:16",
-    "lastModifiedDateTime" : "2021-12-17 18:32:16",
+    "createdDateTime" : "2021-12-20 01:00:11",
+    "lastModifiedDateTime" : "2021-12-20 01:00:11",
     "leaveDateTime" : null,
     "authority" : "ROLE_USER",
     "address" : {
@@ -854,7 +854,7 @@ Content-Length: 961
       "boardCategory" : "NOTICE",
       "endDateTime" : "2099-01-01 01:01:01",
       "startDateTime" : "2021-01-01 01:01:01",
-      "createdDateTime" : "2021-12-17 18:32:17",
+      "createdDateTime" : "2021-12-20 01:00:12",
       "memberResponse" : {
         "id" : null,
         "email" : "panda@naver.com",
@@ -907,7 +907,7 @@ Content-Length: 961
   "title" : "polar",
   "content" : "bear",
   "boardCategory" : "FREE",
-  "startDateTime" : "2021-12-17 18:32:16",
+  "startDateTime" : "2021-12-20 01:00:12",
   "endDateTime" : "2099-01-01 01:01:01"
 }'</code></pre>
 </div>
@@ -922,7 +922,7 @@ Content-Length: 961
   "title" : "polar",
   "content" : "bear",
   "boardCategory" : "FREE",
-  "startDateTime" : "2021-12-17 18:32:16",
+  "startDateTime" : "2021-12-20 01:00:12",
   "endDateTime" : "2099-01-01 01:01:01"
 }' | http POST 'https://localhost:8443/api/boards' \
     'Content-Type:application/json;charset=UTF-8' \
@@ -1010,7 +1010,7 @@ Host: localhost:8443
   "title" : "polar",
   "content" : "bear",
   "boardCategory" : "FREE",
-  "startDateTime" : "2021-12-17 18:32:16",
+  "startDateTime" : "2021-12-20 01:00:12",
   "endDateTime" : "2099-01-01 01:01:01"
 }</code></pre>
 </div>
@@ -1144,7 +1144,7 @@ Host: localhost:8443
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 405 Method Not Allowed
-Allow: GET, POST
+Allow: POST, GET
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1329,7 +1329,7 @@ Content-Length: 967
       "boardCategory" : "NOTICE",
       "endDateTime" : "2099-01-01 01:01:01",
       "startDateTime" : "2021-01-01 01:01:01",
-      "createdDateTime" : "2021-12-17 18:32:17",
+      "createdDateTime" : "2021-12-20 01:00:12",
       "memberResponse" : {
         "id" : null,
         "email" : "panda@naver.com",

@@ -1,5 +1,6 @@
 package com.woomoolmarket.domain.member.query;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
@@ -7,15 +8,12 @@ import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class MemberQueryResponse implements Serializable {
 
     private Long id;
@@ -43,6 +41,28 @@ public class MemberQueryResponse implements Serializable {
     private AuthProvider authProvider;
 
     private Status status;
+
+    @Builder
+    @QueryProjection
+    public MemberQueryResponse(
+        Long id, String email, String nickname, String profileImage, String phone, String license,
+        Address address, AuthProvider authProvider, Status status, Authority authority,
+        LocalDateTime createdDateTime, LocalDateTime lastModifiedDateTime, LocalDateTime leaveDateTime) {
+
+        this.id = id;
+        this.email = email;
+        this.phone = phone;
+        this.status = status;
+        this.license = license;
+        this.address = address;
+        this.nickname = nickname;
+        this.authority = authority;
+        this.authProvider = authProvider;
+        this.profileImage = profileImage;
+        this.leaveDateTime = leaveDateTime;
+        this.createdDateTime = createdDateTime;
+        this.lastModifiedDateTime = lastModifiedDateTime;
+    }
 
     public static MemberQueryResponse from(String email) {
         return MemberQueryResponse.builder()

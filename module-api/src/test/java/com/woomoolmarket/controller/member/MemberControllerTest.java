@@ -216,8 +216,8 @@ class MemberControllerTest extends ApiControllerConfig {
                 get("/api/members/admin"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.memberResponseList[0].id").value(MEMBER_ID))
-            .andExpect(jsonPath("_embedded.memberResponseList[0].email").value(MEMBER_EMAIL))
+            .andExpect(jsonPath("_embedded.memberQueryResponseList[0].id").value(MEMBER_ID))
+            .andExpect(jsonPath("_embedded.memberQueryResponseList[0].email").value(MEMBER_EMAIL))
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());
     }

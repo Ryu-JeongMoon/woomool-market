@@ -3,16 +3,20 @@ package com.woomoolmarket.domain.member.repository;
 import static com.woomoolmarket.domain.member.entity.QMember.member;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.query.MemberQueryResponse;
+import com.woomoolmarket.domain.member.query.QMemberQueryResponse;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -46,10 +50,20 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> findByConditionForAdmin(MemberSearchCondition searchCondition) {
-        return queryFactory.selectFrom(member)
-            .where(searchByAllForAdmin(searchCondition))
-            .fetch();
+    public Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable) {
+        QueryResults<MemberQueryResponse> results =
+            queryFactory.select(
+                    new QMemberQueryResponse(member.id, member.email, member.nickname, member.profileImage, member.phone,
+                        member.license, member.address, member.authProvider, member.status, member.authority,
+                        member.createdDateTime, member.lastModifiedDateTime, member.leaveDateTime))
+                .from(member)
+                .where(combineForAdminBy(condition))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(member.id.desc())
+                .fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     private BooleanBuilder emailContains(String email) {
@@ -80,7 +94,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         return QueryDslUtils.nullSafeBuilder(() -> member.authority.eq(authority));
     }
 
-    private BooleanBuilder searchByAllForAdmin(MemberSearchCondition searchCondition) {
+    private BooleanBuilder combineForAdminBy(MemberSearchCondition searchCondition) {
         return emailContains(searchCondition.getEmail())
             .and(nicknameContains(searchCondition.getNickname()))
             .and(phoneContains(searchCondition.getPhone()))

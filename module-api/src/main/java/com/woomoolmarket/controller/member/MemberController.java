@@ -3,18 +3,16 @@ package com.woomoolmarket.controller.member;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogExecutionTime;
+import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
-import com.woomoolmarket.util.PageUtil;
 import com.woomoolmarket.util.constant.MemberConstants;
 import java.net.URI;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,7 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +46,7 @@ public class MemberController {
 
     private final ObjectMapper objectMapper;
     private final MemberService memberService;
-    private final PagedResourcesAssembler<MemberResponse> assembler;
+    private final PagedResourcesAssembler<MemberQueryResponse> assembler;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
@@ -66,8 +64,13 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity join(@RequestBody @Valid SignupRequest signUpRequest) {
-        MemberResponse memberResponse = memberService.joinAsSeller(signUpRequest);
+    public ResponseEntity<EntityModel<MemberResponse>> join(@RequestBody @Valid SignupRequest signUpRequest) {
+        MemberResponse memberResponse;
+        if (StringUtils.hasText(signUpRequest.getLicense())) {
+            memberResponse = memberService.joinAsSeller(signUpRequest);
+        } else {
+            memberResponse = memberService.joinAsMember(signUpRequest);
+        }
 
         EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
@@ -77,13 +80,7 @@ public class MemberController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity edit(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest,
-        BindingResult bindingResult) throws JsonProcessingException {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
-
+    public ResponseEntity<Void> edit(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest) {
         URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
         memberService.editMemberInfo(id, modifyRequest);
         return ResponseEntity.created(createdUri).build();
@@ -105,11 +102,9 @@ public class MemberController {
 
 
     /* FOR ADMIN */
-    /* TODO Query 3방 해결하세요 */
     @GetMapping("/admin/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<MemberResponse>> getForAdminBy(@PathVariable Long id) {
-
         MemberResponse memberResponse = memberService.findMemberById(id);
         Long previousId = memberService.findPreviousId(id);
         Long nextId = memberService.findNextId(id);
@@ -125,11 +120,10 @@ public class MemberController {
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getPageForAdminBy(
+    public ResponseEntity<PagedModel<EntityModel<MemberQueryResponse>>> getPageForAdminBy(
         MemberSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        Page<MemberResponse> responsePage = PageUtil.toPage(memberResponses, pageable);
-        return ResponseEntity.ok(assembler.toModel(responsePage));
+        Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, pageable);
+        return ResponseEntity.ok(assembler.toModel(queryResponsePage));
     }
 }
