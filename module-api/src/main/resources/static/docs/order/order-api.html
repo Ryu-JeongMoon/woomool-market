@@ -573,36 +573,36 @@ Host: localhost:8443</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 번호</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].orderStatus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].orderStatus</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 상태</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].orderProducts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].orderProducts</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 상품 목록</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].delivery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].delivery</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">배송 정보</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].memberResponse</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].email</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 회원</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -640,39 +640,21 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1916
+Content-Length: 1386
 
 {
   "_embedded" : {
-    "orderResponseList" : [ {
+    "orderQueryResponseList" : [ {
       "id" : 4,
-      "memberResponse" : {
-        "id" : 3,
-        "email" : "panda@naver.com",
-        "nickname" : "panda",
-        "profileImage" : null,
-        "phone" : "01012345678",
-        "license" : null,
-        "createdDateTime" : "2021-12-15 19:48:17",
-        "lastModifiedDateTime" : "2021-12-15 19:48:17",
-        "leaveDateTime" : null,
-        "authority" : "ROLE_USER",
-        "address" : {
-          "city" : "seoul",
-          "street" : "yeonhui",
-          "zipcode" : "01023"
-        },
-        "authProvider" : "LOCAL",
-        "status" : "ACTIVE"
-      },
       "orderStatus" : "ONGOING",
+      "email" : "panda@naver.com",
       "orderProducts" : [ {
-        "createdDateTime" : "2021-12-15 19:48:17",
-        "lastModifiedDateTime" : "2021-12-15 19:48:17",
+        "createdDateTime" : "2021-12-17 18:32:16",
+        "lastModifiedDateTime" : "2021-12-17 18:32:16",
         "id" : 3,
         "product" : {
-          "createdDateTime" : "2021-12-15 19:48:17",
-          "lastModifiedDateTime" : "2021-12-15 19:48:17",
+          "createdDateTime" : "2021-12-17 18:32:16",
+          "lastModifiedDateTime" : "2021-12-17 18:32:16",
           "createdBy" : "panda@naver.com",
           "lastModifiedBy" : "panda@naver.com",
           "id" : 3,
@@ -972,36 +954,36 @@ Host: localhost:8443</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 번호</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].orderStatus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].orderStatus</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 상태</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].orderProducts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].orderProducts</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 상품 목록</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].delivery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].delivery</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">배송 정보</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderResponseList[].memberResponse</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_embedded.orderQueryResponseList[].email</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주문 회원</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1039,39 +1021,21 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 1898
+Content-Length: 1368
 
 {
   "_embedded" : {
-    "orderResponseList" : [ {
+    "orderQueryResponseList" : [ {
       "id" : 5,
-      "memberResponse" : {
-        "id" : 4,
-        "email" : "panda@naver.com",
-        "nickname" : "panda",
-        "profileImage" : null,
-        "phone" : "01012345678",
-        "license" : null,
-        "createdDateTime" : "2021-12-15 19:48:17",
-        "lastModifiedDateTime" : "2021-12-15 19:48:17",
-        "leaveDateTime" : null,
-        "authority" : "ROLE_USER",
-        "address" : {
-          "city" : "seoul",
-          "street" : "yeonhui",
-          "zipcode" : "01023"
-        },
-        "authProvider" : "LOCAL",
-        "status" : "ACTIVE"
-      },
       "orderStatus" : "ONGOING",
+      "email" : "panda@naver.com",
       "orderProducts" : [ {
-        "createdDateTime" : "2021-12-15 19:48:17",
-        "lastModifiedDateTime" : "2021-12-15 19:48:17",
+        "createdDateTime" : "2021-12-17 18:32:16",
+        "lastModifiedDateTime" : "2021-12-17 18:32:16",
         "id" : 4,
         "product" : {
-          "createdDateTime" : "2021-12-15 19:48:17",
-          "lastModifiedDateTime" : "2021-12-15 19:48:17",
+          "createdDateTime" : "2021-12-17 18:32:16",
+          "lastModifiedDateTime" : "2021-12-17 18:32:16",
           "createdBy" : "user",
           "lastModifiedBy" : "user",
           "id" : 4,

@@ -30,7 +30,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
 @WithMockUser(username = "panda@naver.com", roles = "USER")
-public class BoardControllerDocumentation extends ApiDocumentationConfig {
+public class BoardControllerDocumentationTest extends ApiDocumentationConfig {
 
     @BeforeEach
     void init() {

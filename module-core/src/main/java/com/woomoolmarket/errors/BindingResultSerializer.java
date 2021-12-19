@@ -1,6 +1,7 @@
 package com.woomoolmarket.errors;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
@@ -14,10 +15,12 @@ public class BindingResultSerializer extends JsonSerializer<BindingResult> {
 
     @Override
     public void serialize(BindingResult bindingResult, JsonGenerator jsonGenerator, SerializerProvider sp) throws IOException {
+        jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
         jsonGenerator.writeStartArray();
         bindingResult.getFieldErrors().forEach(e -> {
             try {
                 jsonGenerator.writeStartObject();
+                jsonGenerator.writeStringField("exception", e.getClass().getSimpleName());
                 jsonGenerator.writeStringField("field", e.getField());
                 jsonGenerator.writeStringField("objectName", e.getObjectName());
                 jsonGenerator.writeStringField("code", e.getCode());
@@ -28,7 +31,7 @@ public class BindingResultSerializer extends JsonSerializer<BindingResult> {
                 }
                 jsonGenerator.writeEndObject();
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                log.info("[WOOMOOL-ERROR] :: BindingResult Error => {}", ioe.getMessage());
             }
         });
 
@@ -40,7 +43,7 @@ public class BindingResultSerializer extends JsonSerializer<BindingResult> {
                 jsonGenerator.writeStringField("defaultMessage", e.getDefaultMessage());
                 jsonGenerator.writeEndObject();
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                log.info("[WOOMOOL-ERROR] :: BindingResult Error => {}", ioe.getMessage());
             }
         });
         jsonGenerator.writeEndArray();

@@ -15,6 +15,7 @@ import com.woomoolmarket.util.PageUtil;
 import com.woomoolmarket.util.constant.MemberConstants;
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,9 +52,9 @@ public class MemberController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<MemberResponse>> getMember(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<MemberResponse>> getBy(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getMember(id));
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getBy(id));
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
             defaultLink.withSelfRel(),
@@ -65,43 +66,39 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity joinMember(
-        @Validated @RequestBody SignupRequest signUpRequest, BindingResult bindingResult) throws JsonProcessingException {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
+    public ResponseEntity join(@RequestBody @Valid SignupRequest signUpRequest) {
+        MemberResponse memberResponse = memberService.joinAsSeller(signUpRequest);
 
-        MemberResponse memberResponse = memberService.joinAsMember(signUpRequest);
         EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
-            linkTo(methodOn(MemberController.class).getMember(memberResponse.getId())).withSelfRel());
+            linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(memberModel);
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity editMemberInfo(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest,
+    public ResponseEntity edit(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest,
         BindingResult bindingResult) throws JsonProcessingException {
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
         }
 
-        URI createdUri = linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel().toUri();
+        URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
         memberService.editMemberInfo(id, modifyRequest);
         return ResponseEntity.created(createdUri).build();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> leaveMember(@PathVariable Long id) {
+    public ResponseEntity<Void> leave(@PathVariable Long id) {
         memberService.leaveSoftly(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/deleted/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> restoreMember(@PathVariable Long id) {
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
         memberService.restore(id);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -111,24 +108,24 @@ public class MemberController {
     /* TODO Query 3방 해결하세요 */
     @GetMapping("/admin/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<MemberResponse>> getOneForAdmin(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<MemberResponse>> getForAdminBy(@PathVariable Long id) {
 
         MemberResponse memberResponse = memberService.findMemberById(id);
         Long previousId = memberService.findPreviousId(id);
         Long nextId = memberService.findNextId(id);
 
         EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
-            linkTo(methodOn(MemberController.class).getMember(id)).withSelfRel(),
-            linkTo(methodOn(MemberController.class).getMember(previousId)).withRel(MemberConstants.PREVIOUS_MEMBER),
-            linkTo(methodOn(MemberController.class).getMember(nextId)).withRel(MemberConstants.NEXT_MEMBER),
-            linkTo(methodOn(MemberController.class).getMember(id)).withRel(MemberConstants.MODIFY));
+            linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel(),
+            linkTo(methodOn(MemberController.class).getBy(previousId)).withRel(MemberConstants.PREVIOUS_MEMBER),
+            linkTo(methodOn(MemberController.class).getBy(nextId)).withRel(MemberConstants.NEXT_MEMBER),
+            linkTo(methodOn(MemberController.class).getBy(id)).withRel(MemberConstants.MODIFY));
 
         return ResponseEntity.ok().body(responseModel);
     }
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getListBySearchConditionForAdmin(
+    public ResponseEntity<PagedModel<EntityModel<MemberResponse>>> getPageForAdminBy(
         MemberSearchCondition condition, @PageableDefault Pageable pageable) {
 
         List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
