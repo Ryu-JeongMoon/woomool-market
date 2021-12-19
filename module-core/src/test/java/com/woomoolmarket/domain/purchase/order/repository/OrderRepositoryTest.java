@@ -45,18 +45,21 @@ class OrderRepositoryTest {
             .email("cleancode")
             .nickname("bear")
             .password("1234")
+            .phone("01012345678")
             .build();
 
         Member member1 = Member.builder()
             .email("testdriven")
             .nickname("coke")
             .password("1234")
+            .phone("01012345678")
             .build();
 
         Member member2 = Member.builder()
             .email("effectivejava")
             .nickname("blue")
             .password("1234")
+            .phone("01012345678")
             .build();
 
         MEMBER_ID = memberRepository.save(member).getId();

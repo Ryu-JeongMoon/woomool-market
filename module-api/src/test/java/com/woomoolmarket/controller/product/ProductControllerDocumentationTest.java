@@ -29,7 +29,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
 @WithMockUser(username = "panda@naver.com", roles = "SELLER")
-class ProductControllerDocumentation extends ApiDocumentationConfig {
+class ProductControllerDocumentationTest extends ApiDocumentationConfig {
 
     @BeforeEach
     void init() {
