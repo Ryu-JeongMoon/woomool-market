@@ -3,8 +3,6 @@ package com.woomoolmarket.controller.member;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.MemberService;
@@ -26,9 +24,9 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,19 +35,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/members", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class MemberController {
 
-    private final ObjectMapper objectMapper;
     private final MemberService memberService;
     private final PagedResourcesAssembler<MemberQueryResponse> assembler;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<MemberResponse>> getBy(@PathVariable Long id) {
         MemberResponse memberResponse = memberService.findMemberById(id);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getBy(id));
@@ -64,12 +61,15 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<MemberResponse>> join(@RequestBody @Valid SignupRequest signUpRequest) {
+    @PreAuthorize("isAnonymous()")
+    public ResponseEntity<EntityModel<MemberResponse>> join(
+        @Valid @RequestBody SignupRequest signUpRequest, @Nullable MultipartFile file) {
+
         MemberResponse memberResponse;
         if (StringUtils.hasText(signUpRequest.getLicense())) {
-            memberResponse = memberService.joinAsSeller(signUpRequest);
+            memberResponse = memberService.joinAsSeller(signUpRequest, file);
         } else {
-            memberResponse = memberService.joinAsMember(signUpRequest);
+            memberResponse = memberService.joinAsMember(signUpRequest, file);
         }
 
         EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
@@ -79,15 +79,15 @@ public class MemberController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> edit(@PathVariable Long id, @Validated @RequestBody ModifyRequest modifyRequest) {
+    @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> edit(@PathVariable Long id, @Valid @RequestBody ModifyRequest modifyRequest) {
         URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
         memberService.editMemberInfo(id, modifyRequest);
         return ResponseEntity.created(createdUri).build();
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER') and @checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> leave(@PathVariable Long id) {
         memberService.leaveSoftly(id);
         return ResponseEntity.noContent().build();

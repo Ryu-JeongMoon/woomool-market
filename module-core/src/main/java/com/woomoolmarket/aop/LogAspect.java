@@ -56,13 +56,14 @@ public class LogAspect {
             params.put("log-time", LocalDateTime.now());
         } catch (Exception e) {
             log.info("[WOOMOOL-ERROR] :: Log Error => {}", e.getMessage());
+            log.info("log.class = {}", log.getClass().getName());
         }
 
         log.info("[WOOMOOL-REQUEST] :: {}", params);
         return result;
     }
 
-    @Around("@within(com.woomoolmarket.aop.annotation.LogExecutionTime)")
+    @Around(value = "bean(*Controller)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start(String.valueOf(joinPoint.getSignature()));

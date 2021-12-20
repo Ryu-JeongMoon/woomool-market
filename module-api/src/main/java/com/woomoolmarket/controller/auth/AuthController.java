@@ -1,8 +1,5 @@
 package com.woomoolmarket.controller.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.common.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
@@ -15,34 +12,24 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final ObjectMapper objectMapper;
 
-    // 로그인 요청 중복으로 하지 못하도록 권한 설정
-    @PreAuthorize("isAnonymous()")
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult,
-        HttpServletResponse response) throws JsonProcessingException {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
-
+    @PreAuthorize("isAnonymous()")
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         TokenResponse tokenResponse = authService.login(loginRequest);
-        CookieUtils.addCookie(response, TokenConstants.REFRESH_TOKEN,
-            tokenResponse.getRefreshToken(), TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS);
+        CookieUtils.addCookie(
+            response, TokenConstants.REFRESH_TOKEN, tokenResponse.getRefreshToken(), TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS);
         response.setHeader(TokenConstants.AUTHORIZATION_HEADER, tokenResponse.getAccessToken());
         return ResponseEntity.ok(tokenResponse);
     }
