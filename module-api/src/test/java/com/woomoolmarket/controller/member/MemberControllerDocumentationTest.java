@@ -31,7 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 
-class MemberControllerDocumentation extends ApiDocumentationConfig {
+class MemberControllerDocumentationTest extends ApiDocumentationConfig {
 
     @BeforeEach
     void init() {
@@ -90,6 +90,8 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                         .attributes(key("constraint").value("문자 형식, 4-24자")),
                     fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
                         .attributes(key("constraint").value("문자 형식, 4-24자")),
+                    fieldWithPath("license").type(JsonFieldType.STRING).description("사업자번호").optional()
+                            .attributes(key("constraint").value("숫자 형식 10자")),
                     fieldWithPath("address.city").type(JsonFieldType.STRING).description("주소 - 도시명").optional()
                         .attributes(key("constraint").value("문자 형식, 2-24자")),
                     fieldWithPath("address.street").type(JsonFieldType.STRING).description("주소 - 도로명").optional()
@@ -192,7 +194,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long memberId = memberService.joinAsMember(signUpRequest).getId();
+        Long memberId = memberService.joinAsMember(signUpRequest, null).getId();
 
         mockMvc.perform(
                 get("/api/members/admin/" + memberId)
@@ -228,7 +230,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                 .nickname("nick" + i + 1)
                 .password("123456")
                 .build();
-            memberService.joinAsMember(signUpRequest);
+            memberService.joinAsMember(signUpRequest, null);
         }
 
         mockMvc.perform(
@@ -236,7 +238,7 @@ class MemberControllerDocumentation extends ApiDocumentationConfig {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
             .andDo(document("member/admin-get-members",
                 relaxedResponseFields(
-                    subsectionWithPath("_embedded.memberResponseList").type(JsonFieldType.ARRAY).description("회원 리스트"),
+                    subsectionWithPath("_embedded.memberQueryResponseList").type(JsonFieldType.ARRAY).description("회원 리스트"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
                     subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
                 )));

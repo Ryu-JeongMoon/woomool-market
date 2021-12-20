@@ -5,6 +5,7 @@ import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.time.LocalDateTime;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -34,7 +35,7 @@ import org.springframework.util.StringUtils;
 public class Member extends BaseEntity {
 
     @Id
-    @Column(name = "member_id")
+    @Column(name = "member_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -50,9 +51,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Image image;
 
+    @Size(max = 255)
     private String profileImage;
 
     @Size(max = 11)
@@ -79,11 +81,12 @@ public class Member extends BaseEntity {
     private Status status = Status.ACTIVE;
 
     @Builder
-    public Member(String email, String nickname, String password, String profileImage,
+    public Member(String email, String nickname, String password, Image image, String profileImage,
         String phone, String license, Address address, AuthProvider authProvider, Authority authority) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.image = image;
         this.profileImage = profileImage;
         this.phone = phone;
         this.license = license;
@@ -117,8 +120,6 @@ public class Member extends BaseEntity {
         return this.authority.getKey();
     }
 
-    // updateFromDto 를 쓰고 있는 상황에서 이 메서드가 있을 필요가 있는가
-    // core -> service 의존 관계 생기지 않으려면 필요할 듯
     public Member editNicknameAndProfileImage(String nickname, String profileImage) {
         this.nickname = StringUtils.hasText(nickname) ? nickname : this.nickname;
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;

@@ -24,6 +24,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,7 +62,9 @@ public class MemberController {
 
     @PostMapping
     @PreAuthorize("isAnonymous()")
-    public ResponseEntity<EntityModel<MemberResponse>> join(@Valid @RequestBody SignupRequest signUpRequest, MultipartFile file) {
+    public ResponseEntity<EntityModel<MemberResponse>> join(
+        @Valid @RequestBody SignupRequest signUpRequest, @Nullable MultipartFile file) {
+
         MemberResponse memberResponse;
         if (StringUtils.hasText(signUpRequest.getLicense())) {
             memberResponse = memberService.joinAsSeller(signUpRequest, file);

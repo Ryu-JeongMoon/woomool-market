@@ -6,10 +6,10 @@ import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
-import java.util.List;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +20,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.ResourceLocks;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Log4j2
 @Execution(ExecutionMode.CONCURRENT)
@@ -137,8 +139,8 @@ class MemberServiceTest extends ServiceTestConfig {
         MemberSearchCondition condition = MemberSearchCondition
             .builder()
             .build();
-        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        assertThat(memberResponses.size()).isEqualTo(2);
+        Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, Pageable.ofSize(10));
+        assertThat(queryResponsePage.getTotalElements()).isEqualTo(2);
     }
 
     @Test
@@ -149,8 +151,8 @@ class MemberServiceTest extends ServiceTestConfig {
             .builder()
             .authority(Authority.ROLE_USER)
             .build();
-        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        assertThat(memberResponses.size()).isEqualTo(1);
+        Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, Pageable.ofSize(10));
+        assertThat(queryResponsePage.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -161,7 +163,7 @@ class MemberServiceTest extends ServiceTestConfig {
             .builder()
             .email("nav")
             .build();
-        List<MemberResponse> memberResponses = memberService.getListBySearchConditionForAdmin(condition);
-        assertThat(memberResponses.size()).isEqualTo(1);
+        Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, Pageable.ofSize(10));
+        assertThat(queryResponsePage.getTotalElements()).isEqualTo(1);
     }
 }

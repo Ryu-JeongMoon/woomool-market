@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.common.embeddable.Address;
+import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
@@ -37,6 +37,7 @@ class MemberControllerTest extends ApiControllerConfig {
     }
 
     @Test
+    @WithAnonymousUser
     @DisplayName("회원가입 성공")
     void signUpSuccessTest() throws Exception {
         SignupRequest signUpRequest = SignupRequest.builder()
@@ -216,8 +217,8 @@ class MemberControllerTest extends ApiControllerConfig {
                 get("/api/members/admin"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.memberResponseList[0].id").value(MEMBER_ID))
-            .andExpect(jsonPath("_embedded.memberResponseList[0].email").value(MEMBER_EMAIL))
+            .andExpect(jsonPath("_embedded.memberQueryResponseList[0].id").value(MEMBER_ID))
+            .andExpect(jsonPath("_embedded.memberQueryResponseList[0].email").value(MEMBER_EMAIL))
             .andExpect(jsonPath("_links").exists())
             .andExpect(jsonPath("page").exists());
     }

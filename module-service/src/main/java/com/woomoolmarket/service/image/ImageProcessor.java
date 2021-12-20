@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,10 @@ public class ImageProcessor {
     private String ROOT_PATH;
 
     public Image parse(MultipartFile file) {
+        if (file == null) {
+            log.info("[WOOMOOL-ERROR] :: There is no files => {}", file);
+            return null;
+        }
         List<Image> images = parse(List.of(file));
         return images.get(0);
     }
