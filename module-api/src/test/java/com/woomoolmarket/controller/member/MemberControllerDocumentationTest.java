@@ -194,7 +194,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long memberId = memberService.joinAsMember(signUpRequest, null).getId();
+        Long memberId = memberService.joinAsMember(signUpRequest).getId();
 
         mockMvc.perform(
                 get("/api/members/admin/" + memberId)
@@ -230,7 +230,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
                 .nickname("nick" + i + 1)
                 .password("123456")
                 .build();
-            memberService.joinAsMember(signUpRequest, null);
+            memberService.joinAsMember(signUpRequest);
         }
 
         mockMvc.perform(

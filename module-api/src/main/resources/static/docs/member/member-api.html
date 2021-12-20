@@ -596,6 +596,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
   "email" : "pandabear@gogo.com",
   "nickname" : "horagin",
   "password" : "123456",
+  "license" : null,
   "address" : {
     "city" : "seoul",
     "street" : "yeonhui",
@@ -613,6 +614,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
   "email" : "pandabear@gogo.com",
   "nickname" : "horagin",
   "password" : "123456",
+  "license" : null,
   "address" : {
     "city" : "seoul",
     "street" : "yeonhui",
@@ -666,6 +668,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자 형식, 4-24자</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">license</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사업자번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">숫자 형식 10자</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">address.city</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -696,13 +705,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/hal+json
-Content-Length: 179
+Content-Length: 199
 Host: localhost:8443
 
 {
   "email" : "pandabear@gogo.com",
   "nickname" : "horagin",
   "password" : "123456",
+  "license" : null,
   "address" : {
     "city" : "seoul",
     "street" : "yeonhui",
@@ -731,7 +741,7 @@ Pragma: no-cache
 Expires: 0
 Strict-Transport-Security: max-age=31536000 ; includeSubDomains
 X-Frame-Options: SAMEORIGIN
-Content-Length: 527
+Content-Length: 529
 
 {
   "id" : 14,
@@ -740,10 +750,10 @@ Content-Length: 527
   "profileImage" : null,
   "phone" : null,
   "license" : null,
-  "createdDateTime" : "2021-12-15 19:48:19",
-  "lastModifiedDateTime" : "2021-12-15 19:48:19",
+  "createdDateTime" : "2021-12-20 01:00:15",
+  "lastModifiedDateTime" : "2021-12-20 01:00:15",
   "leaveDateTime" : null,
-  "authority" : "ROLE_USER",
+  "authority" : "ROLE_SELLER",
   "address" : {
     "city" : "seoul",
     "street" : "yeonhui",
@@ -860,8 +870,8 @@ Host: localhost:8443
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDAxNzAwOTl9.LpP6UEaUWYHiINe_59YnFS15XnJ2Vx3xkr-2_vfkOc8gJGRcTTiMiWKjcPB77qA47lMydtbH0Mp_GW3ZrbgpY1dF1yxGqo_Nci6ml2IdyaIhkjvqeBrNGwWwXkxnbCUUqpYGPWp6hxoklmWXgZcHViJFRS7uBaUb4JA1KDH-cv9A3t2LBX69F81zMo6EEMMbaip4C1-18OhdskPTMLjzDLo8W3pVZU3sPdWQu3ZO3snM-we2azu7yuPlNvDm6RX3TLMRqizUf6StJckREf5jmDeh1uyRC2XNi_8XdgFQkPq-VPzQEb-XzuCrm2in-rEGYJYx5tajbFZjNxABkyYo8y788HNINqACinFj9C8fY8cdF7_iTcFSaSqyDAaijQVWmyp-FUpNyPxx5LeupvHcb-l1vcQ1u16EHdRlln0tgwzzvOyfIfQYRoQYV87FQdeISY3BKkcHJ_cdrxqEulajsNdNVeZVkuvVi_uDsUkeGEFGio2yDpECtvnvle-RwiK1iBy5jQDIPaWUYcVHfkNPRyyNuyIyYYjqU0yhZ936sM-wNd7b0BsDdQDcKfv2hpyV9H9-1SuOWNa8q6Mzo5wL0rtvLHuE6H7Ov5i1M-nLIxU3caIKATrzwNxBbxI9EG12uQj8hTaINymTeHgtaphdjIb34WwhQeEaiDwtOBId-g4; Path=/; Domain=woomool-market; Max-Age=604800; Expires=Wed, 22 Dec 2021 10:48:19 GMT; Secure; HttpOnly
-Authorization: eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjM5NTY3MDk5fQ.g_iKfQKYBpJPyyMapSso8h9KN1z3_Kjl3tnpB1aSrdlH0VrwGeE7ZaVV-xnLqJ6CbJTDhdrvAR6Z1yD542tp63eXHWjmr5nvb4Pou2mZh8LU_YtuYl51kZLofbv5QYzu4PjDZAup1zMPK9nIYj2g03H7ZLGv7bkA9QW84oglWBhPXaieaj_5g9WEba7EDMn6nYJyZfqu8OHvQm3bkNt1ccjRd_uKHXnCA0Rv0t5ymBmnJvLuI9GA2gx_4kne0FbqTAW1CoBO2xe-S3Pen8US8422huvnRYsU1ssbc4gtV3VVHzYaYfgHWCB0P5L9g0kZcLf8DWNtX90K87PFO2NvyauzOBK81dxt7PgXbXYyb02NFe-AlCOnz3wX9L8EN9Z1vrJtqyS-5MBi1aoaxCeruI1hgQmmP65p9HUcVlcUiThmZXQm5Kcf-K3wbzSVJmCINOJ0mMlw6aMf__FLfiAorCCNeWx9FO186dBfq-yTD-ZsFiSwYSxwHpaMr0cybvLd7D5QurUCgAt5F2nHNmjnkwIzVP7Xrdl0IZdNqVZRiWzK4BBOZ7l0R1_W8rffHdT9IZ3TX3vlj96iiHiIYBpZ7Fq5q-jx7Z58pda9zciDVC-181XfNTUuPW1548aLdPbwBSX8nYoFvmyViqtMQhfwAuw1sGpwXl-HL9td2gyoS-0
+Set-Cookie: refreshToken=eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDA1MzQ0MTV9.AZACywG4SQRI9afnRHenBfj1EeLLtrr0DA24bRcoIBEtWXw_i5cQCiqHsNRGUepsIvvpCqK50PjA4ALjWA1Dtd6RZQ46xud3QmWQVUk2pJ4V0ENHUSy-_5PTkAQtEtH1-qCQvAsZ-R_snswZmTKMYJCYQ9BjQHsyMijJUDSy1MHxdP-0vzCzmqrpHemF6kKOGzSLq6gaZQn-aczNop25i4hP4dZpgtsaWAaB_kNq-qX_EqeugKvBnEQhrrKn1e8AcAs6f60pxpZU7zRNVmU_lVtKxaZm9FiEkKOHprWox9HHnctl5xMzK_1KzacIJmfjlwBs6GKZWr1YSjGUygSuXzNHmJBqnMG7kJm4UXMVlAcjWM9CBtw5TC-1547IF1n_t3pgdsu9kBuUTsC1dyfGcfOf6NndjygbdossJFVr9v88-dMjok1RcHYmyuQGO3DWx1EeTPjOlpdZK0zwjiiIUf9ivpvs04IFtI1O3rl1exGsMDAXkPIXNNUHHpAkAenoHbaN_G8fbg6VMWrbtwDTxkAl198CFv8oeygFs-Yl0GKZmDZxVsgNzkan42acErUrcLr_b2IMlWwOtvz1gtpeHwmjoLNSm9ZbYjqeZku0NWUYRPoVSz17TEzHAW7mf0sx3LJRhJH110DsD_5lM3vvD5lAtpY3QSpAvpFX6XMt6hw; Path=/; Domain=woomool-market; Max-Age=604800; Expires=Sun, 26 Dec 2021 16:00:15 GMT; Secure; HttpOnly
+Authorization: eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjM5OTMxNDE1fQ.xAXqX40sa0GHS9I9gs1EL4guE94JU-XK565SFW_HywYc5xnXAufrMQL_imSGgwpshYLiLrZOAPkl09TOuR-ThH6EHV9TKQtKY7VSHFKlLAFARONcpWYd4DbeRCcfCxX36zzmhm55kIlsnJKM1Tp_YPbxQ1xqpeCwt9NY2vgmM4p84EdTbYc1RUrGg0P9h4XP7-3gqyOXTnG4t_mHhHSPTY5f2xuYTxURHcSZL44skzhk1aTVisUGqAf2c6vUcbXh0O7DI3NojfWxqRxL-fks3bEERF6dzU6uEbn5neFXI2r43ja2w-saoHyErqp9mlJ5Gr5wTg-5Z4POmvrFKl7o9zFkK2P5WI3z3AGJyFGk9L81-iOWrG1GvnOFdR0YPTBJCtWZNAp8rXUaUObvb5RZMWM-_jkIibfsWcFmUkjAFAz9-OoDaMt6dVdh0NXc6yMQZy8aYTg5BN5dryngH8ixYMBR7bZd8X56Arg12H6eNe5KG1UYY3ENcNTU2bLoWAYFv1tXHl9aWBR7eoQ3tyEGn8Clb5NwJhZtMtHWrb1dUxq9Bt0Fb1RfGuS9OZTFb2bMdBV7l-nYBDy7UY2f4d8RvnztuYs8lZvA6rhw6kU9IdThw50SiEEjBAuZ6f73RhReXQXe8JIfRTl2jOxZdmmyQz0493QnfBAGtqbK3gCBulI
 Content-Type: application/hal+json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -874,8 +884,8 @@ Content-Length: 1626
 
 {
   "grantType" : "Bearer ",
-  "accessToken" : "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjM5NTY3MDk5fQ.g_iKfQKYBpJPyyMapSso8h9KN1z3_Kjl3tnpB1aSrdlH0VrwGeE7ZaVV-xnLqJ6CbJTDhdrvAR6Z1yD542tp63eXHWjmr5nvb4Pou2mZh8LU_YtuYl51kZLofbv5QYzu4PjDZAup1zMPK9nIYj2g03H7ZLGv7bkA9QW84oglWBhPXaieaj_5g9WEba7EDMn6nYJyZfqu8OHvQm3bkNt1ccjRd_uKHXnCA0Rv0t5ymBmnJvLuI9GA2gx_4kne0FbqTAW1CoBO2xe-S3Pen8US8422huvnRYsU1ssbc4gtV3VVHzYaYfgHWCB0P5L9g0kZcLf8DWNtX90K87PFO2NvyauzOBK81dxt7PgXbXYyb02NFe-AlCOnz3wX9L8EN9Z1vrJtqyS-5MBi1aoaxCeruI1hgQmmP65p9HUcVlcUiThmZXQm5Kcf-K3wbzSVJmCINOJ0mMlw6aMf__FLfiAorCCNeWx9FO186dBfq-yTD-ZsFiSwYSxwHpaMr0cybvLd7D5QurUCgAt5F2nHNmjnkwIzVP7Xrdl0IZdNqVZRiWzK4BBOZ7l0R1_W8rffHdT9IZ3TX3vlj96iiHiIYBpZ7Fq5q-jx7Z58pda9zciDVC-181XfNTUuPW1548aLdPbwBSX8nYoFvmyViqtMQhfwAuw1sGpwXl-HL9td2gyoS-0",
-  "refreshToken" : "eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDAxNzAwOTl9.LpP6UEaUWYHiINe_59YnFS15XnJ2Vx3xkr-2_vfkOc8gJGRcTTiMiWKjcPB77qA47lMydtbH0Mp_GW3ZrbgpY1dF1yxGqo_Nci6ml2IdyaIhkjvqeBrNGwWwXkxnbCUUqpYGPWp6hxoklmWXgZcHViJFRS7uBaUb4JA1KDH-cv9A3t2LBX69F81zMo6EEMMbaip4C1-18OhdskPTMLjzDLo8W3pVZU3sPdWQu3ZO3snM-we2azu7yuPlNvDm6RX3TLMRqizUf6StJckREf5jmDeh1uyRC2XNi_8XdgFQkPq-VPzQEb-XzuCrm2in-rEGYJYx5tajbFZjNxABkyYo8y788HNINqACinFj9C8fY8cdF7_iTcFSaSqyDAaijQVWmyp-FUpNyPxx5LeupvHcb-l1vcQ1u16EHdRlln0tgwzzvOyfIfQYRoQYV87FQdeISY3BKkcHJ_cdrxqEulajsNdNVeZVkuvVi_uDsUkeGEFGio2yDpECtvnvle-RwiK1iBy5jQDIPaWUYcVHfkNPRyyNuyIyYYjqU0yhZ936sM-wNd7b0BsDdQDcKfv2hpyV9H9-1SuOWNa8q6Mzo5wL0rtvLHuE6H7Ov5i1M-nLIxU3caIKATrzwNxBbxI9EG12uQj8hTaINymTeHgtaphdjIb34WwhQeEaiDwtOBId-g4",
+  "accessToken" : "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjM5OTMxNDE1fQ.xAXqX40sa0GHS9I9gs1EL4guE94JU-XK565SFW_HywYc5xnXAufrMQL_imSGgwpshYLiLrZOAPkl09TOuR-ThH6EHV9TKQtKY7VSHFKlLAFARONcpWYd4DbeRCcfCxX36zzmhm55kIlsnJKM1Tp_YPbxQ1xqpeCwt9NY2vgmM4p84EdTbYc1RUrGg0P9h4XP7-3gqyOXTnG4t_mHhHSPTY5f2xuYTxURHcSZL44skzhk1aTVisUGqAf2c6vUcbXh0O7DI3NojfWxqRxL-fks3bEERF6dzU6uEbn5neFXI2r43ja2w-saoHyErqp9mlJ5Gr5wTg-5Z4POmvrFKl7o9zFkK2P5WI3z3AGJyFGk9L81-iOWrG1GvnOFdR0YPTBJCtWZNAp8rXUaUObvb5RZMWM-_jkIibfsWcFmUkjAFAz9-OoDaMt6dVdh0NXc6yMQZy8aYTg5BN5dryngH8ixYMBR7bZd8X56Arg12H6eNe5KG1UYY3ENcNTU2bLoWAYFv1tXHl9aWBR7eoQ3tyEGn8Clb5NwJhZtMtHWrb1dUxq9Bt0Fb1RfGuS9OZTFb2bMdBV7l-nYBDy7UY2f4d8RvnztuYs8lZvA6rhw6kU9IdThw50SiEEjBAuZ6f73RhReXQXe8JIfRTl2jOxZdmmyQz0493QnfBAGtqbK3gCBulI",
+  "refreshToken" : "eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDA1MzQ0MTV9.AZACywG4SQRI9afnRHenBfj1EeLLtrr0DA24bRcoIBEtWXw_i5cQCiqHsNRGUepsIvvpCqK50PjA4ALjWA1Dtd6RZQ46xud3QmWQVUk2pJ4V0ENHUSy-_5PTkAQtEtH1-qCQvAsZ-R_snswZmTKMYJCYQ9BjQHsyMijJUDSy1MHxdP-0vzCzmqrpHemF6kKOGzSLq6gaZQn-aczNop25i4hP4dZpgtsaWAaB_kNq-qX_EqeugKvBnEQhrrKn1e8AcAs6f60pxpZU7zRNVmU_lVtKxaZm9FiEkKOHprWox9HHnctl5xMzK_1KzacIJmfjlwBs6GKZWr1YSjGUygSuXzNHmJBqnMG7kJm4UXMVlAcjWM9CBtw5TC-1547IF1n_t3pgdsu9kBuUTsC1dyfGcfOf6NndjygbdossJFVr9v88-dMjok1RcHYmyuQGO3DWx1EeTPjOlpdZK0zwjiiIUf9ivpvs04IFtI1O3rl1exGsMDAXkPIXNNUHHpAkAenoHbaN_G8fbg6VMWrbtwDTxkAl198CFv8oeygFs-Yl0GKZmDZxVsgNzkan42acErUrcLr_b2IMlWwOtvz1gtpeHwmjoLNSm9ZbYjqeZku0NWUYRPoVSz17TEzHAW7mf0sx3LJRhJH110DsD_5lM3vvD5lAtpY3QSpAvpFX6XMt6hw",
   "accessTokenExpiresIn" : 1800000
 }</code></pre>
 </div>
@@ -1069,8 +1079,8 @@ Content-Length: 703
   "profileImage" : null,
   "phone" : "01012345678",
   "license" : null,
-  "createdDateTime" : "2021-12-15 19:48:20",
-  "lastModifiedDateTime" : "2021-12-15 19:48:20",
+  "createdDateTime" : "2021-12-20 01:00:16",
+  "lastModifiedDateTime" : "2021-12-20 01:00:16",
   "leaveDateTime" : null,
   "authority" : "ROLE_USER",
   "address" : {
@@ -1574,8 +1584,8 @@ Content-Length: 779
   "profileImage" : null,
   "phone" : null,
   "license" : null,
-  "createdDateTime" : "2021-12-15 19:48:20",
-  "lastModifiedDateTime" : "2021-12-15 19:48:20",
+  "createdDateTime" : "2021-12-20 01:00:15",
+  "lastModifiedDateTime" : "2021-12-20 01:00:15",
   "leaveDateTime" : null,
   "authority" : "ROLE_USER",
   "address" : {
@@ -1713,8 +1723,8 @@ Content-Length: 2857
       "profileImage" : null,
       "phone" : "01012345678",
       "license" : null,
-      "createdDateTime" : "2021-12-15 19:48:19",
-      "lastModifiedDateTime" : "2021-12-15 19:48:19",
+      "createdDateTime" : "2021-12-20 01:00:15",
+      "lastModifiedDateTime" : "2021-12-20 01:00:15",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : {
@@ -1731,8 +1741,8 @@ Content-Length: 2857
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-15 19:48:19",
-      "lastModifiedDateTime" : "2021-12-15 19:48:19",
+      "createdDateTime" : "2021-12-20 01:00:15",
+      "lastModifiedDateTime" : "2021-12-20 01:00:15",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1745,8 +1755,8 @@ Content-Length: 2857
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-15 19:48:19",
-      "lastModifiedDateTime" : "2021-12-15 19:48:19",
+      "createdDateTime" : "2021-12-20 01:00:15",
+      "lastModifiedDateTime" : "2021-12-20 01:00:15",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1759,8 +1769,8 @@ Content-Length: 2857
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-15 19:48:19",
-      "lastModifiedDateTime" : "2021-12-15 19:48:19",
+      "createdDateTime" : "2021-12-20 01:00:15",
+      "lastModifiedDateTime" : "2021-12-20 01:00:15",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1773,8 +1783,8 @@ Content-Length: 2857
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-15 19:48:19",
-      "lastModifiedDateTime" : "2021-12-15 19:48:19",
+      "createdDateTime" : "2021-12-20 01:00:15",
+      "lastModifiedDateTime" : "2021-12-20 01:00:15",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1787,8 +1797,8 @@ Content-Length: 2857
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-15 19:48:19",
-      "lastModifiedDateTime" : "2021-12-15 19:48:19",
+      "createdDateTime" : "2021-12-20 01:00:15",
+      "lastModifiedDateTime" : "2021-12-20 01:00:15",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,

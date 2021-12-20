@@ -3,6 +3,8 @@ package com.woomoolmarket.controller.cart;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.service.cart.CartService;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
@@ -20,6 +22,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/carts", produces = MediaTypes.HAL_JSON_VALUE)
 public class CartController {
 
+    private final ObjectMapper objectMapper;
     private final CartService cartService;
     private final PagedResourcesAssembler<CartQueryResponse> queryAssembler;
 
@@ -47,7 +51,13 @@ public class CartController {
 
     @PostMapping("/{memberId}")
     @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> addBy(@PathVariable Long memberId, @Valid @RequestBody CartRequest cartRequest) {
+    public ResponseEntity addBy(@PathVariable Long memberId, @Valid @RequestBody CartRequest cartRequest,
+        BindingResult bindingResult) throws JsonProcessingException {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
+        }
+
         Long cartId = cartService.add(cartRequest);
         URI createdUri = linkTo(methodOn(CartController.class).getBy(memberId, cartId)).toUri();
         return ResponseEntity.created(createdUri).build();
