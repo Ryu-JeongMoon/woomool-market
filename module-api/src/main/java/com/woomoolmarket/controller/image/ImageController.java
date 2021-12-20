@@ -1,6 +1,5 @@
 package com.woomoolmarket.controller.image;
 
-import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.service.image.ImageService;
 import com.woomoolmarket.service.image.dto.response.ImageResponse;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/images")
 public class ImageController {
@@ -22,14 +20,14 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("/{boardId}")
-    public ResponseEntity getImages(@PathVariable Long boardId) {
+    public ResponseEntity<CollectionModel<ImageResponse>> getImages(@PathVariable Long boardId) {
         List<ImageResponse> imageResponses = imageService.findByBoard(boardId);
         CollectionModel<ImageResponse> collectionModel = CollectionModel.of(imageResponses);
         return ResponseEntity.ok(collectionModel);
     }
 
     @DeleteMapping("/{imageId}")
-    public ResponseEntity deleteByImage(@PathVariable Long imageId) {
+    public ResponseEntity<Void> deleteByImage(@PathVariable Long imageId) {
         imageService.deleteByImageId(imageId);
         return ResponseEntity.noContent().build();
     }
