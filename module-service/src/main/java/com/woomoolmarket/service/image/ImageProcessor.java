@@ -31,6 +31,11 @@ public class ImageProcessor {
     @Value("${custom.file.path}")
     private String ROOT_PATH;
 
+    public Image parse(MultipartFile file) {
+        List<Image> images = parse(List.of(file));
+        return images.get(0);
+    }
+
     public List<Image> parse(List<MultipartFile> files) {
         if (CollectionUtils.isEmpty(files)) {
             log.info("[WOOMOOL-ERROR] :: There is no files => {}", files);

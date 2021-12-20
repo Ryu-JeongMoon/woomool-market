@@ -124,4 +124,13 @@ public class Member extends BaseEntity {
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
         return this;
     }
+
+    public void addImage(Image image) {
+        if (image == null) {
+            return;
+        }
+
+        this.image = image;
+        image.setMember(this);
+    }
 }

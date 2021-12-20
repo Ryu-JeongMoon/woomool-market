@@ -3,9 +3,6 @@ package com.woomoolmarket.controller.product;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.aop.annotation.LogExecutionTime;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
@@ -15,6 +12,7 @@ import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.util.constant.ProductConstants;
 import java.net.URI;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +25,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,12 +35,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@LogExecutionTime
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/products", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProductController {
 
-    private final ObjectMapper objectMapper;
     private final ProductService productService;
     private final PagedResourcesAssembler<ProductQueryResponse> queryAssembler;
 
@@ -58,21 +52,15 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_SELLER', 'ROLE_ADMIN'})")
-    public ResponseEntity createProduct(@Validated @RequestBody ProductRequest productRequest, BindingResult bindingResult)
-        throws JsonProcessingException {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
-
+    public ResponseEntity<Void> create(@Valid @RequestBody ProductRequest productRequest) {
         productService.create(productRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<EntityModel<ProductResponse>> getProduct(@PathVariable Long productId) {
+    public ResponseEntity<EntityModel<ProductResponse>> getBy(@PathVariable Long productId) {
         ProductResponse productResponse = productService.findBy(productId, Status.ACTIVE);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getProduct(productId));
+        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getBy(productId));
 
         EntityModel<ProductResponse> productModel =
             EntityModel.of(
@@ -86,21 +74,15 @@ public class ProductController {
 
     @PatchMapping("/{productId}")
     @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity editProduct(@PathVariable Long productId,
-        @Validated @RequestBody ProductModifyRequest modifyRequest, BindingResult bindingResult) throws JsonProcessingException {
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(objectMapper.writeValueAsString(bindingResult));
-        }
+    public ResponseEntity<Void> edit(@PathVariable Long productId, @Valid @RequestBody ProductModifyRequest modifyRequest) {
         productService.edit(productId, modifyRequest);
-
-        URI uri = linkTo(methodOn(ProductController.class).getProduct(productId)).withSelfRel().toUri();
+        URI uri = linkTo(methodOn(ProductController.class).getBy(productId)).withSelfRel().toUri();
         return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("/{productId}")
     @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<Void> delete(@PathVariable Long productId) {
         productService.deleteSoftly(productId);
         return ResponseEntity.noContent().build();
     }
