@@ -117,6 +117,7 @@ class ProductControllerTest extends ApiControllerConfig {
     void createFail() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
             .email("panda@naver.com")
+            .name("PANDA")
             .productImage("yahoo")
             .productCategory(ProductCategory.CEREAL)
             .price(5000)
