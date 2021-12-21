@@ -9,7 +9,12 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +27,8 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.ResourceLocks;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @Execution(ExecutionMode.CONCURRENT)
@@ -50,7 +57,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 가입 시 USER 권한")
-    void joinTest() {
+    void joinMemberTest() {
         MemberResponse memberResponse = memberService.findMemberById(MEMBER_ID);
         assertThat(MEMBER_EMAIL).isEqualTo(memberResponse.getEmail());
         assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_USER);
@@ -61,6 +68,23 @@ class MemberServiceTest extends ServiceTestConfig {
     void joinSellerTest() {
         MemberResponse memberResponse = memberService.findMemberById(SELLER_ID);
         assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_SELLER);
+    }
+
+    @Test
+    @DisplayName("회원 가입")
+    void joinTest() throws IOException {
+        String filePath = "yaho";
+        String fileName = "yahoo";
+        File file = new File("hehe");
+        MultipartFile multipartFile = new MockMultipartFile(filePath, fileName, null, new FileInputStream(file));
+
+        SignupRequest signupRequest = SignupRequest.builder()
+            .email("PANDA@naver.com")
+            .password("1234")
+            .file(multipartFile)
+            .build();
+        Member member = memberService.join(signupRequest, Authority.ROLE_USER);
+        assertThat(member.getImage()).isNotNull();
     }
 
     @Test

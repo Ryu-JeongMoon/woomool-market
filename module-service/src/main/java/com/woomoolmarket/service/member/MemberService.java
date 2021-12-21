@@ -2,11 +2,13 @@ package com.woomoolmarket.service.member;
 
 import com.woomoolmarket.common.constant.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
+import com.woomoolmarket.service.image.ImageProcessor;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
@@ -15,7 +17,6 @@ import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignupRequestMapper;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-@Log4j2
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final ImageProcessor imageProcessor;
     private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
     private final SignupRequestMapper signupRequestMapper;
     private final ModifyRequestMapper modifyRequestMapper;
     private final MemberResponseMapper memberResponseMapper;
@@ -74,9 +76,12 @@ public class MemberService {
             throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
         }
 
+        Image image = imageProcessor.parse(signUpRequest.getFile());
+
         Member member = signupRequestMapper.toEntity(signUpRequest);
         member.changePassword(passwordEncoder.encode(member.getPassword()));
         member.assignAuthority(authority);
+        member.addImage(image);
         return memberRepository.save(member);
     }
 
