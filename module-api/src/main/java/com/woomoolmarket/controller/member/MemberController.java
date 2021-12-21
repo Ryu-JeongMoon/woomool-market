@@ -74,7 +74,7 @@ public class MemberController {
     @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> edit(@PathVariable Long id, @Valid @RequestBody ModifyRequest modifyRequest) {
         URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
-        memberService.editMemberInfo(id, modifyRequest);
+        memberService.edit(id, modifyRequest);
         return ResponseEntity.created(createdUri).build();
     }
 

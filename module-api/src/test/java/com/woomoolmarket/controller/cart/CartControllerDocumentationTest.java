@@ -76,11 +76,11 @@ class CartControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("cart/add-cart",
                 requestFields(
                     fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("주문 회원 고유 번호")
-                        .attributes(key("constraint").value("Not Null")),
+                        .attributes(key(CONSTRAINT).value("Not Null")),
                     fieldWithPath("productId").type(JsonFieldType.NUMBER).description("상품 고유 번호")
-                        .attributes(key("constraint").value("Not Null")),
+                        .attributes(key(CONSTRAINT).value("Not Null")),
                     fieldWithPath("quantity").type(JsonFieldType.NUMBER).description("주문 수량")
-                        .attributes(key("constraint").value("Not Null"))
+                        .attributes(key(CONSTRAINT).value("Not Null"))
                 )));
     }
 

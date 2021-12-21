@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -87,9 +86,13 @@ public class MemberService {
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
-    public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
+    public void edit(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+
+        Image image = imageProcessor.parse(modifyRequest.getFile());
+        member.addImage(image);
+
         modifyRequestMapper.updateFromDto(modifyRequest, member);
     }
 
