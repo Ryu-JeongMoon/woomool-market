@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -58,25 +57,25 @@ public class MemberService {
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
-    public MemberResponse joinAsMember(SignupRequest signUpRequest, MultipartFile file) {
-        Member member = join(signUpRequest, Authority.ROLE_USER, file);
+    public MemberResponse joinAsMember(SignupRequest signUpRequest) {
+        Member member = join(signUpRequest, Authority.ROLE_USER);
         return memberResponseMapper.toDto(member);
     }
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
-    public MemberResponse joinAsSeller(SignupRequest signUpRequest, MultipartFile file) {
-        Member member = join(signUpRequest, Authority.ROLE_SELLER, file);
+    public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
+        Member member = join(signUpRequest, Authority.ROLE_SELLER);
         return memberResponseMapper.toDto(member);
     }
 
     @Transactional
-    public Member join(SignupRequest signUpRequest, Authority authority, MultipartFile file) {
+    public Member join(SignupRequest signUpRequest, Authority authority) {
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
         }
 
-        Image image = imageProcessor.parse(file);
+        Image image = imageProcessor.parse(signUpRequest.getFile());
 
         Member member = signupRequestMapper.toEntity(signUpRequest);
         member.changePassword(passwordEncoder.encode(member.getPassword()));
@@ -87,9 +86,13 @@ public class MemberService {
 
     @Transactional
     @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
-    public void editMemberInfo(Long id, ModifyRequest modifyRequest) {
+    public void edit(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+
+        Image image = imageProcessor.parse(modifyRequest.getFile());
+        member.addImage(image);
+
         modifyRequestMapper.updateFromDto(modifyRequest, member);
     }
 

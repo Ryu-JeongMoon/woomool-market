@@ -1,6 +1,7 @@
 package com.woomoolmarket.service.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
@@ -9,7 +10,9 @@ import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
+import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +25,8 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.ResourceLocks;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @Execution(ExecutionMode.CONCURRENT)
@@ -50,7 +55,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 가입 시 USER 권한")
-    void joinTest() {
+    void joinMemberTest() {
         MemberResponse memberResponse = memberService.findMemberById(MEMBER_ID);
         assertThat(MEMBER_EMAIL).isEqualTo(memberResponse.getEmail());
         assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_USER);
@@ -64,16 +69,69 @@ class MemberServiceTest extends ServiceTestConfig {
     }
 
     @Test
+    @DisplayName("회원 가입")
+    void joinTest() {
+        String writerData = "panda panda panda";
+        MultipartFile multipartFile = new MockMultipartFile(
+            "files",
+            "hehe.jpg",
+            "image/jpeg",
+            writerData.getBytes(StandardCharsets.UTF_8));
+
+        SignupRequest signupRequest = SignupRequest.builder()
+            .email("PANDA@naver.com")
+            .nickname("nick")
+            .password("1234")
+            .file(multipartFile)
+            .build();
+        Member member = memberService.join(signupRequest, Authority.ROLE_USER);
+        assertThat(member.getImage()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("회원 가입 시 이메일 중복 - IllegalArgumentException 발생")
+    void duplicateEmailTest() {
+        SignupRequest signupRequest = SignupRequest.builder()
+            .email(MEMBER_EMAIL)
+            .nickname("nick")
+            .password("1234")
+            .build();
+
+        assertThrows(IllegalArgumentException.class, () -> memberService.joinAsMember(signupRequest));
+    }
+
+    @Test
     @DisplayName("회원 수정")
     void editTest() {
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .phone("01012345678")
             .build();
 
-        memberService.editMemberInfo(MEMBER_ID, modifyRequest);
+        memberService.edit(MEMBER_ID, modifyRequest);
         Member member = memberRepository.findById(MEMBER_ID).get();
 
         assertThat(member.getPhone()).isEqualTo(modifyRequest.getPhone());
+    }
+
+    @Test
+    @DisplayName("회원 이미지 수정")
+    void editImageTest() {
+        String writerData = "panda panda panda";
+        MultipartFile multipartFile = new MockMultipartFile(
+            "files",
+            "hehe.jpg",
+            "image/jpeg",
+            writerData.getBytes(StandardCharsets.UTF_8));
+
+        ModifyRequest modifyRequest = ModifyRequest.builder()
+            .phone("01012345678")
+            .file(multipartFile)
+            .build();
+
+        memberService.edit(MEMBER_ID, modifyRequest);
+        Member member = memberRepository.findById(MEMBER_ID).get();
+
+        assertThat(member.getImage()).isNotNull();
     }
 
     @Test

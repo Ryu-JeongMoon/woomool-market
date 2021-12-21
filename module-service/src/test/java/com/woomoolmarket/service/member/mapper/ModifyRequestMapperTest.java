@@ -69,7 +69,7 @@ class ModifyRequestMapperTest {
     void updateMemberTest() {
         ModifyRequest modifyRequest = createModifyDto();
         Member member = memberRepository.findByEmail(EMAIL).get();
-        memberService.editMemberInfo(member.getId(), modifyRequest);
+        memberService.edit(member.getId(), modifyRequest);
 
         Member findResult = memberRepository.findByEmail(EMAIL).get();
 

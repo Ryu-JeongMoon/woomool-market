@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Import(RestDocsConfiguration.class)
 public class ApiDocumentationConfig {
 
+    protected static String CONSTRAINT = "constraint";
     protected static Long MEMBER_ID;
     protected static Long PRODUCT_ID;
     protected static Long CART_ID;

@@ -24,7 +24,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,15 +60,9 @@ public class MemberController {
 
     @PostMapping
     @PreAuthorize("isAnonymous()")
-    public ResponseEntity<EntityModel<MemberResponse>> join(
-        @Valid @RequestBody SignupRequest signUpRequest, @Nullable MultipartFile file) {
-
-        MemberResponse memberResponse;
-        if (StringUtils.hasText(signUpRequest.getLicense())) {
-            memberResponse = memberService.joinAsSeller(signUpRequest, file);
-        } else {
-            memberResponse = memberService.joinAsMember(signUpRequest, file);
-        }
+    public ResponseEntity<EntityModel<MemberResponse>> join(@Valid @RequestBody SignupRequest signUpRequest) {
+        MemberResponse memberResponse = StringUtils.hasText(signUpRequest.getLicense()) ?
+            memberService.joinAsSeller(signUpRequest) : memberService.joinAsMember(signUpRequest);
 
         EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
             linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
@@ -82,7 +74,7 @@ public class MemberController {
     @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> edit(@PathVariable Long id, @Valid @RequestBody ModifyRequest modifyRequest) {
         URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
-        memberService.editMemberInfo(id, modifyRequest);
+        memberService.edit(id, modifyRequest);
         return ResponseEntity.created(createdUri).build();
     }
 

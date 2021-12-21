@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.common.embeddable.Address;
+import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
@@ -36,7 +36,6 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
     @BeforeEach
     void init() {
         MEMBER_ID = memberTestHelper.createUser().getId();
-
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
@@ -85,19 +84,21 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("member/join-member",
                 requestFields(
                     fieldWithPath("email").type(JsonFieldType.STRING).description("회원 아이디로 사용될 이메일")
-                        .attributes(key("constraint").value("이메일 형식, 9-64자")),
+                        .attributes(key(CONSTRAINT).value("이메일 형식, 9-64자")),
                     fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 이름 or 별칭")
-                        .attributes(key("constraint").value("문자 형식, 4-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식, 4-24자")),
                     fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
-                        .attributes(key("constraint").value("문자 형식, 4-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식, 4-24자")),
                     fieldWithPath("license").type(JsonFieldType.STRING).description("사업자번호").optional()
-                            .attributes(key("constraint").value("숫자 형식 10자")),
+                        .attributes(key(CONSTRAINT).value("숫자 형식 10자")),
                     fieldWithPath("address.city").type(JsonFieldType.STRING).description("주소 - 도시명").optional()
-                        .attributes(key("constraint").value("문자 형식, 2-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식, 2-24자")),
                     fieldWithPath("address.street").type(JsonFieldType.STRING).description("주소 - 도로명").optional()
-                        .attributes(key("constraint").value("문자 형식, 2-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식, 2-24자")),
                     fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("주소 - 우편번호").optional()
-                        .attributes(key("constraint").value("문자 형식, 5-6자"))
+                        .attributes(key(CONSTRAINT).value("문자 형식, 5-6자")),
+                    fieldWithPath("file").type(JsonFieldType.VARIES).description("이미지 파일").optional()
+                        .attributes(key(CONSTRAINT).value("MultipartFile 형식"))
                 )));
     }
 
@@ -117,9 +118,9 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("member/login-member",
                 requestFields(
                     fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
-                        .attributes(key("constraint").value("이메일 형식 9-64자")),
+                        .attributes(key(CONSTRAINT).value("이메일 형식 9-64자")),
                     fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
-                        .attributes(key("constraint").value("문자 형식 4-24자"))
+                        .attributes(key(CONSTRAINT).value("문자 형식 4-24자"))
                 )));
     }
 
@@ -141,21 +142,23 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("member/modify-member",
                 requestFields(
                     fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 이름 또는 별칭").optional()
-                        .attributes(key("constraint").value("문자 형식 6-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 6-24자")),
                     fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호").optional()
-                        .attributes(key("constraint").value("문자 형식 4-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 4-24자")),
                     fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 사진").optional()
-                        .attributes(key("constraint").value("문자 형식 최대 255자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 최대 255자")),
                     fieldWithPath("phone").type(JsonFieldType.STRING).description("전화번호").optional()
-                        .attributes(key("constraint").value("문자 형식 10-11자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 10-11자")),
                     fieldWithPath("license").type(JsonFieldType.STRING).description("사업자 번호").optional()
-                        .attributes(key("constraint").value("문자 형식 10자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 10자")),
                     fieldWithPath("address.city").type(JsonFieldType.STRING).description("주소 - 도시명").optional()
-                        .attributes(key("constraint").value("문자 형식, 2-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식, 2-24자")),
                     fieldWithPath("address.street").type(JsonFieldType.STRING).description("주소 - 도로명").optional()
-                        .attributes(key("constraint").value("문자 형식, 2-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식, 2-24자")),
                     fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("주소 - 우편번호").optional()
-                        .attributes(key("constraint").value("문자 형식, 5-6자"))
+                        .attributes(key(CONSTRAINT).value("문자 형식, 5-6자")),
+                    fieldWithPath("file").type(JsonFieldType.VARIES).description("이미지 파일").optional()
+                        .attributes(key(CONSTRAINT).value("MultipartFile 형식"))
                 )));
     }
 
@@ -194,7 +197,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        Long memberId = memberService.joinAsMember(signUpRequest, null).getId();
+        Long memberId = memberService.joinAsMember(signUpRequest).getId();
 
         mockMvc.perform(
                 get("/api/members/admin/" + memberId)
@@ -230,7 +233,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
                 .nickname("nick" + i + 1)
                 .password("123456")
                 .build();
-            memberService.joinAsMember(signUpRequest, null);
+            memberService.joinAsMember(signUpRequest);
         }
 
         mockMvc.perform(

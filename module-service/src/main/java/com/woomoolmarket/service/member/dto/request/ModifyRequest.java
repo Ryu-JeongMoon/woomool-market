@@ -1,6 +1,7 @@
 package com.woomoolmarket.service.member.dto.request;
 
 import com.woomoolmarket.common.embeddable.Address;
+import javax.annotation.Nullable;
 import javax.persistence.Embedded;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -33,4 +35,7 @@ public class ModifyRequest {
 
     @Embedded
     private Address address;
+
+    @Nullable
+    private MultipartFile file;
 }

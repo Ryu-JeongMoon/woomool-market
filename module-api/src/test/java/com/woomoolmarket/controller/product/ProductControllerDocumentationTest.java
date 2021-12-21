@@ -87,21 +87,21 @@ class ProductControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("product/create-product",
                 relaxedRequestFields(
                     fieldWithPath("name").type(JsonFieldType.STRING).description("상풍 이름")
-                        .attributes(key("constraint").value("문자 형식 6-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 6-24자")),
                     fieldWithPath("email").type(JsonFieldType.STRING).description("판매자")
-                        .attributes(key("constraint").value("이메일 형식 9-64자")),
+                        .attributes(key(CONSTRAINT).value("이메일 형식 9-64자")),
                     fieldWithPath("description").type(JsonFieldType.STRING).description("상품 설명")
-                        .attributes(key("constraint").value("자유 형식 빈 값 허용 안함")),
+                        .attributes(key(CONSTRAINT).value("자유 형식 빈 값 허용 안함")),
                     fieldWithPath("productImage").type(JsonFieldType.STRING).description("상품 이미지").optional()
-                        .attributes(key("constraint").value("문자 형식 최대 255자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 최대 255자")),
                     fieldWithPath("price").type(JsonFieldType.NUMBER).description("가격")
-                        .attributes(key("constraint").value("숫자 형식")),
+                        .attributes(key(CONSTRAINT).value("숫자 형식")),
                     fieldWithPath("stock").type(JsonFieldType.NUMBER).description("재고")
-                        .attributes(key("constraint").value("숫자 형식")),
+                        .attributes(key(CONSTRAINT).value("숫자 형식")),
                     fieldWithPath("region").type(JsonFieldType.STRING).description("지역")
-                        .attributes(key("constraint").value("Region class 참고")),
+                        .attributes(key(CONSTRAINT).value("Region class 참고")),
                     fieldWithPath("productCategory").type(JsonFieldType.STRING).description("판매자")
-                        .attributes(key("constraint").value("ProductCategory class 참고"))
+                        .attributes(key(CONSTRAINT).value("ProductCategory class 참고"))
                 )));
     }
 
@@ -140,19 +140,19 @@ class ProductControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("product/edit-product",
                 relaxedRequestFields(
                     fieldWithPath("name").type(JsonFieldType.STRING).description("상풍 이름").optional()
-                        .attributes(key("constraint").value("문자 형식 6-24자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 6-24자")),
                     fieldWithPath("description").type(JsonFieldType.STRING).description("상품 설명").optional()
-                        .attributes(key("constraint").value("자유 형식 빈 값 허용 안함")),
+                        .attributes(key(CONSTRAINT).value("자유 형식 빈 값 허용 안함")),
                     fieldWithPath("productImage").type(JsonFieldType.STRING).description("상품 이미지").optional()
-                        .attributes(key("constraint").value("문자 형식 최대 255자")),
+                        .attributes(key(CONSTRAINT).value("문자 형식 최대 255자")),
                     fieldWithPath("price").type(JsonFieldType.NUMBER).description("가격").optional()
-                        .attributes(key("constraint").value("숫자 형식")),
+                        .attributes(key(CONSTRAINT).value("숫자 형식")),
                     fieldWithPath("stock").type(JsonFieldType.NUMBER).description("재고").optional()
-                        .attributes(key("constraint").value("숫자 형식")),
+                        .attributes(key(CONSTRAINT).value("숫자 형식")),
                     fieldWithPath("region").type(JsonFieldType.STRING).description("지역").optional()
-                        .attributes(key("constraint").value("Region class 참고")),
+                        .attributes(key(CONSTRAINT).value("Region class 참고")),
                     fieldWithPath("productCategory").type(JsonFieldType.STRING).description("판매자").optional()
-                        .attributes(key("constraint").value("ProductCategory class 참고"))
+                        .attributes(key(CONSTRAINT).value("ProductCategory class 참고"))
                 )));
     }
 

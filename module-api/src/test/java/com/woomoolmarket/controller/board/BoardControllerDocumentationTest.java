@@ -100,17 +100,17 @@ public class BoardControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("board/create-board",
                 requestFields(
                     fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
-                        .attributes(key("constraint").value("이메일 형식 9-64자")),
+                        .attributes(key(CONSTRAINT).value("이메일 형식 9-64자")),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("제목")
-                        .attributes(key("constraint").value("최대 255자")),
+                        .attributes(key(CONSTRAINT).value("최대 255자")),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
-                        .attributes(key("constraint").value("최대 65535자")),
+                        .attributes(key(CONSTRAINT).value("최대 65535자")),
                     fieldWithPath("boardCategory").type(JsonFieldType.STRING).description("게시글 분류")
-                        .attributes(key("constraint").value("FREE, QNA, NOTICE 중 하나")),
+                        .attributes(key(CONSTRAINT).value("FREE, QNA, NOTICE 중 하나")),
                     fieldWithPath("startDateTime").type(JsonFieldType.VARIES).description("게시 시작일시")
-                        .attributes(key("constraint").value("종료일시보다 느릴 수 없음")),
+                        .attributes(key(CONSTRAINT).value("종료일시보다 느릴 수 없음")),
                     fieldWithPath("endDateTime").type(JsonFieldType.VARIES).description("게시 종료일시")
-                        .attributes(key("constraint").value("현재시각보다 앞설 수 없음"))
+                        .attributes(key(CONSTRAINT).value("현재시각보다 앞설 수 없음"))
                 )));
     }
 
@@ -130,11 +130,11 @@ public class BoardControllerDocumentationTest extends ApiDocumentationConfig {
             .andDo(document("board/edit-board",
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING).description("제목").optional()
-                        .attributes(key("constraint").value("최대 255자")),
+                        .attributes(key(CONSTRAINT).value("최대 255자")),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("내용").optional()
-                        .attributes(key("constraint").value("최대 65535자")),
+                        .attributes(key(CONSTRAINT).value("최대 65535자")),
                     fieldWithPath("boardCategory").type(JsonFieldType.STRING).description("게시글 분류").optional()
-                        .attributes(key("constraint").value("FREE, QNA, NOTICE 중 하나"))
+                        .attributes(key(CONSTRAINT).value("FREE, QNA, NOTICE 중 하나"))
                 )));
     }
 
