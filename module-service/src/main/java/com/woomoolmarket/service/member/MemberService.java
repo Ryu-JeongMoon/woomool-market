@@ -75,7 +75,7 @@ public class MemberService {
             throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
         }
 
-        Image image = imageProcessor.parse(signUpRequest.getFile());
+        Image image = imageProcessor.parse(signUpRequest.getMultipartFile());
 
         Member member = signupRequestMapper.toEntity(signUpRequest);
         member.changePassword(passwordEncoder.encode(member.getPassword()));
@@ -90,7 +90,7 @@ public class MemberService {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-        Image image = imageProcessor.parse(modifyRequest.getFile());
+        Image image = imageProcessor.parse(modifyRequest.getMultipartFile());
         member.addImage(image);
 
         modifyRequestMapper.updateFromDto(modifyRequest, member);

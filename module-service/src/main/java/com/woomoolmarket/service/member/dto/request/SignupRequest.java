@@ -1,5 +1,6 @@
 package com.woomoolmarket.service.member.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.constant.RegexpConstants;
 import com.woomoolmarket.common.embeddable.Address;
 import javax.annotation.Nullable;
@@ -42,8 +43,8 @@ public class SignupRequest {
 
     private Address address;
 
-    @Nullable
-    private MultipartFile file;
+    @JsonIgnore
+    private MultipartFile multipartFile;
 }
 
 /*

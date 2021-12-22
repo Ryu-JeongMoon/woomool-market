@@ -7,6 +7,7 @@ import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
+import io.jsonwebtoken.lang.Collections;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +121,13 @@ public class Product extends BaseEntity {
         this.status = memberStatus;
         this.deletedDateTime = deletedDateTime;
     }
-}
 
-// TODO, increase & decrease stock 동시성 문제 발생하지 않을까? 어떻게 해결해야 하남?
+    public void addImages(List<Image> images) {
+        if (Collections.isEmpty(images)) {
+            return;
+        }
+
+        this.images = images;
+        images.forEach(image -> image.setProduct(this));
+    }
+}

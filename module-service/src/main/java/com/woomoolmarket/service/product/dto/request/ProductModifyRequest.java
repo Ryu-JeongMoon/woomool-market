@@ -1,10 +1,10 @@
 package com.woomoolmarket.service.product.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import java.util.List;
 import javax.persistence.Lob;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -38,4 +39,7 @@ public class ProductModifyRequest {
     private Region region;
 
     private ProductCategory productCategory;
+
+    @JsonIgnore
+    private List<MultipartFile> multipartFiles;
 }

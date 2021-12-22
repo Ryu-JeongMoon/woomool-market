@@ -55,7 +55,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 가입 시 USER 권한")
-    void joinMemberTest() {
+    void joinMember() {
         MemberResponse memberResponse = memberService.findMemberById(MEMBER_ID);
         assertThat(MEMBER_EMAIL).isEqualTo(memberResponse.getEmail());
         assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_USER);
@@ -63,14 +63,14 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("판매자 가입 시 SELLER 권한")
-    void joinSellerTest() {
+    void joinSeller() {
         MemberResponse memberResponse = memberService.findMemberById(SELLER_ID);
         assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_SELLER);
     }
 
     @Test
     @DisplayName("회원 가입")
-    void joinTest() {
+    void joinWithMultipartFile() {
         String writerData = "panda panda panda";
         MultipartFile multipartFile = new MockMultipartFile(
             "files",
@@ -82,7 +82,7 @@ class MemberServiceTest extends ServiceTestConfig {
             .email("PANDA@naver.com")
             .nickname("nick")
             .password("1234")
-            .file(multipartFile)
+            .multipartFile(multipartFile)
             .build();
         Member member = memberService.join(signupRequest, Authority.ROLE_USER);
         assertThat(member.getImage()).isNotNull();
@@ -90,7 +90,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 가입 시 이메일 중복 - IllegalArgumentException 발생")
-    void duplicateEmailTest() {
+    void duplicateEmail() {
         SignupRequest signupRequest = SignupRequest.builder()
             .email(MEMBER_EMAIL)
             .nickname("nick")
@@ -102,7 +102,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 수정")
-    void editTest() {
+    void edit() {
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .phone("01012345678")
             .build();
@@ -115,7 +115,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 이미지 수정")
-    void editImageTest() {
+    void editImage() {
         String writerData = "panda panda panda";
         MultipartFile multipartFile = new MockMultipartFile(
             "files",
@@ -125,7 +125,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .phone("01012345678")
-            .file(multipartFile)
+            .multipartFile(multipartFile)
             .build();
 
         memberService.edit(MEMBER_ID, modifyRequest);
@@ -136,7 +136,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 탈퇴")
-    void leaveTest() {
+    void leave() {
         memberService.leaveSoftly(MEMBER_ID);
         Member member = memberRepository.findById(MEMBER_ID).get();
         assertThat(member.getStatus()).isEqualTo(Status.INACTIVE);
@@ -144,7 +144,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("회원 복구")
-    void restoreTest() {
+    void restore() {
         memberService.leaveSoftly(MEMBER_ID);
         memberService.restore(MEMBER_ID);
         Member member = memberRepository.findById(MEMBER_ID).get();
@@ -153,7 +153,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("이전, 다음 아이디 찾아온다")
-    void findIdTest() {
+    void findId() {
         for (int i = 0; i < 3; i++) {
             Member member = Member.builder()
                 .email(MEMBER_EMAIL + i)
@@ -174,7 +174,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("다음 회원 번호 찾기")
-    void findNextIdTest() {
+    void findNextId() {
         for (int i = 0; i < 2; i++) {
             Member member = Member.builder()
                 .email(MEMBER_EMAIL + i)
@@ -193,7 +193,7 @@ class MemberServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("어드민 - 전체 조회")
     @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
-    void getListByAllTest() {
+    void getListByAll() {
         MemberSearchCondition condition = MemberSearchCondition
             .builder()
             .build();
@@ -204,7 +204,7 @@ class MemberServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("어드민 - 권한으로 검색")
     @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
-    void getListByAuthorityTest() {
+    void getListByAuthority() {
         MemberSearchCondition condition = MemberSearchCondition
             .builder()
             .authority(Authority.ROLE_USER)
@@ -216,7 +216,7 @@ class MemberServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("어드민 - 이메일로 검색")
     @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
-    void getListByEmailTest() {
+    void getListByEmail() {
         MemberSearchCondition condition = MemberSearchCondition
             .builder()
             .email("nav")

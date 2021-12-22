@@ -11,6 +11,7 @@ import com.woomoolmarket.helper.BoardTestHelper;
 import com.woomoolmarket.helper.CartTestHelper;
 import com.woomoolmarket.helper.ImageTestHelper;
 import com.woomoolmarket.helper.MemberTestHelper;
+import com.woomoolmarket.helper.MultipartFileTestHelper;
 import com.woomoolmarket.helper.OrderTestHelper;
 import com.woomoolmarket.helper.ProductTestHelper;
 import com.woomoolmarket.service.board.BoardService;
@@ -47,43 +48,44 @@ public abstract class ServiceTestConfig {
     protected StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    protected MemberRepository memberRepository;
+    protected CartRepository cartRepository;
+    @Autowired
+    protected OrderRepository orderRepository;
     @Autowired
     protected BoardRepository boardRepository;
     @Autowired
     protected ImageRepository imageRepository;
     @Autowired
-    protected CartRepository cartRepository;
-    @Autowired
-    protected OrderRepository orderRepository;
+    protected MemberRepository memberRepository;
     @Autowired
     protected ProductRepository productRepository;
 
-    @Autowired
-    protected MemberService memberService;
-    @Autowired
-    protected BoardService boardService;
-    @Autowired
-    protected ImageService imageService;
     @Autowired
     protected CartService cartService;
     @Autowired
     protected OrderService orderService;
     @Autowired
+    protected BoardService boardService;
+    @Autowired
+    protected ImageService imageService;
+    @Autowired
+    protected MemberService memberService;
+    @Autowired
     protected ProductService productService;
 
-
-    @Autowired
-    protected MemberTestHelper memberTestHelper;
-    @Autowired
-    protected BoardTestHelper boardTestHelper;
-    @Autowired
-    protected ImageTestHelper imageTestHelper;
     @Autowired
     protected CartTestHelper cartTestHelper;
     @Autowired
     protected OrderTestHelper orderTestHelper;
     @Autowired
+    protected BoardTestHelper boardTestHelper;
+    @Autowired
+    protected ImageTestHelper imageTestHelper;
+    @Autowired
+    protected MemberTestHelper memberTestHelper;
+    @Autowired
     protected ProductTestHelper productTestHelper;
+    @Autowired
+    protected MultipartFileTestHelper multipartFileTestHelper;
 
 }
