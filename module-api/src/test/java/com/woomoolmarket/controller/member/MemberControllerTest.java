@@ -25,6 +25,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.multipart.MultipartFile;
 
 class MemberControllerTest extends ApiControllerConfig {
 
@@ -39,7 +40,7 @@ class MemberControllerTest extends ApiControllerConfig {
     @Test
     @WithAnonymousUser
     @DisplayName("회원가입 성공")
-    void signUpSuccessTest() throws Exception {
+    void signupSuccess() throws Exception {
         SignupRequest signUpRequest = SignupRequest.builder()
             .email("pandabear@gogo.com")
             .nickname("nick")
@@ -55,8 +56,29 @@ class MemberControllerTest extends ApiControllerConfig {
     }
 
     @Test
+    @WithAnonymousUser
+    @DisplayName("이미지 포함 회원가입 - 성공")
+    void signupWithMultipartFileSuccess() throws Exception {
+        MultipartFile multipartFile = multipartFileTestHelper.createMultipartFile();
+
+        SignupRequest signUpRequest = SignupRequest.builder()
+            .email("pandabear@gogo.com")
+            .nickname("nick")
+            .password("123456")
+            .multipartFile(multipartFile)
+            .address(new Address("seoul", "yeonhui", "1234"))
+            .build();
+
+        mockMvc.perform(post("/api/members")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.ALL)
+                .content(objectMapper.writeValueAsString(signUpRequest)))
+            .andExpect(status().isCreated());
+    }
+
+    @Test
     @DisplayName("회원가입 실패 - 400 @Valid 동작")
-    void signUpFailTest() throws Exception {
+    void signupFail() throws Exception {
         SignupRequest signUpRequest = SignupRequest.builder()
             .email("pandabear@gogo.com")
             .nickname("nick")
@@ -74,7 +96,7 @@ class MemberControllerTest extends ApiControllerConfig {
     @Test
     @WithAnonymousUser
     @DisplayName("로그인 성공")
-    void loginSuccessTest() throws Exception {
+    void loginSuccess() throws Exception {
         LoginRequest loginRequest = LoginRequest.builder()
             .email(MEMBER_EMAIL)
             .password(MEMBER_PASSWORD)
@@ -94,7 +116,7 @@ class MemberControllerTest extends ApiControllerConfig {
     @Test
     @WithAnonymousUser
     @DisplayName("로그인 실패 - 400 @Valid 작동")
-    void loginFailTest() throws Exception {
+    void loginFail() throws Exception {
         LoginRequest loginRequest = LoginRequest.builder()
             .email("fail")
             .password(MEMBER_PASSWORD)
@@ -141,6 +163,26 @@ class MemberControllerTest extends ApiControllerConfig {
         ModifyRequest modifyRequest = ModifyRequest.builder()
             .nickname("panda")
             .phone("01012345678")
+            .build();
+
+        mockMvc.perform(
+                patch("/api/members/" + MEMBER_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(modifyRequest)))
+            .andDo(print())
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(username = "panda@naver.com", roles = "USER")
+    @DisplayName("이미지 수정 성공")
+    void editWithMultipartFile() throws Exception {
+        MultipartFile multipartFile = multipartFileTestHelper.createMultipartFile();
+
+        ModifyRequest modifyRequest = ModifyRequest.builder()
+            .nickname("panda")
+            .phone("01012345678")
+            .multipartFile(multipartFile)
             .build();
 
         mockMvc.perform(

@@ -11,6 +11,7 @@ import com.woomoolmarket.helper.BoardTestHelper;
 import com.woomoolmarket.helper.CartTestHelper;
 import com.woomoolmarket.helper.ImageTestHelper;
 import com.woomoolmarket.helper.MemberTestHelper;
+import com.woomoolmarket.helper.MultipartFileTestHelper;
 import com.woomoolmarket.helper.OrderTestHelper;
 import com.woomoolmarket.helper.ProductTestHelper;
 import com.woomoolmarket.service.member.MemberService;
@@ -71,5 +72,7 @@ public abstract class ApiControllerConfig {
     protected MemberTestHelper memberTestHelper;
     @Autowired
     protected ProductTestHelper productTestHelper;
+    @Autowired
+    protected MultipartFileTestHelper multipartFileTestHelper;
 
 }

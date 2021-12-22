@@ -97,7 +97,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
                         .attributes(key(CONSTRAINT).value("문자 형식, 2-24자")),
                     fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("주소 - 우편번호").optional()
                         .attributes(key(CONSTRAINT).value("문자 형식, 5-6자")),
-                    fieldWithPath("file").type(JsonFieldType.VARIES).description("이미지 파일").optional()
+                    fieldWithPath("multipartFile").type(JsonFieldType.VARIES).description("이미지 파일").optional()
                         .attributes(key(CONSTRAINT).value("MultipartFile 형식"))
                 )));
     }
@@ -157,7 +157,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
                         .attributes(key(CONSTRAINT).value("문자 형식, 2-24자")),
                     fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("주소 - 우편번호").optional()
                         .attributes(key(CONSTRAINT).value("문자 형식, 5-6자")),
-                    fieldWithPath("file").type(JsonFieldType.VARIES).description("이미지 파일").optional()
+                    fieldWithPath("multipartFile").type(JsonFieldType.VARIES).description("이미지 파일").optional()
                         .attributes(key(CONSTRAINT).value("MultipartFile 형식"))
                 )));
     }

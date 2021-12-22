@@ -19,12 +19,14 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
+import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.multipart.MultipartFile;
 
 @WithMockUser(username = "panda@naver.com", roles = "SELLER")
 class ProductControllerTest extends ApiControllerConfig {
@@ -90,7 +92,6 @@ class ProductControllerTest extends ApiControllerConfig {
 
     @Test
     @DisplayName("상품 추가 성공")
-    @WithMockUser(roles = "ADMIN")
     void create() throws Exception {
         ProductRequest productRequest = ProductRequest.builder()
             .name("panda-bear")
@@ -99,6 +100,31 @@ class ProductControllerTest extends ApiControllerConfig {
             .productCategory(ProductCategory.CEREAL)
             .price(5000)
             .stock(50000)
+            .region(Region.JEJUDO)
+            .description("panda is cool")
+            .build();
+
+        mockMvc.perform(
+                post("/api/products")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(productRequest)))
+            .andDo(print())
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("상품 이미지 추가 성공")
+    void createWithMultipartFile() throws Exception {
+        MultipartFile multipartFile = multipartFileTestHelper.createMultipartFile();
+
+        ProductRequest productRequest = ProductRequest.builder()
+            .name("panda-bear")
+            .email("panda@naver.com")
+            .productImage("yahoo")
+            .productCategory(ProductCategory.CEREAL)
+            .price(5000)
+            .stock(50000)
+            .multipartFiles(List.of(multipartFile))
             .region(Region.JEJUDO)
             .description("panda is cool")
             .build();
@@ -140,6 +166,25 @@ class ProductControllerTest extends ApiControllerConfig {
         ProductModifyRequest modifyRequest = ProductModifyRequest.builder()
             .name("brown bear")
             .description("bear bear")
+            .build();
+
+        mockMvc.perform(
+                patch("/api/products/" + PRODUCT_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(modifyRequest)))
+            .andDo(print())
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("상품 이미지 수정 성공")
+    void editWithMultipartFileProduct() throws Exception {
+        MultipartFile multipartFile = multipartFileTestHelper.createMultipartFile();
+
+        ProductModifyRequest modifyRequest = ProductModifyRequest.builder()
+            .name("brown bear")
+            .description("bear bear")
+            .multipartFiles(List.of(multipartFile))
             .build();
 
         mockMvc.perform(

@@ -601,7 +601,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     "city" : "seoul",
     "street" : "yeonhui",
     "zipcode" : "1234"
-  }
+  },
+  "multipartFile" : null
 }'</code></pre>
 </div>
 </div>
@@ -619,7 +620,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     "city" : "seoul",
     "street" : "yeonhui",
     "zipcode" : "1234"
-  }
+  },
+  "multipartFile" : null
 }' | http POST 'https://localhost:8443/api/members' \
     'Content-Type:application/json;charset=UTF-8' \
     'Accept:application/hal+json'</code></pre>
@@ -695,6 +697,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">주소 - 우편번호</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자 형식, 5-6자</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">multipartFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 파일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MultipartFile 형식</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -705,7 +714,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/hal+json
-Content-Length: 199
+Content-Length: 225
 Host: localhost:8443
 
 {
@@ -717,7 +726,8 @@ Host: localhost:8443
     "city" : "seoul",
     "street" : "yeonhui",
     "zipcode" : "1234"
-  }
+  },
+  "multipartFile" : null
 }</code></pre>
 </div>
 </div>
@@ -750,8 +760,8 @@ Content-Length: 527
   "profileImage" : null,
   "phone" : null,
   "license" : null,
-  "createdDateTime" : "2021-12-20 21:00:12",
-  "lastModifiedDateTime" : "2021-12-20 21:00:12",
+  "createdDateTime" : "2021-12-22 22:07:50",
+  "lastModifiedDateTime" : "2021-12-22 22:07:50",
   "leaveDateTime" : null,
   "authority" : "ROLE_USER",
   "address" : {
@@ -870,8 +880,8 @@ Host: localhost:8443
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDA2MDY0MTF9.OY4cooeKxAHWaWEMrvdeUKtLxrzXGsgOa_d4u7qlUAH203-ZIGRBQLk9BF7jWe1wDn3nsxWmR8jte0sQiG1MEceukGX-G1a_ay2pRTYsvBVmh2i3mc9N0Tynb0znF95AXLUcoBQLnFMO93IDkckwGWw0Fwe12gsi7xMYISZh96ZS5qidOR9wEAagwt45vEQtt-3cmstM6ij-z4qEOS4WqbS9oLq045KYmu03yN4T5L6x1BPfK6mm9tQpTE_SDuCx-fHqMo_UY6SS2pWaEkLEk3j9Rw9h8C1lig6r-OeeHmGknqMNP2THWNftK2X1b0cT5ieYwc69ctiOLzui1aPcASICK0-U38b3r-_bYAE5frjIyKUHLH9GZy_UsqESGp-jGnTr0JNBaU6g0oieiddOBvE6gdJJXJ_eiTFzfKVK4qVCPV1Lw8EBnNY-r89TH2kKLpvMTyVGFnzXHCvRQqhtEA0yjp_rhEROMiyISdpbQVPyE6nDzF0bIMM6X2IQ3z9TQyyYFh1tMHJ-6eRZcpIU5SBoGcai8lXrXHWPYt4MGWyM2SRY8HpOSg01yOf1DIAfnChKHAC6jDsorYmfQw06R5LkVnPvZJvEA8srG4tMuNJf3z_QBZN5y_SaNUYVxnShs1Yci_Vwu-bzzKo23liJN2q6hV0D6slLmKcPMpRAVzI; Path=/; Domain=woomool-market; Max-Age=604800; Expires=Mon, 27 Dec 2021 12:00:11 GMT; Secure; HttpOnly
-Authorization: eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjQwMDAzNDExfQ.Q1uU2_QmrXqMA4cciabn1DYvNEQdN6Yrvct1xVDEZO9eB36prAXJwOuRWNQz5-1eh8Cb5DSj7pZJAMaE6WP3z_kc9BQ0QID0ouKV2CagEJaLOhNcG7vMWfb-ev45vJPdMzZzPtDhdPxarj3Z6FwYJaE4IO2Ec3l_OJrex0YuVRowIP-UVa7JV8d2OE1wr0Inv8vMTf6fDtIRyjTbuZSzlf4giK_bPPQ58-qpO9zJDnLmFc_-NgXmfmwN4At3FNifdOKf3jdnC0AtSSvo_4Uy7yS7mTOrUqSb6nR7boQRjR8dzPb5aPWaEVZCYF17yYT-FxhebIoZsZ8u3GeqPUVvnBxkcz8XtCPfGKwuOA-iDRHwYInKdkYjePl3xjIfqDqZfymnAkLyCLDFGpUDG8oVdTW6QL52LmDoXBX33wk41cNHYOi6XyZwafF9pP_TNOFpmQ52_zNwTkpeJsqo5bidLnib_jKUes-dcvG4zc432p0x99-n5BDxgrVdxZeAV3mEpLWxAJjX2ipchrgRQT_TSmlpzNqmtE67bgvXnuAV6a_DvOBlI3F7eLZvTqMt4iLNrt3ah4PGmuB6wCk9CzxmNw9PK9CWmtoI4U5WzIGSJbtAX-epJd4OEgcEB3OPM7fFZJP3AWAHfZ5vLFHmLT7MKzsmNC4yy6FZCanYXEN1FWg
+Set-Cookie: refreshToken=eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDA3ODMyNzB9.NvPvX1fKhNQtaEhy2UUYkryB6Y49K1ovtj8UnfzkOcaWwXC95SPYU61MnLJX6FDVJ2hTuVriyeoaU7sesoa82YGUTZQIuCXpQ_ctvGcDDDhwfCzQE0mcN8gtVae6KsUWo87wCqxopCw6_30z9g0YtT_3-ScDxGgi1QOUm7LcSeESXWtbfghVR2K6e_6kk4xmnFGj5c_eT1jcZnKKX33VynPgrCJ2r1Fr1qLcMxrpJXc9KBhajFxPGl23-XUVtOmSPNoNnSBBaMotHLj4NQEIBD9Xd-Eyl-ArLAYd8Pd28Cim2-H4zOpXAoLA3ZH-pZFWrACyIwdjatlAx0chYrxdPeGo28_DVuTxQ9lGk3d4HKUoU8-cqMNqezJqgYN5s6ThoSdWyS2pbNaLTTXiO9NypVZZvsa7W1_bU4ePnGvBX64pbZLnFdEd8h3KVELD-v8q81BEqiU_XyhPdEwXQ6mG2o9X7g9AyvrS1VEEI3fGPrYQSI3IzF8xpoUqVMqzzFqlXXZBKckRAPXkgmtOPwE7wdHZltVeAefeslOVJS7cp8quax6Mxx2cjcTan73EPZyDuIw092QCZnNN4Kw2TbTGurBpwflyH6-s3AezkoBZCGVzGdvFQ2EtjJOKorzpRZgtzlD0sSFwYm9UPeZRvAJxOTgZFPcSYhNn40zkQ7sC15w; Path=/; Domain=woomool-market; Max-Age=604800; Expires=Wed, 29 Dec 2021 13:07:50 GMT; Secure; HttpOnly
+Authorization: eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjQwMTgwMjcwfQ.TOFFH2mzEorLQZ6erqsnp5vCf3dpKfmcvjezl78Lw4mq-hGGLnukwaJAe1fTbAq2JA8GgsbWwSG49RHbB79oNAqrKm40NA9Rp_WjEszYWscY1g9V-UmF5AAWXOMmbYYpIWWtcPFBB_lrX5x74Zg0TJqikqIuBCXLlotj5bGBML1Z86OAd3Gxcjxqg7-Ycra3FNdImzjLi6fZIcjMYJavMytzI9SQ-SS359yby-lTTXCIj3xubej8i7m94roiCTTRMRD93wm7JBDUbJKTj_LyrTOqGZqn4Pd86g7tAzfCExs61d7qDj92J4dKHi_QYPIbscBfyCSWUIDURSTV2WrgeElQJ6Hj_gvnyYSPlyTZTlpMAfnd36rKrtnBJqm4nrgiQMBzkxEoUcCHinr74klR-xFoPv2-QF0y57lrI2xDgt_USpmH3arBiiDjDTZqnUjzb6exxrua5br4a5qhCjYvtF8uJQV1yCos8Hrp3h4cXzI9sXHp2gLZLBnMec-faaWxrOOUwEgA0zsqh4ushXF9Qj6ep_3ckHKGNlKZDaFxXs_9sri6xdOGQDkQDnuU1_tQBzC3MZNr3ZB3x08JvdlHvBhai_ibdQr5acgAZQ7zyPcwlaUqwUiad1_WaRxBm7pKJX4lU0AKuYPrPv7-7j63SVBsq08HLqTesV6mPdly0Yg
 Content-Type: application/hal+json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -884,8 +894,8 @@ Content-Length: 1626
 
 {
   "grantType" : "Bearer ",
-  "accessToken" : "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjQwMDAzNDExfQ.Q1uU2_QmrXqMA4cciabn1DYvNEQdN6Yrvct1xVDEZO9eB36prAXJwOuRWNQz5-1eh8Cb5DSj7pZJAMaE6WP3z_kc9BQ0QID0ouKV2CagEJaLOhNcG7vMWfb-ev45vJPdMzZzPtDhdPxarj3Z6FwYJaE4IO2Ec3l_OJrex0YuVRowIP-UVa7JV8d2OE1wr0Inv8vMTf6fDtIRyjTbuZSzlf4giK_bPPQ58-qpO9zJDnLmFc_-NgXmfmwN4At3FNifdOKf3jdnC0AtSSvo_4Uy7yS7mTOrUqSb6nR7boQRjR8dzPb5aPWaEVZCYF17yYT-FxhebIoZsZ8u3GeqPUVvnBxkcz8XtCPfGKwuOA-iDRHwYInKdkYjePl3xjIfqDqZfymnAkLyCLDFGpUDG8oVdTW6QL52LmDoXBX33wk41cNHYOi6XyZwafF9pP_TNOFpmQ52_zNwTkpeJsqo5bidLnib_jKUes-dcvG4zc432p0x99-n5BDxgrVdxZeAV3mEpLWxAJjX2ipchrgRQT_TSmlpzNqmtE67bgvXnuAV6a_DvOBlI3F7eLZvTqMt4iLNrt3ah4PGmuB6wCk9CzxmNw9PK9CWmtoI4U5WzIGSJbtAX-epJd4OEgcEB3OPM7fFZJP3AWAHfZ5vLFHmLT7MKzsmNC4yy6FZCanYXEN1FWg",
-  "refreshToken" : "eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDA2MDY0MTF9.OY4cooeKxAHWaWEMrvdeUKtLxrzXGsgOa_d4u7qlUAH203-ZIGRBQLk9BF7jWe1wDn3nsxWmR8jte0sQiG1MEceukGX-G1a_ay2pRTYsvBVmh2i3mc9N0Tynb0znF95AXLUcoBQLnFMO93IDkckwGWw0Fwe12gsi7xMYISZh96ZS5qidOR9wEAagwt45vEQtt-3cmstM6ij-z4qEOS4WqbS9oLq045KYmu03yN4T5L6x1BPfK6mm9tQpTE_SDuCx-fHqMo_UY6SS2pWaEkLEk3j9Rw9h8C1lig6r-OeeHmGknqMNP2THWNftK2X1b0cT5ieYwc69ctiOLzui1aPcASICK0-U38b3r-_bYAE5frjIyKUHLH9GZy_UsqESGp-jGnTr0JNBaU6g0oieiddOBvE6gdJJXJ_eiTFzfKVK4qVCPV1Lw8EBnNY-r89TH2kKLpvMTyVGFnzXHCvRQqhtEA0yjp_rhEROMiyISdpbQVPyE6nDzF0bIMM6X2IQ3z9TQyyYFh1tMHJ-6eRZcpIU5SBoGcai8lXrXHWPYt4MGWyM2SRY8HpOSg01yOf1DIAfnChKHAC6jDsorYmfQw06R5LkVnPvZJvEA8srG4tMuNJf3z_QBZN5y_SaNUYVxnShs1Yci_Vwu-bzzKo23liJN2q6hV0D6slLmKcPMpRAVzI",
+  "accessToken" : "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJwYW5kYUBuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjQwMTgwMjcwfQ.TOFFH2mzEorLQZ6erqsnp5vCf3dpKfmcvjezl78Lw4mq-hGGLnukwaJAe1fTbAq2JA8GgsbWwSG49RHbB79oNAqrKm40NA9Rp_WjEszYWscY1g9V-UmF5AAWXOMmbYYpIWWtcPFBB_lrX5x74Zg0TJqikqIuBCXLlotj5bGBML1Z86OAd3Gxcjxqg7-Ycra3FNdImzjLi6fZIcjMYJavMytzI9SQ-SS359yby-lTTXCIj3xubej8i7m94roiCTTRMRD93wm7JBDUbJKTj_LyrTOqGZqn4Pd86g7tAzfCExs61d7qDj92J4dKHi_QYPIbscBfyCSWUIDURSTV2WrgeElQJ6Hj_gvnyYSPlyTZTlpMAfnd36rKrtnBJqm4nrgiQMBzkxEoUcCHinr74klR-xFoPv2-QF0y57lrI2xDgt_USpmH3arBiiDjDTZqnUjzb6exxrua5br4a5qhCjYvtF8uJQV1yCos8Hrp3h4cXzI9sXHp2gLZLBnMec-faaWxrOOUwEgA0zsqh4ushXF9Qj6ep_3ckHKGNlKZDaFxXs_9sri6xdOGQDkQDnuU1_tQBzC3MZNr3ZB3x08JvdlHvBhai_ibdQr5acgAZQ7zyPcwlaUqwUiad1_WaRxBm7pKJX4lU0AKuYPrPv7-7j63SVBsq08HLqTesV6mPdly0Yg",
+  "refreshToken" : "eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE2NDA3ODMyNzB9.NvPvX1fKhNQtaEhy2UUYkryB6Y49K1ovtj8UnfzkOcaWwXC95SPYU61MnLJX6FDVJ2hTuVriyeoaU7sesoa82YGUTZQIuCXpQ_ctvGcDDDhwfCzQE0mcN8gtVae6KsUWo87wCqxopCw6_30z9g0YtT_3-ScDxGgi1QOUm7LcSeESXWtbfghVR2K6e_6kk4xmnFGj5c_eT1jcZnKKX33VynPgrCJ2r1Fr1qLcMxrpJXc9KBhajFxPGl23-XUVtOmSPNoNnSBBaMotHLj4NQEIBD9Xd-Eyl-ArLAYd8Pd28Cim2-H4zOpXAoLA3ZH-pZFWrACyIwdjatlAx0chYrxdPeGo28_DVuTxQ9lGk3d4HKUoU8-cqMNqezJqgYN5s6ThoSdWyS2pbNaLTTXiO9NypVZZvsa7W1_bU4ePnGvBX64pbZLnFdEd8h3KVELD-v8q81BEqiU_XyhPdEwXQ6mG2o9X7g9AyvrS1VEEI3fGPrYQSI3IzF8xpoUqVMqzzFqlXXZBKckRAPXkgmtOPwE7wdHZltVeAefeslOVJS7cp8quax6Mxx2cjcTan73EPZyDuIw092QCZnNN4Kw2TbTGurBpwflyH6-s3AezkoBZCGVzGdvFQ2EtjJOKorzpRZgtzlD0sSFwYm9UPeZRvAJxOTgZFPcSYhNn40zkQ7sC15w",
   "accessTokenExpiresIn" : 1800000
 }</code></pre>
 </div>
@@ -1079,8 +1089,8 @@ Content-Length: 703
   "profileImage" : null,
   "phone" : "01012345678",
   "license" : null,
-  "createdDateTime" : "2021-12-20 21:00:12",
-  "lastModifiedDateTime" : "2021-12-20 21:00:12",
+  "createdDateTime" : "2021-12-22 22:07:51",
+  "lastModifiedDateTime" : "2021-12-22 22:07:51",
   "leaveDateTime" : null,
   "authority" : "ROLE_USER",
   "address" : {
@@ -1130,7 +1140,8 @@ Content-Length: 703
     "city" : "부산",
     "street" : "갈매기",
     "zipcode" : "끼룩"
-  }
+  },
+  "multipartFile" : null
 }'</code></pre>
 </div>
 </div>
@@ -1149,7 +1160,8 @@ Content-Length: 703
     "city" : "부산",
     "street" : "갈매기",
     "zipcode" : "끼룩"
-  }
+  },
+  "multipartFile" : null
 }' | http PATCH 'https://localhost:8443/api/members/22' \
     'Content-Type:application/json;charset=UTF-8' \
     'Accept:application/hal+json'</code></pre>
@@ -1232,6 +1244,13 @@ Content-Length: 703
 <td class="tableblock halign-left valign-top"><p class="tableblock">주소 - 우편번호</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자 형식, 5-6자</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">multipartFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Varies</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 파일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MultipartFile 형식</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1242,7 +1261,7 @@ Content-Length: 703
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PATCH /api/members/22 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/hal+json
-Content-Length: 210
+Content-Length: 236
 Host: localhost:8443
 
 {
@@ -1255,7 +1274,8 @@ Host: localhost:8443
     "city" : "부산",
     "street" : "갈매기",
     "zipcode" : "끼룩"
-  }
+  },
+  "multipartFile" : null
 }</code></pre>
 </div>
 </div>
@@ -1584,8 +1604,8 @@ Content-Length: 779
   "profileImage" : null,
   "phone" : null,
   "license" : null,
-  "createdDateTime" : "2021-12-20 21:00:12",
-  "lastModifiedDateTime" : "2021-12-20 21:00:12",
+  "createdDateTime" : "2021-12-22 22:07:51",
+  "lastModifiedDateTime" : "2021-12-22 22:07:51",
   "leaveDateTime" : null,
   "authority" : "ROLE_USER",
   "address" : {
@@ -1723,8 +1743,8 @@ Content-Length: 2862
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-20 21:00:12",
-      "lastModifiedDateTime" : "2021-12-20 21:00:12",
+      "createdDateTime" : "2021-12-22 22:07:50",
+      "lastModifiedDateTime" : "2021-12-22 22:07:50",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1737,8 +1757,8 @@ Content-Length: 2862
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-20 21:00:12",
-      "lastModifiedDateTime" : "2021-12-20 21:00:12",
+      "createdDateTime" : "2021-12-22 22:07:50",
+      "lastModifiedDateTime" : "2021-12-22 22:07:50",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1751,8 +1771,8 @@ Content-Length: 2862
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-20 21:00:12",
-      "lastModifiedDateTime" : "2021-12-20 21:00:12",
+      "createdDateTime" : "2021-12-22 22:07:50",
+      "lastModifiedDateTime" : "2021-12-22 22:07:50",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1765,8 +1785,8 @@ Content-Length: 2862
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-20 21:00:12",
-      "lastModifiedDateTime" : "2021-12-20 21:00:12",
+      "createdDateTime" : "2021-12-22 22:07:50",
+      "lastModifiedDateTime" : "2021-12-22 22:07:50",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1779,8 +1799,8 @@ Content-Length: 2862
       "profileImage" : null,
       "phone" : null,
       "license" : null,
-      "createdDateTime" : "2021-12-20 21:00:12",
-      "lastModifiedDateTime" : "2021-12-20 21:00:12",
+      "createdDateTime" : "2021-12-22 22:07:50",
+      "lastModifiedDateTime" : "2021-12-22 22:07:50",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : null,
@@ -1793,8 +1813,8 @@ Content-Length: 2862
       "profileImage" : null,
       "phone" : "01012345678",
       "license" : null,
-      "createdDateTime" : "2021-12-20 21:00:12",
-      "lastModifiedDateTime" : "2021-12-20 21:00:12",
+      "createdDateTime" : "2021-12-22 22:07:50",
+      "lastModifiedDateTime" : "2021-12-22 22:07:50",
       "leaveDateTime" : null,
       "authority" : "ROLE_USER",
       "address" : {

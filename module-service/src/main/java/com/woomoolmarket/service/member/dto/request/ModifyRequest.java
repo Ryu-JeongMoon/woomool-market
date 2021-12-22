@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.member.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.embeddable.Address;
-import javax.annotation.Nullable;
 import javax.persistence.Embedded;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -36,6 +36,6 @@ public class ModifyRequest {
     @Embedded
     private Address address;
 
-    @Nullable
-    private MultipartFile file;
+    @JsonIgnore
+    private MultipartFile multipartFile;
 }
