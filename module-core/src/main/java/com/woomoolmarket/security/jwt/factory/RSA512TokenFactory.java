@@ -4,7 +4,7 @@ import static com.woomoolmarket.security.jwt.TokenConstants.AUTHORITIES_KEY;
 import static com.woomoolmarket.security.jwt.TokenConstants.LOGOUT_KEY_PREFIX;
 
 import com.amazonaws.util.Base64;
-import com.woomoolmarket.redis.RedisUtils;
+import com.woomoolmarket.cache.CacheService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class RSA512TokenFactory extends TokenFactory {
 
-    private final RedisUtils redisUtils;
+    private final CacheService cacheService;
 
     @Value("${jwt.privateKey}")
     private String privateKeyPlainText;
@@ -89,7 +89,7 @@ public class RSA512TokenFactory extends TokenFactory {
 
     @Override
     protected boolean isBlocked(String token) {
-        return StringUtils.hasText(token) && StringUtils.hasText(redisUtils.getData(LOGOUT_KEY_PREFIX + token));
+        return StringUtils.hasText(token) && StringUtils.hasText(cacheService.getData(LOGOUT_KEY_PREFIX + token));
     }
 
     @Override

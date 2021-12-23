@@ -1,4 +1,4 @@
-package com.woomoolmarket.redis.config;
+package com.woomoolmarket.cache.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

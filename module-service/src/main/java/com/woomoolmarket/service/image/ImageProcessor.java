@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;

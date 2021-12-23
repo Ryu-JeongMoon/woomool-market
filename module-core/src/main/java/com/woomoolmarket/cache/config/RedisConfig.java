@@ -1,4 +1,4 @@
-package com.woomoolmarket.redis.config;
+package com.woomoolmarket.cache.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

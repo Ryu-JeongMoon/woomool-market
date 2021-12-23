@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;

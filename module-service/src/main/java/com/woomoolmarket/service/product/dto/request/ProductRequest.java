@@ -1,11 +1,10 @@
 package com.woomoolmarket.service.product.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.woomoolmarket.common.constant.RegexpConstants;
+import com.woomoolmarket.common.constants.RegexpConstants;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import java.util.List;
-import javax.annotation.Nullable;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;

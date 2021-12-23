@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.auth;
 
-import com.woomoolmarket.common.constant.ExceptionConstants;
+import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;

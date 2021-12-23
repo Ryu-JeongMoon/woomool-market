@@ -1,4 +1,4 @@
-package com.woomoolmarket.redis.config;
+package com.woomoolmarket.cache.config;
 
 import java.io.BufferedReader;
 import java.io.IOException;

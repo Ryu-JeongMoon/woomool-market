@@ -1,4 +1,4 @@
-package com.woomoolmarket.common.constant;
+package com.woomoolmarket.common.constants;
 
 public class LogConstants {
 
