@@ -1,4 +1,4 @@
-package com.woomoolmarket.redis.key;
+package com.woomoolmarket.cache.key;
 
 import java.lang.reflect.Method;
 import org.springframework.cache.interceptor.KeyGenerator;

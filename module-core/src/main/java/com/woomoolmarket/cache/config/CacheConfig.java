@@ -1,4 +1,4 @@
-package com.woomoolmarket.redis.config;
+package com.woomoolmarket.cache.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
