@@ -80,7 +80,7 @@ class BoardControllerTest extends ApiControllerConfig {
             .andExpect(jsonPath("memberResponse").exists())
             .andExpect(jsonPath("title").value(BOARD_TITLE))
             .andExpect(jsonPath("content").value(BOARD_CONTENT))
-            .andExpect(jsonPath("hit").value(1))
+            .andExpect(jsonPath("boardCount").exists())
             .andExpect(jsonPath("_links").exists());
     }
 

@@ -3,7 +3,7 @@ package com.woomoolmarket.controller.auth;
 import com.woomoolmarket.common.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.security.jwt.TokenConstants;
+import com.woomoolmarket.common.constants.TokenConstants;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import javax.servlet.http.HttpServletRequest;

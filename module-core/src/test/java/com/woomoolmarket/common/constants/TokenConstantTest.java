@@ -1,4 +1,4 @@
-package com.woomoolmarket.security.jwt;
+package com.woomoolmarket.common.constants;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,9 +8,8 @@ import org.junit.jupiter.api.Test;
 class TokenConstantTest {
 
     @Test
-    @DisplayName("올바른 상수 값 반환")
+    @DisplayName("올바른 Token 상수 값 반환")
     void constantTest() {
-        assertThat(TokenConstants.LOGOUT_KEY_PREFIX).isEqualTo("logout:");
         assertThat(TokenConstants.BEARER_TYPE).isEqualTo("Bearer ");
         assertThat(TokenConstants.AUTHORITIES_KEY).isEqualTo("auth");
         assertThat(TokenConstants.AUTHORIZATION_HEADER).isEqualTo("Authorization");

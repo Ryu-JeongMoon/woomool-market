@@ -1,14 +1,10 @@
-package com.woomoolmarket.security.jwt;
+package com.woomoolmarket.common.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenConstants {
-
-    public static final String LOGIN_KEY_PREFIX = "login:";
-    public static final String LOGOUT_KEY_PREFIX = "logout:";
-    public static final String LOGIN_FAILED_KEY_PREFIX = "login-failed:";
 
     public static final String REFRESH_TOKEN = "refreshToken";
     public static final String BEARER_TYPE = "Bearer ";

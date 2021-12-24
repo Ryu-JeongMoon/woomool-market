@@ -1,6 +1,6 @@
 package com.woomoolmarket.common.util;
 
-import com.woomoolmarket.security.jwt.TokenConstants;
+import com.woomoolmarket.common.constants.TokenConstants;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;

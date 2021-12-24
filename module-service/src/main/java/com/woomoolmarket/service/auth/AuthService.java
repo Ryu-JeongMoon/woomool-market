@@ -1,10 +1,10 @@
 package com.woomoolmarket.service.auth;
 
-import static com.woomoolmarket.security.jwt.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
-import static com.woomoolmarket.security.jwt.TokenConstants.LOGIN_FAILED_KEY_PREFIX;
-import static com.woomoolmarket.security.jwt.TokenConstants.LOGIN_KEY_PREFIX;
-import static com.woomoolmarket.security.jwt.TokenConstants.LOGOUT_KEY_PREFIX;
-import static com.woomoolmarket.security.jwt.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 
 import com.woomoolmarket.cache.CacheService;
 import com.woomoolmarket.common.constants.ExceptionConstants;
