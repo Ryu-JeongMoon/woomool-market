@@ -27,10 +27,11 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         QueryResults<BoardQueryResponse> results =
             queryFactory.select(
                     new QBoardQueryResponse(
-                        board.id, board.title, board.content, board.hit, board.boardCategory,
+                        board.id, board.title, board.content, board.hit, board.boardCount, board.boardCategory,
                         board.member.email, board.endDateTime, board.startDateTime, board.createdDateTime))
                 .from(board)
                 .leftJoin(board.member)
+                .leftJoin(board.boardCount)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

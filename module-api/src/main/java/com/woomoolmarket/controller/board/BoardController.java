@@ -6,6 +6,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
+import com.woomoolmarket.service.board.BoardCountService;
 import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
@@ -42,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardCountService boardCountService;
     private final PagedResourcesAssembler<BoardQueryResponse> queryAssembler;
 
     @GetMapping
@@ -54,7 +56,7 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<BoardResponse>> getBy(@PathVariable Long id) {
-        boardService.increaseHit(id);
+        boardCountService.increaseHit(id);
         BoardResponse boardResponse = boardService.findBy(id, Status.ACTIVE);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBy(id));
 
@@ -71,7 +73,7 @@ public class BoardController {
     @PostMapping
     @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> create(@Valid @RequestBody BoardRequest boardRequest, List<MultipartFile> files) {
-        boardService.register(boardRequest, files);
+        boardService.write(boardRequest, files);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -90,7 +92,7 @@ public class BoardController {
     @DeleteMapping("/{id}")
     @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boardService.deleteSoftly(id);
+        boardService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

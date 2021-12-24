@@ -1,9 +1,9 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.security.jwt.TokenConstants.ACCESS_TOKEN_EXPIRE_MILLIS;
-import static com.woomoolmarket.security.jwt.TokenConstants.AUTHORITIES_KEY;
-import static com.woomoolmarket.security.jwt.TokenConstants.BEARER_TYPE;
-import static com.woomoolmarket.security.jwt.TokenConstants.REFRESH_TOKEN_EXPIRE_MILLIS;
+import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_MILLIS;
+import static com.woomoolmarket.common.constants.TokenConstants.AUTHORITIES_KEY;
+import static com.woomoolmarket.common.constants.TokenConstants.BEARER_TYPE;
+import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_MILLIS;
 
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.security.dto.TokenResponse;

@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.security.jwt.TokenConstants.AUTHORITIES_KEY;
-import static com.woomoolmarket.security.jwt.TokenConstants.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.TokenConstants.AUTHORITIES_KEY;
 
 import com.amazonaws.util.Base64;
 import com.woomoolmarket.cache.CacheService;

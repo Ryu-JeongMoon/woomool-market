@@ -124,7 +124,7 @@ class BoardServiceTest extends ServiceTestConfig {
             .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
             .build();
 
-        boardService.register(boardRequest, null);
+        boardService.write(boardRequest, null);
         BoardSearchCondition condition = BoardSearchCondition.builder()
             .email(MEMBER_1_EMAIL)
             .build();
@@ -149,7 +149,7 @@ class BoardServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("게시글 soft 삭제")
     void deleteSoftly() {
-        boardService.deleteSoftly(BOARD_2_ID);
+        boardService.delete(BOARD_2_ID);
         Board board = boardRepository.findById(BOARD_2_ID).get();
 
         assertThat(board.getStatus()).isEqualTo(Status.INACTIVE);
@@ -159,7 +159,7 @@ class BoardServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("삭제된 게시글 복구")
     void restore() {
-        boardService.deleteSoftly(BOARD_3_ID);
+        boardService.delete(BOARD_3_ID);
         boardService.restore(BOARD_3_ID);
 
         Board board = boardRepository.findById(BOARD_3_ID).get();

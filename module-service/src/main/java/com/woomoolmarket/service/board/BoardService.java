@@ -63,14 +63,14 @@ public class BoardService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true)})
-    public void register(BoardRequest boardRequest, List<MultipartFile> files) {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
+    public void write(BoardRequest boardRequest, List<MultipartFile> files) {
         Board board = boardRequestMapper.toEntity(boardRequest);
 
         Member member = memberRepository.findByEmailAndStatus(boardRequest.getEmail(), Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-        board.setMember(member);
+        board.registerMember(member);
 
         List<Image> images = imageProcessor.parse(files);
         board.addImages(images);
@@ -80,9 +80,9 @@ public class BoardService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "board", keyGenerator = "customKeyGenerator"),
-        @CacheEvict(value = "boards", allEntries = true, keyGenerator = "customKeyGenerator"),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true, keyGenerator = "customKeyGenerator")})
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "board"),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
     public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
@@ -93,10 +93,10 @@ public class BoardService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "board", keyGenerator = "customKeyGenerator"),
-        @CacheEvict(value = "boards", allEntries = true, keyGenerator = "customKeyGenerator"),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true, keyGenerator = "customKeyGenerator")})
-    public void deleteSoftly(Long id) {
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "board"),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
+    public void delete(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
             .delete();
@@ -104,8 +104,8 @@ public class BoardService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "boards", allEntries = true, keyGenerator = "customKeyGenerator"),
-        @CacheEvict(value = "boardsForAdmin", allEntries = true, keyGenerator = "customKeyGenerator")})
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
+        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
     public void restore(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))

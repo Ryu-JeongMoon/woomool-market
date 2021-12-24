@@ -3,6 +3,7 @@ package com.woomoolmarket.domain.board.entity;
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.count.entity.BoardCount;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -57,6 +59,9 @@ public class Board extends BaseEntity {
 
     private int hit;
 
+    @OneToOne(mappedBy = "board", orphanRemoval = true, cascade = CascadeType.ALL)
+    private BoardCount boardCount;
+
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
@@ -82,10 +87,15 @@ public class Board extends BaseEntity {
         this.boardCategory = boardCategory;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.boardCount = BoardCount.builder().build();
 
         if (startDateTime != null && endDateTime != null && startDateTime.isAfter(endDateTime)) {
             throw new IllegalArgumentException(ExceptionConstants.BOARD_DATE_NOT_PROPER);
         }
+    }
+
+    public void registerMember(Member member) {
+        this.setMember(member);
     }
 
     public void addImages(List<Image> images) {
@@ -99,6 +109,10 @@ public class Board extends BaseEntity {
 
     public void increaseHit() {
         hit++;
+    }
+
+    public void changeHit(int hit) {
+        this.hit = hit;
     }
 
     public void delete() {

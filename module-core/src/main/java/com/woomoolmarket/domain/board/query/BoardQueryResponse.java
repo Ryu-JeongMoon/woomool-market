@@ -2,6 +2,7 @@ package com.woomoolmarket.domain.board.query;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.count.entity.BoardCount;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -24,6 +25,8 @@ public class BoardQueryResponse implements Serializable {
 
     private int hit;
 
+    private BoardCount boardCount;
+
     private BoardCategory boardCategory;
 
     private LocalDateTime endDateTime;
@@ -35,12 +38,14 @@ public class BoardQueryResponse implements Serializable {
     private MemberQueryResponse memberResponse;
 
     @QueryProjection
-    public BoardQueryResponse(Long id, String title, String content, int hit, BoardCategory boardCategory, String email,
+    public BoardQueryResponse(Long id, String title, String content, int hit, BoardCount boardCount,
+        BoardCategory boardCategory, String email,
         LocalDateTime endDateTime, LocalDateTime startDateTime, LocalDateTime createdDateTime) {
         this.id = id;
         this.hit = hit;
         this.title = title;
         this.content = content;
+        this.boardCount = boardCount;
         this.boardCategory = boardCategory;
         this.endDateTime = endDateTime;
         this.startDateTime = startDateTime;

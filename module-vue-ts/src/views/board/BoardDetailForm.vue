@@ -15,7 +15,7 @@
           :label="'Category'"
           :props="boardResponse.createdDateTime"
         />
-        <ReadonlyField :label="'Hit'" :props="boardResponse.hit" />
+        <ReadonlyField :label="'Hit'" :props="boardResponse.hit.toString()" />
         <ReadonlyField :label="'Date'" :props="boardResponse.createdDateTime" />
         <v-btn @click="submitCallback" color="info" class="mt-4">
           <v-icon>arrow_back</v-icon>

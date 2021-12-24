@@ -4,6 +4,8 @@ public interface CacheService {
 
     String getData(String key);
 
+    int getDataAsInt(String key);
+
     String getHashData(String key, String hashKey);
 
     void setData(String key, Object value);
@@ -15,4 +17,6 @@ public interface CacheService {
     void deleteData(String key);
 
     void increment(String key);
+
+    <T> T getObjectData(String key, Class<T> t);
 }

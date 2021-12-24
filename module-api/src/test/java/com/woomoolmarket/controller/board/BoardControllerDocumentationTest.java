@@ -60,6 +60,7 @@ public class BoardControllerDocumentationTest extends ApiDocumentationConfig {
                     fieldWithPath("startDateTime").type(JsonFieldType.VARIES).description("게시 시작일시"),
                     fieldWithPath("endDateTime").type(JsonFieldType.VARIES).description("게시 종료일시"),
                     fieldWithPath("createdDateTime").type(JsonFieldType.VARIES).description("생성일시"),
+                    subsectionWithPath("boardCount").type(JsonFieldType.OBJECT).description("조회수 & 좋아요수"),
                     subsectionWithPath("memberResponse").type(JsonFieldType.OBJECT).description("작성자 정보"),
                     subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS")
                 )));
@@ -153,7 +154,7 @@ public class BoardControllerDocumentationTest extends ApiDocumentationConfig {
     @DisplayName("게시글 복구")
     @WithMockUser(roles = "ADMIN")
     void restoreBoard() throws Exception {
-        boardService.deleteSoftly(BOARD_ID);
+        boardService.delete(BOARD_ID);
 
         mockMvc.perform(
                 get("/api/boards/deleted/" + BOARD_ID)

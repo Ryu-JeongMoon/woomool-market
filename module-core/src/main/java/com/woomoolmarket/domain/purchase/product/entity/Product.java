@@ -5,6 +5,7 @@ import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.count.entity.ProductCount;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;
 import io.jsonwebtoken.lang.Collections;
@@ -24,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
@@ -70,6 +72,10 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "integer default 100")
     private Integer stock;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_count_id")
+    private ProductCount productCount;
 
     private LocalDateTime deletedDateTime;
 

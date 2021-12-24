@@ -1,6 +1,7 @@
 package com.woomoolmarket.service.board.dto.response;
 
 import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.count.entity.BoardCount;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ public class BoardResponse implements Serializable {
     private String content;
 
     private int hit;
+
+    private BoardCount boardCount;
 
     private BoardCategory boardCategory;
 

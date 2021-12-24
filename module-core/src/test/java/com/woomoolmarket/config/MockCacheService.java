@@ -14,6 +14,11 @@ public class MockCacheService implements CacheService {
     }
 
     @Override
+    public int getDataAsInt(String key) {
+        return 0;
+    }
+
+    @Override
     public String getHashData(String key, String hashKey) {
         return null;
     }
@@ -42,4 +47,10 @@ public class MockCacheService implements CacheService {
     public void increment(String key) {
 
     }
+
+    @Override
+    public <T> T getObjectData(String key, Class<T> t) {
+        return null;
+    }
+
 }

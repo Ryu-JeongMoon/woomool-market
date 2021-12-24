@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.woomoolmarket.common.constants.CacheConstants;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class CacheConfig {
         RedisCacheConfiguration configuration = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
+            .disableKeyPrefix()
             .entryTtl(Duration.ofDays(1))
             .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(SerializationPair.fromSerializer(new JdkSerializationRedisSerializer()));
@@ -61,6 +63,7 @@ public class CacheConfig {
         RedisCacheConfiguration configuration = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
+            .disableKeyPrefix()
             .entryTtl(Duration.ofDays(1))
             .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
@@ -89,6 +92,8 @@ public class CacheConfig {
         RedisCacheConfiguration configuration = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
+            .disableKeyPrefix()
+            .entryTtl(Duration.ofDays(1))
             .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(SerializationPair.fromSerializer(jackson2JsonRedisSerializer));
 
