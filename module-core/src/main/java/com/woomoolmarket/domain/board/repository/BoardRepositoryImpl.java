@@ -6,6 +6,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.common.util.CustomPageImpl;
 import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
@@ -13,7 +14,6 @@ import com.woomoolmarket.domain.board.query.QBoardQueryResponse;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -38,7 +38,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .orderBy(board.id.desc())
                 .fetchResults();
 
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+        return new CustomPageImpl<>(results.getResults(), pageable.getPageNumber(), pageable.getPageSize(), results.getTotal());
     }
 
     @Override

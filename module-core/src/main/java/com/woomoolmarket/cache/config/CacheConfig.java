@@ -7,10 +7,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.woomoolmarket.common.constants.CacheConstants;
+import com.woomoolmarket.config.format.DateTimeFormatModule;
+import com.woomoolmarket.errors.JsonBindingResultModule;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
@@ -32,10 +36,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class CacheConfig {
 
+    private static final int DEFAULT_EXPIRE_TIME = 10;
+
     private final ObjectMapper objectMapper;
     private final RedisConnectionFactory redisConnectionFactory;
 
-    @Primary
     @Bean(name = "jdkCacheManager")
     public RedisCacheManager jdkCacheManager() {
         RedisCacheConfiguration configuration = RedisCacheConfiguration
@@ -46,8 +51,7 @@ public class CacheConfig {
             .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(SerializationPair.fromSerializer(new JdkSerializationRedisSerializer()));
 
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        cacheConfigurations.put("list", configuration.entryTtl(Duration.ofHours(1)));
+        Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
 
         return RedisCacheManagerBuilder
             .fromConnectionFactory(redisConnectionFactory)
@@ -56,21 +60,23 @@ public class CacheConfig {
             .build();
     }
 
+    @Primary
     @Bean(name = "gsonCacheManager")
     public RedisCacheManager gsonCacheManager() {
-        objectMapper.deactivateDefaultTyping();
-
         RedisCacheConfiguration configuration = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
             .disableKeyPrefix()
-            .entryTtl(Duration.ofDays(1))
+            .entryTtl(Duration.ofSeconds(DEFAULT_EXPIRE_TIME))
             .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
-            .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
+            .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(customObjectMapper())));
+
+        Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
 
         return RedisCacheManagerBuilder
             .fromConnectionFactory(redisConnectionFactory)
             .cacheDefaults(configuration)
+            .withInitialCacheConfigurations(cacheConfigurations)
             .build();
     }
 
@@ -93,13 +99,40 @@ public class CacheConfig {
             .defaultCacheConfig()
             .disableCachingNullValues()
             .disableKeyPrefix()
-            .entryTtl(Duration.ofDays(1))
+            .entryTtl(Duration.ofDays(DEFAULT_EXPIRE_TIME))
             .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(SerializationPair.fromSerializer(jackson2JsonRedisSerializer));
+
+        Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
 
         return RedisCacheManagerBuilder
             .fromConnectionFactory(redisConnectionFactory)
             .cacheDefaults(configuration)
+            .withInitialCacheConfigurations(cacheConfigurations)
+            .build();
+    }
+
+    private Map<String, RedisCacheConfiguration> setCustomCacheConfigurations(RedisCacheConfiguration configuration) {
+        return Map.of(
+            "brief", configuration.entryTtl(Duration.ofSeconds(10)),
+            "medium", configuration.entryTtl(Duration.ofMinutes(1)),
+            "long", configuration.entryTtl(Duration.ofMinutes(10))
+        );
+    }
+
+    private ObjectMapper customObjectMapper() {
+        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+            .allowIfSubType(Object.class)
+            .build();
+
+        return JsonMapper.builder()
+            .polymorphicTypeValidator(ptv)
+            .findAndAddModules()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .addModules(new JavaTimeModule(), new JsonBindingResultModule(), new DateTimeFormatModule())
+            .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL)
             .build();
     }
 }

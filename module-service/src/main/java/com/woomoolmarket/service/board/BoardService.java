@@ -41,13 +41,13 @@ public class BoardService {
     private final BoardResponseMapper boardResponseMapper;
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "boards")
+    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = "medium")
     public Page<BoardQueryResponse> searchBy(BoardSearchCondition searchCondition, Pageable pageable) {
         return boardRepository.searchBy(searchCondition, pageable);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "board", cacheManager = "jsonCacheManager")
+    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = "medium")
     public BoardResponse findBy(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
@@ -115,7 +115,7 @@ public class BoardService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = "medium", unless = "#result==null")
     public Page<BoardQueryResponse> searchForAdminBy(BoardSearchCondition condition, Pageable pageable) {
         return boardRepository.searchForAdminBy(condition, pageable);
     }
