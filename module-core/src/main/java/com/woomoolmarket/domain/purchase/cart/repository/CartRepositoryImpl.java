@@ -5,12 +5,12 @@ import static com.woomoolmarket.domain.purchase.cart.entity.QCart.cart;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.woomoolmarket.common.util.CustomPageImpl;
 import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.domain.purchase.cart.query.QCartQueryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +32,7 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
             .orderBy(cart.id.desc())
             .fetchResults();
 
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+        return new CustomPageImpl<>(results.getResults(), pageable.getPageNumber(), pageable.getPageSize(), results.getTotal());
     }
 
     @Override
