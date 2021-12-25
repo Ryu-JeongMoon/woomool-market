@@ -5,13 +5,13 @@ import static com.woomoolmarket.domain.purchase.order.entity.QOrder.order;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.woomoolmarket.common.util.CustomPageImpl;
 import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.query.QOrderQueryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -33,7 +33,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .orderBy(order.id.desc())
                 .fetchResults();
 
-        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+        return new CustomPageImpl<>(results.getResults(), pageable.getPageNumber(), pageable.getPageSize(), results.getTotal());
     }
 
     @Override

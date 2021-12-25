@@ -48,7 +48,6 @@ public class OrderService {
         }
     }
 
-    // 단건 주문
     @Transactional
     public void orderOne(OrderRequest orderRequest) {
         Member member = memberRepository.findById(orderRequest.getMemberId())
@@ -74,7 +73,6 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    // 다건 주문, Cart 에서 넘겨 받고 주문 후 Cart 에서는 바로 삭제
     @Transactional
     public void orderMultiples(OrderRequest orderRequest) {
         Member member = memberRepository.findById(orderRequest.getMemberId())
@@ -115,8 +113,3 @@ public class OrderService {
         return orderRepository.searchForAdminBy(condition, pageable);
     }
 }
-
-/*
-주문 완료도 기준 조건 두고 ex) 주문 48시간 이후 배송 완료
-배치 처리해야할 듯
- */

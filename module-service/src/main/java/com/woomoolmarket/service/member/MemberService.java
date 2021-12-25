@@ -56,14 +56,14 @@ public class MemberService {
     }
 
     @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
     public MemberResponse joinAsMember(SignupRequest signUpRequest) {
         Member member = join(signUpRequest, Authority.ROLE_USER);
         return memberResponseMapper.toDto(member);
     }
 
     @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
     public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
         Member member = join(signUpRequest, Authority.ROLE_SELLER);
         return memberResponseMapper.toDto(member);
@@ -85,7 +85,7 @@ public class MemberService {
     }
 
     @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
     public void edit(Long id, ModifyRequest modifyRequest) {
         Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
@@ -98,7 +98,7 @@ public class MemberService {
 
     /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
     @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
     public void leaveSoftly(Long id) {
         memberRepository.findByIdAndStatus(id, Status.ACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
@@ -106,7 +106,7 @@ public class MemberService {
     }
 
     @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "membersForAdmin", allEntries = true)
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
     public void restore(Long id) {
         memberRepository.findByIdAndStatus(id, Status.INACTIVE)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
@@ -115,7 +115,7 @@ public class MemberService {
 
 
     /* FOR ADMIN */
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "membersForAdmin", unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", value = "medium", unless = "#result==null")
     @Transactional(readOnly = true)
     public Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable) {
         return memberRepository.searchForAdminBy(condition, pageable);
