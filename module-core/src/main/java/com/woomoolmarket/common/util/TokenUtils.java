@@ -19,10 +19,6 @@ public class TokenUtils {
     public static String resolveRefreshTokenFrom(HttpServletRequest request) {
         Cookie refreshCookie = CookieUtils.getCookie(request, TokenConstants.REFRESH_TOKEN)
             .orElseThrow(() -> new IllegalArgumentException(ExceptionConstants.ACCESS_TOKEN_NOT_VALID));
-//            .orElseGet(() -> new Cookie("EMPTY", ""));
-
-//        String refreshToken = refreshCookie.getValue();
-//        return StringUtils.hasText(refreshToken) ? refreshToken : "";
         return refreshCookie.getValue();
     }
 }
