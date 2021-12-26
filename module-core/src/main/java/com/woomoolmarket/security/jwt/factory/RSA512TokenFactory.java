@@ -5,10 +5,13 @@ import static com.woomoolmarket.common.constants.TokenConstants.AUTHORITIES_KEY;
 
 import com.amazonaws.util.Base64;
 import com.woomoolmarket.cache.CacheService;
+import com.woomoolmarket.common.constants.ExceptionConstants;
+import com.woomoolmarket.common.util.TokenUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
@@ -33,19 +36,18 @@ public class RSA512TokenFactory extends TokenFactory {
 
     private final CacheService cacheService;
 
+    @Value("${jwt.publicKey}")
+    private String publicKeyPlainText;
     @Value("${jwt.privateKey}")
     private String privateKeyPlainText;
 
-    @Value("${jwt.publicKey}")
-    private String publicKeyPlainText;
-
-    private RSAPrivateKey privateKey;
     private RSAPublicKey publicKey;
+    private RSAPrivateKey privateKey;
 
     @PostConstruct
     public void keySetUp() throws Exception {
-        byte[] privateKeyBytes = Base64.decode(privateKeyPlainText);
         byte[] publicKeyBytes = Base64.decode(publicKeyPlainText);
+        byte[] privateKeyBytes = Base64.decode(privateKeyPlainText);
 
         PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
@@ -84,6 +86,9 @@ public class RSA512TokenFactory extends TokenFactory {
         } catch (ExpiredJwtException e) {
             log.info("[WOOMOOL-ERROR] :: Expired Token => {} ", e.getMessage());
             return e.getClaims();
+        } catch (MalformedJwtException me) {
+            log.info("[WOOMOOL-ERROR] :: Malformed Token => {} ", me.getMessage());
+            throw new IllegalArgumentException(ExceptionConstants.TOKEN_NOT_VALID);
         }
     }
 
@@ -100,9 +105,7 @@ public class RSA512TokenFactory extends TokenFactory {
                 .build()
                 .parseClaimsJws(token);
 
-            return claims.getBody()
-                .getExpiration()
-                .after(new Date());
+            return TokenUtils.isNotExpired(claims);
         } catch (Exception e) {
             log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
         }

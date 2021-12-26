@@ -27,8 +27,9 @@ public class ExceptionConstants {
 
     public static final String CART_NOT_FOUND = "존재하지 않는 장바구니입니다";
 
-    public static final String ACCESS_TOKEN_NOT_VALID = "유효하지 않은 토큰입니다";
-    public static final String REFRESH_TOKEN_NOT_VALID = "유효하지 않은 토큰입니다";
+    public static final String TOKEN_NOT_VALID = "유효하지 않은 토큰입니다";
+    public static final String ACCESS_TOKEN_NOT_VALID = "유효하지 않은 Access 토큰입니다";
+    public static final String REFRESH_TOKEN_NOT_VALID = "유효하지 않은 Refresh 토큰입니다";
 
     public static final String NOT_ENOUGH_BALANCE = "문자를 전송할 수 없는 상태입니다";
 

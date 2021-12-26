@@ -4,9 +4,13 @@ import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFI
 import static com.woomoolmarket.common.constants.TokenConstants.AUTHORITIES_KEY;
 
 import com.woomoolmarket.cache.CacheService;
+import com.woomoolmarket.common.constants.ExceptionConstants;
+import com.woomoolmarket.common.util.TokenUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,10 +31,11 @@ public class HS512TokenFactory extends TokenFactory {
 
     private final CacheService cacheService;
 
+    private Key key;
+
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private Key key;
 
     @PostConstruct
     public void keySetUp() {
@@ -67,6 +72,9 @@ public class HS512TokenFactory extends TokenFactory {
         } catch (ExpiredJwtException e) {
             log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
             return e.getClaims();
+        } catch (MalformedJwtException me) {
+            log.info("[WOOMOOL-ERROR] :: Malformed Token => {} ", me.getMessage());
+            throw new IllegalArgumentException(ExceptionConstants.TOKEN_NOT_VALID);
         }
     }
 
@@ -78,11 +86,12 @@ public class HS512TokenFactory extends TokenFactory {
     @Override
     protected boolean isValid(String token) {
         try {
-            Jwts.parserBuilder()
+            Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
-            return true;
+
+            return TokenUtils.isNotExpired(claims);
         } catch (Exception e) {
             log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
         }
