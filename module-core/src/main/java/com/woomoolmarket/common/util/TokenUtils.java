@@ -18,6 +18,7 @@ public class TokenUtils {
     public static String resolveRefreshTokenFrom(HttpServletRequest request) {
         Cookie refreshCookie = CookieUtils.getCookie(request, TokenConstants.REFRESH_TOKEN)
             .orElseGet(() -> new Cookie("EMPTY", ""));
+
         String refreshToken = refreshCookie.getValue();
         return StringUtils.hasText(refreshToken) ? refreshToken : "";
     }
