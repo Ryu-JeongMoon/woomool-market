@@ -45,6 +45,7 @@ public class AuthService {
 
         UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
         Authentication authentication = authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         TokenResponse tokenResponse = tokenFactory.createToken(authentication);
 
         String username = authentication.getName();
@@ -71,7 +72,8 @@ public class AuthService {
             memberRepository.findByEmailAndStatus(authenticationToken.getName(), Status.ACTIVE)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
             cacheService.increment(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
-            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
+
+            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getStackTrace());
             throw e;
         }
     }
@@ -79,6 +81,9 @@ public class AuthService {
     @Transactional
     public void logout(HttpServletRequest request) {
         String accessToken = TokenUtils.resolveAccessTokenFrom(request);
+        if (!tokenFactory.validate(accessToken)) {
+            throw new IllegalArgumentException(ExceptionConstants.ACCESS_TOKEN_NOT_VALID);
+        }
         cacheService.setDataAndExpiration(LOGOUT_KEY_PREFIX + accessToken, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
         SecurityContextHolder.clearContext();
     }

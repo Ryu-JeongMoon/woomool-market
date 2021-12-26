@@ -1,6 +1,5 @@
 package com.woomoolmarket.common.util;
 
-import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.constants.TokenConstants;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,9 @@ public class TokenUtils {
 
     public static String resolveRefreshTokenFrom(HttpServletRequest request) {
         Cookie refreshCookie = CookieUtils.getCookie(request, TokenConstants.REFRESH_TOKEN)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionConstants.ACCESS_TOKEN_NOT_VALID));
-        return refreshCookie.getValue();
+            .orElseGet(() -> new Cookie("EMPTY", ""));
+
+        String refreshToken = refreshCookie.getValue();
+        return StringUtils.hasText(refreshToken) ? refreshToken : "";
     }
 }
