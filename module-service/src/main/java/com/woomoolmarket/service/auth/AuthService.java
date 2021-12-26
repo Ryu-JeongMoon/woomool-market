@@ -49,7 +49,9 @@ public class AuthService {
         TokenResponse tokenResponse = tokenFactory.createToken(authentication);
 
         String username = authentication.getName();
+        String accessToken = tokenResponse.getAccessToken();
         String refreshToken = tokenResponse.getRefreshToken();
+        cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
         cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
         return tokenResponse;
     }
@@ -73,7 +75,7 @@ public class AuthService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
             cacheService.increment(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
 
-            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getStackTrace());
+            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
             throw e;
         }
     }
