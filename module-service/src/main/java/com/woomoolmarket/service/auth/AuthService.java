@@ -90,7 +90,7 @@ public class AuthService {
         String username = authentication.getName();
 
         if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(cacheService.getData(LOGIN_KEY_PREFIX + username))) {
-            throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_FOUND);
+            throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_VALID);
         }
 
         TokenResponse tokenResponse = tokenFactory.createToken(authentication);
