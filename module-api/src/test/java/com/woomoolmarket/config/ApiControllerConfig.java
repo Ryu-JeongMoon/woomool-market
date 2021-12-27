@@ -1,6 +1,7 @@
 package com.woomoolmarket.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woomoolmarket.ModuleApiApplication;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.image.repository.ImageRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -24,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(classes = ModuleApiApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ApiControllerConfig {
 

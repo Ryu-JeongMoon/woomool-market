@@ -23,6 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'de.codecentric:spring-boot-admin-starter-client:2.5.2'
 
+    testImplementation project(path: ":module-service", configuration: 'testArtifacts')
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }

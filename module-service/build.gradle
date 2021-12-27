@@ -14,3 +14,14 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'commons-fileupload:commons-fileupload:1.4'
 }
+
+configurations {
+    testArtifacts.extendsFrom testCompile
+}
+task testJar(type: Jar) {
+    classifier "test"
+    from sourceSets.test.output
+}
+artifacts {
+    testArtifacts testJar
+}
