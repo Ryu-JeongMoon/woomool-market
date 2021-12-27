@@ -18,17 +18,21 @@ import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import java.util.Objects;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 
-@WithMockUser(username = "panda@naver.com", roles = "SELLER")
+@WithMockUser(username = "bear@gmail.com", roles = "SELLER")
 class ProductControllerDocumentationTest extends ApiDocumentationConfig {
 
     @BeforeEach
@@ -157,8 +161,8 @@ class ProductControllerDocumentationTest extends ApiDocumentationConfig {
     }
 
     @Test
-    @DisplayName("상품 삭제")
-    void deleteProduct() throws Exception {
+    @DisplayName("상품 삭제 - 판매자 본인")
+    void deleteProductBySeller() throws Exception {
         mockMvc.perform(
                 delete("/api/products/" + PRODUCT_ID))
             .andExpect(status().isNoContent())
@@ -166,9 +170,42 @@ class ProductControllerDocumentationTest extends ApiDocumentationConfig {
     }
 
     @Test
+    @DisplayName("상품 삭제 - 관리자")
+    @WithMockUser(roles = "ADMIN")
+    void deleteProductByAdmin() throws Exception {
+        mockMvc.perform(
+                delete("/api/products/" + PRODUCT_ID))
+            .andExpect(status().isNoContent())
+            .andDo(document("product/admin-delete-product"));
+    }
+
+    @Test
     @DisplayName("관리자 상품 목록 조회")
     @WithMockUser(roles = "ADMIN")
     void getListBySearchConditionForAdmin() throws Exception {
+        mockMvc.perform(
+                get("/api/products/admin")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(document("product/admin-get-products",
+                relaxedResponseFields(
+                    fieldWithPath("_embedded.productQueryResponseList[0].name").type(JsonFieldType.STRING).description("상풍 이름"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].description").type(JsonFieldType.STRING).description("상품 설명"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].price").type(JsonFieldType.NUMBER).description("가격"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].stock").type(JsonFieldType.NUMBER).description("재고"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].region").type(JsonFieldType.STRING).description("지역"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].productCategory").type(JsonFieldType.STRING)
+                        .description("판매자"),
+                    fieldWithPath("_embedded.productQueryResponseList[0].productImage").type(JsonFieldType.STRING).description("상품 이미지")
+                        .optional(),
+                    subsectionWithPath("_embedded.productQueryResponseList[0].memberQueryResponse").type(JsonFieldType.OBJECT)
+                        .description("판매자")
+                )));
+    }
+
+    @Test
+    @DisplayName("관리자 상품 목록 조회")
+    @WithMockUser(roles = "ADMIN")
+    void getListBySearchConditionForAdminFail() throws Exception {
         mockMvc.perform(
                 get("/api/products/admin")
                     .contentType(MediaType.APPLICATION_JSON_VALUE))
