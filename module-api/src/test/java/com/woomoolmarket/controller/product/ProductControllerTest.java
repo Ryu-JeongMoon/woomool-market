@@ -220,6 +220,16 @@ class ProductControllerTest extends ApiControllerConfig {
     }
 
     @Test
+    @DisplayName("상품 삭제 성공 - 관리자")
+    @WithMockUser(roles = "ADMIN")
+    void deleteProductByAdmin() throws Exception {
+        mockMvc.perform(
+                delete("/api/products/" + PRODUCT_ID))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
     @DisplayName("상품 삭제 실패 - 403 권한 없음")
     @WithMockUser(roles = "USER")
     void deleteProductFail() throws Exception {

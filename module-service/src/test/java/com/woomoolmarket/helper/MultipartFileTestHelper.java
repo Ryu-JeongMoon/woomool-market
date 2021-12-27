@@ -8,10 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class MultipartFileTestHelper {
 
-    private static final String DATA = "panda panda panda";
-    private static final String NAME = "files";
-    private static final String ORIGINAL_FILENAME = "hehe.jpg";
-    private static final String CONTENT_TYPE = "image/jpeg";
+    public static final String DATA = "panda panda panda";
+    public static final String NAME = "files";
+    public static final String ORIGINAL_FILENAME = "hehe.jpg";
+    public static final String CONTENT_TYPE = "image/jpeg";
 
     public MultipartFile createMultipartFile() {
         return new MockMultipartFile(
