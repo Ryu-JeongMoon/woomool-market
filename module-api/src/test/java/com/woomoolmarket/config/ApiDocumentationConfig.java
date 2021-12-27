@@ -1,6 +1,7 @@
 package com.woomoolmarket.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woomoolmarket.ModuleApiApplication;
 import com.woomoolmarket.common.RestDocsConfiguration;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
@@ -29,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(classes = ModuleApiApplication.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme = "https", uriPort = 8443)
 @Import(RestDocsConfiguration.class)
