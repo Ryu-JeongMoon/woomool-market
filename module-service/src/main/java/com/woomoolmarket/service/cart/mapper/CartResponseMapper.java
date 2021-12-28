@@ -15,15 +15,23 @@ import org.mapstruct.ReportingPolicy;
 public interface CartResponseMapper extends GenericMapper<CartResponse, Cart> {
 
     @Override
-    @Mappings({@Mapping(source = "member", target = "memberResponse"), @Mapping(source = "product", target = "productResponse")})
+    @Mappings({
+        @Mapping(source = "member", target = "memberResponse"),
+        @Mapping(source = "product", target = "productResponse"),
+        @Mapping(source = "product.stock", target = "productResponse.stock", qualifiedByName = "atomicToInt")})
     CartResponse toDto(Cart cart);
 
     @Override
-    @Mappings({@Mapping(source = "memberResponse", target = "member"), @Mapping(source = "productResponse", target = "product")})
+    @Mappings({
+        @Mapping(source = "memberResponse", target = "member"),
+        @Mapping(source = "productResponse", target = "product")})
     Cart toEntity(CartResponse cartResponse);
 
     @Override
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mappings({@Mapping(source = "memberResponse", target = "member"), @Mapping(source = "productResponse", target = "product")})
+    @Mappings({
+        @Mapping(source = "memberResponse", target = "member"),
+        @Mapping(source = "productResponse", target = "product"),
+        @Mapping(source = "productResponse.stock", target = "product.stock", qualifiedByName = "intToAtomic")})
     void updateFromDto(CartResponse dto, @MappingTarget Cart entity);
 }

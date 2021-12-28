@@ -24,9 +24,9 @@ public class ProductResponse {
 
     private MemberResponse memberResponse;
 
-    private int price;
+    private Integer price;
 
-    private int stock;
+    private Integer stock;
 
     private LocalDateTime createdDateTime;
 

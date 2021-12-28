@@ -3,6 +3,7 @@ package com.woomoolmarket.domain.purchase.product.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.constants.ExceptionConstants;
+import com.woomoolmarket.common.converter.AtomicIntegerConverter;
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.count.entity.ProductCount;
@@ -12,8 +13,10 @@ import io.jsonwebtoken.lang.Collections;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,6 +31,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -67,11 +71,14 @@ public class Product extends BaseEntity {
     @Size(max = 255)
     private String productImage;
 
+    @Min(1000L)
     @Column(nullable = false, columnDefinition = "integer default 1000")
     private Integer price;
 
+    @Min(100L)
+    @Convert(converter = AtomicIntegerConverter.class)
     @Column(nullable = false, columnDefinition = "integer default 100")
-    private Integer stock;
+    private AtomicInteger stock;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_count_id")
@@ -97,7 +104,7 @@ public class Product extends BaseEntity {
         this.member = member;
         this.name = name;
         this.price = price;
-        this.stock = stock;
+        this.stock = new AtomicInteger(stock);
         this.description = description;
         this.productImage = productImage;
         this.productCategory = productCategory;
@@ -105,14 +112,14 @@ public class Product extends BaseEntity {
     }
 
     public void increaseStock(Integer quantity) {
-        this.stock += quantity;
+        this.stock.addAndGet(quantity);
     }
 
-    public void decreaseStock(Integer quantity) {
-        if (this.stock < quantity) {
+    public void decreaseStock(int quantity) {
+        if (this.stock.intValue() < quantity) {
             throw new IllegalArgumentException(ExceptionConstants.PRODUCT_NOT_ENOUGH_STOCK);
         }
-        this.stock -= quantity;
+        this.stock.getAndUpdate(stock -> stock - quantity);
     }
 
     public void delete() {
@@ -132,7 +139,6 @@ public class Product extends BaseEntity {
         if (Collections.isEmpty(images)) {
             return;
         }
-
         this.images = images;
         images.forEach(image -> image.setProduct(this));
     }

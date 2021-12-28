@@ -8,6 +8,7 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,12 +43,12 @@ public class ProductQueryResponse implements Serializable {
     private MemberQueryResponse memberQueryResponse;
 
     @QueryProjection
-    public ProductQueryResponse(Long id, String name, String description, String productImage, Integer price, Integer stock,
+    public ProductQueryResponse(Long id, String name, String description, String productImage, Integer price, AtomicInteger stock,
         Status status, Region region, LocalDateTime createdDateTime, ProductCategory productCategory, String email) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.stock = stock;
+        this.stock = stock.intValue();
         this.status = status;
         this.region = region;
         this.description = description;
@@ -64,7 +65,7 @@ public class ProductQueryResponse implements Serializable {
             .description(product.getDescription())
             .productImage(product.getProductImage())
             .price(product.getPrice())
-            .stock(product.getStock())
+            .stock(product.getStock().intValue())
             .status(product.getStatus())
             .region(product.getRegion())
             .createdDateTime(product.getCreatedDateTime())
