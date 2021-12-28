@@ -15,15 +15,20 @@ import org.mapstruct.ReportingPolicy;
 public interface ProductResponseMapper extends GenericMapper<ProductResponse, Product> {
 
     @Override
-    @Mappings(@Mapping(source = "member", target = "memberResponse"))
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mappings({
+        @Mapping(source = "member", target = "memberResponse"),
+        @Mapping(source = "stock", target = "stock", qualifiedByName = "atomicToInt")})
     ProductResponse toDto(Product product);
 
     @Override
-    @Mappings(@Mapping(source = "memberResponse", target = "member"))
+    @Mapping(source = "memberResponse", target = "member")
     Product toEntity(ProductResponse productResponse);
 
     @Override
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mappings(@Mapping(source = "memberResponse", target = "member"))
+    @Mappings({
+        @Mapping(source = "memberResponse", target = "member"),
+        @Mapping(source = "stock", target = "stock", qualifiedByName = "intToAtomic")})
     void updateFromDto(ProductResponse dto, @MappingTarget Product entity);
 }

@@ -31,14 +31,14 @@ class ProductTest {
     @DisplayName("재고 추가")
     void increaseStock() {
         product.increaseStock(3000);
-        assertThat(product.getStock()).isEqualTo(STOCK + 3000);
+        assertThat(product.getStock().intValue()).isEqualTo(STOCK + 3000);
     }
 
     @Test
     @DisplayName("재고 감소")
     void decreaseStock() {
         product.decreaseStock(3000);
-        assertThat(product.getStock()).isEqualTo(STOCK - 3000);
+        assertThat(product.getStock().intValue()).isEqualTo(STOCK - 3000);
     }
 
     @Test
@@ -56,5 +56,27 @@ class ProductTest {
         product.restore();
         assertThat(product.getStatus()).isEqualTo(Status.ACTIVE);
         assertThat(product.getDeletedDateTime()).isNull();
+    }
+
+    @Test
+    @DisplayName("HashCode 테스트")
+    void hashCodeTest() {
+        Product newProduct = product;
+        assertThat(product.hashCode()).isEqualTo(newProduct.hashCode());
+    }
+
+    @Test
+    @DisplayName("equals 테스트")
+    void equalsTest() {
+        Product newProduct = Product.builder()
+            .name(this.product.getName())
+            .member(this.product.getMember())
+            .productImage(this.product.getProductImage())
+            .productCategory(this.product.getProductCategory())
+            .price(this.product.getPrice())
+            .stock(this.product.getStock().intValue())
+            .region(this.product.getRegion())
+            .build();
+        assertThat(this.product.equals(newProduct)).isEqualTo(true);
     }
 }

@@ -8,6 +8,7 @@ import com.woomoolmarket.errors.ExceptionResponse;
 import com.woomoolmarket.errors.JsonBindingResultModule;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolationException;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     public ResponseEntity<Optional<ExceptionResponse>> accessDeniedExceptionHandler(Exception e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<Optional<ExceptionResponse>> constraintViolationExceptionHandler(ConstraintViolationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
     }
 
     @SneakyThrows(value = JsonProcessingException.class)

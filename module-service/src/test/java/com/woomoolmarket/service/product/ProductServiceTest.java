@@ -1,6 +1,7 @@
 package com.woomoolmarket.service.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
@@ -15,6 +16,7 @@ import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
 import java.util.Objects;
+import javax.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,13 +106,28 @@ class ProductServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("가격 변경")
-    void edit() {
+    void editPrice() {
+        int newPrice = 90000;
         ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
-            .price(90000)
+            .price(newPrice)
+            .build();
+
+        productService.edit(PRODUCT1_ID, productModifyRequest);
+
+        Product product = productRepository.findById(PRODUCT1_ID).get();
+        assertThat(product.getPrice()).isEqualTo(newPrice);
+    }
+
+    @Test
+    @DisplayName("재고 변경")
+    void editStock() {
+        int newStock = 500000;
+        ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
+            .stock(newStock)
             .build();
         productService.edit(PRODUCT1_ID, productModifyRequest);
         Product product = productRepository.findById(PRODUCT1_ID).get();
-        assertThat(product.getPrice()).isEqualTo(90000);
+        assertThat(product.getStock().intValue()).isEqualTo(newStock);
     }
 
     @Test

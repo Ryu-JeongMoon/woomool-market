@@ -32,7 +32,7 @@ class OrderServiceTestTest extends ServiceTestConfig {
 
         Product product = productTestHelper.createProduct(member);
         PRODUCT_ID = product.getId();
-        PRODUCT_STOCK = product.getStock();
+        PRODUCT_STOCK = product.getStock().intValue();
 
         cartTestHelper.createCart(member, product);
     }
