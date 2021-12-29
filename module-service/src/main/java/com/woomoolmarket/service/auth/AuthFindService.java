@@ -52,9 +52,11 @@ public class AuthFindService {
         sendAuthStringToEmail(email, "Woomool-Market 임시 비밀번호 안내", "임시 비밀번호 : " + temporaryPassword);
     }
 
+    @Transactional
     public void sendEmailForVerification(String email) {
         SecureRandom secureRandom = new SecureRandom();
         String authString = String.valueOf(secureRandom.nextInt());
+        threadLocal.remove();
         threadLocal.set(authString);
         sendAuthStringToEmail(email, "Woomool-Market 인증 번호 안내", "인증 번호 : " + authString);
     }

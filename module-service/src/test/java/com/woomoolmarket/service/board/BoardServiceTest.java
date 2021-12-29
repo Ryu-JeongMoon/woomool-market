@@ -41,7 +41,7 @@ class BoardServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        Member member1 = memberTestHelper.createUser();
+        Member member1 = memberTestHelper.createMember();
         Member member2 = memberTestHelper.createSeller();
         MEMBER_1_EMAIL = member1.getEmail();
         MEMBER_2_EMAIL = member2.getEmail();

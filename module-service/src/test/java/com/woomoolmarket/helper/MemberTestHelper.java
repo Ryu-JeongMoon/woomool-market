@@ -27,7 +27,7 @@ public class MemberTestHelper {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member createUser() {
+    public Member createMember() {
         Member member = Member.builder()
             .email(MEMBER_EMAIL)
             .nickname(MEMBER_NICKNAME)

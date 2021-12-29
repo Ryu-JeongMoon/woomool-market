@@ -31,7 +31,7 @@ class BoardControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Board board = boardTestHelper.createBoard(member);
@@ -131,6 +131,24 @@ class BoardControllerTest extends ApiControllerConfig {
     }
 
     @Test
+    @DisplayName("게시글 추가 실패 - 403 공지사항 일반 회원 작성 불가")
+    void registerBoardFailByBoardCategory() throws Exception {
+        BoardRequest boardRequest = BoardRequest.builder()
+            .email(MEMBER_EMAIL)
+            .title("panda")
+            .content("bear")
+            .boardCategory(BoardCategory.NOTICE)
+            .build();
+
+        mockMvc.perform(
+                post("/api/boards")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(boardRequest)))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
     @DisplayName("게시글 수정 성공")
     void editBoardInfo() throws Exception {
         BoardModifyRequest modifyRequest = BoardModifyRequest.builder()
@@ -173,11 +191,20 @@ class BoardControllerTest extends ApiControllerConfig {
     @Test
     @DisplayName("게시글 삭제 실패 - 403 권한 없음")
     @WithMockUser(username = "object", roles = "USER")
-    void deleteBoardFail() throws Exception {
+    void deleteBoardFailByAnotherMember() throws Exception {
         mockMvc.perform(
                 delete("/api/boards/" + BOARD_ID))
             .andDo(print())
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 실패 - 존재하지 않는 게시글")
+    void deleteBoardFailByNotExistsBoard() throws Exception {
+        mockMvc.perform(
+                delete("/api/boards/" + BOARD_ID + 1))
+            .andDo(print())
+            .andExpect(status().isNotFound());
     }
 
     @Test

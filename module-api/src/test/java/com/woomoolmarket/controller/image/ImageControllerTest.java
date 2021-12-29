@@ -23,7 +23,7 @@ class ImageControllerTest extends ApiControllerConfig {
         Image image = imageTestHelper.createImage();
         IMAGE_ID = image.getId();
 
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         Board board = boardTestHelper.createBoard(member);
         BOARD_ID = board.getId();
 

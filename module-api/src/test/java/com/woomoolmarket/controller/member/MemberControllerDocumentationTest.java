@@ -35,7 +35,7 @@ class MemberControllerDocumentationTest extends ApiDocumentationConfig {
 
     @BeforeEach
     void init() {
-        MEMBER_ID = memberTestHelper.createUser().getId();
+        MEMBER_ID = memberTestHelper.createMember().getId();
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 

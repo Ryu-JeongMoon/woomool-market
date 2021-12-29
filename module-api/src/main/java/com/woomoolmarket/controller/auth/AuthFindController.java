@@ -32,8 +32,8 @@ public class AuthFindController {
     @PostMapping("/auth-string-verification")
     @PreAuthorize("isAnonymous()")
     public ResponseEntity<Void> verifyAuthString(@RequestBody AuthStringRequest authStringRequest) {
-        return authFindService.isVerified(authStringRequest.getAuthString()) ? ResponseEntity.ok().build()
-            : ResponseEntity.badRequest().build();
+        String authString = authStringRequest.getAuthString();
+        return authFindService.isVerified(authString) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/id")

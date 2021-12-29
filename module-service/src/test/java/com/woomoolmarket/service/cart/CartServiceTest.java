@@ -23,7 +23,7 @@ class CartServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = memberRepository.save(member).getId();
 
         Product product = productTestHelper.createProduct(member);

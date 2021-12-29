@@ -15,7 +15,6 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import java.util.Objects;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ class OrderControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Product product = productTestHelper.createProduct(member);

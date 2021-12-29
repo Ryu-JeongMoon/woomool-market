@@ -28,7 +28,7 @@ class AuthServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        member = memberTestHelper.createUser();
+        member = memberTestHelper.createMember();
         seller = memberTestHelper.createSeller();
     }
 

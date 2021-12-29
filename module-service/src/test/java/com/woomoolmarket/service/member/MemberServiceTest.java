@@ -39,7 +39,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         Member seller = memberTestHelper.createSeller();
 
         MEMBER_EMAIL = member.getEmail();

@@ -33,7 +33,7 @@ class ProductControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Product product = productTestHelper.createProduct(member);
