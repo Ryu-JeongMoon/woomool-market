@@ -56,7 +56,7 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<BoardResponse>> getBy(@PathVariable Long id) {
-        boardService.increaseHit(id);
+        boardService.increaseHitByDB(id);
         BoardResponse boardResponse = boardService.findBy(id, Status.ACTIVE);
         WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBy(id));
 

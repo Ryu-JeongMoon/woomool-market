@@ -11,4 +11,6 @@ public class CacheConstants {
     public static final String LOGIN_FAILED_KEY_PREFIX = "auth:login-failed#";
 
     public static final String BOARD_HIT_COUNT = "BoardCountService:getHit#";
+    public static final String BOARDS = "BoardService:boards";
+    public static final String BOARDS_FOR_ADMIN  = "BoardService:boardsForAdmin";
 }

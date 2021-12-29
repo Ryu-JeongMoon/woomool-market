@@ -1,5 +1,9 @@
 package com.woomoolmarket.service.board;
 
+import static com.woomoolmarket.common.constants.CacheConstants.BOARDS;
+import static com.woomoolmarket.common.constants.CacheConstants.BOARDS_FOR_ADMIN;
+
+import com.woomoolmarket.cache.CacheService;
 import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
@@ -21,7 +25,6 @@ import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final CacheService cacheService;
     private final ImageProcessor imageProcessor;
     private final MemberRepository memberRepository;
 
@@ -41,13 +45,12 @@ public class BoardService {
     private final BoardResponseMapper boardResponseMapper;
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = "medium")
+    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = BOARDS, unless = "#result.content == null")
     public Page<BoardQueryResponse> searchBy(BoardSearchCondition searchCondition, Pageable pageable) {
         return boardRepository.searchBy(searchCondition, pageable);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = "medium")
     public BoardResponse findBy(Long id, Status status) {
         return boardRepository.findByIdAndStatus(id, status)
             .map(boardResponseMapper::toDto)
@@ -55,16 +58,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void increaseHit(Long id) {
-        boardRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
-            .increaseHit();
-    }
-
-    @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
+    @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
     public void write(BoardRequest boardRequest, List<MultipartFile> files) {
         Board board = boardRequestMapper.toEntity(boardRequest);
 
@@ -79,10 +73,20 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "board"),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
+    public void increaseHitByDB(Long id) {
+        boardRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+            .increaseHit();
+    }
+
+    @Transactional
+    public void increaseHitByRedis(Long id) {
+        // TODO, redis 에서 조회수 증가
+        cacheService.increment("panda");
+    }
+
+    @Transactional
+    @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
     public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
         Board board = boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
@@ -92,10 +96,7 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "board"),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
+    @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
     public void delete(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
@@ -103,9 +104,7 @@ public class BoardService {
     }
 
     @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boards", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "boardsForAdmin", allEntries = true)})
+    @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
     public void restore(Long id) {
         boardRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
@@ -115,7 +114,7 @@ public class BoardService {
 
     /* FOR ADMIN */
     @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = "medium", unless = "#result==null")
+    @Cacheable(keyGenerator = "customKeyGenerator", cacheNames = BOARDS_FOR_ADMIN, unless = "#result.content == null")
     public Page<BoardQueryResponse> searchForAdminBy(BoardSearchCondition condition, Pageable pageable) {
         return boardRepository.searchForAdminBy(condition, pageable);
     }
