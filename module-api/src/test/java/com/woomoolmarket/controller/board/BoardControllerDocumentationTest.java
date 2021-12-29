@@ -34,7 +34,7 @@ public class BoardControllerDocumentationTest extends ApiDocumentationConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Board board = boardTestHelper.createBoard(member);

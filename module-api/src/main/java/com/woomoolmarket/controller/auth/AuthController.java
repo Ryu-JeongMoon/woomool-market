@@ -1,9 +1,9 @@
 package com.woomoolmarket.controller.auth;
 
+import com.woomoolmarket.common.constants.TokenConstants;
 import com.woomoolmarket.common.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.common.constants.TokenConstants;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +44,7 @@ public class AuthController {
     @PostMapping("/reissue")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_SELLER', 'ROLE_ADMIN')")
     public ResponseEntity<TokenResponse> reissue(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok(authService.reissue(tokenRequest));
+        TokenResponse tokenResponse = authService.reissue(tokenRequest);
+        return ResponseEntity.ok(tokenResponse);
     }
 }

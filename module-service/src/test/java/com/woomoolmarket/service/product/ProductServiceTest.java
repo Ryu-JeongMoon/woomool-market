@@ -16,7 +16,6 @@ import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
 import java.util.Objects;
-import javax.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +36,7 @@ class ProductServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Product product1 = productTestHelper.createProduct(member);

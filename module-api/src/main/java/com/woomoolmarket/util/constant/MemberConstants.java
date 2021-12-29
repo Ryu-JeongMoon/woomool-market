@@ -1,5 +1,9 @@
 package com.woomoolmarket.util.constant;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberConstants {
 
     public static final String LEAVE = "leave-member";

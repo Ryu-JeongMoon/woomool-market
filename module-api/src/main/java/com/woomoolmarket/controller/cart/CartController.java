@@ -85,7 +85,6 @@ public class CartController {
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageForAdminBy(@PageableDefault Pageable pageable) {
-
         Page<CartQueryResponse> queryResponsePage = cartService.searchForAdminBy(pageable);
         return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
     }

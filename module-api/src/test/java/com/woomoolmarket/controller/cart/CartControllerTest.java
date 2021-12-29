@@ -25,7 +25,7 @@ class CartControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Product product = productTestHelper.createProduct(member);
@@ -149,5 +149,19 @@ class CartControllerTest extends ApiControllerConfig {
                 delete("/api/carts/" + MEMBER_ID + "/" + 0))
             .andDo(print())
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("관리자 장바구니 다건 조회 성공")
+    @WithMockUser(roles = "ADMIN")
+    void getListByAdmin() throws Exception {
+        mockMvc.perform(
+                get("/api/carts/admin"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].id").value(CART_ID))
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].quantity").value(CART_QUANTITY))
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].memberQueryResponse").exists())
+            .andExpect(jsonPath("_embedded.cartQueryResponseList[0].productQueryResponse").exists());
     }
 }

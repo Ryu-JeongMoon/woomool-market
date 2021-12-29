@@ -31,7 +31,7 @@ class MemberControllerTest extends ApiControllerConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         MEMBER_ID = member.getId();
 
         Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
@@ -48,10 +48,11 @@ class MemberControllerTest extends ApiControllerConfig {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        mockMvc.perform(post("/api/members")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.ALL)
-                .content(objectMapper.writeValueAsString(signUpRequest)))
+        mockMvc.perform(
+                post("/api/members")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.ALL)
+                    .content(objectMapper.writeValueAsString(signUpRequest)))
             .andExpect(status().isCreated());
     }
 
@@ -69,10 +70,11 @@ class MemberControllerTest extends ApiControllerConfig {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        mockMvc.perform(post("/api/members")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.ALL)
-                .content(objectMapper.writeValueAsString(signUpRequest)))
+        mockMvc.perform(
+                post("/api/members")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.ALL)
+                    .content(objectMapper.writeValueAsString(signUpRequest)))
             .andExpect(status().isCreated());
     }
 
@@ -86,46 +88,11 @@ class MemberControllerTest extends ApiControllerConfig {
             .address(new Address("seoul", "yeonhui", "1234"))
             .build();
 
-        mockMvc.perform(post("/api/members")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(signUpRequest)))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithAnonymousUser
-    @DisplayName("로그인 성공")
-    void loginSuccess() throws Exception {
-        LoginRequest loginRequest = LoginRequest.builder()
-            .email(MEMBER_EMAIL)
-            .password(MEMBER_PASSWORD)
-            .build();
-
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.ALL)
-                .content(objectMapper.writeValueAsString(loginRequest)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("grantType").exists())
-            .andExpect(jsonPath("accessToken").exists())
-            .andExpect(jsonPath("refreshToken").exists())
-            .andExpect(jsonPath("accessTokenExpiresIn").exists());
-    }
-
-    @Test
-    @WithAnonymousUser
-    @DisplayName("로그인 실패 - 400 @Valid 작동")
-    void loginFail() throws Exception {
-        LoginRequest loginRequest = LoginRequest.builder()
-            .email("fail")
-            .password(MEMBER_PASSWORD)
-            .build();
-
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.ALL)
-                .content(objectMapper.writeValueAsString(loginRequest)))
+        mockMvc.perform(
+                post("/api/members")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaTypes.HAL_JSON)
+                    .content(objectMapper.writeValueAsString(signUpRequest)))
             .andExpect(status().isBadRequest());
     }
 

@@ -23,7 +23,7 @@ class ImageServiceTest extends ServiceTestConfig {
 
     @BeforeEach
     void init() {
-        Member member = memberTestHelper.createUser();
+        Member member = memberTestHelper.createMember();
         Board board = boardTestHelper.createBoard(member);
         BOARD_ID = board.getId();
 
