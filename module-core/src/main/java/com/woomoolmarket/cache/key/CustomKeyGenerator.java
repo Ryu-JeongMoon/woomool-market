@@ -10,6 +10,6 @@ public class CustomKeyGenerator implements KeyGenerator {
 
     @Override
     public Object generate(Object target, Method method, Object... params) {
-        return target.getClass().getSimpleName() + ":" + method.getName() + "#" + StringUtils.arrayToDelimitedString(params, "_");
+        return method.getName() + "#" + StringUtils.arrayToDelimitedString(params, "_");
     }
 }

@@ -107,7 +107,7 @@ class BoardServiceTest extends ServiceTestConfig {
     @Test
     @DisplayName("조회수 증가")
     void increaseHit() {
-        boardService.increaseHit(BOARD_2_ID);
+        boardService.increaseHitByDB(BOARD_2_ID);
         Board board = boardRepository.findById(BOARD_2_ID).get();
         assertThat(board.getHit()).isEqualTo(1);
     }

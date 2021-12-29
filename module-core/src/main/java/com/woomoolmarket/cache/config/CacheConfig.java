@@ -66,7 +66,6 @@ public class CacheConfig {
         RedisCacheConfiguration configuration = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
-            .disableKeyPrefix()
             .entryTtl(Duration.ofSeconds(DEFAULT_EXPIRE_TIME))
             .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(customObjectMapper())));
@@ -116,7 +115,9 @@ public class CacheConfig {
         return Map.of(
             "brief", configuration.entryTtl(Duration.ofSeconds(10)),
             "medium", configuration.entryTtl(Duration.ofMinutes(1)),
-            "long", configuration.entryTtl(Duration.ofMinutes(10))
+            "long", configuration.entryTtl(Duration.ofMinutes(10)),
+            "BoardService::boards", configuration.entryTtl(Duration.ofMinutes(5)),
+            "BoardService::boardsForAdmin", configuration.entryTtl(Duration.ofMinutes(5))
         );
     }
 
