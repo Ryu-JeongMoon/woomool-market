@@ -3,6 +3,7 @@ package com.woomoolmarket.service.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Authority;
@@ -12,6 +13,7 @@ import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
+import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import lombok.extern.log4j.Log4j2;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.ResourceLocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
@@ -36,6 +39,9 @@ class MemberServiceTest extends ServiceTestConfig {
     private static String MEMBER_EMAIL;
     private static String NICKNAME = "nick";
     private static String PASSWORD = "pass";
+
+    @Autowired
+    ModifyRequestMapper modifyRequestMapper;
 
     @BeforeEach
     void init() {
@@ -132,6 +138,33 @@ class MemberServiceTest extends ServiceTestConfig {
         Member member = memberRepository.findById(MEMBER_ID).get();
 
         assertThat(member.getImage()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("회원 전체 수정")
+    void editTotal() {
+        String nickname = "nickname";
+        Address address = new Address("123456", "123456", "123456");
+        String license = "1234567890";
+        String phone = "01234567891";
+        String profileImage = "profileImage";
+
+        ModifyRequest modifyRequest = ModifyRequest.builder()
+            .nickname(nickname)
+            .address(address)
+            .license(license)
+            .phone(phone)
+            .profileImage(profileImage)
+            .build();
+
+        Member member = memberRepository.findById(MEMBER_ID).get();
+        modifyRequestMapper.updateFromDto(modifyRequest, member);
+
+        assertThat(member.getNickname()).isEqualTo(modifyRequest.getNickname());
+        assertThat(member.getAddress()).isEqualTo(modifyRequest.getAddress());
+        assertThat(member.getLicense()).isEqualTo(modifyRequest.getLicense());
+        assertThat(member.getPhone()).isEqualTo(modifyRequest.getPhone());
+        assertThat(member.getProfileImage()).isEqualTo(modifyRequest.getProfileImage());
     }
 
     @Test

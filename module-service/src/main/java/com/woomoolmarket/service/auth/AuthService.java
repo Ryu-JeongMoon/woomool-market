@@ -3,6 +3,7 @@ package com.woomoolmarket.service.auth;
 import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
 import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_KEY_PREFIX;
 import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
 import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
 import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 
@@ -59,7 +60,7 @@ public class AuthService {
     private void checkFailureCount(LoginRequest loginRequest) {
         String loginFailureCount = cacheService.getData(LOGIN_FAILED_KEY_PREFIX + loginRequest.getEmail());
 
-        if (StringUtils.hasText(loginFailureCount) && Integer.parseInt(loginFailureCount) >= 5) {
+        if (StringUtils.hasText(loginFailureCount) && Integer.parseInt(loginFailureCount) >= MAXIMAL_NUMBER_OF_WRONG_PASSWORD) {
             throw new AccessDeniedException(ExceptionConstants.MEMBER_BLOCKED);
         }
     }

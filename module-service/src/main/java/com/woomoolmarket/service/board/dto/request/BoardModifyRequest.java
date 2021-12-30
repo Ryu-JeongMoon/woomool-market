@@ -2,18 +2,17 @@ package com.woomoolmarket.service.board.dto.request;
 
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import javax.persistence.Lob;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class BoardModifyRequest {
 
     @NotNull

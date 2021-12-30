@@ -14,6 +14,7 @@ import com.woomoolmarket.helper.MemberTestHelper;
 import com.woomoolmarket.helper.MultipartFileTestHelper;
 import com.woomoolmarket.helper.OrderTestHelper;
 import com.woomoolmarket.helper.ProductTestHelper;
+import com.woomoolmarket.service.auth.AuthFindService;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.cart.CartService;
@@ -75,6 +76,8 @@ public abstract class ServiceTestConfig {
     protected MemberService memberService;
     @Autowired
     protected ProductService productService;
+    @Autowired
+    protected AuthFindService authFindService;
 
     @Autowired
     protected CartTestHelper cartTestHelper;

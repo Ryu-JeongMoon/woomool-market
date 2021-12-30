@@ -5,11 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
+import com.woomoolmarket.service.order.dto.response.OrderResponse;
+import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,6 +28,9 @@ import org.springframework.data.domain.Pageable;
 class OrderServiceTestTest extends ServiceTestConfig {
 
     private static int PRODUCT_STOCK;
+
+    @Autowired
+    OrderResponseMapper orderResponseMapper;
 
     @BeforeEach
     void init() {
@@ -108,5 +115,29 @@ class OrderServiceTestTest extends ServiceTestConfig {
 
         Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, Pageable.ofSize(10));
         assertThat(orderQueryResponses.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("응답값 변환 성공")
+    void transferToDto() {
+        OrderRequest orderRequest = OrderRequest.builder()
+            .memberId(MEMBER_ID)
+            .productId(PRODUCT_ID)
+            .quantity(3).build();
+        orderService.orderOne(orderRequest);
+
+        Page<OrderQueryResponse> orderQueryResponses = orderService.searchBy(MEMBER_ID, Pageable.ofSize(10));
+        OrderQueryResponse orderQueryResponse = orderQueryResponses.getContent().get(0);
+        Order order = orderRepository.findById(orderQueryResponse.getId()).get();
+
+        OrderResponse orderResponse = orderResponseMapper.toDto(order);
+
+        assertThat(orderResponse.getId()).isEqualTo(order.getId());
+        assertThat(orderResponse.getDelivery()).isEqualTo(order.getDelivery());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(order.getOrderStatus());
+        assertThat(orderResponse.getOrderProducts()).isEqualTo(order.getOrderProducts());
+        assertThat(orderResponse.getMemberResponse().getId()).isEqualTo(order.getMember().getId());
+        assertThat(orderResponse.getMemberResponse().getEmail()).isEqualTo(order.getMember().getEmail());
+        assertThat(orderResponse.getMemberResponse().getPhone()).isEqualTo(order.getMember().getPhone());
     }
 }
