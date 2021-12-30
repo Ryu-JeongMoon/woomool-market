@@ -1,18 +1,18 @@
 package com.woomoolmarket.service.member.dto.response;
 
-import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.common.embeddable.Address;
+import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponse {
 

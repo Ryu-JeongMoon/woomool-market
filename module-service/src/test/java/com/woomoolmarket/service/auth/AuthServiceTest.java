@@ -1,5 +1,7 @@
 package com.woomoolmarket.service.auth;
 
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -7,10 +9,14 @@ import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
+import com.woomoolmarket.service.cache.RedisService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import java.util.Objects;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +32,18 @@ class AuthServiceTest extends ServiceTestConfig {
     private static Member member;
     private static Member seller;
 
+    @Autowired
+    private RedisService redisService;
+
     @BeforeEach
     void init() {
         member = memberTestHelper.createMember();
         seller = memberTestHelper.createSeller();
+    }
+
+    @AfterEach
+    void clear() {
+        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
     }
 
     private LoginRequest createRightLoginRequest() {
@@ -47,6 +61,15 @@ class AuthServiceTest extends ServiceTestConfig {
     }
 
     @Test
+    @DisplayName("로그인 검증 성공")
+    void authenticate() {
+        UsernamePasswordAuthenticationToken token = createRightLoginRequest().toAuthentication();
+        Authentication authentication = authService.authenticate(token);
+
+        assertThat(authentication).isNotNull();
+    }
+
+    @Test
     @DisplayName("로그인 성공")
     void login() {
         LoginRequest loginRequest = createRightLoginRequest();
@@ -57,23 +80,23 @@ class AuthServiceTest extends ServiceTestConfig {
 
     @Test
     @DisplayName("로그인 실패 - 비밀번호 틀릴 시 AuthenticationException 발생")
-    void loginFail() {
+    void loginFailByWrongPassword() {
         LoginRequest loginRequest = createWrongLoginRequest();
 
         assertThrows(AuthenticationException.class, () -> authService.login(loginRequest));
     }
 
     @Test
-    @DisplayName("로그인 검증 성공")
-    void authenticate() {
-        UsernamePasswordAuthenticationToken token = createRightLoginRequest().toAuthentication();
-        Authentication authentication = authService.authenticate(token);
+    @DisplayName("로그인 실패 - 비밀번호 틀린 횟수 초과 AccessDeniedException 발생")
+    void loginFailByFailureCount() {
+        LoginRequest loginRequest = createRightLoginRequest();
+        redisService.setData(LOGIN_FAILED_KEY_PREFIX + loginRequest.getEmail(), MAXIMAL_NUMBER_OF_WRONG_PASSWORD + 1);
 
-        assertThat(authentication).isNotNull();
+        assertThrows(AccessDeniedException.class, () -> authService.login(loginRequest));
     }
 
     @Test
-    @DisplayName("로그인 검증 실패 - 비밀번호 틀릴 시 AuthenticationException 발생")
+    @DisplayName("로그인 실패 - 비밀번호 틀릴 시 AuthenticationException 발생")
     void authenticateFail() {
         UsernamePasswordAuthenticationToken token = createWrongLoginRequest().toAuthentication();
 
@@ -98,7 +121,7 @@ class AuthServiceTest extends ServiceTestConfig {
     @DisplayName("로그아웃 실패 - AccessToken 틀릴 시 IllegalArgumentException 발생")
     void logoutFailByWrongAccessToken() {
         LoginRequest loginRequest = createRightLoginRequest();
-        TokenResponse tokenResponse = authService.login(loginRequest);
+        authService.login(loginRequest);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
 
