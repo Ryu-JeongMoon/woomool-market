@@ -6,40 +6,37 @@ import com.woomoolmarket.domain.count.entity.BoardCount;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class BoardQueryResponse implements Serializable {
 
-    private Long id;
+    private final Long id;
 
-    private String title;
+    private final String title;
 
-    private String content;
+    private final String content;
 
-    private int hit;
+    private final int hit;
 
-    private BoardCount boardCount;
+    private final BoardCount boardCount;
 
-    private BoardCategory boardCategory;
+    private final BoardCategory boardCategory;
 
-    private LocalDateTime endDateTime;
+    private final LocalDateTime endDateTime;
 
-    private LocalDateTime startDateTime;
+    private final LocalDateTime startDateTime;
 
-    private LocalDateTime createdDateTime;
+    private final LocalDateTime createdDateTime;
 
-    private MemberQueryResponse memberResponse;
+    private final MemberQueryResponse memberResponse;
 
+    @Builder
     @QueryProjection
-    public BoardQueryResponse(Long id, String title, String content, int hit, BoardCount boardCount,
-        BoardCategory boardCategory, String email,
+    public BoardQueryResponse(
+        Long id, String title, String content, int hit, BoardCount boardCount, BoardCategory boardCategory, String email,
         LocalDateTime endDateTime, LocalDateTime startDateTime, LocalDateTime createdDateTime) {
         this.id = id;
         this.hit = hit;

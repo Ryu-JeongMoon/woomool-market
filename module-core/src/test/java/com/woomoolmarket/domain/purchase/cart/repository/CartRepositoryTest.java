@@ -3,13 +3,12 @@ package com.woomoolmarket.domain.purchase.cart.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.common.enumeration.Region;
-import com.woomoolmarket.config.TestConfig;
+import com.woomoolmarket.config.DataJpaTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
+import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -18,24 +17,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Log4j2
-@DataJpaTest
-@Import(TestConfig.class)
-class CartRepositoryTest {
+class CartRepositoryTest extends DataJpaTestConfig {
 
     private Long CART_ID;
     private Member member;
     private Product product;
 
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    ProductRepository productRepository;
-    @Autowired
-    CartRepository cartRepository;
     @Autowired
     EntityManager em;
 
@@ -79,9 +70,6 @@ class CartRepositoryTest {
     void deleteById() {
         cartRepository.deleteById(CART_ID);
 
-        em.flush();
-        em.clear();
-
         assertThat(cartRepository.findById(CART_ID)).isEqualTo(Optional.empty());
     }
 
@@ -94,5 +82,26 @@ class CartRepositoryTest {
         em.clear();
 
         assertThat(cartRepository.findById(CART_ID)).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    @DisplayName("회원 전용 본인 장바구니 조회")
+    void searchBy() {
+        Page<CartQueryResponse> cartQueryResponses = cartRepository.searchBy(member.getId(), Pageable.ofSize(10));
+        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("회원 전용 장바구니 조회 - 존재하지 않는 회원 번호")
+    void searchByNoResult() {
+        Page<CartQueryResponse> cartQueryResponses = cartRepository.searchBy(member.getId() + 1, Pageable.ofSize(10));
+        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("관리자 전용 장바구니 전체 조회")
+    void searchForAdminBy() {
+        Page<CartQueryResponse> cartQueryResponses = cartRepository.searchForAdminBy(Pageable.ofSize(10));
+        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
     }
 }

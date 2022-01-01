@@ -1,8 +1,13 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.image.entity.Image;
+import com.woomoolmarket.helper.ImageTestHelper;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +47,13 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("재고 감소 실패 - 재고 부족 IllegalArgumentException 발생")
+    void decreaseStockFail() {
+        int quantityOverStock = 1000000;
+        assertThrows(IllegalArgumentException.class, () -> product.decreaseStock(quantityOverStock));
+    }
+
+    @Test
     @DisplayName("상품 삭제 - soft delete")
     void delete() {
         product.delete();
@@ -59,6 +71,31 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("이미지 추가 성공")
+    void addImages() {
+        Image image = ImageTestHelper.createImage();
+        product.addImages(List.of(image));
+
+        assertThat(product.getImages().get(0)).isNotNull();
+    }
+
+    @Test
+    @DisplayName("이미지 추가 시 해당 이미지에 상품 세팅")
+    void addImagesSetProduct() {
+        Image image = ImageTestHelper.createImage();
+        product.addImages(List.of(image));
+
+        assertThat(image.getProduct()).isEqualTo(product);
+    }
+
+    @Test
+    @DisplayName("이미지 추가 실패 - 빈 리스트")
+    void addVoidImages() {
+        product.addImages(Collections.emptyList());
+        assertThat(product.getImages().size()).isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("HashCode 테스트")
     void hashCodeTest() {
         Product newProduct = product;
@@ -69,14 +106,14 @@ class ProductTest {
     @DisplayName("equals 테스트")
     void equalsTest() {
         Product newProduct = Product.builder()
-            .name(this.product.getName())
-            .member(this.product.getMember())
-            .productImage(this.product.getProductImage())
-            .productCategory(this.product.getProductCategory())
-            .price(this.product.getPrice())
-            .stock(this.product.getStock().intValue())
-            .region(this.product.getRegion())
+            .name(product.getName())
+            .member(product.getMember())
+            .productImage(product.getProductImage())
+            .productCategory(product.getProductCategory())
+            .price(product.getPrice())
+            .stock(product.getStock().intValue())
+            .region(product.getRegion())
             .build();
-        assertThat(this.product.equals(newProduct)).isEqualTo(true);
+        assertThat(product.equals(newProduct)).isEqualTo(true);
     }
 }
