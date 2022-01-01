@@ -67,7 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Transactional
     public Member editExistingMember(OAuth2Attributes attributes) {
         return memberRepository.findByEmail(attributes.getEmail())
-            .map(member -> member.editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage()))
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+            .editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage());
     }
 }

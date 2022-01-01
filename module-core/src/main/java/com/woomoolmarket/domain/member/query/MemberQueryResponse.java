@@ -9,38 +9,36 @@ import com.woomoolmarket.domain.member.entity.Member;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
+@Getter
 public class MemberQueryResponse implements Serializable {
 
-    private Long id;
+    private final Long id;
 
-    private String email;
+    private final String email;
 
-    private String nickname;
+    private final String nickname;
 
-    private String profileImage;
+    private final String profileImage;
 
-    private String phone;
+    private final String phone;
 
-    private String license;
+    private final String license;
 
-    private LocalDateTime createdDateTime;
+    private final LocalDateTime createdDateTime;
 
-    private LocalDateTime lastModifiedDateTime;
+    private final LocalDateTime lastModifiedDateTime;
 
-    private LocalDateTime leaveDateTime;
+    private final LocalDateTime leaveDateTime;
 
-    private Authority authority;
+    private final Authority authority;
 
-    private Address address;
+    private final Address address;
 
-    private AuthProvider authProvider;
+    private final AuthProvider authProvider;
 
-    private Status status;
+    private final Status status;
 
     @Builder
     @QueryProjection
