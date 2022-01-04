@@ -13,12 +13,12 @@ import org.springframework.hateoas.Link;
 @Log4j2
 class MemberResponseModelTest {
 
-    @Test
-    @DisplayName("linkTo가 알맞은 경로를 반환한다")
-    void linkToTest() {
-        Link link = linkTo(methodOn(MemberController.class).getBy(1L)).withRel("hello");
+  @Test
+  @DisplayName("linkTo가 알맞은 경로를 반환한다")
+  void linkToTest() {
+    Link link = linkTo(methodOn(MemberController.class).getBy(1L)).withRel("hello");
 
-        assertEquals(link.getHref(), "/api/members/1");
-        assertEquals(link.getRel().toString(), "hello");
-    }
+    assertEquals(link.getHref(), "/api/members/1");
+    assertEquals(link.getRel().toString(), "hello");
+  }
 }

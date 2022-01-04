@@ -6,13 +6,13 @@ import com.woomoolmarket.domain.purchase.product.entity.Product;
 
 public class CartTestHelper {
 
-    public static final Integer CART_QUANTITY = 500;
+  public static final Integer CART_QUANTITY = 500;
 
-    public static Cart createCart(Member member, Product product) {
-        return Cart.builder()
-            .member(member)
-            .product(product)
-            .quantity(CART_QUANTITY)
-            .build();
-    }
+  public static Cart createCart(Member member, Product product) {
+    return Cart.builder()
+      .member(member)
+      .product(product)
+      .quantity(CART_QUANTITY)
+      .build();
+  }
 }

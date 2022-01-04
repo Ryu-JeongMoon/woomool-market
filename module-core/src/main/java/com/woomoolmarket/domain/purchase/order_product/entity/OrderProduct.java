@@ -30,45 +30,45 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class OrderProduct extends BaseTimeEntity {
 
-    @Id
-    @Column(name = "order_product_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "order_product_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "order_id")
+  private Order order;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private Product product;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "product_id")
+  private Product product;
 
-    @Column(nullable = false)
-    private int quantity;
+  @Column(nullable = false)
+  private int quantity;
 
-    @Column(nullable = false)
-    private int totalPrice;
+  @Column(nullable = false)
+  private int totalPrice;
 
-    @Builder
-    public OrderProduct(Product product, int quantity) {
-        this.product = product;
-        this.quantity = quantity;
-        this.totalPrice = product.getPrice() * quantity;
-    }
+  @Builder
+  public OrderProduct(Product product, int quantity) {
+    this.product = product;
+    this.quantity = quantity;
+    this.totalPrice = product.getPrice() * quantity;
+  }
 
-    public static OrderProduct createOrderProduct(Product product, int quantity) {
-        product.decreaseStock(quantity);
+  public static OrderProduct createOrderProduct(Product product, int quantity) {
+    product.decreaseStock(quantity);
 
-        return OrderProduct.builder()
-            .product(product)
-            .quantity(quantity)
-            .build();
-    }
+    return OrderProduct.builder()
+      .product(product)
+      .quantity(quantity)
+      .build();
+  }
 
-    public void cancelOrder() {
-        product.increaseStock(quantity);
-    }
+  public void cancelOrder() {
+    product.increaseStock(quantity);
+  }
 }
 
 // TODO product Fetch.EAGER 로 해놨는데 개선해야 하는걸까?

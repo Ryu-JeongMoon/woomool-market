@@ -17,19 +17,19 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 class BaseEntityTest {
 
-    @Autowired
-    MemberRepository memberRepository;
+  @Autowired
+  MemberRepository memberRepository;
 
-    @Test
-    @DisplayName("EntityListeners 속성 상속된다")
-    void baseEntityTest() {
-        Member member = Member.builder()
-            .email("panda-bear")
-            .nickname("nick")
-            .password("pass")
-            .build();
+  @Test
+  @DisplayName("EntityListeners 속성 상속된다")
+  void baseEntityTest() {
+    Member member = Member.builder()
+      .email("panda-bear")
+      .nickname("nick")
+      .password("pass")
+      .build();
 
-        Member result = memberRepository.save(member);
-        assertThat(result.getCreatedDateTime()).isNotNull();
-    }
+    Member result = memberRepository.save(member);
+    assertThat(result.getCreatedDateTime()).isNotNull();
+  }
 }

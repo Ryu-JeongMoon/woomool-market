@@ -21,28 +21,28 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class ProductModifyRequest {
 
-    @NotNull
-    @Pattern(regexp = "^[\\w ]{4,24}$", message = "상품 이름은 6 - 24자 사이로 입력 가능합니다")
-    private String name;
+  @NotNull
+  @Pattern(regexp = "^[\\w ]{4,24}$", message = "상품 이름은 6 - 24자 사이로 입력 가능합니다")
+  private String name;
 
-    @Lob
-    @NotNull
-    private String description;
+  @Lob
+  @NotNull
+  private String description;
 
-    @Size(max = 255)
-    @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자지 입력 가능합니다")
-    private String productImage;
+  @Size(max = 255)
+  @Pattern(regexp = "^[\\w]*$", message = "파일 이름은 255자지 입력 가능합니다")
+  private String productImage;
 
-    @Min(value = 1000L)
-    private Integer price;
+  @Min(value = 1000L)
+  private Integer price;
 
-    @Min(value = 100L)
-    private Integer stock;
+  @Min(value = 100L)
+  private Integer stock;
 
-    private Region region;
+  private Region region;
 
-    private ProductCategory productCategory;
+  private ProductCategory productCategory;
 
-    @JsonIgnore
-    private List<MultipartFile> multipartFiles;
+  @JsonIgnore
+  private List<MultipartFile> multipartFiles;
 }

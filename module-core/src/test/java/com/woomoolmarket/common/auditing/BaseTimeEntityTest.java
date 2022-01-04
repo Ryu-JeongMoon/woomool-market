@@ -17,20 +17,20 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 class BaseTimeEntityTest {
 
-    @Autowired
-    MemberRepository memberRepository;
+  @Autowired
+  MemberRepository memberRepository;
 
-    @Test
-    @DisplayName("JPA auditing 동작한다")
-    void baseTimeTest() {
-        Member member = Member.builder()
-            .email("panda-bear")
-            .nickname("nick")
-            .password("pass")
-            .build();
+  @Test
+  @DisplayName("JPA auditing 동작한다")
+  void baseTimeTest() {
+    Member member = Member.builder()
+      .email("panda-bear")
+      .nickname("nick")
+      .password("pass")
+      .build();
 
-        Member result = memberRepository.save(member);
-        assertThat(result.getCreatedDateTime()).isNotNull();
-        assertThat(result.getLastModifiedDateTime()).isNotNull();
-    }
+    Member result = memberRepository.save(member);
+    assertThat(result.getCreatedDateTime()).isNotNull();
+    assertThat(result.getLastModifiedDateTime()).isNotNull();
+  }
 }

@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
-    boolean existsByEmail(String email);
+  boolean existsByEmail(String email);
 
-    Optional<Member> findByEmail(String email);
+  Optional<Member> findByEmail(String email);
 
-    Optional<Member> findByEmailAndStatus(String email, Status status);
+  Optional<Member> findByEmailAndStatus(String email, Status status);
 
-    Optional<Member> findByPhoneAndStatus(String phone, Status status);
+  Optional<Member> findByPhoneAndStatus(String phone, Status status);
 
-    Optional<Member> findByIdAndStatus(Long id, Status status);
+  Optional<Member> findByIdAndStatus(Long id, Status status);
 
 }

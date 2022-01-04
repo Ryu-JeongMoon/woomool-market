@@ -18,36 +18,36 @@ import org.junit.jupiter.api.Test;
 
 class ImageControllerTest extends ApiControllerConfig {
 
-    @BeforeEach
-    void init() {
-        Image image = imageTestHelper.createImage();
-        IMAGE_ID = image.getId();
+  @BeforeEach
+  void init() {
+    Image image = imageTestHelper.createImage();
+    IMAGE_ID = image.getId();
 
-        Member member = memberTestHelper.createMember();
-        Board board = boardTestHelper.createBoard(member);
-        BOARD_ID = board.getId();
+    Member member = memberTestHelper.createMember();
+    Board board = boardTestHelper.createBoard(member);
+    BOARD_ID = board.getId();
 
-        board.addImages(List.of(image));
+    board.addImages(List.of(image));
 
-        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-    }
+    Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
+  }
 
-    @Test
-    @DisplayName("게시글 번호로 이미지 조회 성공")
-    void getImages() throws Exception {
-        mockMvc.perform(
-                get("/api/images/" + BOARD_ID))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded").exists());
-    }
+  @Test
+  @DisplayName("게시글 번호로 이미지 조회 성공")
+  void getImages() throws Exception {
+    mockMvc.perform(
+        get("/api/images/" + BOARD_ID))
+      .andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("_embedded").exists());
+  }
 
-    @Test
-    @DisplayName("이미지 번호로 삭제 성공")
-    void deleteByImage() throws Exception {
-        mockMvc.perform(
-                delete("/api/images/" + IMAGE_ID))
-            .andDo(print())
-            .andExpect(status().isNoContent());
-    }
+  @Test
+  @DisplayName("이미지 번호로 삭제 성공")
+  void deleteByImage() throws Exception {
+    mockMvc.perform(
+        delete("/api/images/" + IMAGE_ID))
+      .andDo(print())
+      .andExpect(status().isNoContent());
+  }
 }

@@ -21,35 +21,35 @@ import org.springframework.context.annotation.Import;
 @Import(TestConfig.class)
 class BoardRepositoryImplTest {
 
-    @Autowired
-    BoardRepository boardRepository;
-    @Autowired
-    JPAQueryFactory queryFactory;
-    @Autowired
-    EntityManager em;
+  @Autowired
+  BoardRepository boardRepository;
+  @Autowired
+  JPAQueryFactory queryFactory;
+  @Autowired
+  EntityManager em;
 
-    @BeforeEach
-    void init() {
-        boardRepository.deleteAll();
-        em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
+  @BeforeEach
+  void init() {
+    boardRepository.deleteAll();
+    em.createNativeQuery("ALTER TABLE BOARD ALTER COLUMN `board_id` RESTART WITH 1").executeUpdate();
 
-        Board board = Board.builder()
-            .title("panda1")
-            .content("bear1")
-            .boardCategory(BoardCategory.QNA)
-            .startDateTime(LocalDateTime.now())
-            .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
-            .build();
+    Board board = Board.builder()
+      .title("panda1")
+      .content("bear1")
+      .boardCategory(BoardCategory.QNA)
+      .startDateTime(LocalDateTime.now())
+      .endDateTime(LocalDateTime.of(2099, 1, 1, 1, 1, 1))
+      .build();
 
-        boardRepository.save(board);
-    }
+    boardRepository.save(board);
+  }
 
-    @Test
-    void containsTest() {
-        Board board = queryFactory.selectFrom(QBoard.board)
-            .where(QBoard.board.title.contains("pa"))
-            .fetchOne();
+  @Test
+  void containsTest() {
+    Board board = queryFactory.selectFrom(QBoard.board)
+      .where(QBoard.board.title.contains("pa"))
+      .fetchOne();
 
-        assertThat(board).isNotNull();
-    }
+    assertThat(board).isNotNull();
+  }
 }

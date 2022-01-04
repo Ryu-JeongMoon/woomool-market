@@ -19,60 +19,60 @@ import org.springframework.util.StopWatch;
 @Log4j2
 class Util {
 
-    @Test
-    @DisplayName("log4j2 주입이 올바르게 된다")
-    void log4j2Test() {
-        log.info("log -> {}", log.getClass());
-    }
+  @Test
+  @DisplayName("log4j2 주입이 올바르게 된다")
+  void log4j2Test() {
+    log.info("log -> {}", log.getClass());
+  }
 
-    ObjectMapper objectMapper;
+  ObjectMapper objectMapper;
 
-    @BeforeEach
-    void init() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    }
+  @BeforeEach
+  void init() {
+    objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  }
 
-    @Test
-    @DisplayName("LocalDateTime 형식으로 올바르게 작성된다")
-    void objectMapperTest() throws JsonProcessingException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        String now = LocalDateTime.now().format(formatter);
+  @Test
+  @DisplayName("LocalDateTime 형식으로 올바르게 작성된다")
+  void objectMapperTest() throws JsonProcessingException {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    String now = LocalDateTime.now().format(formatter);
 
-        String result = objectMapper.writeValueAsString(now);
-        log.info("result = {}", result);
-        assertEquals(now, result.replace("\"", ""));
-    }
+    String result = objectMapper.writeValueAsString(now);
+    log.info("result = {}", result);
+    assertEquals(now, result.replace("\"", ""));
+  }
 
-    @Test
-    @DisplayName("LocalDateTime 형식으로 읽어온다")
-    void objectMapperReadLocalDateTimeTest() throws JsonProcessingException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        String now = LocalDateTime.now().format(formatter);
+  @Test
+  @DisplayName("LocalDateTime 형식으로 읽어온다")
+  void objectMapperReadLocalDateTimeTest() throws JsonProcessingException {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    String now = LocalDateTime.now().format(formatter);
 
-        String nowStr = objectMapper.writeValueAsString(now);
-        Object obj = objectMapper.readValue(nowStr, Object.class);
-        log.info(obj);
-        assertEquals(nowStr.replace("\"", ""), obj);
-    }
+    String nowStr = objectMapper.writeValueAsString(now);
+    Object obj = objectMapper.readValue(nowStr, Object.class);
+    log.info(obj);
+    assertEquals(nowStr.replace("\"", ""), obj);
+  }
 
-    @Test
-    @DisplayName("toList vs toUnmodifiableList 시간 비교")
-    void unmodifiableTest() {
-        List<Integer> integers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  @Test
+  @DisplayName("toList vs toUnmodifiableList 시간 비교")
+  void unmodifiableTest() {
+    List<Integer> integers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        StopWatch stopWatch1 = new StopWatch();
-        stopWatch1.start();
-        integers.stream().map(i -> i + 1).collect(Collectors.toList());
-        stopWatch1.stop();
-        log.info(stopWatch1.prettyPrint());
+    StopWatch stopWatch1 = new StopWatch();
+    stopWatch1.start();
+    integers.stream().map(i -> i + 1).collect(Collectors.toList());
+    stopWatch1.stop();
+    log.info(stopWatch1.prettyPrint());
 
-        StopWatch stopWatch2 = new StopWatch();
-        stopWatch2.start();
-        integers.stream().map(i -> i + 1).collect(Collectors.toUnmodifiableList());
-        stopWatch2.stop();
-        log.info(stopWatch2.prettyPrint());
+    StopWatch stopWatch2 = new StopWatch();
+    stopWatch2.start();
+    integers.stream().map(i -> i + 1).collect(Collectors.toUnmodifiableList());
+    stopWatch2.stop();
+    log.info(stopWatch2.prettyPrint());
 
-    }
+  }
 }

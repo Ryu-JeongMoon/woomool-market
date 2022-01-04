@@ -40,82 +40,82 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/members", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class MemberController {
 
-    private final MemberService memberService;
-    private final PagedResourcesAssembler<MemberQueryResponse> assembler;
+  private final MemberService memberService;
+  private final PagedResourcesAssembler<MemberQueryResponse> assembler;
 
-    @GetMapping("/{id}")
-    @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<MemberResponse>> getBy(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMemberById(id);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getBy(id));
+  @GetMapping("/{id}")
+  @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<EntityModel<MemberResponse>> getBy(@PathVariable Long id) {
+    MemberResponse memberResponse = memberService.findMemberById(id);
+    WebMvcLinkBuilder defaultLink = linkTo(methodOn(MemberController.class).getBy(id));
 
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
-            defaultLink.withSelfRel(),
-            defaultLink.withRel(MemberConstants.MODIFY),
-            defaultLink.withRel(MemberConstants.LEAVE)
-        );
+    EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
+      defaultLink.withSelfRel(),
+      defaultLink.withRel(MemberConstants.MODIFY),
+      defaultLink.withRel(MemberConstants.LEAVE)
+    );
 
-        return ResponseEntity.ok(responseModel);
-    }
+    return ResponseEntity.ok(responseModel);
+  }
 
-    @PostMapping
-    @PreAuthorize("isAnonymous()")
-    public ResponseEntity<EntityModel<MemberResponse>> join(@Valid @RequestBody SignupRequest signUpRequest) {
-        MemberResponse memberResponse = StringUtils.hasText(signUpRequest.getLicense()) ?
-            memberService.joinAsSeller(signUpRequest) : memberService.joinAsMember(signUpRequest);
+  @PostMapping
+  @PreAuthorize("isAnonymous()")
+  public ResponseEntity<EntityModel<MemberResponse>> join(@Valid @RequestBody SignupRequest signUpRequest) {
+    MemberResponse memberResponse = StringUtils.hasText(signUpRequest.getLicense()) ?
+      memberService.joinAsSeller(signUpRequest) : memberService.joinAsMember(signUpRequest);
 
-        EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
-            linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
+    EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
+      linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberModel);
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(memberModel);
+  }
 
-    @PatchMapping("/{id}")
-    @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> edit(@PathVariable Long id, @Valid @RequestBody ModifyRequest modifyRequest) {
-        URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
-        memberService.edit(id, modifyRequest);
-        return ResponseEntity.created(createdUri).build();
-    }
+  @PatchMapping("/{id}")
+  @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> edit(@PathVariable Long id, @Valid @RequestBody ModifyRequest modifyRequest) {
+    URI createdUri = linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel().toUri();
+    memberService.edit(id, modifyRequest);
+    return ResponseEntity.created(createdUri).build();
+  }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> leave(@PathVariable Long id) {
-        memberService.leaveSoftly(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> leave(@PathVariable Long id) {
+    memberService.leaveSoftly(id);
+    return ResponseEntity.noContent().build();
+  }
 
-    @GetMapping("/deleted/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> restore(@PathVariable Long id) {
-        memberService.restore(id);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @GetMapping("/deleted/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> restore(@PathVariable Long id) {
+    memberService.restore(id);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
 
-    /* FOR ADMIN */
-    @GetMapping("/admin/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<MemberResponse>> getForAdminBy(@PathVariable Long id) {
-        MemberResponse memberResponse = memberService.findMemberById(id);
-        Long previousId = memberService.findPreviousId(id);
-        Long nextId = memberService.findNextId(id);
+  /* FOR ADMIN */
+  @GetMapping("/admin/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<EntityModel<MemberResponse>> getForAdminBy(@PathVariable Long id) {
+    MemberResponse memberResponse = memberService.findMemberById(id);
+    Long previousId = memberService.findPreviousId(id);
+    Long nextId = memberService.findNextId(id);
 
-        EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
-            linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel(),
-            linkTo(methodOn(MemberController.class).getBy(previousId)).withRel(MemberConstants.PREVIOUS_MEMBER),
-            linkTo(methodOn(MemberController.class).getBy(nextId)).withRel(MemberConstants.NEXT_MEMBER),
-            linkTo(methodOn(MemberController.class).getBy(id)).withRel(MemberConstants.MODIFY));
+    EntityModel<MemberResponse> responseModel = EntityModel.of(memberResponse,
+      linkTo(methodOn(MemberController.class).getBy(id)).withSelfRel(),
+      linkTo(methodOn(MemberController.class).getBy(previousId)).withRel(MemberConstants.PREVIOUS_MEMBER),
+      linkTo(methodOn(MemberController.class).getBy(nextId)).withRel(MemberConstants.NEXT_MEMBER),
+      linkTo(methodOn(MemberController.class).getBy(id)).withRel(MemberConstants.MODIFY));
 
-        return ResponseEntity.ok().body(responseModel);
-    }
+    return ResponseEntity.ok().body(responseModel);
+  }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<MemberQueryResponse>>> getPageForAdminBy(
-        MemberSearchCondition condition, @PageableDefault Pageable pageable) {
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<MemberQueryResponse>>> getPageForAdminBy(
+    MemberSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, pageable);
-        return ResponseEntity.ok(assembler.toModel(queryResponsePage));
-    }
+    Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, pageable);
+    return ResponseEntity.ok(assembler.toModel(queryResponsePage));
+  }
 }

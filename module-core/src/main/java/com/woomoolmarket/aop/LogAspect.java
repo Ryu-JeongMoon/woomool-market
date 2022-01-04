@@ -25,59 +25,59 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Profile(value = {"local", "mysql", "ec2"})
 public class LogAspect {
 
-    private static JSONObject getParams(HttpServletRequest request) {
-        JSONObject jsonObject = new JSONObject();
-        Enumeration<String> params = request.getParameterNames();
-        while (params.hasMoreElements()) {
-            String param = params.nextElement();
-            String replaceParam = param.replaceAll("\\.", "-");
-            jsonObject.put(replaceParam, request.getParameter(param));
-        }
-        return jsonObject;
+  private static JSONObject getParams(HttpServletRequest request) {
+    JSONObject jsonObject = new JSONObject();
+    Enumeration<String> params = request.getParameterNames();
+    while (params.hasMoreElements()) {
+      String param = params.nextElement();
+      String replaceParam = param.replaceAll("\\.", "-");
+      jsonObject.put(replaceParam, request.getParameter(param));
+    }
+    return jsonObject;
+  }
+
+  @Around(value = "bean(*Controller)")
+  public Object logForRequest(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    Object result = proceedingJoinPoint.proceed();
+    HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(
+      RequestContextHolder.getRequestAttributes())).getRequest();
+
+    String controllerName = proceedingJoinPoint.getSignature().getDeclaringType().getSimpleName();
+    String methodName = proceedingJoinPoint.getSignature().getName();
+
+    Map<String, Object> params = new LinkedHashMap<>();
+
+    try {
+      params.put("http-method", request.getMethod());
+      params.put("request-uri", request.getRequestURI());
+      params.put("controller", controllerName);
+      params.put("method", methodName);
+      params.put("params", getParams(request));
+      params.put("log-time", LocalDateTime.now());
+    } catch (Exception e) {
+      log.info("[WOOMOOL-ERROR] :: Log Error => {}", e.getMessage());
+      log.info("log.class = {}", log.getClass().getName());
     }
 
-    @Around(value = "bean(*Controller)")
-    public Object logForRequest(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        Object result = proceedingJoinPoint.proceed();
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(
-            RequestContextHolder.getRequestAttributes())).getRequest();
+    log.info("[WOOMOOL-REQUEST] :: {}", params);
+    return result;
+  }
 
-        String controllerName = proceedingJoinPoint.getSignature().getDeclaringType().getSimpleName();
-        String methodName = proceedingJoinPoint.getSignature().getName();
+  @Around(value = "bean(*Controller)")
+  public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start(String.valueOf(joinPoint.getSignature()));
+    Object proceed = joinPoint.proceed();
+    stopWatch.stop();
 
-        Map<String, Object> params = new LinkedHashMap<>();
+    log.info("[WOOMOOL-STOPWATCH] :: -> {}", stopWatch.prettyPrint());
+    return proceed;
+  }
 
-        try {
-            params.put("http-method", request.getMethod());
-            params.put("request-uri", request.getRequestURI());
-            params.put("controller", controllerName);
-            params.put("method", methodName);
-            params.put("params", getParams(request));
-            params.put("log-time", LocalDateTime.now());
-        } catch (Exception e) {
-            log.info("[WOOMOOL-ERROR] :: Log Error => {}", e.getMessage());
-            log.info("log.class = {}", log.getClass().getName());
-        }
-
-        log.info("[WOOMOOL-REQUEST] :: {}", params);
-        return result;
-    }
-
-    @Around(value = "bean(*Controller)")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start(String.valueOf(joinPoint.getSignature()));
-        Object proceed = joinPoint.proceed();
-        stopWatch.stop();
-
-        log.info("[WOOMOOL-STOPWATCH] :: -> {}", stopWatch.prettyPrint());
-        return proceed;
-    }
-
-    @AfterReturning(value = "@within(com.woomoolmarket.aop.annotation.LogForException)", returning = "response")
-    public void logForException(JoinPoint joinPoint, Object response) {
-        log.info("[WOOMOOL-ERROR] :: method -> {}", joinPoint.getSignature().toShortString());
-        log.info("[WOOMOOL-ERROR] :: target -> {}", joinPoint.getTarget());
-        log.info("[WOOMOOL-ERROR] :: response -> {}", response);
-    }
+  @AfterReturning(value = "@within(com.woomoolmarket.aop.annotation.LogForException)", returning = "response")
+  public void logForException(JoinPoint joinPoint, Object response) {
+    log.info("[WOOMOOL-ERROR] :: method -> {}", joinPoint.getSignature().toShortString());
+    log.info("[WOOMOOL-ERROR] :: target -> {}", joinPoint.getTarget());
+    log.info("[WOOMOOL-ERROR] :: response -> {}", response);
+  }
 }

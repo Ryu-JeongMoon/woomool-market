@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BoardRepositoryCustom {
 
-    Page<BoardQueryResponse> searchBy(BoardSearchCondition condition, Pageable pageable);
+  Page<BoardQueryResponse> searchBy(BoardSearchCondition condition, Pageable pageable);
 
-    Page<BoardQueryResponse> searchForAdminBy(BoardSearchCondition condition, Pageable pageable);
+  Page<BoardQueryResponse> searchForAdminBy(BoardSearchCondition condition, Pageable pageable);
 }

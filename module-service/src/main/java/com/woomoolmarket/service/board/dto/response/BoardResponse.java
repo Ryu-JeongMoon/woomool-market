@@ -16,24 +16,24 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BoardResponse implements Serializable {
 
-    private Long id;
+  private Long id;
 
-    private String title;
+  private String title;
 
-    private String content;
+  private String content;
 
-    private int hit;
+  private int hit;
 
-    private BoardCount boardCount;
+  private BoardCount boardCount;
 
-    private BoardCategory boardCategory;
+  private BoardCategory boardCategory;
 
-    private LocalDateTime endDateTime;
+  private LocalDateTime endDateTime;
 
-    private LocalDateTime startDateTime;
+  private LocalDateTime startDateTime;
 
-    private LocalDateTime createdDateTime;
+  private LocalDateTime createdDateTime;
 
-    private MemberResponse memberResponse;
+  private MemberResponse memberResponse;
 
 }

@@ -36,51 +36,51 @@ import org.springframework.web.context.WebApplicationContext;
 @Import(RestDocsConfiguration.class)
 public class ApiDocumentationConfig {
 
-    protected static String CONSTRAINT = "constraint";
-    protected static Long MEMBER_ID;
-    protected static Long PRODUCT_ID;
-    protected static Long CART_ID;
-    protected static Long ORDER_ID;
-    protected static Long BOARD_ID;
+  protected static String CONSTRAINT = "constraint";
+  protected static Long MEMBER_ID;
+  protected static Long PRODUCT_ID;
+  protected static Long CART_ID;
+  protected static Long ORDER_ID;
+  protected static Long BOARD_ID;
 
-    @Autowired
-    protected MockMvc mockMvc;
-    @Autowired
-    protected WebApplicationContext context;
-    @Autowired
-    protected ObjectMapper objectMapper;
-    @Autowired
-    protected PasswordEncoder passwordEncoder;
-    @Autowired
-    protected MemberRepository memberRepository;
-    @Autowired
-    protected MemberService memberService;
-    @Autowired
-    protected BoardRepository boardRepository;
-    @Autowired
-    protected BoardService boardService;
-    @Autowired
-    protected OrderRepository orderRepository;
-    @Autowired
-    protected OrderService orderService;
-    @Autowired
-    protected CartRepository cartRepository;
-    @Autowired
-    protected CartService cartService;
-    @Autowired
-    protected ProductRepository productRepository;
-    @Autowired
-    protected ProductService productService;
-    @Autowired
-    protected StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    protected MemberTestHelper memberTestHelper;
-    @Autowired
-    protected ProductTestHelper productTestHelper;
-    @Autowired
-    protected BoardTestHelper boardTestHelper;
-    @Autowired
-    protected OrderTestHelper orderTestHelper;
-    @Autowired
-    protected CartTestHelper cartTestHelper;
+  @Autowired
+  protected MockMvc mockMvc;
+  @Autowired
+  protected WebApplicationContext context;
+  @Autowired
+  protected ObjectMapper objectMapper;
+  @Autowired
+  protected PasswordEncoder passwordEncoder;
+  @Autowired
+  protected MemberRepository memberRepository;
+  @Autowired
+  protected MemberService memberService;
+  @Autowired
+  protected BoardRepository boardRepository;
+  @Autowired
+  protected BoardService boardService;
+  @Autowired
+  protected OrderRepository orderRepository;
+  @Autowired
+  protected OrderService orderService;
+  @Autowired
+  protected CartRepository cartRepository;
+  @Autowired
+  protected CartService cartService;
+  @Autowired
+  protected ProductRepository productRepository;
+  @Autowired
+  protected ProductService productService;
+  @Autowired
+  protected StringRedisTemplate stringRedisTemplate;
+  @Autowired
+  protected MemberTestHelper memberTestHelper;
+  @Autowired
+  protected ProductTestHelper productTestHelper;
+  @Autowired
+  protected BoardTestHelper boardTestHelper;
+  @Autowired
+  protected OrderTestHelper orderTestHelper;
+  @Autowired
+  protected CartTestHelper cartTestHelper;
 }

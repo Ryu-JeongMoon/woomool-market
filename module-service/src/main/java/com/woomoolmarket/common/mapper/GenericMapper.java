@@ -9,24 +9,24 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 public interface GenericMapper<D, E> {
 
-    @Named(value = "atomicToInt")
-    default Integer atomicToInt(AtomicInteger stock) {
-        return stock.intValue();
-    }
+  @Named(value = "atomicToInt")
+  default Integer atomicToInt(AtomicInteger stock) {
+    return stock.intValue();
+  }
 
-    @Named(value = "intToAtomic")
-    default AtomicInteger intToAtomic(Integer stock) {
-        return new AtomicInteger(stock);
-    }
+  @Named(value = "intToAtomic")
+  default AtomicInteger intToAtomic(Integer stock) {
+    return new AtomicInteger(stock);
+  }
 
-    D toDto(E e);
+  D toDto(E e);
 
-    E toEntity(D d);
+  E toEntity(D d);
 
-    List<D> toDtoList(List<E> entityList);
+  List<D> toDtoList(List<E> entityList);
 
-    List<E> toEntityList(List<D> dtoList);
+  List<E> toEntityList(List<D> dtoList);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateFromDto(D dto, @MappingTarget E entity);
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  void updateFromDto(D dto, @MappingTarget E entity);
 }

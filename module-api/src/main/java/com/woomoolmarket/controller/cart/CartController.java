@@ -33,59 +33,59 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/carts", produces = MediaTypes.HAL_JSON_VALUE)
 public class CartController {
 
-    private final CartService cartService;
-    private final PagedResourcesAssembler<CartQueryResponse> queryAssembler;
+  private final CartService cartService;
+  private final PagedResourcesAssembler<CartQueryResponse> queryAssembler;
 
-    @GetMapping("/{memberId}")
-    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageBy(
-        @PathVariable Long memberId, @PageableDefault Pageable pageable) {
+  @GetMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageBy(
+    @PathVariable Long memberId, @PageableDefault Pageable pageable) {
 
-        Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(memberId, pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(cartQueryResponses));
-    }
+    Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(memberId, pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(cartQueryResponses));
+  }
 
-    @PostMapping("/{memberId}")
-    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> addBy(@PathVariable Long memberId, @Valid @RequestBody CartRequest cartRequest) {
-        Long cartId = cartService.add(cartRequest);
-        URI createdUri = linkTo(methodOn(CartController.class).getBy(memberId, cartId)).toUri();
-        return ResponseEntity.created(createdUri).build();
-    }
+  @PostMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> addBy(@PathVariable Long memberId, @Valid @RequestBody CartRequest cartRequest) {
+    Long cartId = cartService.add(cartRequest);
+    URI createdUri = linkTo(methodOn(CartController.class).getBy(memberId, cartId)).toUri();
+    return ResponseEntity.created(createdUri).build();
+  }
 
-    @DeleteMapping("/{memberId}")
-    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
-        cartService.removeAll(memberId);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
+    cartService.removeAll(memberId);
+    return ResponseEntity.noContent().build();
+  }
 
-    @GetMapping("/{memberId}/{cartId}")
-    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<CartResponse>> getBy(@PathVariable Long memberId, @PathVariable Long cartId) {
-        CartResponse cartResponse = cartService.findBy(cartId);
+  @GetMapping("/{memberId}/{cartId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<EntityModel<CartResponse>> getBy(@PathVariable Long memberId, @PathVariable Long cartId) {
+    CartResponse cartResponse = cartService.findBy(cartId);
 
-        EntityModel<CartResponse> responseModel = EntityModel.of(
-            cartResponse,
-            linkTo(methodOn(CartController.class).getBy(memberId, cartId)).withSelfRel(),
-            linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel(CartConstants.LIST));
+    EntityModel<CartResponse> responseModel = EntityModel.of(
+      cartResponse,
+      linkTo(methodOn(CartController.class).getBy(memberId, cartId)).withSelfRel(),
+      linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel(CartConstants.LIST));
 
-        return ResponseEntity.ok().body(responseModel);
-    }
+    return ResponseEntity.ok().body(responseModel);
+  }
 
-    @DeleteMapping("/{memberId}/{cartId}")
-    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> remove(@PathVariable Long memberId, @PathVariable Long cartId) {
-        cartService.remove(cartId);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{memberId}/{cartId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> remove(@PathVariable Long memberId, @PathVariable Long cartId) {
+    cartService.remove(cartId);
+    return ResponseEntity.noContent().build();
+  }
 
 
-    /* FOR ADMIN */
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageForAdminBy(@PageableDefault Pageable pageable) {
-        Page<CartQueryResponse> queryResponsePage = cartService.searchForAdminBy(pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
-    }
+  /* FOR ADMIN */
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageForAdminBy(@PageableDefault Pageable pageable) {
+    Page<CartQueryResponse> queryResponsePage = cartService.searchForAdminBy(pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
+  }
 }

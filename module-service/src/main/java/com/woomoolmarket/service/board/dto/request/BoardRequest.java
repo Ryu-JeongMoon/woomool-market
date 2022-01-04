@@ -18,23 +18,23 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BoardRequest {
 
-    @Email
-    @NotBlank
-    @Size(min = 9, max = 64)
-    @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
-    private String email;
+  @Email
+  @NotBlank
+  @Size(min = 9, max = 64)
+  @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+  private String email;
 
-    @Size(max = 255)
-    @NotBlank
-    private String title;
+  @Size(max = 255)
+  @NotBlank
+  private String title;
 
-    @Lob
-    @NotBlank
-    private String content;
+  @Lob
+  @NotBlank
+  private String content;
 
-    private BoardCategory boardCategory;
+  private BoardCategory boardCategory;
 
-    private LocalDateTime startDateTime;
+  private LocalDateTime startDateTime;
 
-    private LocalDateTime endDateTime;
+  private LocalDateTime endDateTime;
 }

@@ -27,54 +27,54 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static String getExceptionClass(Exception e) {
-        return e != null ? e.getClass().getSimpleName() : "";
-    }
+  private static String getExceptionClass(Exception e) {
+    return e != null ? e.getClass().getSimpleName() : "";
+  }
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> illegalArgumentExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = IllegalArgumentException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> illegalArgumentExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = IllegalStateException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> illegalStateExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = IllegalStateException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> illegalStateExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = AuthenticationException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> authenticationExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = AuthenticationException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> authenticationExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = EntityNotFoundException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> entityNotFoundExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = EntityNotFoundException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> entityNotFoundExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = UsernameNotFoundException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> usernameNotFoundExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = UsernameNotFoundException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> usernameNotFoundExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = JsonProcessingException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> jsonProcessingExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = JsonProcessingException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> jsonProcessingExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = AccessDeniedException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> accessDeniedExceptionHandler(Exception e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = AccessDeniedException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> accessDeniedExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<Optional<ExceptionResponse>> constraintViolationExceptionHandler(ConstraintViolationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
-    }
+  @ExceptionHandler(value = ConstraintViolationException.class)
+  public ResponseEntity<Optional<ExceptionResponse>> constraintViolationExceptionHandler(ConstraintViolationException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
 
-    @SneakyThrows(value = JsonProcessingException.class)
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        ObjectMapper objectMapper = new ObjectMapper().registerModules(new JsonBindingResultModule(), new JavaTimeModule());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectMapper.writeValueAsString(e.getBindingResult()));
-    }
+  @SneakyThrows(value = JsonProcessingException.class)
+  @ExceptionHandler(value = MethodArgumentNotValidException.class)
+  public ResponseEntity<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+    ObjectMapper objectMapper = new ObjectMapper().registerModules(new JsonBindingResultModule(), new JavaTimeModule());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectMapper.writeValueAsString(e.getBindingResult()));
+  }
 }

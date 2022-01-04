@@ -18,75 +18,75 @@ import org.junit.jupiter.api.Test;
 
 class TokenTest {
 
-    private static final String SECRET_KEY = "panda1panda2panda3panda4panda5panda6panda7panda8";
-    private static Key KEY;
+  private static final String SECRET_KEY = "panda1panda2panda3panda4panda5panda6panda7panda8";
+  private static Key KEY;
 
-    static void printClaim(String key, Claims value) {
-        if (value != null) {
-            System.out.printf("%s:{map}%s\n", key, value);
-            return;
-        }
-        System.out.println("====>> unknown type for :" + key);
+  static void printClaim(String key, Claims value) {
+    if (value != null) {
+      System.out.printf("%s:{map}%s\n", key, value);
+      return;
     }
+    System.out.println("====>> unknown type for :" + key);
+  }
 
-    @BeforeEach
-    void keySetUp() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        KEY = Keys.hmacShaKeyFor(keyBytes);
-    }
+  @BeforeEach
+  void keySetUp() {
+    byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+    KEY = Keys.hmacShaKeyFor(keyBytes);
+  }
 
-    @Test
-    @DisplayName("토큰 생성")
-    void createToken() {
-        String token = Jwts.builder()
-            .setIssuedAt(new Date())
-            .setSubject("panda")
-            .setHeader(Map.of("typ", "Bearer", "alg", "hs256"))
-            .setExpiration(new Date(2021, 11, 31))
-            .signWith(KEY, SignatureAlgorithm.HS256)
-            .compact();
+  @Test
+  @DisplayName("토큰 생성")
+  void createToken() {
+    String token = Jwts.builder()
+      .setIssuedAt(new Date())
+      .setSubject("panda")
+      .setHeader(Map.of("typ", "Bearer", "alg", "hs256"))
+      .setExpiration(new Date(2021, 11, 31))
+      .signWith(KEY, SignatureAlgorithm.HS256)
+      .compact();
 
-        assertThat(token).isNotNull();
-    }
+    assertThat(token).isNotNull();
+  }
 
-    @Test
-    @DisplayName("type, alg 검증")
-    void setHeader() {
-        String token = Jwts.builder()
-            .setIssuedAt(new Date())
-            .setSubject("panda")
-            .setHeader(Map.of("typ", "Bearer"))
-            .setExpiration(new Date(2021, 11, 31))
-            .signWith(KEY, SignatureAlgorithm.HS256)
-            .compact();
+  @Test
+  @DisplayName("type, alg 검증")
+  void setHeader() {
+    String token = Jwts.builder()
+      .setIssuedAt(new Date())
+      .setSubject("panda")
+      .setHeader(Map.of("typ", "Bearer"))
+      .setExpiration(new Date(2021, 11, 31))
+      .signWith(KEY, SignatureAlgorithm.HS256)
+      .compact();
 
-        Header header = Jwts.parserBuilder()
-            .setSigningKey(KEY)
-            .build().parse(token).getHeader();
+    Header header = Jwts.parserBuilder()
+      .setSigningKey(KEY)
+      .build().parse(token).getHeader();
 
-        String typ = header.getType();
-        Object alg = header.get("alg");
+    String typ = header.getType();
+    Object alg = header.get("alg");
 
-        assertThat(typ).isEqualTo("Bearer");
-        assertThat(alg).isEqualTo("HS256");
-    }
+    assertThat(typ).isEqualTo("Bearer");
+    assertThat(alg).isEqualTo("HS256");
+  }
 
-    @Test
-    @DisplayName("Claims 확인")
-    void parseBody() {
-        String token = Jwts.builder()
-            .setIssuedAt(new Date())
-            .setSubject("panda")
-            .setHeader(Map.of("typ", "Bearer"))
-            .setIssuedAt(new Date())
-            .claim("exp", Instant.now().getEpochSecond() + 3)
-            .signWith(KEY, SignatureAlgorithm.HS256)
-            .compact();
+  @Test
+  @DisplayName("Claims 확인")
+  void parseBody() {
+    String token = Jwts.builder()
+      .setIssuedAt(new Date())
+      .setSubject("panda")
+      .setHeader(Map.of("typ", "Bearer"))
+      .setIssuedAt(new Date())
+      .claim("exp", Instant.now().getEpochSecond() + 3)
+      .signWith(KEY, SignatureAlgorithm.HS256)
+      .compact();
 
-        Claims body = (Claims) Jwts.parserBuilder()
-            .setSigningKey(KEY)
-            .build().parse(token).getBody();
+    Claims body = (Claims) Jwts.parserBuilder()
+      .setSigningKey(KEY)
+      .build().parse(token).getBody();
 
-        printClaim("alg", body);
-    }
+    printClaim("alg", body);
+  }
 }

@@ -32,50 +32,50 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 class JwtAuthenticationFilterTest {
 
-    private final PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
-    private final String EMAIL = "panda@naver.com";
-    private final String NICKNAME = "panda";
-    private final String PASSWORD = "123456";
+  private final PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
+  private final String EMAIL = "panda@naver.com";
+  private final String NICKNAME = "panda";
+  private final String PASSWORD = "123456";
 
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper mapper;
-    @Autowired
-    MemberRepository memberRepository;
+  @Autowired
+  MockMvc mockMvc;
+  @Autowired
+  ObjectMapper mapper;
+  @Autowired
+  MemberRepository memberRepository;
 
-    private URI uri(String path) throws URISyntaxException {
-        return new URI(format("https://localhost:8443%s", path));
-    }
+  private URI uri(String path) throws URISyntaxException {
+    return new URI(format("https://localhost:8443%s", path));
+  }
 
-    @BeforeEach
-    void init() {
-        Member member = Member.builder()
-            .email(EMAIL)
-            .nickname(NICKNAME)
-            .password(passwordEncoder.encode(PASSWORD))
-            .authority(Authority.ROLE_USER)
-            .build();
-        memberRepository.save(member);
-    }
+  @BeforeEach
+  void init() {
+    Member member = Member.builder()
+      .email(EMAIL)
+      .nickname(NICKNAME)
+      .password(passwordEncoder.encode(PASSWORD))
+      .authority(Authority.ROLE_USER)
+      .build();
+    memberRepository.save(member);
+  }
 
-    @Test
-    @DisplayName("login 성공 시 token-response 뿌려준다")
-    void doFilter() throws Exception {
-        LoginRequest loginRequest = LoginRequest.builder()
-            .email(EMAIL)
-            .password(PASSWORD)
-            .build();
+  @Test
+  @DisplayName("login 성공 시 token-response 뿌려준다")
+  void doFilter() throws Exception {
+    LoginRequest loginRequest = LoginRequest.builder()
+      .email(EMAIL)
+      .password(PASSWORD)
+      .build();
 
-        mockMvc.perform(
-                post(uri("/api/auth/login"))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(loginRequest)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("grantType").value(TokenConstants.BEARER_TYPE))
-            .andExpect(jsonPath("accessToken").exists())
-            .andExpect(jsonPath("refreshToken").exists())
-            .andExpect(jsonPath("accessTokenExpiresIn").exists());
-    }
+    mockMvc.perform(
+        post(uri("/api/auth/login"))
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(loginRequest)))
+      .andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("grantType").value(TokenConstants.BEARER_TYPE))
+      .andExpect(jsonPath("accessToken").exists())
+      .andExpect(jsonPath("refreshToken").exists())
+      .andExpect(jsonPath("accessTokenExpiresIn").exists());
+  }
 }

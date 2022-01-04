@@ -47,99 +47,99 @@ import lombok.Setter;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "unique_product_name", columnNames = "name")})
 public class Product extends BaseEntity {
 
-    @Id
-    @Column(name = "product_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "product_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String name;
+  @Size(max = 255)
+  @Column(nullable = false)
+  private String name;
 
-    @JsonIgnore
-    @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+  @JsonIgnore
+  @JoinColumn(name = "member_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Member member;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Image> images = new ArrayList<>();
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private List<Image> images = new ArrayList<>();
 
-    @Lob
-    @Column(nullable = false)
-    private String description;
+  @Lob
+  @Column(nullable = false)
+  private String description;
 
-    @Size(max = 255)
-    private String productImage;
+  @Size(max = 255)
+  private String productImage;
 
-    @Min(1000L)
-    @Column(nullable = false, columnDefinition = "integer default 1000")
-    private Integer price;
+  @Min(1000L)
+  @Column(nullable = false, columnDefinition = "integer default 1000")
+  private Integer price;
 
-    @Min(100L)
-    @Convert(converter = AtomicIntegerConverter.class)
-    @Column(nullable = false, columnDefinition = "integer default 100")
-    private AtomicInteger stock;
+  @Min(100L)
+  @Convert(converter = AtomicIntegerConverter.class)
+  @Column(nullable = false, columnDefinition = "integer default 100")
+  private AtomicInteger stock;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_count_id")
-    private ProductCount productCount;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "product_count_id")
+  private ProductCount productCount;
 
-    private LocalDateTime deletedDateTime;
+  private LocalDateTime deletedDateTime;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private Status status = Status.ACTIVE;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProductCategory productCategory;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private ProductCategory productCategory;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Region region;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private Region region;
 
-    @Builder
-    public Product(Member member, String name, Integer price, Integer stock, String description, String productImage,
-        ProductCategory productCategory, Region region) {
-        this.member = member;
-        this.name = name;
-        this.price = price;
-        this.stock = new AtomicInteger(stock);
-        this.description = description;
-        this.productImage = productImage;
-        this.productCategory = productCategory;
-        this.region = region;
+  @Builder
+  public Product(Member member, String name, Integer price, Integer stock, String description, String productImage,
+    ProductCategory productCategory, Region region) {
+    this.member = member;
+    this.name = name;
+    this.price = price;
+    this.stock = new AtomicInteger(stock);
+    this.description = description;
+    this.productImage = productImage;
+    this.productCategory = productCategory;
+    this.region = region;
+  }
+
+  public void increaseStock(Integer quantity) {
+    this.stock.addAndGet(quantity);
+  }
+
+  public void decreaseStock(int quantity) {
+    if (this.stock.intValue() < quantity) {
+      throw new IllegalArgumentException(ExceptionConstants.PRODUCT_NOT_ENOUGH_STOCK);
     }
+    this.stock.getAndUpdate(stock -> stock - quantity);
+  }
 
-    public void increaseStock(Integer quantity) {
-        this.stock.addAndGet(quantity);
-    }
+  public void delete() {
+    changeStatusAndLeaveDateTime(Status.INACTIVE, LocalDateTime.now());
+  }
 
-    public void decreaseStock(int quantity) {
-        if (this.stock.intValue() < quantity) {
-            throw new IllegalArgumentException(ExceptionConstants.PRODUCT_NOT_ENOUGH_STOCK);
-        }
-        this.stock.getAndUpdate(stock -> stock - quantity);
-    }
+  public void restore() {
+    changeStatusAndLeaveDateTime(Status.ACTIVE, null);
+  }
 
-    public void delete() {
-        changeStatusAndLeaveDateTime(Status.INACTIVE, LocalDateTime.now());
-    }
+  private void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime deletedDateTime) {
+    this.status = memberStatus;
+    this.deletedDateTime = deletedDateTime;
+  }
 
-    public void restore() {
-        changeStatusAndLeaveDateTime(Status.ACTIVE, null);
+  public void addImages(List<Image> images) {
+    if (Collections.isEmpty(images)) {
+      return;
     }
-
-    private void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime deletedDateTime) {
-        this.status = memberStatus;
-        this.deletedDateTime = deletedDateTime;
-    }
-
-    public void addImages(List<Image> images) {
-        if (Collections.isEmpty(images)) {
-            return;
-        }
-        this.images = images;
-        images.forEach(image -> image.setProduct(this));
-    }
+    this.images = images;
+    images.forEach(image -> image.setProduct(this));
+  }
 }

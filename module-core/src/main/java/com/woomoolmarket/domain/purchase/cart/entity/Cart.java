@@ -25,26 +25,26 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Cart extends BaseTimeEntity {
 
-    @Id
-    @Column(name = "cart_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "cart_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @JoinColumn(name = "member_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+  @JoinColumn(name = "member_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Member member;
 
-    @JoinColumn(name = "product_id")
-    @OneToOne(fetch = FetchType.LAZY)
-    private Product product;
+  @JoinColumn(name = "product_id")
+  @OneToOne(fetch = FetchType.LAZY)
+  private Product product;
 
-    @Column(nullable = false)
-    private int quantity;
+  @Column(nullable = false)
+  private int quantity;
 
-    @Builder
-    public Cart(Member member, Product product, int quantity) {
-        this.member = member;
-        this.product = product;
-        this.quantity = quantity;
-    }
+  @Builder
+  public Cart(Member member, Product product, int quantity) {
+    this.member = member;
+    this.product = product;
+    this.quantity = quantity;
+  }
 }

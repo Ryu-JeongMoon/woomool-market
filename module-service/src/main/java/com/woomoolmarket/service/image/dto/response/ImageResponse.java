@@ -11,13 +11,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ImageResponse {
 
-    private Long id;
+  private Long id;
 
-    private Long fileSize;
+  private Long fileSize;
 
-    private String filePath;
+  private String filePath;
 
-    private String fileName;
+  private String fileName;
 
-    private String originalFileName;
+  private String originalFileName;
 }

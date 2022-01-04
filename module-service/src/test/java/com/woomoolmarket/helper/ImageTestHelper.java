@@ -9,20 +9,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ImageTestHelper {
 
-    public static final String FILE_NAME = "PANDA";
-    public static final String FILE_PATH = "BEAR";
-    public static final Long FILE_SIZE = 500L;
-    public static final String ORIGINAL_FILE_NAME = "PANDAPANDA";
+  public static final String FILE_NAME = "PANDA";
+  public static final String FILE_PATH = "BEAR";
+  public static final Long FILE_SIZE = 500L;
+  public static final String ORIGINAL_FILE_NAME = "PANDAPANDA";
 
-    private final ImageRepository imageRepository;
+  private final ImageRepository imageRepository;
 
-    public Image createImage() {
-        Image image = Image.builder()
-            .fileName(FILE_NAME)
-            .filePath(FILE_PATH)
-            .fileSize(FILE_SIZE)
-            .originalFileName(ORIGINAL_FILE_NAME)
-            .build();
-        return imageRepository.save(image);
-    }
+  public Image createImage() {
+    Image image = Image.builder()
+      .fileName(FILE_NAME)
+      .filePath(FILE_PATH)
+      .fileSize(FILE_SIZE)
+      .originalFileName(ORIGINAL_FILE_NAME)
+      .build();
+    return imageRepository.save(image);
+  }
 }

@@ -11,15 +11,15 @@ import org.junit.jupiter.api.Test;
 @Log4j2
 class AuthProviderTest {
 
-    @Test
-    @DisplayName("Enum Type -> String 형태로 변환된다")
-    void enumTest() {
-        assertEquals(GOOGLE.toString(), "GOOGLE");
-    }
+  @Test
+  @DisplayName("Enum Type -> String 형태로 변환된다")
+  void enumTest() {
+    assertEquals(GOOGLE.toString(), "GOOGLE");
+  }
 
-    @Test
-    @DisplayName("소문자로는 안 된당")
-    void enumSmallLetterTest() {
-        assertNotEquals(GOOGLE.toString(), "google");
-    }
+  @Test
+  @DisplayName("소문자로는 안 된당")
+  void enumSmallLetterTest() {
+    assertNotEquals(GOOGLE.toString(), "google");
+  }
 }

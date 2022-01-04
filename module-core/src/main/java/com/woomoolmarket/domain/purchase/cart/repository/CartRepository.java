@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CartRepository extends JpaRepository<Cart, Long>, CartRepositoryCustom {
 
-    @Query("select c from Cart c join fetch c.member join fetch c.product where c.member = :member")
-    List<Cart> findByMember(Member member);
+  @Query("select c from Cart c join fetch c.member join fetch c.product where c.member = :member")
+  List<Cart> findByMember(Member member);
 
-    @Modifying
-    void deleteById(Long id);
+  @Modifying
+  void deleteById(Long id);
 
-    @Modifying
-    @Query("delete from Cart c where c.member = :member")
-    void deleteByMember(Member member);
+  @Modifying
+  @Query("delete from Cart c where c.member = :member")
+  void deleteByMember(Member member);
 }

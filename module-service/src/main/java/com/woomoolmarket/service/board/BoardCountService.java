@@ -16,29 +16,29 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BoardCountService {
 
-    private final CacheService cacheService;
-    private final BoardRepository boardRepository;
-    private final BoardCountRepository boardCountRepository;
+  private final CacheService cacheService;
+  private final BoardRepository boardRepository;
+  private final BoardCountRepository boardCountRepository;
 
-    @Transactional(readOnly = true)
-    @Cacheable(key = "customKeyGenerator", cacheManager = "gsonCacheManager")
-    public int getHit(Long boardId) {
-        return boardCountRepository.findByBoardId(boardId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
-            .getHitCount();
-    }
+  @Transactional(readOnly = true)
+  @Cacheable(key = "customKeyGenerator", cacheManager = "gsonCacheManager")
+  public int getHit(Long boardId) {
+    return boardCountRepository.findByBoardId(boardId)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .getHitCount();
+  }
 
-    @Transactional
-    public void increaseHit(Long boardId) {
-        cacheService.increment(CacheConstants.BOARD_HIT_COUNT + boardId);
-    }
+  @Transactional
+  public void increaseHit(Long boardId) {
+    cacheService.increment(CacheConstants.BOARD_HIT_COUNT + boardId);
+  }
 
-    @Transactional
-    public void synchronizeHit(Long boardId) {
-        int hit = cacheService.getDataAsInt(CacheConstants.BOARD_HIT_COUNT + boardId);
+  @Transactional
+  public void synchronizeHit(Long boardId) {
+    int hit = cacheService.getDataAsInt(CacheConstants.BOARD_HIT_COUNT + boardId);
 
-        boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
-            .changeHit(hit);
-    }
+    boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .changeHit(hit);
+  }
 }

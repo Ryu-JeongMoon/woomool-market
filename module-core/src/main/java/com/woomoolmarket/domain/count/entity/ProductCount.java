@@ -13,15 +13,15 @@ import javax.persistence.Table;
 @Table(name = "product_count")
 public class ProductCount {
 
-    @Id
-    @Column(name = "product_count_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "product_count_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private int hitCount;
+  private int hitCount;
 
-    private int likeCount;
+  private int likeCount;
 
-    @OneToOne(mappedBy = "productCount", orphanRemoval = true)
-    private Product product;
+  @OneToOne(mappedBy = "productCount", orphanRemoval = true)
+  private Product product;
 }

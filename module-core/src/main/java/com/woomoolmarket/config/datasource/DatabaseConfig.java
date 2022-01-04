@@ -20,21 +20,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class DatabaseConfig {
 
-    private final DataSource datasource;
+  private final DataSource datasource;
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setDataSource(datasource);
-        entityManagerFactoryBean.setPackagesToScan("com.woomoolmarket");
-        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
+  @Bean
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+    entityManagerFactoryBean.setDataSource(datasource);
+    entityManagerFactoryBean.setPackagesToScan("com.woomoolmarket");
+    JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+    entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
 
-        return entityManagerFactoryBean;
-    }
+    return entityManagerFactoryBean;
+  }
 
-    @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        return new JpaTransactionManager(entityManagerFactory);
-    }
+  @Bean(name = "transactionManager")
+  public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    return new JpaTransactionManager(entityManagerFactory);
+  }
 }

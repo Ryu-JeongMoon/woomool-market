@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
-    Optional<Product> findByIdAndStatus(Long id, Status status);
+  Optional<Product> findByIdAndStatus(Long id, Status status);
 
-    Optional<Product> findByName(String name);
+  Optional<Product> findByName(String name);
 }

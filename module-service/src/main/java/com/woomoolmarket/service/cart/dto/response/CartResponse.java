@@ -13,12 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CartResponse {
 
-    private Long id;
+  private Long id;
 
-    private int quantity;
+  private int quantity;
 
-    private MemberResponse memberResponse;
+  private MemberResponse memberResponse;
 
-    private ProductResponse productResponse;
+  private ProductResponse productResponse;
 
 }

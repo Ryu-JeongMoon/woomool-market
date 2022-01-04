@@ -15,28 +15,28 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 @RequiredArgsConstructor
 public class OAuth2SecurityConfig {
 
-    private final static List<String> CLIENTS = List.of("google", "facebook", "naver", "kakao", "github");
-    private final static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
+  private final static List<String> CLIENTS = List.of("google", "facebook", "naver", "kakao", "github");
+  private final static String CLIENT_PROPERTY_KEY = "spring.security.oauth2.client.registration.";
 
-    private final Environment env;
+  private final Environment env;
 
-    @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        List<ClientRegistration> registrations = CLIENTS.stream()
-            .map(this::getRegistration)
-            .collect(Collectors.toList());
+  @Bean
+  public ClientRegistrationRepository clientRegistrationRepository() {
+    List<ClientRegistration> registrations = CLIENTS.stream()
+      .map(this::getRegistration)
+      .collect(Collectors.toList());
 
-        return new InMemoryClientRegistrationRepository(registrations);
-    }
+    return new InMemoryClientRegistrationRepository(registrations);
+  }
 
-    private ClientRegistration getRegistration(String client) {
-        String clientId = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-id");
-        String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-secret");
+  private ClientRegistration getRegistration(String client) {
+    String clientId = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-id");
+    String clientSecret = env.getProperty(CLIENT_PROPERTY_KEY + client + ".client-secret");
 
-        return CustomOAuth2Provider.valueOf(client.toUpperCase())
-            .getBuilder(client)
-            .clientId(clientId)
-            .clientSecret(clientSecret)
-            .build();
-    }
+    return CustomOAuth2Provider.valueOf(client.toUpperCase())
+      .getBuilder(client)
+      .clientId(clientId)
+      .clientSecret(clientSecret)
+      .build();
+  }
 }

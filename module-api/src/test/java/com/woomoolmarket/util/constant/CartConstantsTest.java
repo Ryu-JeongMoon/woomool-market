@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 class CartConstantsTest {
 
-    @Test
-    @DisplayName("올바른 문자열 반환 - cart-list")
-    void constantList() {
-        assertThat(CartConstants.LIST).isEqualTo("cart-list");
-    }
+  @Test
+  @DisplayName("올바른 문자열 반환 - cart-list")
+  void constantList() {
+    assertThat(CartConstants.LIST).isEqualTo("cart-list");
+  }
 }

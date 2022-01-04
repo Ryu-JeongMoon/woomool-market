@@ -11,17 +11,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class LogAspectTest {
 
-    private final LogAspect logAspect = new LogAspect();
+  private final LogAspect logAspect = new LogAspect();
 
-    private ProceedingJoinPoint proceedingJoinPoint;
+  private ProceedingJoinPoint proceedingJoinPoint;
 
-    @BeforeEach
-    void setUp() {
-        proceedingJoinPoint = Mockito.mock(ProceedingJoinPoint.class);
-    }
+  @BeforeEach
+  void setUp() {
+    proceedingJoinPoint = Mockito.mock(ProceedingJoinPoint.class);
+  }
 
-    @Test
-    @DisplayName("log 테스트")
-    void logForRequestTest() throws Throwable {
-    }
+  @Test
+  @DisplayName("log 테스트")
+  void logForRequestTest() throws Throwable {
+  }
 }

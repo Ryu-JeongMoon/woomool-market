@@ -20,31 +20,31 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class SignupRequest {
 
-    @Email
-    @NotBlank
-    @Size(min = 9, max = 64)
-    @Pattern(regexp = RegexpConstants.EMAIL)
-    private String email;
+  @Email
+  @NotBlank
+  @Size(min = 9, max = 64)
+  @Pattern(regexp = RegexpConstants.EMAIL)
+  private String email;
 
-    @Size(min = 4, max = 96)
-    @NotBlank
-    @Pattern(regexp = RegexpConstants.LETTER_ONLY)
-    private String nickname;
+  @Size(min = 4, max = 96)
+  @NotBlank
+  @Pattern(regexp = RegexpConstants.LETTER_ONLY)
+  private String nickname;
 
-    @Size(min = 4, max = 255)
-    @NotBlank
-    @Pattern(regexp = RegexpConstants.SPECIAL_LETTER_INCLUDE)
-    private String password;
+  @Size(min = 4, max = 255)
+  @NotBlank
+  @Pattern(regexp = RegexpConstants.SPECIAL_LETTER_INCLUDE)
+  private String password;
 
-    @Size(min = 10, max = 10)
-    @Nullable
-    @Pattern(regexp = RegexpConstants.NUMBER_ONLY)
-    private String license;
+  @Size(min = 10, max = 10)
+  @Nullable
+  @Pattern(regexp = RegexpConstants.NUMBER_ONLY)
+  private String license;
 
-    private Address address;
+  private Address address;
 
-    @JsonIgnore
-    private MultipartFile multipartFile;
+  @JsonIgnore
+  private MultipartFile multipartFile;
 }
 
 /*

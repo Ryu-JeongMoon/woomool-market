@@ -7,27 +7,27 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class HTMLCharacterEscapes extends CharacterEscapes {
 
-    private final int[] asciiEscapes;
+  private final int[] asciiEscapes;
 
-    public HTMLCharacterEscapes() {
-        asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
-        asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['\"'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['('] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['#'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
-    }
+  public HTMLCharacterEscapes() {
+    asciiEscapes = CharacterEscapes.standardAsciiEscapesForJSON();
+    asciiEscapes['<'] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes['\"'] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes['('] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes['#'] = CharacterEscapes.ESCAPE_CUSTOM;
+    asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
+  }
 
-    @Override
-    public int[] getEscapeCodesForAscii() {
-        return asciiEscapes;
-    }
+  @Override
+  public int[] getEscapeCodesForAscii() {
+    return asciiEscapes;
+  }
 
-    @Override
-    public SerializableString getEscapeSequence(int ch) {
-        return new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString((char) ch)));
-    }
+  @Override
+  public SerializableString getEscapeSequence(int ch) {
+    return new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString((char) ch)));
+  }
 }

@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AuthStringRequest {
 
-    @NotBlank
-    private String authString;
+  @NotBlank
+  private String authString;
 }

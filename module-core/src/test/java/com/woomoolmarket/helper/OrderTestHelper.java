@@ -8,11 +8,11 @@ import java.util.List;
 
 public class OrderTestHelper {
 
-    public static Order createOrder(Member member, OrderProduct orderProduct) {
-        return Order.builder()
-            .member(member)
-            .orderProducts(List.of(orderProduct))
-            .delivery(new Delivery(member.getEmail(), member.getPhone(), member.getAddress()))
-            .build();
-    }
+  public static Order createOrder(Member member, OrderProduct orderProduct) {
+    return Order.builder()
+      .member(member)
+      .orderProducts(List.of(orderProduct))
+      .delivery(new Delivery(member.getEmail(), member.getPhone(), member.getAddress()))
+      .build();
+  }
 }

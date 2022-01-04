@@ -10,19 +10,19 @@ import org.springframework.data.domain.Pageable;
 
 public class CustomPageImpl<T> extends PageImpl<T> {
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public CustomPageImpl(
-        @JsonProperty("content") List<T> content,
-        @JsonProperty("page") int page,
-        @JsonProperty("size") int size,
-        @JsonProperty("totalElements") long total) {
+  @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+  public CustomPageImpl(
+    @JsonProperty("content") List<T> content,
+    @JsonProperty("page") int page,
+    @JsonProperty("size") int size,
+    @JsonProperty("totalElements") long total) {
 
-        super(content, PageRequest.of(page, size), total);
-    }
+    super(content, PageRequest.of(page, size), total);
+  }
 
-    @Override
-    @JsonIgnore
-    public Pageable getPageable() {
-        return super.getPageable();
-    }
+  @Override
+  @JsonIgnore
+  public Pageable getPageable() {
+    return super.getPageable();
+  }
 }

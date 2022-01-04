@@ -20,37 +20,37 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Checker {
 
-    private final MemberRepository memberRepository;
-    private final BoardRepository boardRepository;
-    private final ProductRepository productRepository;
+  private final MemberRepository memberRepository;
+  private final BoardRepository boardRepository;
+  private final ProductRepository productRepository;
 
-    public boolean isSelf(Long memberId) {
-        Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+  public boolean isSelf(Long memberId) {
+    Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-        return check(member.getEmail());
-    }
+    return check(member.getEmail());
+  }
 
-    public boolean isSelfByBoardId(Long boardId) {
-        Board board = boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
+  public boolean isSelfByBoardId(Long boardId) {
+    Board board = boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
 
-        return check(board.getMember().getEmail());
-    }
+    return check(board.getMember().getEmail());
+  }
 
-    public boolean isSelfByProductId(Long productId) {
-        Product product = productRepository.findByIdAndStatus(productId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+  public boolean isSelfByProductId(Long productId) {
+    Product product = productRepository.findByIdAndStatus(productId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
 
-        return check(product.getMember().getEmail());
-    }
+    return check(product.getMember().getEmail());
+  }
 
-    private boolean check(String email) {
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return email.equals(principal.getUsername());
-    }
+  private boolean check(String email) {
+    UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return email.equals(principal.getUsername());
+  }
 
-    public boolean isQnaOrFree(BoardRequest boardRequest) {
-        return boardRequest.getBoardCategory() == BoardCategory.FREE || boardRequest.getBoardCategory() == BoardCategory.QNA;
-    }
+  public boolean isQnaOrFree(BoardRequest boardRequest) {
+    return boardRequest.getBoardCategory() == BoardCategory.FREE || boardRequest.getBoardCategory() == BoardCategory.QNA;
+  }
 }

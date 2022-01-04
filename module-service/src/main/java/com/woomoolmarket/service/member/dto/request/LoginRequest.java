@@ -16,17 +16,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @AllArgsConstructor
 public class LoginRequest {
 
-    @Email
-    @NotBlank
-    @Size(min = 9, max = 64)
-    @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
-    private String email;
+  @Email
+  @NotBlank
+  @Size(min = 9, max = 64)
+  @Pattern(regexp = "(?i)^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+  private String email;
 
-    @NotBlank
-    @Pattern(regexp = "^[\\w]{4,24}$")
-    private String password;
+  @NotBlank
+  @Pattern(regexp = "^[\\w]{4,24}$")
+  private String password;
 
-    public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(email, password);
-    }
+  public UsernamePasswordAuthenticationToken toAuthentication() {
+    return new UsernamePasswordAuthenticationToken(email, password);
+  }
 }

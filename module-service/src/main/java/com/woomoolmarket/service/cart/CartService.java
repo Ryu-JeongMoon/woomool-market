@@ -23,60 +23,60 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CartService {
 
-    private final CartRepository cartRepository;
-    private final MemberRepository memberRepository;
-    private final ProductRepository productRepository;
-    private final CartResponseMapper cartResponseMapper;
+  private final CartRepository cartRepository;
+  private final MemberRepository memberRepository;
+  private final ProductRepository productRepository;
+  private final CartResponseMapper cartResponseMapper;
 
-    @Transactional(readOnly = true)
-    public CartResponse findBy(Long cartId) {
-        return cartRepository.findById(cartId)
-            .map(cartResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
-    }
+  @Transactional(readOnly = true)
+  public CartResponse findBy(Long cartId) {
+    return cartRepository.findById(cartId)
+      .map(cartResponseMapper::toDto)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
+  }
 
-    @Transactional(readOnly = true)
-    public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
-        return cartRepository.searchBy(memberId, pageable);
-    }
+  @Transactional(readOnly = true)
+  public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
+    return cartRepository.searchBy(memberId, pageable);
+  }
 
-    @Transactional
-    public Long add(CartRequest cartRequest) {
-        Member member = memberRepository.findByIdAndStatus(cartRequest.getMemberId(), Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+  @Transactional
+  public Long add(CartRequest cartRequest) {
+    Member member = memberRepository.findByIdAndStatus(cartRequest.getMemberId(), Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-        Product product = productRepository.findByIdAndStatus(cartRequest.getProductId(), Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+    Product product = productRepository.findByIdAndStatus(cartRequest.getProductId(), Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
 
-        Cart cart = Cart.builder()
-            .member(member)
-            .product(product)
-            .quantity(cartRequest.getQuantity())
-            .build();
+    Cart cart = Cart.builder()
+      .member(member)
+      .product(product)
+      .quantity(cartRequest.getQuantity())
+      .build();
 
-        return cartRepository.save(cart).getId();
-    }
+    return cartRepository.save(cart).getId();
+  }
 
-    @Transactional
-    public void remove(Long cartId) {
-        cartRepository.findById(cartId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
+  @Transactional
+  public void remove(Long cartId) {
+    cartRepository.findById(cartId)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
 
-        cartRepository.deleteById(cartId);
-    }
+    cartRepository.deleteById(cartId);
+  }
 
-    @Transactional
-    public void removeAll(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+  @Transactional
+  public void removeAll(Long memberId) {
+    Member member = memberRepository.findById(memberId)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-        cartRepository.deleteByMember(member);
-    }
+    cartRepository.deleteByMember(member);
+  }
 
 
-    /* FOR ADMIN */
-    @Transactional(readOnly = true)
-    public Page<CartQueryResponse> searchForAdminBy(Pageable pageable) {
-        return cartRepository.searchForAdminBy(pageable);
-    }
+  /* FOR ADMIN */
+  @Transactional(readOnly = true)
+  public Page<CartQueryResponse> searchForAdminBy(Pageable pageable) {
+    return cartRepository.searchForAdminBy(pageable);
+  }
 }

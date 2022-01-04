@@ -21,48 +21,48 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class S3Uploader {
 
-    private final AmazonS3Client amazonS3Client;
+  private final AmazonS3Client amazonS3Client;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+  @Value("${cloud.aws.s3.bucket}")
+  private String bucket;
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-        File uploadFile = convert(multipartFile)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionConstants.CONVERT_FAILED));
+  public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    File uploadFile = convert(multipartFile)
+      .orElseThrow(() -> new IllegalArgumentException(ExceptionConstants.CONVERT_FAILED));
 
-        return upload(uploadFile, dirName);
+    return upload(uploadFile, dirName);
+  }
+
+  private String upload(File uploadFile, String dirName) {
+    String fileName = dirName + "/" + uploadFile.getName();
+    String uploadImageUrl = putS3(uploadFile, fileName);
+    removeNewFile(uploadFile);
+    return uploadImageUrl;
+  }
+
+  private String putS3(File uploadFile, String fileName) {
+    amazonS3Client.putObject(
+      new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+    return amazonS3Client.getUrl(bucket, fileName).toString();
+  }
+
+  private void removeNewFile(File targetFile) {
+    if (targetFile.delete()) {
+      log.info(LogConstants.DELETE_COMPLETED, targetFile.getName());
+    } else {
+      log.info(LogConstants.DELETE_FAILED, targetFile.getName());
+    }
+  }
+
+  private Optional<File> convert(MultipartFile file) throws IOException {
+    File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+    if (convertFile.createNewFile()) {
+      try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+        fos.write(file.getBytes());
+      }
+      return Optional.of(convertFile);
     }
 
-    private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
-        return uploadImageUrl;
-    }
-
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(
-            new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
-    }
-
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info(LogConstants.DELETE_COMPLETED, targetFile.getName());
-        } else {
-            log.info(LogConstants.DELETE_FAILED, targetFile.getName());
-        }
-    }
-
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
-        }
-
-        return Optional.empty();
-    }
+    return Optional.empty();
+  }
 }

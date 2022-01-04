@@ -27,106 +27,106 @@ import org.springframework.security.test.context.support.WithMockUser;
 @WithMockUser(username = "panda@naver.com", roles = "USER")
 class OrderControllerDocumentationTest extends ApiDocumentationConfig {
 
-    @BeforeEach
-    void init() {
-        Member member = memberTestHelper.createMember();
-        MEMBER_ID = member.getId();
+  @BeforeEach
+  void init() {
+    Member member = memberTestHelper.createMember();
+    MEMBER_ID = member.getId();
 
-        Product product = productTestHelper.createProduct(member);
-        PRODUCT_ID = product.getId();
+    Product product = productTestHelper.createProduct(member);
+    PRODUCT_ID = product.getId();
 
-        OrderProduct orderProduct = OrderProduct.createOrderProduct(product, 500);
+    OrderProduct orderProduct = OrderProduct.createOrderProduct(product, 500);
 
-        Order order = orderTestHelper.createOrder(member, orderProduct);
-        ORDER_ID = order.getId();
+    Order order = orderTestHelper.createOrder(member, orderProduct);
+    ORDER_ID = order.getId();
 
-        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-    }
+    Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
+  }
 
-    @Test
-    @DisplayName("주문내역 조회")
-    void getOrders() throws Exception {
-        mockMvc.perform(
-                get("/api/orders/" + MEMBER_ID)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaType.ALL))
-            .andDo(document("order/get-orders",
-                relaxedResponseFields(
-                    fieldWithPath("_embedded.orderQueryResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
-                    fieldWithPath("_embedded.orderQueryResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
-                    subsectionWithPath("_embedded.orderQueryResponseList[].orderProducts").type(JsonFieldType.ARRAY)
-                        .description("주문 상품 목록"),
-                    fieldWithPath("_embedded.orderQueryResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
-                    subsectionWithPath("_embedded.orderQueryResponseList[].email").type(JsonFieldType.STRING)
-                        .description("주문 회원"),
-                    subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
-                    subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
-                ))
-            );
-    }
+  @Test
+  @DisplayName("주문내역 조회")
+  void getOrders() throws Exception {
+    mockMvc.perform(
+        get("/api/orders/" + MEMBER_ID)
+          .contentType(MediaType.APPLICATION_JSON_VALUE)
+          .accept(MediaType.ALL))
+      .andDo(document("order/get-orders",
+        relaxedResponseFields(
+          fieldWithPath("_embedded.orderQueryResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
+          fieldWithPath("_embedded.orderQueryResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
+          subsectionWithPath("_embedded.orderQueryResponseList[].orderProducts").type(JsonFieldType.ARRAY)
+            .description("주문 상품 목록"),
+          fieldWithPath("_embedded.orderQueryResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
+          subsectionWithPath("_embedded.orderQueryResponseList[].email").type(JsonFieldType.STRING)
+            .description("주문 회원"),
+          subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
+          subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
+        ))
+      );
+  }
 
-    @Test
-    @DisplayName("주문 추가")
-    void createOrder() throws Exception {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(30)
-            .build();
+  @Test
+  @DisplayName("주문 추가")
+  void createOrder() throws Exception {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(30)
+      .build();
 
-        mockMvc.perform(
-                post("/api/orders")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaType.ALL)
-                    .content(objectMapper.writeValueAsString(orderRequest)))
-            .andDo(document("order/create-order",
-                requestFields(
-                    fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
-                    fieldWithPath("productId").type(JsonFieldType.NUMBER).description("상품 고유 번호").optional(),
-                    fieldWithPath("quantity").type(JsonFieldType.NUMBER).description("주문 수량").optional()
-                )
-            ));
-    }
+    mockMvc.perform(
+        post("/api/orders")
+          .contentType(MediaType.APPLICATION_JSON_VALUE)
+          .accept(MediaType.ALL)
+          .content(objectMapper.writeValueAsString(orderRequest)))
+      .andDo(document("order/create-order",
+        requestFields(
+          fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
+          fieldWithPath("productId").type(JsonFieldType.NUMBER).description("상품 고유 번호").optional(),
+          fieldWithPath("quantity").type(JsonFieldType.NUMBER).description("주문 수량").optional()
+        )
+      ));
+  }
 
-    @Test
-    @DisplayName("주문 취소")
-    void cancelOrder() throws Exception {
-        OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
-            .memberId(MEMBER_ID)
-            .orderId(ORDER_ID)
-            .build();
+  @Test
+  @DisplayName("주문 취소")
+  void cancelOrder() throws Exception {
+    OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
+      .memberId(MEMBER_ID)
+      .orderId(ORDER_ID)
+      .build();
 
-        mockMvc.perform(
-                delete("/api/orders/" + MEMBER_ID)
-                    .content(objectMapper.writeValueAsString(deleteRequest))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.ALL))
-            .andDo(document("order/delete-order",
-                requestFields(
-                    fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
-                    fieldWithPath("orderId").type(JsonFieldType.NUMBER).description("주문 번호")
-                )));
-    }
+    mockMvc.perform(
+        delete("/api/orders/" + MEMBER_ID)
+          .content(objectMapper.writeValueAsString(deleteRequest))
+          .contentType(MediaType.APPLICATION_JSON)
+          .accept(MediaType.ALL))
+      .andDo(document("order/delete-order",
+        requestFields(
+          fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
+          fieldWithPath("orderId").type(JsonFieldType.NUMBER).description("주문 번호")
+        )));
+  }
 
-    @Test
-    @DisplayName("관리자 주문내역 조회")
-    @WithMockUser(roles = "ADMIN")
-    void getListBySearchConditionForAdmin() throws Exception {
-        mockMvc.perform(
-                get("/api/orders/admin")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .accept(MediaType.ALL))
-            .andDo(document("order/admin-get-orders",
-                relaxedResponseFields(
-                    fieldWithPath("_embedded.orderQueryResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
-                    fieldWithPath("_embedded.orderQueryResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
-                    subsectionWithPath("_embedded.orderQueryResponseList[].orderProducts").type(JsonFieldType.ARRAY)
-                        .description("주문 상품 목록"),
-                    fieldWithPath("_embedded.orderQueryResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
-                    subsectionWithPath("_embedded.orderQueryResponseList[].email").type(JsonFieldType.STRING)
-                        .description("주문 회원"),
-                    subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
-                    subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
-                )));
-    }
+  @Test
+  @DisplayName("관리자 주문내역 조회")
+  @WithMockUser(roles = "ADMIN")
+  void getListBySearchConditionForAdmin() throws Exception {
+    mockMvc.perform(
+        get("/api/orders/admin")
+          .contentType(MediaType.APPLICATION_JSON_VALUE)
+          .accept(MediaType.ALL))
+      .andDo(document("order/admin-get-orders",
+        relaxedResponseFields(
+          fieldWithPath("_embedded.orderQueryResponseList[].id").type(JsonFieldType.NUMBER).description("주문 번호"),
+          fieldWithPath("_embedded.orderQueryResponseList[].orderStatus").type(JsonFieldType.STRING).description("주문 상태"),
+          subsectionWithPath("_embedded.orderQueryResponseList[].orderProducts").type(JsonFieldType.ARRAY)
+            .description("주문 상품 목록"),
+          fieldWithPath("_embedded.orderQueryResponseList[].delivery").type(JsonFieldType.OBJECT).description("배송 정보"),
+          subsectionWithPath("_embedded.orderQueryResponseList[].email").type(JsonFieldType.STRING)
+            .description("주문 회원"),
+          subsectionWithPath("_links").type(JsonFieldType.OBJECT).description("HATEOAS"),
+          subsectionWithPath("page").type(JsonFieldType.OBJECT).description("페이지 설정")
+        )));
+  }
 }

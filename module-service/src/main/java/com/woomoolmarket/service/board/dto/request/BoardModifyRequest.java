@@ -15,13 +15,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BoardModifyRequest {
 
-    @NotNull
-    @Size(max = 255)
-    private String title;
+  @NotNull
+  @Size(max = 255)
+  private String title;
 
-    @Lob
-    @NotNull
-    private String content;
+  @Lob
+  @NotNull
+  private String content;
 
-    private BoardCategory boardCategory;
+  private BoardCategory boardCategory;
 }

@@ -11,17 +11,17 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class AsyncConfig {
 
-    @Bean
-    public Executor woomoolTaskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(12);
-        executor.setMaxPoolSize(36);
-        executor.setQueueCapacity(24);
-        executor.setThreadNamePrefix("woomool-market async-");
-        executor.setRejectedExecutionHandler(new CallerRunsPolicy());
-        executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.setAwaitTerminationSeconds(60);
-        executor.initialize();
-        return executor;
-    }
+  @Bean
+  public Executor woomoolTaskExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(12);
+    executor.setMaxPoolSize(36);
+    executor.setQueueCapacity(24);
+    executor.setThreadNamePrefix("woomool-market async-");
+    executor.setRejectedExecutionHandler(new CallerRunsPolicy());
+    executor.setWaitForTasksToCompleteOnShutdown(true);
+    executor.setAwaitTerminationSeconds(60);
+    executor.initialize();
+    return executor;
+  }
 }

@@ -14,75 +14,75 @@ import lombok.Getter;
 @Getter
 public class MemberQueryResponse implements Serializable {
 
-    private final Long id;
+  private final Long id;
 
-    private final String email;
+  private final String email;
 
-    private final String nickname;
+  private final String nickname;
 
-    private final String profileImage;
+  private final String profileImage;
 
-    private final String phone;
+  private final String phone;
 
-    private final String license;
+  private final String license;
 
-    private final LocalDateTime createdDateTime;
+  private final LocalDateTime createdDateTime;
 
-    private final LocalDateTime lastModifiedDateTime;
+  private final LocalDateTime lastModifiedDateTime;
 
-    private final LocalDateTime leaveDateTime;
+  private final LocalDateTime leaveDateTime;
 
-    private final Authority authority;
+  private final Authority authority;
 
-    private final Address address;
+  private final Address address;
 
-    private final AuthProvider authProvider;
+  private final AuthProvider authProvider;
 
-    private final Status status;
+  private final Status status;
 
-    @Builder
-    @QueryProjection
-    public MemberQueryResponse(
-        Long id, String email, String nickname, String profileImage, String phone, String license,
-        Address address, AuthProvider authProvider, Status status, Authority authority,
-        LocalDateTime createdDateTime, LocalDateTime lastModifiedDateTime, LocalDateTime leaveDateTime) {
+  @Builder
+  @QueryProjection
+  public MemberQueryResponse(
+    Long id, String email, String nickname, String profileImage, String phone, String license,
+    Address address, AuthProvider authProvider, Status status, Authority authority,
+    LocalDateTime createdDateTime, LocalDateTime lastModifiedDateTime, LocalDateTime leaveDateTime) {
 
-        this.id = id;
-        this.email = email;
-        this.phone = phone;
-        this.status = status;
-        this.license = license;
-        this.address = address;
-        this.nickname = nickname;
-        this.authority = authority;
-        this.authProvider = authProvider;
-        this.profileImage = profileImage;
-        this.leaveDateTime = leaveDateTime;
-        this.createdDateTime = createdDateTime;
-        this.lastModifiedDateTime = lastModifiedDateTime;
-    }
+    this.id = id;
+    this.email = email;
+    this.phone = phone;
+    this.status = status;
+    this.license = license;
+    this.address = address;
+    this.nickname = nickname;
+    this.authority = authority;
+    this.authProvider = authProvider;
+    this.profileImage = profileImage;
+    this.leaveDateTime = leaveDateTime;
+    this.createdDateTime = createdDateTime;
+    this.lastModifiedDateTime = lastModifiedDateTime;
+  }
 
-    public static MemberQueryResponse from(String email) {
-        return MemberQueryResponse.builder()
-            .email(email)
-            .build();
-    }
+  public static MemberQueryResponse from(String email) {
+    return MemberQueryResponse.builder()
+      .email(email)
+      .build();
+  }
 
-    public static MemberQueryResponse of(Member member) {
-        return MemberQueryResponse.builder()
-            .id(member.getId())
-            .email(member.getEmail())
-            .nickname(member.getNickname())
-            .profileImage(member.getProfileImage())
-            .phone(member.getPhone())
-            .license(member.getLicense())
-            .createdDateTime(member.getCreatedDateTime())
-            .lastModifiedDateTime(member.getLastModifiedDateTime())
-            .leaveDateTime(member.getLeaveDateTime())
-            .authority(member.getAuthority())
-            .address(member.getAddress())
-            .authProvider(member.getAuthProvider())
-            .status(member.getStatus())
-            .build();
-    }
+  public static MemberQueryResponse of(Member member) {
+    return MemberQueryResponse.builder()
+      .id(member.getId())
+      .email(member.getEmail())
+      .nickname(member.getNickname())
+      .profileImage(member.getProfileImage())
+      .phone(member.getPhone())
+      .license(member.getLicense())
+      .createdDateTime(member.getCreatedDateTime())
+      .lastModifiedDateTime(member.getLastModifiedDateTime())
+      .leaveDateTime(member.getLeaveDateTime())
+      .authority(member.getAuthority())
+      .address(member.getAddress())
+      .authProvider(member.getAuthProvider())
+      .status(member.getStatus())
+      .build();
+  }
 }

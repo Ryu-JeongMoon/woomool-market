@@ -42,75 +42,75 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(path = "/api/boards", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class BoardController {
 
-    private final BoardService boardService;
-    private final BoardCountService boardCountService;
-    private final PagedResourcesAssembler<BoardQueryResponse> queryAssembler;
+  private final BoardService boardService;
+  private final BoardCountService boardCountService;
+  private final PagedResourcesAssembler<BoardQueryResponse> queryAssembler;
 
-    @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageBy(
-        BoardSearchCondition condition, @PageableDefault Pageable pageable) {
+  @GetMapping
+  public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageBy(
+    BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<BoardQueryResponse> boardQueryResponses = boardService.searchBy(condition, pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(boardQueryResponses));
-    }
+    Page<BoardQueryResponse> boardQueryResponses = boardService.searchBy(condition, pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(boardQueryResponses));
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> getBy(@PathVariable Long id) {
-        boardService.increaseHitByDB(id);
-        BoardResponse boardResponse = boardService.findBy(id, Status.ACTIVE);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBy(id));
+  @GetMapping("/{id}")
+  public ResponseEntity<EntityModel<BoardResponse>> getBy(@PathVariable Long id) {
+    boardService.increaseHitByDB(id);
+    BoardResponse boardResponse = boardService.findBy(id, Status.ACTIVE);
+    WebMvcLinkBuilder defaultLink = linkTo(methodOn(BoardController.class).getBy(id));
 
-        EntityModel<BoardResponse> responseModel =
-            EntityModel.of(
-                boardResponse,
-                defaultLink.withSelfRel(),
-                defaultLink.withRel(BoardConstants.MODIFY),
-                defaultLink.withRel(BoardConstants.DELETE));
+    EntityModel<BoardResponse> responseModel =
+      EntityModel.of(
+        boardResponse,
+        defaultLink.withSelfRel(),
+        defaultLink.withRel(BoardConstants.MODIFY),
+        defaultLink.withRel(BoardConstants.DELETE));
 
-        return ResponseEntity.ok(responseModel);
-    }
+    return ResponseEntity.ok(responseModel);
+  }
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> create(@Valid @RequestBody BoardRequest boardRequest, List<MultipartFile> files) {
-        boardService.write(boardRequest, files);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @PostMapping
+  @PreAuthorize("hasAnyRole({'ROLE_USER', 'ROLE_SELLER'}) and @checker.isQnaOrFree(#boardRequest) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> create(@Valid @RequestBody BoardRequest boardRequest, List<MultipartFile> files) {
+    boardService.write(boardRequest, files);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
-    @PatchMapping("/{id}")
-    @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<BoardResponse>> edit(
-        @PathVariable Long id, @Valid @RequestBody BoardModifyRequest modifyRequest) {
+  @PatchMapping("/{id}")
+  @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<EntityModel<BoardResponse>> edit(
+    @PathVariable Long id, @Valid @RequestBody BoardModifyRequest modifyRequest) {
 
-        BoardResponse boardResponse = boardService.edit(id, modifyRequest);
-        EntityModel<BoardResponse> boardModel =
-            EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getBy(id)).withSelfRel());
+    BoardResponse boardResponse = boardService.edit(id, modifyRequest);
+    EntityModel<BoardResponse> boardModel =
+      EntityModel.of(boardResponse, linkTo(methodOn(BoardController.class).getBy(id)).withSelfRel());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(boardModel);
+  }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boardService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  @PreAuthorize("@checker.isSelfByBoardId(#id) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    boardService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 
-    @GetMapping("/deleted/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> restore(@PathVariable Long id) {
-        boardService.restore(id);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @GetMapping("/deleted/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> restore(@PathVariable Long id) {
+    boardService.restore(id);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
 
-    /* FOR ADMIN */
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageForAdminBy(
-        BoardSearchCondition condition, @PageableDefault Pageable pageable) {
+  /* FOR ADMIN */
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<BoardQueryResponse>>> getPageForAdminBy(
+    BoardSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<BoardQueryResponse> queryResponsePage = boardService.searchForAdminBy(condition, pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
-    }
+    Page<BoardQueryResponse> queryResponsePage = boardService.searchForAdminBy(condition, pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
+  }
 }

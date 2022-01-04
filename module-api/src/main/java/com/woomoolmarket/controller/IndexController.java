@@ -17,50 +17,50 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class IndexController {
 
-    private final S3Uploader s3Uploader;
+  private final S3Uploader s3Uploader;
 
-    @GetMapping("/upload")
-    public String uploadForm() {
-        return "file";
-    }
+  @GetMapping("/upload")
+  public String uploadForm() {
+    return "file";
+  }
 
-    @ResponseBody
-    @PostMapping("/upload")
-    public String upload(@RequestParam("data") MultipartFile multipartFile) throws IOException {
-        return s3Uploader.upload(multipartFile, "static");
-    }
+  @ResponseBody
+  @PostMapping("/upload")
+  public String upload(@RequestParam("data") MultipartFile multipartFile) throws IOException {
+    return s3Uploader.upload(multipartFile, "static");
+  }
 
-    @ResponseBody
-    @GetMapping("/request")
-    public String httpCheck(HttpServletRequest request) {
-        log.warn("http2 check ??!! -> {}", request.getProtocol());
-        return request.getProtocol();
-    }
+  @ResponseBody
+  @GetMapping("/request")
+  public String httpCheck(HttpServletRequest request) {
+    log.warn("http2 check ??!! -> {}", request.getProtocol());
+    return request.getProtocol();
+  }
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
+  @GetMapping("/")
+  public String index() {
+    return "index";
+  }
 
-    @GetMapping("/home")
-    public String home() {
-        return "home";
-    }
+  @GetMapping("/home")
+  public String home() {
+    return "home";
+  }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+  @GetMapping("/login")
+  public String login() {
+    return "login";
+  }
 
-    @ResponseBody
-    @GetMapping({"/loginSuccess", "/hello"})
-    public String loginSuccess() {
-        return "hello";
-    }
+  @ResponseBody
+  @GetMapping({"/loginSuccess", "/hello"})
+  public String loginSuccess() {
+    return "hello";
+  }
 
-    @ResponseBody
-    @GetMapping("/loginFailure")
-    public String loginFailure() {
-        return "loginFailure";
-    }
+  @ResponseBody
+  @GetMapping("/loginFailure")
+  public String loginFailure() {
+    return "loginFailure";
+  }
 }
