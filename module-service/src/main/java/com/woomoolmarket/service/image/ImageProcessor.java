@@ -3,7 +3,6 @@ package com.woomoolmarket.service.image;
 import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class ImageProcessor {
 
   public Image parse(MultipartFile file) {
     if (file == null) {
-      log.info("[WOOMOOL-ERROR] :: There is no files => {}", file);
+      log.info("[WOOMOOL-INFO] :: There is no files");
       return null;
     }
     List<Image> images = parse(List.of(file));
@@ -42,7 +41,7 @@ public class ImageProcessor {
 
   public List<Image> parse(List<MultipartFile> files) {
     if (CollectionUtils.isEmpty(files)) {
-      log.info("[WOOMOOL-ERROR] :: There is no files => {}", files);
+      log.info("[WOOMOOL-INFO] :: There is no files");
       return Collections.emptyList();
     }
 
@@ -87,17 +86,8 @@ public class ImageProcessor {
   }
 
   private void saveFile(String path, MultipartFile multipartFile) {
-    CompletableFuture.runAsync(() -> {
-      try {
-        imageCompressor.compressAndSave(multipartFile.getBytes(), path);
-        File file = new File(path);
-        file.setWritable(true);
-        file.setReadable(true);
-      } catch (IOException e) {
-        log.info("[WOOMOOL-ERROR] :: Can't Transfer a file => {}", e.getMessage());
-        throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
-      }
-    }, woomoolTaskExecutor);
+    CompletableFuture.runAsync(
+      () -> imageCompressor.compressAndSave(path, multipartFile), woomoolTaskExecutor);
   }
 
   private void checkFileExistence(File file) {

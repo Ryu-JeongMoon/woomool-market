@@ -2,6 +2,7 @@ package com.woomoolmarket.service.auth;
 
 import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.common.util.FunctionalWrapperUtils;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import java.security.SecureRandom;
@@ -90,18 +91,14 @@ public class AuthFindService {
     smsParams.put("text", "아이디 - " + member.getEmail());
     smsParams.put("app_version", "woomool-market-v1.0");
 
-    CompletableFuture.supplyAsync(this::checkBalance, woomoolTaskExecutor)
-      .thenAccept(balance -> {
+    CompletableFuture
+      .supplyAsync(this::checkBalance, woomoolTaskExecutor)
+      .thenAcceptAsync(FunctionalWrapperUtils.consumerWrapper(balance -> {
         if (balance < 20) {
           throw new RuntimeException(ExceptionConstants.NOT_ENOUGH_BALANCE);
         }
-
-        try {
-          message.send(smsParams);
-        } catch (CoolsmsException e) {
-          log.info(e);
-        }
-      });
+        message.send(smsParams);
+      }), woomoolTaskExecutor);
   }
 
   public int checkBalance() {
