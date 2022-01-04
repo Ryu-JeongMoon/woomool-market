@@ -112,11 +112,11 @@ class MemberControllerTest extends ApiControllerConfig {
   }
 
   @Test
-  @WithMockUser(roles = "USER")
+  @WithMockUser(roles = "ADMIN")
   @DisplayName("회원 조회 실패 - 404 존재하지 않는 회원")
   void getMemberFail() throws Exception {
     mockMvc.perform(
-        get("/api/members/" + 1L)
+        get("/api/members/" + 0L)
           .accept(MediaType.ALL))
       .andExpect(status().isNotFound());
   }

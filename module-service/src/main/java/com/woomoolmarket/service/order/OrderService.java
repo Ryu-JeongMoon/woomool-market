@@ -41,7 +41,7 @@ public class OrderService {
 
   @Transactional
   public void order(OrderRequest orderRequest) {
-    if (orderRequest.getProductId() != null) {
+    if (orderRequest.getProductId() == null) {
       orderMultiples(orderRequest);
     } else {
       orderOne(orderRequest);
@@ -92,7 +92,8 @@ public class OrderService {
     Order order = Order.builder()
       .member(member)
       .delivery(delivery)
-      .orderProducts(orderProducts).build();
+      .orderProducts(orderProducts)
+      .build();
 
     orderRepository.save(order);
 
