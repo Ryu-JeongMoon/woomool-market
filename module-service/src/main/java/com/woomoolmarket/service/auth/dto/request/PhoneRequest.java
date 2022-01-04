@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PhoneRequest {
 
-    @NotBlank
-    @Pattern(regexp = "^01(\\d{8,9})$")
-    private String phone;
+  @NotBlank
+  @Pattern(regexp = "^01(\\d{8,9})$")
+  private String phone;
 }

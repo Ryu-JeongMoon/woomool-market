@@ -16,76 +16,76 @@ import org.springframework.data.domain.Pageable;
 
 class MemberQueryResponseTest extends DataJpaTestConfig {
 
-    private Member member;
+  private Member member;
 
-    @BeforeEach
-    void setUp() {
-        member = MemberTestHelper.createUser();
-        memberRepository.save(member);
-    }
+  @BeforeEach
+  void setUp() {
+    member = MemberTestHelper.createUser();
+    memberRepository.save(member);
+  }
 
-    @AfterEach
-    void tearDown() {
+  @AfterEach
+  void tearDown() {
 
-    }
+  }
 
-    @Test
-    @DisplayName("member -> memberQueryResponse of 변환 성공")
-    void conversionOf() {
-        MemberQueryResponse memberQueryResponse = MemberQueryResponse.of(member);
+  @Test
+  @DisplayName("member -> memberQueryResponse of 변환 성공")
+  void conversionOf() {
+    MemberQueryResponse memberQueryResponse = MemberQueryResponse.of(member);
 
-        assertThat(memberQueryResponse.getId()).isEqualTo(member.getId());
-        assertThat(memberQueryResponse.getEmail()).isEqualTo(member.getEmail());
-        assertThat(memberQueryResponse.getPhone()).isEqualTo(member.getPhone());
-        assertThat(memberQueryResponse.getStatus()).isEqualTo(member.getStatus());
-        assertThat(memberQueryResponse.getLicense()).isEqualTo(member.getLicense());
-        assertThat(memberQueryResponse.getAddress()).isEqualTo(member.getAddress());
-        assertThat(memberQueryResponse.getNickname()).isEqualTo(member.getNickname());
-        assertThat(memberQueryResponse.getAuthority()).isEqualTo(member.getAuthority());
-        assertThat(memberQueryResponse.getAuthProvider()).isEqualTo(member.getAuthProvider());
-        assertThat(memberQueryResponse.getProfileImage()).isEqualTo(member.getProfileImage());
-        assertThat(memberQueryResponse.getLeaveDateTime()).isEqualTo(member.getLeaveDateTime());
-        assertThat(memberQueryResponse.getCreatedDateTime()).isEqualTo(member.getCreatedDateTime());
-        assertThat(memberQueryResponse.getLastModifiedDateTime()).isEqualTo(member.getLastModifiedDateTime());
-    }
+    assertThat(memberQueryResponse.getId()).isEqualTo(member.getId());
+    assertThat(memberQueryResponse.getEmail()).isEqualTo(member.getEmail());
+    assertThat(memberQueryResponse.getPhone()).isEqualTo(member.getPhone());
+    assertThat(memberQueryResponse.getStatus()).isEqualTo(member.getStatus());
+    assertThat(memberQueryResponse.getLicense()).isEqualTo(member.getLicense());
+    assertThat(memberQueryResponse.getAddress()).isEqualTo(member.getAddress());
+    assertThat(memberQueryResponse.getNickname()).isEqualTo(member.getNickname());
+    assertThat(memberQueryResponse.getAuthority()).isEqualTo(member.getAuthority());
+    assertThat(memberQueryResponse.getAuthProvider()).isEqualTo(member.getAuthProvider());
+    assertThat(memberQueryResponse.getProfileImage()).isEqualTo(member.getProfileImage());
+    assertThat(memberQueryResponse.getLeaveDateTime()).isEqualTo(member.getLeaveDateTime());
+    assertThat(memberQueryResponse.getCreatedDateTime()).isEqualTo(member.getCreatedDateTime());
+    assertThat(memberQueryResponse.getLastModifiedDateTime()).isEqualTo(member.getLastModifiedDateTime());
+  }
 
-    @Test
-    @DisplayName("member -> memberQueryResponse from 변환 성공")
-    void conversionFrom() {
-        MemberQueryResponse memberQueryResponse = MemberQueryResponse.from(member.getEmail());
+  @Test
+  @DisplayName("member -> memberQueryResponse from 변환 성공")
+  void conversionFrom() {
+    MemberQueryResponse memberQueryResponse = MemberQueryResponse.from(member.getEmail());
 
-        assertThat(memberQueryResponse.getEmail()).isEqualTo(member.getEmail());
-    }
+    assertThat(memberQueryResponse.getEmail()).isEqualTo(member.getEmail());
+  }
 
-    @Test
-    @DisplayName("EMAIL 검색 성공")
-    void searchForAdminBy() {
-        MemberSearchCondition condition = MemberSearchCondition.builder()
-            .email(MEMBER_EMAIL)
-            .build();
-        Page<MemberQueryResponse> queryResponsePage = memberRepository.searchForAdminBy(condition, Pageable.ofSize(10));
+  @Test
+  @DisplayName("EMAIL 검색 성공")
+  void searchForAdminBy() {
+    MemberSearchCondition condition = MemberSearchCondition.builder()
+      .email(MEMBER_EMAIL)
+      .build();
+    Page<MemberQueryResponse> queryResponsePage = memberRepository.searchForAdminBy(condition, Pageable.ofSize(10));
 
-        assertThat(queryResponsePage.getTotalElements()).isEqualTo(1);
-    }
+    assertThat(queryResponsePage.getTotalElements()).isEqualTo(1);
+  }
 
-    @Test
-    @DisplayName("EMAIL 검색 - 잘못된 이메일 결과 없음")
-    void searchForAdminByNoResult() {
-        MemberSearchCondition condition = MemberSearchCondition.builder()
-            .email(MEMBER_EMAIL + 1)
-            .build();
-        Page<MemberQueryResponse> queryResponsePage = memberRepository.searchForAdminBy(condition, Pageable.ofSize(10));
+  @Test
+  @DisplayName("EMAIL 검색 - 잘못된 이메일 결과 없음")
+  void searchForAdminByNoResult() {
+    MemberSearchCondition condition = MemberSearchCondition.builder()
+      .email(MEMBER_EMAIL + 1)
+      .build();
+    Page<MemberQueryResponse> queryResponsePage = memberRepository.searchForAdminBy(condition, Pageable.ofSize(10));
 
-        assertThat(queryResponsePage.getTotalElements()).isEqualTo(0);
-    }
+    assertThat(queryResponsePage.getTotalElements()).isEqualTo(0);
+  }
 
-    @Test
-    @DisplayName("toString")
-    void toStringTest() {
-        Page<MemberQueryResponse> page = memberRepository.searchForAdminBy(new MemberSearchCondition(), Pageable.ofSize(10));
-        MemberQueryResponse memberQueryResponse = page.getContent().get(0);
-        System.out.println("memberQueryResponse = " + memberQueryResponse);
-    }
+  @Test
+  @DisplayName("toString")
+  void toStringTest() {
+    Page<MemberQueryResponse> page = memberRepository.searchForAdminBy(new MemberSearchCondition(), Pageable.ofSize(10));
+    MemberQueryResponse memberQueryResponse = page.getContent().get(0);
+    System.out.println("memberQueryResponse = " + memberQueryResponse);
+  }
 }
 
 /*

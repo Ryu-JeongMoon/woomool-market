@@ -25,116 +25,116 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ImageProcessor {
 
-    private final Executor woomoolTaskExecutor;
-    private final ImageCompressor imageCompressor;
+  private final Executor woomoolTaskExecutor;
+  private final ImageCompressor imageCompressor;
 
-    @Value("${custom.file.path}")
-    private String ROOT_PATH;
+  @Value("${custom.file.path}")
+  private String ROOT_PATH;
 
-    public Image parse(MultipartFile file) {
-        if (file == null) {
-            log.info("[WOOMOOL-ERROR] :: There is no files => {}", file);
-            return null;
-        }
-        List<Image> images = parse(List.of(file));
-        return images.get(0);
+  public Image parse(MultipartFile file) {
+    if (file == null) {
+      log.info("[WOOMOOL-ERROR] :: There is no files => {}", file);
+      return null;
+    }
+    List<Image> images = parse(List.of(file));
+    return images.get(0);
+  }
+
+  public List<Image> parse(List<MultipartFile> files) {
+    if (CollectionUtils.isEmpty(files)) {
+      log.info("[WOOMOOL-ERROR] :: There is no files => {}", files);
+      return Collections.emptyList();
     }
 
-    public List<Image> parse(List<MultipartFile> files) {
-        if (CollectionUtils.isEmpty(files)) {
-            log.info("[WOOMOOL-ERROR] :: There is no files => {}", files);
-            return Collections.emptyList();
-        }
+    List<Image> imageList = new ArrayList<>();
 
-        List<Image> imageList = new ArrayList<>();
+    String currentDateString = getCurrentDateString();
+    String path = ROOT_PATH + File.separator + currentDateString;
+    File file = new File(path);
 
-        String currentDateString = getCurrentDateString();
-        String path = ROOT_PATH + File.separator + currentDateString;
+    checkFileExistence(file);
+
+    for (MultipartFile multipartFile : files) {
+
+      String originalFilename = multipartFile.getOriginalFilename();
+      if (!StringUtils.hasText(originalFilename)) {
+        log.info("[WOOMOOL-ERROR] :: There is no files => {}", originalFilename);
+        continue;
+      }
+
+      String contentType = multipartFile.getContentType();
+      checkFileExtension(originalFilename, Objects.requireNonNull(contentType));
+
+      String currentTimeString = getCurrentTimeString();
+      String fileNameWithoutExtension = originalFilename.substring(0, originalFilename.indexOf("."));
+      String convertedFileExtension = getFileExtension(Objects.requireNonNull(contentType));
+
+      String fileName = currentTimeString + fileNameWithoutExtension + convertedFileExtension;
+
+      Image image = Image.builder()
+        .originalFileName(originalFilename)
+        .fileName(fileName)
+        .filePath(File.separator + currentDateString)
+        .fileSize(multipartFile.getSize())
+        .build();
+      imageList.add(image);
+
+      String pathname = path + File.separator + fileName;
+      saveFile(pathname, multipartFile);
+    }
+
+    return imageList;
+  }
+
+  private void saveFile(String path, MultipartFile multipartFile) {
+    CompletableFuture.runAsync(() -> {
+      try {
+        imageCompressor.compressAndSave(multipartFile.getBytes(), path);
         File file = new File(path);
+        file.setWritable(true);
+        file.setReadable(true);
+      } catch (IOException e) {
+        log.info("[WOOMOOL-ERROR] :: Can't Transfer a file => {}", e.getMessage());
+        throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
+      }
+    }, woomoolTaskExecutor);
+  }
 
-        checkFileExistence(file);
+  private void checkFileExistence(File file) {
+    if (!file.exists()) {
+      boolean wasSuccessful = file.mkdirs();
 
-        for (MultipartFile multipartFile : files) {
-
-            String originalFilename = multipartFile.getOriginalFilename();
-            if (!StringUtils.hasText(originalFilename)) {
-                log.info("[WOOMOOL-ERROR] :: There is no files => {}", originalFilename);
-                continue;
-            }
-
-            String contentType = multipartFile.getContentType();
-            checkFileExtension(originalFilename, Objects.requireNonNull(contentType));
-
-            String currentTimeString = getCurrentTimeString();
-            String fileNameWithoutExtension = originalFilename.substring(0, originalFilename.indexOf("."));
-            String convertedFileExtension = getFileExtension(Objects.requireNonNull(contentType));
-
-            String fileName = currentTimeString + fileNameWithoutExtension + convertedFileExtension;
-
-            Image image = Image.builder()
-                .originalFileName(originalFilename)
-                .fileName(fileName)
-                .filePath(File.separator + currentDateString)
-                .fileSize(multipartFile.getSize())
-                .build();
-            imageList.add(image);
-
-            String pathname = path + File.separator + fileName;
-            saveFile(pathname, multipartFile);
-        }
-
-        return imageList;
+      if (!wasSuccessful) {
+        log.info("[WOOMOOL-ERROR] :: Can't Create a directory");
+        throw new IllegalStateException(ExceptionConstants.IMAGE_FOLDER_NOT_FOUND);
+      }
     }
+  }
 
-    private void saveFile(String path, MultipartFile multipartFile) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                imageCompressor.compressAndSave(multipartFile.getBytes(), path);
-                File file = new File(path);
-                file.setWritable(true);
-                file.setReadable(true);
-            } catch (IOException e) {
-                log.info("[WOOMOOL-ERROR] :: Can't Transfer a file => {}", e.getMessage());
-                throw new IllegalStateException(ExceptionConstants.IMAGE_CANNOT_TRANSFER);
-            }
-        }, woomoolTaskExecutor);
+  private void checkFileExtension(String originalFilename, String contentType) {
+    if (!StringUtils.hasText(contentType)) {
+      log.info("[WOOMOOL-ERROR] :: {} has no file extension", originalFilename);
+      throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
     }
+  }
 
-    private void checkFileExistence(File file) {
-        if (!file.exists()) {
-            boolean wasSuccessful = file.mkdirs();
-
-            if (!wasSuccessful) {
-                log.info("[WOOMOOL-ERROR] :: Can't Create a directory");
-                throw new IllegalStateException(ExceptionConstants.IMAGE_FOLDER_NOT_FOUND);
-            }
-        }
+  private String getFileExtension(String contentType) {
+    if (contentType.contains("image/jpeg")) {
+      return ".jpg";
+    } else if (contentType.contains("image/png")) {
+      return ".png";
+    } else {
+      log.info("[WOOMOOL-ERROR] :: {} is unsupported file extension", contentType);
+      throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
     }
+  }
 
-    private void checkFileExtension(String originalFilename, String contentType) {
-        if (!StringUtils.hasText(contentType)) {
-            log.info("[WOOMOOL-ERROR] :: {} has no file extension", originalFilename);
-            throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
-        }
-    }
+  private String getCurrentDateString() {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    return LocalDateTime.now().format(formatter);
+  }
 
-    private String getFileExtension(String contentType) {
-        if (contentType.contains("image/jpeg")) {
-            return ".jpg";
-        } else if (contentType.contains("image/png")) {
-            return ".png";
-        } else {
-            log.info("[WOOMOOL-ERROR] :: {} is unsupported file extension", contentType);
-            throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
-        }
-    }
-
-    private String getCurrentDateString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        return LocalDateTime.now().format(formatter);
-    }
-
-    private String getCurrentTimeString() {
-        return String.valueOf(System.nanoTime());
-    }
+  private String getCurrentTimeString() {
+    return String.valueOf(System.nanoTime());
+  }
 }

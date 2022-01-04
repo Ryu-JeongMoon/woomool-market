@@ -8,9 +8,9 @@ import java.time.format.DateTimeFormatter;
 
 public class DateTimeFormatModule extends SimpleModule {
 
-    public DateTimeFormatModule() {
-        String datetimeFormat = "yyyy-MM-dd HH:mm:ss";
-        addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(datetimeFormat)));
-        addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(datetimeFormat)));
-    }
+  public DateTimeFormatModule() {
+    String datetimeFormat = "yyyy-MM-dd HH:mm:ss";
+    addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(datetimeFormat)));
+    addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(datetimeFormat)));
+  }
 }

@@ -29,51 +29,51 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ApiControllerConfig {
 
-    protected static Long MEMBER_ID;
-    protected static Long PRODUCT_ID;
-    protected static Long CART_ID;
-    protected static Long ORDER_ID;
-    protected static Long BOARD_ID;
-    protected static Long IMAGE_ID;
+  protected static Long MEMBER_ID;
+  protected static Long PRODUCT_ID;
+  protected static Long CART_ID;
+  protected static Long ORDER_ID;
+  protected static Long BOARD_ID;
+  protected static Long IMAGE_ID;
 
-    @Autowired
-    protected MockMvc mockMvc;
-    @Autowired
-    protected ObjectMapper objectMapper;
-    @Autowired
-    protected PasswordEncoder passwordEncoder;
-    @Autowired
-    protected StringRedisTemplate stringRedisTemplate;
+  @Autowired
+  protected MockMvc mockMvc;
+  @Autowired
+  protected ObjectMapper objectMapper;
+  @Autowired
+  protected PasswordEncoder passwordEncoder;
+  @Autowired
+  protected StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
-    protected CartRepository cartRepository;
-    @Autowired
-    protected BoardRepository boardRepository;
-    @Autowired
-    protected ImageRepository imageRepository;
-    @Autowired
-    protected OrderRepository orderRepository;
-    @Autowired
-    protected MemberRepository memberRepository;
-    @Autowired
-    protected ProductRepository productRepository;
+  @Autowired
+  protected CartRepository cartRepository;
+  @Autowired
+  protected BoardRepository boardRepository;
+  @Autowired
+  protected ImageRepository imageRepository;
+  @Autowired
+  protected OrderRepository orderRepository;
+  @Autowired
+  protected MemberRepository memberRepository;
+  @Autowired
+  protected ProductRepository productRepository;
 
-    @Autowired
-    protected MemberService memberService;
+  @Autowired
+  protected MemberService memberService;
 
-    @Autowired
-    protected CartTestHelper cartTestHelper;
-    @Autowired
-    protected OrderTestHelper orderTestHelper;
-    @Autowired
-    protected BoardTestHelper boardTestHelper;
-    @Autowired
-    protected ImageTestHelper imageTestHelper;
-    @Autowired
-    protected MemberTestHelper memberTestHelper;
-    @Autowired
-    protected ProductTestHelper productTestHelper;
-    @Autowired
-    protected MultipartFileTestHelper multipartFileTestHelper;
+  @Autowired
+  protected CartTestHelper cartTestHelper;
+  @Autowired
+  protected OrderTestHelper orderTestHelper;
+  @Autowired
+  protected BoardTestHelper boardTestHelper;
+  @Autowired
+  protected ImageTestHelper imageTestHelper;
+  @Autowired
+  protected MemberTestHelper memberTestHelper;
+  @Autowired
+  protected ProductTestHelper productTestHelper;
+  @Autowired
+  protected MultipartFileTestHelper multipartFileTestHelper;
 
 }

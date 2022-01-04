@@ -16,9 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderResponse {
 
-    private Long id;
-    private MemberResponse memberResponse;
-    private OrderStatus orderStatus;
-    private List<OrderProduct> orderProducts;
-    private Delivery delivery;
+  private Long id;
+  private MemberResponse memberResponse;
+  private OrderStatus orderStatus;
+  private List<OrderProduct> orderProducts;
+  private Delivery delivery;
 }

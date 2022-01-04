@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/images")
 public class ImageController {
 
-    private final ImageService imageService;
+  private final ImageService imageService;
 
-    @GetMapping("/{boardId}")
-    public ResponseEntity<CollectionModel<ImageResponse>> getImages(@PathVariable Long boardId) {
-        List<ImageResponse> imageResponses = imageService.findByBoard(boardId);
-        CollectionModel<ImageResponse> collectionModel = CollectionModel.of(imageResponses);
-        return ResponseEntity.ok(collectionModel);
-    }
+  @GetMapping("/{boardId}")
+  public ResponseEntity<CollectionModel<ImageResponse>> getImages(@PathVariable Long boardId) {
+    List<ImageResponse> imageResponses = imageService.findByBoard(boardId);
+    CollectionModel<ImageResponse> collectionModel = CollectionModel.of(imageResponses);
+    return ResponseEntity.ok(collectionModel);
+  }
 
-    @DeleteMapping("/{imageId}")
-    public ResponseEntity<Void> deleteByImage(@PathVariable Long imageId) {
-        imageService.deleteByImageId(imageId);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{imageId}")
+  public ResponseEntity<Void> deleteByImage(@PathVariable Long imageId) {
+    imageService.deleteByImageId(imageId);
+    return ResponseEntity.noContent().build();
+  }
 }

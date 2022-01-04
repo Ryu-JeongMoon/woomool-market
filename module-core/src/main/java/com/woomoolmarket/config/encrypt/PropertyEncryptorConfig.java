@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @EnableEncryptableProperties
 public class PropertyEncryptorConfig {
 
-    @Bean("encryptorBean")
-    public PooledPBEStringEncryptor stringEncryptor() {
-        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-        encryptor.setProvider(new BouncyCastleProvider());
-        encryptor.setPoolSize(2);
-        encryptor.setPassword("panda-bear");
-        encryptor.setAlgorithm("PBEWithSHA256And128BitAES-CBC-BC");
-        return encryptor;
-    }
+  @Bean("encryptorBean")
+  public PooledPBEStringEncryptor stringEncryptor() {
+    PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+    encryptor.setProvider(new BouncyCastleProvider());
+    encryptor.setPoolSize(2);
+    encryptor.setPassword("panda-bear");
+    encryptor.setAlgorithm("PBEWithSHA256And128BitAES-CBC-BC");
+    return encryptor;
+  }
 }

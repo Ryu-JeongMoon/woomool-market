@@ -29,74 +29,74 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final ImageProcessor imageProcessor;
-    private final ProductRepository productRepository;
-    private final ProductRequestMapper productRequestMapper;
-    private final ProductResponseMapper productResponseMapper;
-    private final ProductModifyRequestMapper productModifyRequestMapper;
+  private final ImageProcessor imageProcessor;
+  private final ProductRepository productRepository;
+  private final ProductRequestMapper productRequestMapper;
+  private final ProductResponseMapper productResponseMapper;
+  private final ProductModifyRequestMapper productModifyRequestMapper;
 
-    @Transactional(readOnly = true)
-    public ProductResponse findBy(Long id, Status status) {
-        return productRepository.findByIdAndStatus(id, status)
-            .map(productResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
-    }
+  @Transactional(readOnly = true)
+  public ProductResponse findBy(Long id, Status status) {
+    return productRepository.findByIdAndStatus(id, status)
+      .map(productResponseMapper::toDto)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+  }
 
-    @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "products", unless = "#result == null")
-    public Page<ProductQueryResponse> searchBy(ProductSearchCondition condition, Pageable pageable) {
-        return productRepository.searchBy(condition, pageable);
-    }
+  @Transactional(readOnly = true)
+  @Cacheable(keyGenerator = "customKeyGenerator", value = "products", unless = "#result == null")
+  public Page<ProductQueryResponse> searchBy(ProductSearchCondition condition, Pageable pageable) {
+    return productRepository.searchBy(condition, pageable);
+  }
 
-    @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
-    public void create(ProductRequest productRequest) {
-        List<Image> images = imageProcessor.parse(productRequest.getMultipartFiles());
-        Product product = productRequestMapper.toEntity(productRequest);
-        product.addImages(images);
-        productRepository.save(product);
-    }
+  @Transactional
+  @Caching(evict = {
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+  public void create(ProductRequest productRequest) {
+    List<Image> images = imageProcessor.parse(productRequest.getMultipartFiles());
+    Product product = productRequestMapper.toEntity(productRequest);
+    product.addImages(images);
+    productRepository.save(product);
+  }
 
-    @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
-    public void edit(Long id, ProductModifyRequest modifyRequest) {
-        Product product = productRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+  @Transactional
+  @Caching(evict = {
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+  public void edit(Long id, ProductModifyRequest modifyRequest) {
+    Product product = productRepository.findById(id)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
 
-        List<Image> images = imageProcessor.parse(modifyRequest.getMultipartFiles());
-        product.addImages(images);
+    List<Image> images = imageProcessor.parse(modifyRequest.getMultipartFiles());
+    product.addImages(images);
 
-        productModifyRequestMapper.updateFromDto(modifyRequest, product);
-    }
+    productModifyRequestMapper.updateFromDto(modifyRequest, product);
+  }
 
-    @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
-    public void deleteSoftly(Long id) {
-        productRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
-            .delete();
-    }
+  @Transactional
+  @Caching(evict = {
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+  public void deleteSoftly(Long id) {
+    productRepository.findById(id)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
+      .delete();
+  }
 
-    @Transactional
-    @Caching(evict = {
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
-        @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
-    public void restore(Long id) {
-        productRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
-            .restore();
-    }
+  @Transactional
+  @Caching(evict = {
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "products", allEntries = true),
+    @CacheEvict(keyGenerator = "customKeyGenerator", value = "productsForAdmin", allEntries = true)})
+  public void restore(Long id) {
+    productRepository.findById(id)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND))
+      .restore();
+  }
 
-    /* FOR ADMIN */
-    @Transactional(readOnly = true)
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "productsForAdmin", unless = "#result == null")
-    public Page<ProductQueryResponse> searchByAdmin(ProductSearchCondition condition, Pageable pageable) {
-        return productRepository.searchByAdmin(condition, pageable);
-    }
+  /* FOR ADMIN */
+  @Transactional(readOnly = true)
+  @Cacheable(keyGenerator = "customKeyGenerator", value = "productsForAdmin", unless = "#result == null")
+  public Page<ProductQueryResponse> searchByAdmin(ProductSearchCondition condition, Pageable pageable) {
+    return productRepository.searchByAdmin(condition, pageable);
+  }
 }

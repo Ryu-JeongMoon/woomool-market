@@ -13,17 +13,17 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductRequestMapper extends GenericMapper<ProductRequest, Product> {
 
-    @Override
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "stock", target = "stock", qualifiedByName = "atomicToInt",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ProductRequest toDto(Product product);
+  @Override
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(source = "stock", target = "stock", qualifiedByName = "atomicToInt",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  ProductRequest toDto(Product product);
 
-    @Override
-    Product toEntity(ProductRequest productRequest);
+  @Override
+  Product toEntity(ProductRequest productRequest);
 
-    @Override
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "stock", target = "stock", qualifiedByName = "intToAtomic")
-    void updateFromDto(ProductRequest dto, @MappingTarget Product entity);
+  @Override
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(source = "stock", target = "stock", qualifiedByName = "intToAtomic")
+  void updateFromDto(ProductRequest dto, @MappingTarget Product entity);
 }

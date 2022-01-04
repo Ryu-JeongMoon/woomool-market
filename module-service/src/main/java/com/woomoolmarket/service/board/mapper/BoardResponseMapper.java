@@ -14,16 +14,16 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardResponseMapper extends GenericMapper<BoardResponse, Board> {
 
-    @Override
-    @Mappings({@Mapping(source = "member", target = "memberResponse")})
-    BoardResponse toDto(Board board);
+  @Override
+  @Mappings({@Mapping(source = "member", target = "memberResponse")})
+  BoardResponse toDto(Board board);
 
-    @Override
-    @Mappings({@Mapping(source = "memberResponse", target = "member")})
-    Board toEntity(BoardResponse boardResponse);
+  @Override
+  @Mappings({@Mapping(source = "memberResponse", target = "member")})
+  Board toEntity(BoardResponse boardResponse);
 
-    @Override
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mappings({@Mapping(source = "memberResponse", target = "member")})
-    void updateFromDto(BoardResponse dto, @MappingTarget Board entity);
+  @Override
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mappings({@Mapping(source = "memberResponse", target = "member")})
+  void updateFromDto(BoardResponse dto, @MappingTarget Board entity);
 }

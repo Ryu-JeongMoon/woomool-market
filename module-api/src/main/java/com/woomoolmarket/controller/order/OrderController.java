@@ -32,40 +32,40 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/orders", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class OrderController {
 
-    private final OrderService orderService;
-    private final PagedResourcesAssembler<OrderQueryResponse> queryAssembler;
+  private final OrderService orderService;
+  private final PagedResourcesAssembler<OrderQueryResponse> queryAssembler;
 
-    @GetMapping("/{memberId}")
-    @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<OrderQueryResponse>>> getPageBy(
-        @PathVariable Long memberId, @PageableDefault Pageable pageable) {
+  @GetMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<OrderQueryResponse>>> getPageBy(
+    @PathVariable Long memberId, @PageableDefault Pageable pageable) {
 
-        Page<OrderQueryResponse> orderQueryResponsePage = orderService.searchBy(memberId, pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(orderQueryResponsePage));
-    }
+    Page<OrderQueryResponse> orderQueryResponsePage = orderService.searchBy(memberId, pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(orderQueryResponsePage));
+  }
 
-    @PostMapping
-    @PreAuthorize("@checker.isSelf(#orderRequest.memberId)")
-    public ResponseEntity<Void> create(@Valid @RequestBody OrderRequest orderRequest) {
-        orderService.order(orderRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @PostMapping
+  @PreAuthorize("@checker.isSelf(#orderRequest.memberId)")
+  public ResponseEntity<Void> create(@Valid @RequestBody OrderRequest orderRequest) {
+    orderService.order(orderRequest);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
-    @DeleteMapping("/{memberId}")
-    @PreAuthorize("@checker.isSelf(#deleteRequest.memberId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> cancel(@Valid @RequestBody OrderDeleteRequest deleteRequest) {
-        orderService.cancel(deleteRequest.getOrderId());
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#deleteRequest.memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> cancel(@Valid @RequestBody OrderDeleteRequest deleteRequest) {
+    orderService.cancel(deleteRequest.getOrderId());
+    return ResponseEntity.noContent().build();
+  }
 
 
-    /* FOR ADMIN */
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<OrderQueryResponse>>> getPageForAdminBy(
-        OrderSearchCondition condition, @PageableDefault Pageable pageable) {
+  /* FOR ADMIN */
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<OrderQueryResponse>>> getPageForAdminBy(
+    OrderSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, pageable);
-        return ResponseEntity.ok().body(queryAssembler.toModel(orderQueryResponses));
-    }
+    Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, pageable);
+    return ResponseEntity.ok().body(queryAssembler.toModel(orderQueryResponses));
+  }
 }

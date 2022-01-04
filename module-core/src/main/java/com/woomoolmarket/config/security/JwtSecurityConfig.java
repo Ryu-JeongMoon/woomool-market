@@ -14,16 +14,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedExceptionHandler jwtAccessDeniedExceptionHandler;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  private final JwtAccessDeniedExceptionHandler jwtAccessDeniedExceptionHandler;
 
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling()
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-            .accessDeniedHandler(jwtAccessDeniedExceptionHandler);
-    }
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    http
+      .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+      .exceptionHandling()
+      .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+      .accessDeniedHandler(jwtAccessDeniedExceptionHandler);
+  }
 }

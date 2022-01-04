@@ -11,11 +11,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @TestConfiguration
 public class TestConfig {
 
-    @PersistenceContext
-    EntityManager em;
+  @PersistenceContext
+  EntityManager em;
 
-    @Bean
-    JPAQueryFactory jpaQueryFactory() {
-        return new JPAQueryFactory(em);
-    }
+  @Bean
+  JPAQueryFactory jpaQueryFactory() {
+    return new JPAQueryFactory(em);
+  }
 }

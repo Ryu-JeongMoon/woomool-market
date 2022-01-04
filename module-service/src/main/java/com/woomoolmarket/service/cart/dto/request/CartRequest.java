@@ -13,14 +13,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CartRequest {
 
-    @NotNull
-    @Min(value = 1L)
-    private Long memberId;
+  @NotNull
+  @Min(value = 1L)
+  private Long memberId;
 
-    @Min(value = 1L)
-    private Long productId;
+  @Min(value = 1L)
+  private Long productId;
 
-    @NotNull
-    @Min(value = 1L)
-    private int quantity;
+  @NotNull
+  @Min(value = 1L)
+  private int quantity;
 }

@@ -29,95 +29,95 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final ImageProcessor imageProcessor;
-    private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
-    private final SignupRequestMapper signupRequestMapper;
-    private final ModifyRequestMapper modifyRequestMapper;
-    private final MemberResponseMapper memberResponseMapper;
+  private final ImageProcessor imageProcessor;
+  private final PasswordEncoder passwordEncoder;
+  private final MemberRepository memberRepository;
+  private final SignupRequestMapper signupRequestMapper;
+  private final ModifyRequestMapper modifyRequestMapper;
+  private final MemberResponseMapper memberResponseMapper;
 
-    @Transactional(readOnly = true)
-    public Long findPreviousId(Long id) {
-        return memberRepository.findPreviousId(id)
-            .orElseGet(() -> id);
+  @Transactional(readOnly = true)
+  public Long findPreviousId(Long id) {
+    return memberRepository.findPreviousId(id)
+      .orElseGet(() -> id);
+  }
+
+  @Transactional(readOnly = true)
+  public Long findNextId(Long id) {
+    return memberRepository.findNextId(id)
+      .orElseGet(() -> id);
+  }
+
+  @Transactional(readOnly = true)
+  public MemberResponse findMemberById(Long id) {
+    return memberRepository.findById(id)
+      .map(memberResponseMapper::toDto)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+  }
+
+  @Transactional
+  @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
+  public MemberResponse joinAsMember(SignupRequest signUpRequest) {
+    Member member = join(signUpRequest, Authority.ROLE_USER);
+    return memberResponseMapper.toDto(member);
+  }
+
+  @Transactional
+  @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
+  public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
+    Member member = join(signUpRequest, Authority.ROLE_SELLER);
+    return memberResponseMapper.toDto(member);
+  }
+
+  @Transactional
+  public Member join(SignupRequest signUpRequest, Authority authority) {
+    if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
+      throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
     }
 
-    @Transactional(readOnly = true)
-    public Long findNextId(Long id) {
-        return memberRepository.findNextId(id)
-            .orElseGet(() -> id);
-    }
+    Image image = imageProcessor.parse(signUpRequest.getMultipartFile());
 
-    @Transactional(readOnly = true)
-    public MemberResponse findMemberById(Long id) {
-        return memberRepository.findById(id)
-            .map(memberResponseMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-    }
+    Member member = signupRequestMapper.toEntity(signUpRequest);
+    member.changePassword(passwordEncoder.encode(member.getPassword()));
+    member.assignAuthority(authority);
+    member.addImage(image);
+    return memberRepository.save(member);
+  }
 
-    @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
-    public MemberResponse joinAsMember(SignupRequest signUpRequest) {
-        Member member = join(signUpRequest, Authority.ROLE_USER);
-        return memberResponseMapper.toDto(member);
-    }
+  @Transactional
+  @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
+  public void edit(Long id, ModifyRequest modifyRequest) {
+    Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-    @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
-    public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
-        Member member = join(signUpRequest, Authority.ROLE_SELLER);
-        return memberResponseMapper.toDto(member);
-    }
+    Image image = imageProcessor.parse(modifyRequest.getMultipartFile());
+    member.addImage(image);
 
-    @Transactional
-    public Member join(SignupRequest signUpRequest, Authority authority) {
-        if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
-        }
+    modifyRequestMapper.updateFromDto(modifyRequest, member);
+  }
 
-        Image image = imageProcessor.parse(signUpRequest.getMultipartFile());
+  /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
+  @Transactional
+  @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
+  public void leaveSoftly(Long id) {
+    memberRepository.findByIdAndStatus(id, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+      .leave();
+  }
 
-        Member member = signupRequestMapper.toEntity(signUpRequest);
-        member.changePassword(passwordEncoder.encode(member.getPassword()));
-        member.assignAuthority(authority);
-        member.addImage(image);
-        return memberRepository.save(member);
-    }
-
-    @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
-    public void edit(Long id, ModifyRequest modifyRequest) {
-        Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-
-        Image image = imageProcessor.parse(modifyRequest.getMultipartFile());
-        member.addImage(image);
-
-        modifyRequestMapper.updateFromDto(modifyRequest, member);
-    }
-
-    /* 사용자 요청은 soft delete 하고 진짜 삭제는 batch job 으로 돌리자 batch 기준은 탈퇴 후 6개월? */
-    @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
-    public void leaveSoftly(Long id) {
-        memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
-            .leave();
-    }
-
-    @Transactional
-    @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
-    public void restore(Long id) {
-        memberRepository.findByIdAndStatus(id, Status.INACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
-            .restore();
-    }
+  @Transactional
+  @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
+  public void restore(Long id) {
+    memberRepository.findByIdAndStatus(id, Status.INACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+      .restore();
+  }
 
 
-    /* FOR ADMIN */
-    @Cacheable(keyGenerator = "customKeyGenerator", value = "medium", unless = "#result==null")
-    @Transactional(readOnly = true)
-    public Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable) {
-        return memberRepository.searchForAdminBy(condition, pageable);
-    }
+  /* FOR ADMIN */
+  @Cacheable(keyGenerator = "customKeyGenerator", value = "medium", unless = "#result==null")
+  @Transactional(readOnly = true)
+  public Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable) {
+    return memberRepository.searchForAdminBy(condition, pageable);
+  }
 }

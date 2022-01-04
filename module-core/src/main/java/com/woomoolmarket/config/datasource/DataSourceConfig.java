@@ -16,37 +16,37 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 @Profile("mysql")
 public class DataSourceConfig {
 
-    private static final String SLAVE_DATASOURCE = "slaveDataSource";
-    private static final String MASTER_DATASOURCE = "masterDataSource";
+  private static final String SLAVE_DATASOURCE = "slaveDataSource";
+  private static final String MASTER_DATASOURCE = "masterDataSource";
 
-    @Bean(name = MASTER_DATASOURCE)
-    @ConfigurationProperties(prefix = "spring.datasource.master.hikari")
-    public DataSource masterDataSource() {
-        return DataSourceBuilder.create()
-            .type(HikariDataSource.class)
-            .build();
-    }
+  @Bean(name = MASTER_DATASOURCE)
+  @ConfigurationProperties(prefix = "spring.datasource.master.hikari")
+  public DataSource masterDataSource() {
+    return DataSourceBuilder.create()
+      .type(HikariDataSource.class)
+      .build();
+  }
 
-    @Bean(name = SLAVE_DATASOURCE)
-    @ConfigurationProperties(prefix = "spring.datasource.slave.hikari")
-    public DataSource slaveDataSource() {
-        return DataSourceBuilder.create()
-            .type(HikariDataSource.class)
-            .build();
-    }
+  @Bean(name = SLAVE_DATASOURCE)
+  @ConfigurationProperties(prefix = "spring.datasource.slave.hikari")
+  public DataSource slaveDataSource() {
+    return DataSourceBuilder.create()
+      .type(HikariDataSource.class)
+      .build();
+  }
 
-    @Bean
-    @DependsOn({MASTER_DATASOURCE, SLAVE_DATASOURCE})
-    public DataSource routingDataSource() {
-        DataSourceRouter dataSourceRouter = new DataSourceRouter();
-        dataSourceRouter.setTargetDataSources(Map.of("master", masterDataSource(), "slave", slaveDataSource()));
-        dataSourceRouter.setDefaultTargetDataSource(masterDataSource());
-        return dataSourceRouter;
-    }
+  @Bean
+  @DependsOn({MASTER_DATASOURCE, SLAVE_DATASOURCE})
+  public DataSource routingDataSource() {
+    DataSourceRouter dataSourceRouter = new DataSourceRouter();
+    dataSourceRouter.setTargetDataSources(Map.of("master", masterDataSource(), "slave", slaveDataSource()));
+    dataSourceRouter.setDefaultTargetDataSource(masterDataSource());
+    return dataSourceRouter;
+  }
 
-    @Bean(name = "dataSource")
-    @Primary
-    public DataSource dataSource(DataSource routingDataSource) {
-        return new LazyConnectionDataSourceProxy(routingDataSource);
-    }
+  @Bean(name = "dataSource")
+  @Primary
+  public DataSource dataSource(DataSource routingDataSource) {
+    return new LazyConnectionDataSourceProxy(routingDataSource);
+  }
 }

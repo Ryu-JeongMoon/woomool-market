@@ -21,66 +21,66 @@ import org.springframework.data.domain.Pageable;
 @Log4j2
 class CartServiceTest extends ServiceTestConfig {
 
-    @BeforeEach
-    void init() {
-        Member member = memberTestHelper.createMember();
-        MEMBER_ID = memberRepository.save(member).getId();
+  @BeforeEach
+  void init() {
+    Member member = memberTestHelper.createMember();
+    MEMBER_ID = memberRepository.save(member).getId();
 
-        Product product = productTestHelper.createProduct(member);
-        PRODUCT_ID = productRepository.save(product).getId();
+    Product product = productTestHelper.createProduct(member);
+    PRODUCT_ID = productRepository.save(product).getId();
 
-        Cart cart = cartTestHelper.createCart(member, product);
-        CART_ID = cartRepository.save(cart).getId();
-    }
+    Cart cart = cartTestHelper.createCart(member, product);
+    CART_ID = cartRepository.save(cart).getId();
+  }
 
-    @AfterEach
-    void clear() {
-        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-    }
+  @AfterEach
+  void clear() {
+    Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
+  }
 
-    @Test
-    @DisplayName("장바구니 단건 조회")
-    void getById() {
-        CartResponse cartResponse = cartService.findBy(CART_ID);
+  @Test
+  @DisplayName("장바구니 단건 조회")
+  void getById() {
+    CartResponse cartResponse = cartService.findBy(CART_ID);
 
-        assertThat(cartResponse.getMemberResponse().getEmail()).isEqualTo("panda@naver.com");
-        assertThat(cartResponse.getProductResponse().getPrice()).isEqualTo(50000);
-        assertThat(cartResponse.getQuantity()).isEqualTo(500);
-    }
+    assertThat(cartResponse.getMemberResponse().getEmail()).isEqualTo("panda@naver.com");
+    assertThat(cartResponse.getProductResponse().getPrice()).isEqualTo(50000);
+    assertThat(cartResponse.getQuantity()).isEqualTo(500);
+  }
 
-    @Test
-    @DisplayName("장바구니 다건 조회")
-    void getListByMember() {
-        Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
-        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
-    }
+  @Test
+  @DisplayName("장바구니 다건 조회")
+  void getListByMember() {
+    Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
+    assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
+  }
 
-    @Test
-    @DisplayName("장바구니 추가")
-    void add() {
-        CartRequest cartRequest = CartRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(500)
-            .build();
+  @Test
+  @DisplayName("장바구니 추가")
+  void add() {
+    CartRequest cartRequest = CartRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(500)
+      .build();
 
-        Long cartId = cartService.add(cartRequest);
-        assertThat(cartId).isNotNull();
-    }
+    Long cartId = cartService.add(cartRequest);
+    assertThat(cartId).isNotNull();
+  }
 
-    @Test
-    @DisplayName("장바구니 단건 삭제")
-    void remove() {
-        cartService.remove(CART_ID);
-        Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
-        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
-    }
+  @Test
+  @DisplayName("장바구니 단건 삭제")
+  void remove() {
+    cartService.remove(CART_ID);
+    Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
+    assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
+  }
 
-    @Test
-    @DisplayName("장바구니 다건 삭제")
-    void removeAll() {
-        cartService.removeAll(MEMBER_ID);
-        Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
-        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
-    }
+  @Test
+  @DisplayName("장바구니 다건 삭제")
+  void removeAll() {
+    cartService.removeAll(MEMBER_ID);
+    Page<CartQueryResponse> cartQueryResponses = cartService.searchBy(MEMBER_ID, Pageable.ofSize(10));
+    assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
+  }
 }

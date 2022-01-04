@@ -28,88 +28,88 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final CartRepository cartRepository;
-    private final OrderRepository orderRepository;
-    private final MemberRepository memberRepository;
-    private final ProductRepository productRepository;
-    private final OrderResponseMapper orderResponseMapper;
+  private final CartRepository cartRepository;
+  private final OrderRepository orderRepository;
+  private final MemberRepository memberRepository;
+  private final ProductRepository productRepository;
+  private final OrderResponseMapper orderResponseMapper;
 
-    @Transactional(readOnly = true)
-    public Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable) {
-        return orderRepository.searchBy(memberId, pageable);
+  @Transactional(readOnly = true)
+  public Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable) {
+    return orderRepository.searchBy(memberId, pageable);
+  }
+
+  @Transactional
+  public void order(OrderRequest orderRequest) {
+    if (orderRequest.getProductId() != null) {
+      orderMultiples(orderRequest);
+    } else {
+      orderOne(orderRequest);
     }
+  }
 
-    @Transactional
-    public void order(OrderRequest orderRequest) {
-        if (orderRequest.getProductId() != null) {
-            orderMultiples(orderRequest);
-        } else {
-            orderOne(orderRequest);
-        }
-    }
+  @Transactional
+  public void orderOne(OrderRequest orderRequest) {
+    Member member = memberRepository.findById(orderRequest.getMemberId())
+      .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-    @Transactional
-    public void orderOne(OrderRequest orderRequest) {
-        Member member = memberRepository.findById(orderRequest.getMemberId())
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+    Product product = productRepository.findById(orderRequest.getProductId())
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
 
-        Product product = productRepository.findById(orderRequest.getProductId())
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+    Delivery delivery = Delivery.builder()
+      .receiver(member.getEmail())
+      .address(member.getAddress())
+      .phone(member.getPhone())
+      .build();
 
-        Delivery delivery = Delivery.builder()
-            .receiver(member.getEmail())
-            .address(member.getAddress())
-            .phone(member.getPhone())
-            .build();
+    OrderProduct orderProduct = OrderProduct.createOrderProduct(product, orderRequest.getQuantity());
 
-        OrderProduct orderProduct = OrderProduct.createOrderProduct(product, orderRequest.getQuantity());
+    Order order = Order.builder()
+      .member(member)
+      .delivery(delivery)
+      .orderProducts(List.of(orderProduct))
+      .build();
 
-        Order order = Order.builder()
-            .member(member)
-            .delivery(delivery)
-            .orderProducts(List.of(orderProduct))
-            .build();
+    orderRepository.save(order);
+  }
 
-        orderRepository.save(order);
-    }
+  @Transactional
+  public void orderMultiples(OrderRequest orderRequest) {
+    Member member = memberRepository.findById(orderRequest.getMemberId())
+      .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-    @Transactional
-    public void orderMultiples(OrderRequest orderRequest) {
-        Member member = memberRepository.findById(orderRequest.getMemberId())
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+    Delivery delivery = Delivery.builder()
+      .receiver(member.getEmail())
+      .address(member.getAddress())
+      .phone(member.getPhone())
+      .build();
 
-        Delivery delivery = Delivery.builder()
-            .receiver(member.getEmail())
-            .address(member.getAddress())
-            .phone(member.getPhone())
-            .build();
+    List<OrderProduct> orderProducts = cartRepository.findByMember(member)
+      .parallelStream()
+      .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getQuantity()))
+      .collect(Collectors.toList());
 
-        List<OrderProduct> orderProducts = cartRepository.findByMember(member)
-            .parallelStream()
-            .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getQuantity()))
-            .collect(Collectors.toList());
+    Order order = Order.builder()
+      .member(member)
+      .delivery(delivery)
+      .orderProducts(orderProducts).build();
 
-        Order order = Order.builder()
-            .member(member)
-            .delivery(delivery)
-            .orderProducts(orderProducts).build();
+    orderRepository.save(order);
 
-        orderRepository.save(order);
+    cartRepository.deleteByMember(member);
+  }
 
-        cartRepository.deleteByMember(member);
-    }
-
-    @Transactional
-    public void cancel(Long orderId) {
-        orderRepository.findById(orderId)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.ORDER_NOT_FOUND))
-            .cancel();
-    }
+  @Transactional
+  public void cancel(Long orderId) {
+    orderRepository.findById(orderId)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.ORDER_NOT_FOUND))
+      .cancel();
+  }
 
 
-    /* FOR ADMIN */
-    @Transactional(readOnly = true)
-    public Page<OrderQueryResponse> searchForAdminBy(OrderSearchCondition condition, Pageable pageable) {
-        return orderRepository.searchForAdminBy(condition, pageable);
-    }
+  /* FOR ADMIN */
+  @Transactional(readOnly = true)
+  public Page<OrderQueryResponse> searchForAdminBy(OrderSearchCondition condition, Pageable pageable) {
+    return orderRepository.searchForAdminBy(condition, pageable);
+  }
 }

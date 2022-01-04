@@ -39,62 +39,62 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/products", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProductController {
 
-    private final ProductService productService;
-    private final PagedResourcesAssembler<ProductQueryResponse> queryAssembler;
+  private final ProductService productService;
+  private final PagedResourcesAssembler<ProductQueryResponse> queryAssembler;
 
-    @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<ProductQueryResponse>>> getPageForMember(
-        ProductSearchCondition condition, @PageableDefault Pageable pageable) {
+  @GetMapping
+  public ResponseEntity<PagedModel<EntityModel<ProductQueryResponse>>> getPageForMember(
+    ProductSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<ProductQueryResponse> queryResponsePage = productService.searchBy(condition, pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
-    }
+    Page<ProductQueryResponse> queryResponsePage = productService.searchBy(condition, pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
+  }
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole({'ROLE_SELLER', 'ROLE_ADMIN'})")
-    public ResponseEntity<Void> create(@Valid @RequestBody ProductRequest productRequest) {
-        productService.create(productRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @PostMapping
+  @PreAuthorize("hasAnyRole({'ROLE_SELLER', 'ROLE_ADMIN'})")
+  public ResponseEntity<Void> create(@Valid @RequestBody ProductRequest productRequest) {
+    productService.create(productRequest);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
-    @GetMapping("/{productId}")
-    public ResponseEntity<EntityModel<ProductResponse>> getBy(@PathVariable Long productId) {
-        ProductResponse productResponse = productService.findBy(productId, Status.ACTIVE);
-        WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getBy(productId));
+  @GetMapping("/{productId}")
+  public ResponseEntity<EntityModel<ProductResponse>> getBy(@PathVariable Long productId) {
+    ProductResponse productResponse = productService.findBy(productId, Status.ACTIVE);
+    WebMvcLinkBuilder defaultLink = linkTo(methodOn(ProductController.class).getBy(productId));
 
-        EntityModel<ProductResponse> productModel =
-            EntityModel.of(
-                productResponse,
-                defaultLink.withSelfRel(),
-                defaultLink.withRel(ProductConstants.MODIFY),
-                defaultLink.withRel(ProductConstants.DELETE));
+    EntityModel<ProductResponse> productModel =
+      EntityModel.of(
+        productResponse,
+        defaultLink.withSelfRel(),
+        defaultLink.withRel(ProductConstants.MODIFY),
+        defaultLink.withRel(ProductConstants.DELETE));
 
-        return ResponseEntity.ok(productModel);
-    }
+    return ResponseEntity.ok(productModel);
+  }
 
-    @PatchMapping("/{productId}")
-    @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> edit(@PathVariable Long productId, @Valid @RequestBody ProductModifyRequest modifyRequest) {
-        productService.edit(productId, modifyRequest);
-        URI uri = linkTo(methodOn(ProductController.class).getBy(productId)).withSelfRel().toUri();
-        return ResponseEntity.created(uri).build();
-    }
+  @PatchMapping("/{productId}")
+  @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> edit(@PathVariable Long productId, @Valid @RequestBody ProductModifyRequest modifyRequest) {
+    productService.edit(productId, modifyRequest);
+    URI uri = linkTo(methodOn(ProductController.class).getBy(productId)).withSelfRel().toUri();
+    return ResponseEntity.created(uri).build();
+  }
 
-    @DeleteMapping("/{productId}")
-    @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Long productId) {
-        productService.deleteSoftly(productId);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{productId}")
+  @PreAuthorize("@checker.isSelfByProductId(#productId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> delete(@PathVariable Long productId) {
+    productService.deleteSoftly(productId);
+    return ResponseEntity.noContent().build();
+  }
 
 
-    /* FOR ADMIN */
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<PagedModel<EntityModel<ProductQueryResponse>>> getPageForAdmin(
-        ProductSearchCondition condition, @PageableDefault Pageable pageable) {
+  /* FOR ADMIN */
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<ProductQueryResponse>>> getPageForAdmin(
+    ProductSearchCondition condition, @PageableDefault Pageable pageable) {
 
-        Page<ProductQueryResponse> queryResponsePage = productService.searchByAdmin(condition, pageable);
-        return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
-    }
+    Page<ProductQueryResponse> queryResponsePage = productService.searchByAdmin(condition, pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
+  }
 }

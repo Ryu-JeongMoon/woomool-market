@@ -34,81 +34,81 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class RSA512TokenFactory extends TokenFactory {
 
-    private final CacheService cacheService;
+  private final CacheService cacheService;
 
-    @Value("${jwt.publicKey}")
-    private String publicKeyPlainText;
-    @Value("${jwt.privateKey}")
-    private String privateKeyPlainText;
+  @Value("${jwt.publicKey}")
+  private String publicKeyPlainText;
+  @Value("${jwt.privateKey}")
+  private String privateKeyPlainText;
 
-    private RSAPublicKey publicKey;
-    private RSAPrivateKey privateKey;
+  private RSAPublicKey publicKey;
+  private RSAPrivateKey privateKey;
 
-    @PostConstruct
-    public void keySetUp() throws Exception {
-        byte[] publicKeyBytes = Base64.decode(publicKeyPlainText);
-        byte[] privateKeyBytes = Base64.decode(privateKeyPlainText);
+  @PostConstruct
+  public void keySetUp() throws Exception {
+    byte[] publicKeyBytes = Base64.decode(publicKeyPlainText);
+    byte[] privateKeyBytes = Base64.decode(privateKeyPlainText);
 
-        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+    PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+    X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
 
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
-        publicKey = (RSAPublicKey) keyFactory.generatePublic(publicKeySpec);
+    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+    privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
+    publicKey = (RSAPublicKey) keyFactory.generatePublic(publicKeySpec);
+  }
+
+  @Override
+  public String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate) {
+    return Jwts.builder()
+      .setSubject(authentication.getName())
+      .claim(AUTHORITIES_KEY, authorities)
+      .setExpiration(accessTokenExpireDate)
+      .signWith(privateKey, SignatureAlgorithm.RS512)
+      .compact();
+  }
+
+  @Override
+  protected String createRefreshToken(Date refreshTokenExpireDate) {
+    return Jwts.builder()
+      .setExpiration(refreshTokenExpireDate)
+      .signWith(privateKey, SignatureAlgorithm.RS512)
+      .compact();
+  }
+
+  @Override
+  protected Claims parseClaims(String accessToken) {
+    try {
+      return Jwts.parserBuilder()
+        .setSigningKey(publicKey)
+        .build()
+        .parseClaimsJws(accessToken)
+        .getBody();
+    } catch (ExpiredJwtException e) {
+      log.info("[WOOMOOL-ERROR] :: Expired Token => {} ", e.getMessage());
+      return e.getClaims();
+    } catch (MalformedJwtException me) {
+      log.info("[WOOMOOL-ERROR] :: Malformed Token => {} ", me.getMessage());
+      throw new IllegalArgumentException(ExceptionConstants.TOKEN_NOT_VALID);
     }
+  }
 
-    @Override
-    public String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate) {
-        return Jwts.builder()
-            .setSubject(authentication.getName())
-            .claim(AUTHORITIES_KEY, authorities)
-            .setExpiration(accessTokenExpireDate)
-            .signWith(privateKey, SignatureAlgorithm.RS512)
-            .compact();
+  @Override
+  protected boolean isBlocked(String token) {
+    return StringUtils.hasText(token) && StringUtils.hasText(cacheService.getData(LOGOUT_KEY_PREFIX + token));
+  }
+
+  @Override
+  protected boolean isValid(String token) {
+    try {
+      Jws<Claims> claims = Jwts.parserBuilder()
+        .setSigningKey(publicKey)
+        .build()
+        .parseClaimsJws(token);
+
+      return TokenUtils.isNotExpired(claims);
+    } catch (Exception e) {
+      log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
     }
-
-    @Override
-    protected String createRefreshToken(Date refreshTokenExpireDate) {
-        return Jwts.builder()
-            .setExpiration(refreshTokenExpireDate)
-            .signWith(privateKey, SignatureAlgorithm.RS512)
-            .compact();
-    }
-
-    @Override
-    protected Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parserBuilder()
-                .setSigningKey(publicKey)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody();
-        } catch (ExpiredJwtException e) {
-            log.info("[WOOMOOL-ERROR] :: Expired Token => {} ", e.getMessage());
-            return e.getClaims();
-        } catch (MalformedJwtException me) {
-            log.info("[WOOMOOL-ERROR] :: Malformed Token => {} ", me.getMessage());
-            throw new IllegalArgumentException(ExceptionConstants.TOKEN_NOT_VALID);
-        }
-    }
-
-    @Override
-    protected boolean isBlocked(String token) {
-        return StringUtils.hasText(token) && StringUtils.hasText(cacheService.getData(LOGOUT_KEY_PREFIX + token));
-    }
-
-    @Override
-    protected boolean isValid(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parserBuilder()
-                .setSigningKey(publicKey)
-                .build()
-                .parseClaimsJws(token);
-
-            return TokenUtils.isNotExpired(claims);
-        } catch (Exception e) {
-            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
-        }
-        return false;
-    }
+    return false;
+  }
 }

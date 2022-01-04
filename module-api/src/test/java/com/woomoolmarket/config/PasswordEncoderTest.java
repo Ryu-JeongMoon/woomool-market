@@ -12,19 +12,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Log4j2
 class PasswordEncoderTest {
 
-    PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
+  PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
 
-    @Test
-    @DisplayName("인코딩 마다 다른 비밀번호 반환")
-    void passwordTest() {
-        String password = "1234";
+  @Test
+  @DisplayName("인코딩 마다 다른 비밀번호 반환")
+  void passwordTest() {
+    String password = "1234";
 
-        String encodedPassword = passwordEncoder.encode(password);
-        String encodedPassword2 = passwordEncoder.encode(password);
+    String encodedPassword = passwordEncoder.encode(password);
+    String encodedPassword2 = passwordEncoder.encode(password);
 
-        assertNotEquals(password, encodedPassword);
-        assertNotEquals(encodedPassword, encodedPassword2);
-        assertTrue(passwordEncoder.matches(password, encodedPassword));
-    }
+    assertNotEquals(password, encodedPassword);
+    assertNotEquals(encodedPassword, encodedPassword2);
+    assertTrue(passwordEncoder.matches(password, encodedPassword));
+  }
 
 }

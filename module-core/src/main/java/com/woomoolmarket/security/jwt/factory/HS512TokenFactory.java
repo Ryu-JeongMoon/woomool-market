@@ -29,72 +29,72 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class HS512TokenFactory extends TokenFactory {
 
-    private final CacheService cacheService;
+  private final CacheService cacheService;
 
-    private Key key;
+  private Key key;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+  @Value("${jwt.secret}")
+  private String secretKey;
 
 
-    @PostConstruct
-    public void keySetUp() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+  @PostConstruct
+  public void keySetUp() {
+    byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    this.key = Keys.hmacShaKeyFor(keyBytes);
+  }
+
+  @Override
+  protected String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate) {
+    return Jwts.builder()
+      .setSubject(authentication.getName())
+      .claim(AUTHORITIES_KEY, authorities)
+      .setExpiration(accessTokenExpireDate)
+      .signWith(key, SignatureAlgorithm.HS512)
+      .compact();
+  }
+
+  @Override
+  protected String createRefreshToken(Date refreshTokenExpireDate) {
+    return Jwts.builder()
+      .setExpiration(refreshTokenExpireDate)
+      .signWith(key, SignatureAlgorithm.HS512)
+      .compact();
+  }
+
+  @Override
+  protected Claims parseClaims(String accessToken) {
+    try {
+      return Jwts.parserBuilder()
+        .setSigningKey(key)
+        .build()
+        .parseClaimsJws(accessToken)
+        .getBody();
+    } catch (ExpiredJwtException e) {
+      log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
+      return e.getClaims();
+    } catch (MalformedJwtException me) {
+      log.info("[WOOMOOL-ERROR] :: Malformed Token => {} ", me.getMessage());
+      throw new IllegalArgumentException(ExceptionConstants.TOKEN_NOT_VALID);
     }
+  }
 
-    @Override
-    protected String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate) {
-        return Jwts.builder()
-            .setSubject(authentication.getName())
-            .claim(AUTHORITIES_KEY, authorities)
-            .setExpiration(accessTokenExpireDate)
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+  @Override
+  protected boolean isBlocked(String token) {
+    return StringUtils.hasText(token) && StringUtils.hasText(cacheService.getData(LOGOUT_KEY_PREFIX + token));
+  }
+
+  @Override
+  protected boolean isValid(String token) {
+    try {
+      Jws<Claims> claims = Jwts.parserBuilder()
+        .setSigningKey(key)
+        .build()
+        .parseClaimsJws(token);
+
+      return TokenUtils.isNotExpired(claims);
+    } catch (Exception e) {
+      log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
     }
-
-    @Override
-    protected String createRefreshToken(Date refreshTokenExpireDate) {
-        return Jwts.builder()
-            .setExpiration(refreshTokenExpireDate)
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
-    }
-
-    @Override
-    protected Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody();
-        } catch (ExpiredJwtException e) {
-            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
-            return e.getClaims();
-        } catch (MalformedJwtException me) {
-            log.info("[WOOMOOL-ERROR] :: Malformed Token => {} ", me.getMessage());
-            throw new IllegalArgumentException(ExceptionConstants.TOKEN_NOT_VALID);
-        }
-    }
-
-    @Override
-    protected boolean isBlocked(String token) {
-        return StringUtils.hasText(token) && StringUtils.hasText(cacheService.getData(LOGOUT_KEY_PREFIX + token));
-    }
-
-    @Override
-    protected boolean isValid(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
-
-            return TokenUtils.isNotExpired(claims);
-        } catch (Exception e) {
-            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
-        }
-        return false;
-    }
+    return false;
+  }
 }

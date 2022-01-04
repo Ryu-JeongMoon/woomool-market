@@ -20,43 +20,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthFindController {
 
-    private final AuthFindService authFindService;
+  private final AuthFindService authFindService;
 
-    @PostMapping("/email-verification")
-    @PreAuthorize("isAnonymous()")
-    public ResponseEntity<Void> verifyEmail(@Valid @RequestBody EmailRequest emailRequest) {
-        authFindService.sendEmailForVerification(emailRequest.getEmail());
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping("/email-verification")
+  @PreAuthorize("isAnonymous()")
+  public ResponseEntity<Void> verifyEmail(@Valid @RequestBody EmailRequest emailRequest) {
+    authFindService.sendEmailForVerification(emailRequest.getEmail());
+    return ResponseEntity.ok().build();
+  }
 
-    @PostMapping("/auth-string-verification")
-    @PreAuthorize("isAnonymous()")
-    public ResponseEntity<Void> verifyAuthString(@RequestBody AuthStringRequest authStringRequest) {
-        String authString = authStringRequest.getAuthString();
-        return authFindService.isVerified(authString) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
-    }
+  @PostMapping("/auth-string-verification")
+  @PreAuthorize("isAnonymous()")
+  public ResponseEntity<Void> verifyAuthString(@RequestBody AuthStringRequest authStringRequest) {
+    String authString = authStringRequest.getAuthString();
+    return authFindService.isVerified(authString) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+  }
 
-    @PostMapping("/id")
-    @PreAuthorize("isAnonymous()")
-    public ResponseEntity<Void> findId(@Valid @RequestBody PhoneRequest phoneRequest) {
-        authFindService.sendAuthStringToPhone(phoneRequest.getPhone());
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping("/id")
+  @PreAuthorize("isAnonymous()")
+  public ResponseEntity<Void> findId(@Valid @RequestBody PhoneRequest phoneRequest) {
+    authFindService.sendAuthStringToPhone(phoneRequest.getPhone());
+    return ResponseEntity.ok().build();
+  }
 
-    @PostMapping("/pw")
-    @PreAuthorize("isAnonymous()")
-    public ResponseEntity<Void> findPw(@Valid @RequestBody EmailRequest findRequest) {
-        authFindService.sendEmailForFinding(findRequest.getEmail());
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping("/pw")
+  @PreAuthorize("isAnonymous()")
+  public ResponseEntity<Void> findPw(@Valid @RequestBody EmailRequest findRequest) {
+    authFindService.sendEmailForFinding(findRequest.getEmail());
+    return ResponseEntity.ok().build();
+  }
 
-    @GetMapping("/balance")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<BalanceResponse> findBalance() {
-        int balance = authFindService.checkBalance();
-        BalanceResponse balanceResponse = BalanceResponse.builder()
-            .balance(balance)
-            .build();
-        return ResponseEntity.ok(balanceResponse);
-    }
+  @GetMapping("/balance")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<BalanceResponse> findBalance() {
+    int balance = authFindService.checkBalance();
+    BalanceResponse balanceResponse = BalanceResponse.builder()
+      .balance(balance)
+      .build();
+    return ResponseEntity.ok(balanceResponse);
+  }
 }

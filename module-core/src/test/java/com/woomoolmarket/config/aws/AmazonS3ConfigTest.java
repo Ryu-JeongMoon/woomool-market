@@ -13,13 +13,13 @@ import org.springframework.core.env.Environment;
 @SpringBootTest
 class AmazonS3ConfigTest {
 
-    @Autowired
-    Environment env;
+  @Autowired
+  Environment env;
 
-    @Test
-    @DisplayName("yml 에서 올바른 정보 읽어온다")
-    void configureTest() {
-        String region = env.getProperty("cloud.aws.region.static");
-        assertThat(region).isEqualTo("ap-northeast-2");
-    }
+  @Test
+  @DisplayName("yml 에서 올바른 정보 읽어온다")
+  void configureTest() {
+    String region = env.getProperty("cloud.aws.region.static");
+    assertThat(region).isEqualTo("ap-northeast-2");
+  }
 }

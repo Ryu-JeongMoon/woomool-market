@@ -35,75 +35,75 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final CacheService cacheService;
-    private final TokenFactory tokenFactory;
-    private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+  private final CacheService cacheService;
+  private final TokenFactory tokenFactory;
+  private final MemberRepository memberRepository;
+  private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @Transactional
-    public TokenResponse login(LoginRequest loginRequest) {
-        checkFailureCount(loginRequest);
+  @Transactional
+  public TokenResponse login(LoginRequest loginRequest) {
+    checkFailureCount(loginRequest);
 
-        UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
-        Authentication authentication = authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        TokenResponse tokenResponse = tokenFactory.createToken(authentication);
+    UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
+    Authentication authentication = authenticate(authenticationToken);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    TokenResponse tokenResponse = tokenFactory.createToken(authentication);
 
-        String username = authentication.getName();
-        String accessToken = tokenResponse.getAccessToken();
-        String refreshToken = tokenResponse.getRefreshToken();
-        cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
-        cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
-        return tokenResponse;
+    String username = authentication.getName();
+    String accessToken = tokenResponse.getAccessToken();
+    String refreshToken = tokenResponse.getRefreshToken();
+    cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
+    cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
+    return tokenResponse;
+  }
+
+  private void checkFailureCount(LoginRequest loginRequest) {
+    String loginFailureCount = cacheService.getData(LOGIN_FAILED_KEY_PREFIX + loginRequest.getEmail());
+
+    if (StringUtils.hasText(loginFailureCount) && Integer.parseInt(loginFailureCount) >= MAXIMAL_NUMBER_OF_WRONG_PASSWORD) {
+      throw new AccessDeniedException(ExceptionConstants.MEMBER_BLOCKED);
+    }
+  }
+
+  @Transactional
+  public Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {
+    try {
+      Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+      cacheService.deleteData(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
+      return authentication;
+    } catch (AuthenticationException e) {
+      memberRepository.findByEmailAndStatus(authenticationToken.getName(), Status.ACTIVE)
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      cacheService.increment(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
+
+      log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
+      throw e;
+    }
+  }
+
+  @Transactional
+  public void logout(HttpServletRequest request) {
+    String accessToken = TokenUtils.resolveAccessTokenFrom(request);
+    if (!tokenFactory.validate(accessToken)) {
+      throw new IllegalArgumentException(ExceptionConstants.ACCESS_TOKEN_NOT_VALID);
+    }
+    cacheService.setDataAndExpiration(LOGOUT_KEY_PREFIX + accessToken, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
+    SecurityContextHolder.clearContext();
+  }
+
+  @Transactional
+  public TokenResponse reissue(TokenRequest tokenRequest) {
+    String refreshToken = tokenRequest.getRefreshToken();
+    Authentication authentication = tokenFactory.getAuthentication(tokenRequest.getAccessToken());
+    String username = authentication.getName();
+
+    if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(cacheService.getData(LOGIN_KEY_PREFIX + username))) {
+      throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_VALID);
     }
 
-    private void checkFailureCount(LoginRequest loginRequest) {
-        String loginFailureCount = cacheService.getData(LOGIN_FAILED_KEY_PREFIX + loginRequest.getEmail());
-
-        if (StringUtils.hasText(loginFailureCount) && Integer.parseInt(loginFailureCount) >= MAXIMAL_NUMBER_OF_WRONG_PASSWORD) {
-            throw new AccessDeniedException(ExceptionConstants.MEMBER_BLOCKED);
-        }
-    }
-
-    @Transactional
-    public Authentication authenticate(UsernamePasswordAuthenticationToken authenticationToken) {
-        try {
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-            cacheService.deleteData(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
-            return authentication;
-        } catch (AuthenticationException e) {
-            memberRepository.findByEmailAndStatus(authenticationToken.getName(), Status.ACTIVE)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-            cacheService.increment(LOGIN_FAILED_KEY_PREFIX + authenticationToken.getName());
-
-            log.info("[WOOMOOL-ERROR] :: Invalid Token => {} ", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Transactional
-    public void logout(HttpServletRequest request) {
-        String accessToken = TokenUtils.resolveAccessTokenFrom(request);
-        if (!tokenFactory.validate(accessToken)) {
-            throw new IllegalArgumentException(ExceptionConstants.ACCESS_TOKEN_NOT_VALID);
-        }
-        cacheService.setDataAndExpiration(LOGOUT_KEY_PREFIX + accessToken, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
-        SecurityContextHolder.clearContext();
-    }
-
-    @Transactional
-    public TokenResponse reissue(TokenRequest tokenRequest) {
-        String refreshToken = tokenRequest.getRefreshToken();
-        Authentication authentication = tokenFactory.getAuthentication(tokenRequest.getAccessToken());
-        String username = authentication.getName();
-
-        if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(cacheService.getData(LOGIN_KEY_PREFIX + username))) {
-            throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_VALID);
-        }
-
-        TokenResponse tokenResponse = tokenFactory.createToken(authentication);
-        String reissuedRefreshToken = tokenResponse.getRefreshToken();
-        cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, reissuedRefreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
-        return tokenResponse;
-    }
+    TokenResponse tokenResponse = tokenFactory.createToken(authentication);
+    String reissuedRefreshToken = tokenResponse.getRefreshToken();
+    cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, reissuedRefreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
+    return tokenResponse;
+  }
 }

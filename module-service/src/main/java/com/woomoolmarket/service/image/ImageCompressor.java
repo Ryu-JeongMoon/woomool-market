@@ -12,20 +12,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageCompressor {
 
-    @Value("${tinify.apiKey}")
-    private String apiKey;
+  @Value("${tinify.apiKey}")
+  private String apiKey;
 
-    @PostConstruct
-    private void setup() {
-        Tinify.setKey(apiKey);
-    }
+  @PostConstruct
+  private void setup() {
+    Tinify.setKey(apiKey);
+  }
 
-    public void compressAndSave(byte[] buffer, String path) {
-        Source source = Tinify.fromBuffer(buffer);
-        try {
-            source.toFile(path);
-        } catch (IOException e) {
-            log.info("[WOOMOOL-ERROR] :: Can't Write a File => {}", e.getMessage());
-        }
+  public void compressAndSave(byte[] buffer, String path) {
+    Source source = Tinify.fromBuffer(buffer);
+    try {
+      source.toFile(path);
+    } catch (IOException e) {
+      log.info("[WOOMOOL-ERROR] :: Can't Write a File => {}", e.getMessage());
     }
+  }
 }

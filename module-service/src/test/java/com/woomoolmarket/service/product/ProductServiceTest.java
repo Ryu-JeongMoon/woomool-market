@@ -1,7 +1,6 @@
 package com.woomoolmarket.service.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.common.enumeration.Region;
 import com.woomoolmarket.common.enumeration.Status;
@@ -28,125 +27,125 @@ import org.springframework.data.domain.Pageable;
 @Log4j2
 class ProductServiceTest extends ServiceTestConfig {
 
-    private static Long PRODUCT1_ID;
-    private static Long PRODUCT2_ID;
+  private static Long PRODUCT1_ID;
+  private static Long PRODUCT2_ID;
 
-    @Autowired
-    ProductResponseMapper productResponseMapper;
+  @Autowired
+  ProductResponseMapper productResponseMapper;
 
-    @BeforeEach
-    void init() {
-        Member member = memberTestHelper.createMember();
-        MEMBER_ID = member.getId();
+  @BeforeEach
+  void init() {
+    Member member = memberTestHelper.createMember();
+    MEMBER_ID = member.getId();
 
-        Product product1 = productTestHelper.createProduct(member);
-        PRODUCT1_ID = product1.getId();
+    Product product1 = productTestHelper.createProduct(member);
+    PRODUCT1_ID = product1.getId();
 
-        Product product2 = Product.builder()
-            .name("tiger")
-            .member(member)
-            .price(30000)
-            .stock(5000)
-            .productCategory(ProductCategory.FISH)
-            .description("tiger cat")
-            .region(Region.GANGWONDO)
-            .build();
-        PRODUCT2_ID = productRepository.save(product2).getId();
-    }
+    Product product2 = Product.builder()
+      .name("tiger")
+      .member(member)
+      .price(30000)
+      .stock(5000)
+      .productCategory(ProductCategory.FISH)
+      .description("tiger cat")
+      .region(Region.GANGWONDO)
+      .build();
+    PRODUCT2_ID = productRepository.save(product2).getId();
+  }
 
-    @AfterEach
-    void clear() {
-        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
-        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-    }
+  @AfterEach
+  void clear() {
+    em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
+    Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
+  }
 
-    @Test
-    @DisplayName("상품 번호로 조회")
-    void getByIdAndStatus() {
-        ProductResponse productResponse = productService.findBy(PRODUCT1_ID, Status.ACTIVE);
-        assertThat(productResponse.getPrice()).isEqualTo(50000);
-    }
+  @Test
+  @DisplayName("상품 번호로 조회")
+  void getByIdAndStatus() {
+    ProductResponse productResponse = productService.findBy(PRODUCT1_ID, Status.ACTIVE);
+    assertThat(productResponse.getPrice()).isEqualTo(50000);
+  }
 
-    @Test
-    @DisplayName("검색 조건 - 이름으로 조회")
-    void getListBySearchConditionForMember() {
-        ProductSearchCondition condition = ProductSearchCondition.builder()
-            .name("an")
-            .build();
-        Page<ProductQueryResponse> products = productService.searchBy(condition, Pageable.ofSize(10));
-        assertThat(products.getTotalElements()).isEqualTo(1);
-    }
+  @Test
+  @DisplayName("검색 조건 - 이름으로 조회")
+  void getListBySearchConditionForMember() {
+    ProductSearchCondition condition = ProductSearchCondition.builder()
+      .name("an")
+      .build();
+    Page<ProductQueryResponse> products = productService.searchBy(condition, Pageable.ofSize(10));
+    assertThat(products.getTotalElements()).isEqualTo(1);
+  }
 
-    @Test
-    @DisplayName("검색 조건 - 카테고리로 조회")
-    void getListBySearchConditionForMember2() {
-        ProductSearchCondition condition = ProductSearchCondition.builder()
-            .category(ProductCategory.FISH)
-            .build();
-        Page<ProductQueryResponse> products = productService.searchBy(condition, Pageable.ofSize(10));
-        assertThat(products.getTotalElements()).isEqualTo(1);
-    }
+  @Test
+  @DisplayName("검색 조건 - 카테고리로 조회")
+  void getListBySearchConditionForMember2() {
+    ProductSearchCondition condition = ProductSearchCondition.builder()
+      .category(ProductCategory.FISH)
+      .build();
+    Page<ProductQueryResponse> products = productService.searchBy(condition, Pageable.ofSize(10));
+    assertThat(products.getTotalElements()).isEqualTo(1);
+  }
 
-    @Test
-    @DisplayName("상품 생성 성공")
-    void create() {
-        ProductRequest productRequest = ProductRequest.builder()
-            .name("dog")
-            .price(15000)
-            .stock(900)
-            .description("mung mung")
-            .region(Region.CHUNGCHEONGBUKDO)
-            .productCategory(ProductCategory.CEREAL).build();
-        productService.create(productRequest);
+  @Test
+  @DisplayName("상품 생성 성공")
+  void create() {
+    ProductRequest productRequest = ProductRequest.builder()
+      .name("dog")
+      .price(15000)
+      .stock(900)
+      .description("mung mung")
+      .region(Region.CHUNGCHEONGBUKDO)
+      .productCategory(ProductCategory.CEREAL).build();
+    productService.create(productRequest);
 
-        Product product = productRepository.findByName("dog").get();
-        assertThat(product.getId()).isNotNull();
-    }
+    Product product = productRepository.findByName("dog").get();
+    assertThat(product.getId()).isNotNull();
+  }
 
-    @Test
-    @DisplayName("가격 변경")
-    void editPrice() {
-        int newPrice = 90000;
-        ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
-            .price(newPrice)
-            .build();
+  @Test
+  @DisplayName("가격 변경")
+  void editPrice() {
+    int newPrice = 90000;
+    ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
+      .price(newPrice)
+      .build();
 
-        productService.edit(PRODUCT1_ID, productModifyRequest);
+    productService.edit(PRODUCT1_ID, productModifyRequest);
 
-        Product product = productRepository.findById(PRODUCT1_ID).get();
-        assertThat(product.getPrice()).isEqualTo(newPrice);
-    }
+    Product product = productRepository.findById(PRODUCT1_ID).get();
+    assertThat(product.getPrice()).isEqualTo(newPrice);
+  }
 
-    @Test
-    @DisplayName("재고 변경")
-    void editStock() {
-        int newStock = 500000;
-        ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
-            .stock(newStock)
-            .build();
-        productService.edit(PRODUCT1_ID, productModifyRequest);
-        Product product = productRepository.findById(PRODUCT1_ID).get();
-        assertThat(product.getStock().intValue()).isEqualTo(newStock);
-    }
+  @Test
+  @DisplayName("재고 변경")
+  void editStock() {
+    int newStock = 500000;
+    ProductModifyRequest productModifyRequest = ProductModifyRequest.builder()
+      .stock(newStock)
+      .build();
+    productService.edit(PRODUCT1_ID, productModifyRequest);
+    Product product = productRepository.findById(PRODUCT1_ID).get();
+    assertThat(product.getStock().intValue()).isEqualTo(newStock);
+  }
 
-    @Test
-    @DisplayName("삭제 시 INACTIVE, DeletedDateTime")
-    void deleteSoftly() {
-        productService.deleteSoftly(PRODUCT1_ID);
-        Product product = productRepository.findById(PRODUCT1_ID).get();
+  @Test
+  @DisplayName("삭제 시 INACTIVE, DeletedDateTime")
+  void deleteSoftly() {
+    productService.deleteSoftly(PRODUCT1_ID);
+    Product product = productRepository.findById(PRODUCT1_ID).get();
 
-        assertThat(product.getStatus()).isEqualTo(Status.INACTIVE);
-        assertThat(product.getDeletedDateTime()).isNotNull();
-    }
+    assertThat(product.getStatus()).isEqualTo(Status.INACTIVE);
+    assertThat(product.getDeletedDateTime()).isNotNull();
+  }
 
-    @Test
-    @DisplayName("검색 조건 - 판매자 이름으로 조회")
-    void getListBySearchConditionForAdmin() {
-        ProductSearchCondition condition = ProductSearchCondition.builder()
-            .email("pa")
-            .build();
+  @Test
+  @DisplayName("검색 조건 - 판매자 이름으로 조회")
+  void getListBySearchConditionForAdmin() {
+    ProductSearchCondition condition = ProductSearchCondition.builder()
+      .email("pa")
+      .build();
 
-        Page<ProductQueryResponse> products = productService.searchByAdmin(condition, Pageable.ofSize(10));
-        assertThat(products.getTotalElements()).isEqualTo(2);
-    }
+    Page<ProductQueryResponse> products = productService.searchByAdmin(condition, Pageable.ofSize(10));
+    assertThat(products.getTotalElements()).isEqualTo(2);
+  }
 }

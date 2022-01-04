@@ -37,94 +37,94 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Board extends BaseEntity {
 
-    @Id
-    @Column(name = "board_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "board_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id")
+  private Member member;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Image> images = new ArrayList<>();
+  @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private List<Image> images = new ArrayList<>();
 
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String title;
+  @Size(max = 255)
+  @Column(nullable = false)
+  private String title;
 
-    @Lob
-    @Column(nullable = false)
-    private String content;
+  @Lob
+  @Column(nullable = false)
+  private String content;
 
-    private int hit;
+  private int hit;
 
-    @OneToOne(mappedBy = "board", orphanRemoval = true, cascade = CascadeType.ALL)
-    private BoardCount boardCount;
+  @OneToOne(mappedBy = "board", orphanRemoval = true, cascade = CascadeType.ALL)
+  private BoardCount boardCount;
 
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
+  @Column(nullable = false, length = 50)
+  @Enumerated(EnumType.STRING)
+  private Status status = Status.ACTIVE;
 
-    @Column(nullable = false)
-    private LocalDateTime startDateTime;
+  @Column(nullable = false)
+  private LocalDateTime startDateTime;
 
-    @Column(nullable = false)
-    private LocalDateTime endDateTime;
+  @Column(nullable = false)
+  private LocalDateTime endDateTime;
 
-    private LocalDateTime deletedDateTime;
+  private LocalDateTime deletedDateTime;
 
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private BoardCategory boardCategory;
+  @Column(nullable = false, length = 50)
+  @Enumerated(EnumType.STRING)
+  private BoardCategory boardCategory;
 
-    @Builder
-    public Board(Member member, String title, String content, BoardCategory boardCategory,
-        LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        this.member = member;
-        this.title = title;
-        this.content = content;
-        this.boardCategory = boardCategory;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.boardCount = BoardCount.builder().build();
+  @Builder
+  public Board(Member member, String title, String content, BoardCategory boardCategory,
+    LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    this.member = member;
+    this.title = title;
+    this.content = content;
+    this.boardCategory = boardCategory;
+    this.startDateTime = startDateTime;
+    this.endDateTime = endDateTime;
+    this.boardCount = BoardCount.builder().build();
 
-        if (startDateTime != null && endDateTime != null && startDateTime.isAfter(endDateTime)) {
-            throw new IllegalArgumentException(ExceptionConstants.BOARD_DATE_NOT_PROPER);
-        }
+    if (startDateTime != null && endDateTime != null && startDateTime.isAfter(endDateTime)) {
+      throw new IllegalArgumentException(ExceptionConstants.BOARD_DATE_NOT_PROPER);
+    }
+  }
+
+  public void registerMember(Member member) {
+    this.setMember(member);
+  }
+
+  public void addImages(List<Image> images) {
+    if (images == null || images.isEmpty()) {
+      return;
     }
 
-    public void registerMember(Member member) {
-        this.setMember(member);
-    }
+    this.images.addAll(images);
+    images.forEach(i -> i.setBoard(this));
+  }
 
-    public void addImages(List<Image> images) {
-        if (images == null || images.isEmpty()) {
-            return;
-        }
+  public void increaseHit() {
+    hit++;
+  }
 
-        this.images.addAll(images);
-        images.forEach(i -> i.setBoard(this));
-    }
+  public void changeHit(int hit) {
+    this.hit = hit;
+  }
 
-    public void increaseHit() {
-        hit++;
-    }
+  public void delete() {
+    changeStatusAndDeletedDateTime(Status.INACTIVE, LocalDateTime.now());
+  }
 
-    public void changeHit(int hit) {
-        this.hit = hit;
-    }
+  public void restore() {
+    changeStatusAndDeletedDateTime(Status.ACTIVE, null);
+  }
 
-    public void delete() {
-        changeStatusAndDeletedDateTime(Status.INACTIVE, LocalDateTime.now());
-    }
-
-    public void restore() {
-        changeStatusAndDeletedDateTime(Status.ACTIVE, null);
-    }
-
-    private void changeStatusAndDeletedDateTime(Status status, LocalDateTime deletedDateTime) {
-        this.status = status;
-        this.deletedDateTime = deletedDateTime;
-    }
+  private void changeStatusAndDeletedDateTime(Status status, LocalDateTime deletedDateTime) {
+    this.status = status;
+    this.deletedDateTime = deletedDateTime;
+  }
 }

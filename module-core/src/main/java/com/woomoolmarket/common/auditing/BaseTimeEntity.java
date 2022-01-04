@@ -14,10 +14,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(value = {AuditingEntityListener.class})
 public abstract class BaseTimeEntity {
 
-    @CreatedDate
-    @Column(updatable = false)
-    protected LocalDateTime createdDateTime;
+  @CreatedDate
+  @Column(updatable = false)
+  protected LocalDateTime createdDateTime;
 
-    @LastModifiedDate
-    protected LocalDateTime lastModifiedDateTime;
+  @LastModifiedDate
+  protected LocalDateTime lastModifiedDateTime;
 }

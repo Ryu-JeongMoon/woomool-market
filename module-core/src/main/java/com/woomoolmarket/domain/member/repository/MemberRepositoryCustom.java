@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface MemberRepositoryCustom {
 
-    Optional<Long> findNextId(Long id);
+  Optional<Long> findNextId(Long id);
 
-    Optional<Long> findPreviousId(Long id);
+  Optional<Long> findPreviousId(Long id);
 
-    void deleteMemberHardly();
+  void deleteMemberHardly();
 
-    Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable);
+  Page<MemberQueryResponse> searchForAdminBy(MemberSearchCondition condition, Pageable pageable);
 }

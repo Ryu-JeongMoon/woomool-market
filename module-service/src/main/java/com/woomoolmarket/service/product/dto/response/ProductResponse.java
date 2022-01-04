@@ -15,21 +15,21 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProductResponse {
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
-    private String productImage;
+  private String productImage;
 
-    private MemberResponse memberResponse;
+  private MemberResponse memberResponse;
 
-    private Integer price;
+  private Integer price;
 
-    private Integer stock;
+  private Integer stock;
 
-    private LocalDateTime createdDateTime;
+  private LocalDateTime createdDateTime;
 
-    private ProductCategory productCategory;
+  private ProductCategory productCategory;
 
-    private Region region;
+  private Region region;
 }

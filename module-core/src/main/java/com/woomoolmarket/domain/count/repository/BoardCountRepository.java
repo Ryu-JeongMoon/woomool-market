@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoardCountRepository extends JpaRepository<BoardCount, Long> {
 
-    Optional<BoardCount> findByBoardId(Long boardId);
+  Optional<BoardCount> findByBoardId(Long boardId);
 }

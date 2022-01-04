@@ -22,52 +22,52 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    @Override
-    @Transactional
-    public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
+  @Override
+  @Transactional
+  public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
+    OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
-        String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
-        String userNameAttributeName = oAuth2UserRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
-            .getUserNameAttributeName();
+    String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
+    String userNameAttributeName = oAuth2UserRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint()
+      .getUserNameAttributeName();
 
-        OAuth2Attributes attributes = OAuth2Attributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
-        Member member = registerOrEdit(registrationId, attributes);
+    OAuth2Attributes attributes = OAuth2Attributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+    Member member = registerOrEdit(registrationId, attributes);
 
-        return new DefaultOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority(member.getAuthorityKey())),
-            attributes.getAttributes(),
-            attributes.getNameAttributeKey());
+    return new DefaultOAuth2User(
+      Collections.singleton(new SimpleGrantedAuthority(member.getAuthorityKey())),
+      attributes.getAttributes(),
+      attributes.getNameAttributeKey());
+  }
+
+  @Transactional
+  public Member registerOrEdit(String registrationId, OAuth2Attributes attributes) {
+    if (memberRepository.findByEmailAndStatus(attributes.getEmail(), Status.ACTIVE).isEmpty()) {
+      return registerNewMember(registrationId, attributes);
     }
 
-    @Transactional
-    public Member registerOrEdit(String registrationId, OAuth2Attributes attributes) {
-        if (memberRepository.findByEmailAndStatus(attributes.getEmail(), Status.ACTIVE).isEmpty()) {
-            return registerNewMember(registrationId, attributes);
-        }
+    return editExistingMember(attributes);
+  }
 
-        return editExistingMember(attributes);
-    }
+  @Transactional
+  public Member registerNewMember(String registrationId, OAuth2Attributes attributes) {
+    Member member = Member.builder()
+      .email(attributes.getEmail())
+      .nickname(attributes.getNickname())
+      .profileImage(attributes.getProfileImage())
+      .authority(Authority.ROLE_USER)
+      .authProvider(AuthProvider.valueOf(registrationId.toUpperCase()))
+      .build();
 
-    @Transactional
-    public Member registerNewMember(String registrationId, OAuth2Attributes attributes) {
-        Member member = Member.builder()
-            .email(attributes.getEmail())
-            .nickname(attributes.getNickname())
-            .profileImage(attributes.getProfileImage())
-            .authority(Authority.ROLE_USER)
-            .authProvider(AuthProvider.valueOf(registrationId.toUpperCase()))
-            .build();
+    return memberRepository.save(member);
+  }
 
-        return memberRepository.save(member);
-    }
-
-    @Transactional
-    public Member editExistingMember(OAuth2Attributes attributes) {
-        return memberRepository.findByEmail(attributes.getEmail())
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
-            .editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage());
-    }
+  @Transactional
+  public Member editExistingMember(OAuth2Attributes attributes) {
+    return memberRepository.findByEmail(attributes.getEmail())
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+      .editNicknameAndProfileImage(attributes.getNickname(), attributes.getProfileImage());
+  }
 }

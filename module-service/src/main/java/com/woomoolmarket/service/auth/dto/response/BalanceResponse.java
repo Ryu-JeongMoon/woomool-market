@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BalanceResponse {
 
-    private int balance;
+  private int balance;
 }

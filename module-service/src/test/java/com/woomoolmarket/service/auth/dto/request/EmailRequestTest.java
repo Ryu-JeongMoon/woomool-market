@@ -6,20 +6,20 @@ import org.junit.jupiter.api.Test;
 
 class EmailRequestTest {
 
-    @Test
-    void getEmail() {
-        EmailRequest emailRequest = EmailRequest.builder()
-            .email("panda")
-            .build();
+  @Test
+  void getEmail() {
+    EmailRequest emailRequest = EmailRequest.builder()
+      .email("panda")
+      .build();
 
-        assertThat(emailRequest.getEmail()).isEqualTo("panda");
-    }
+    assertThat(emailRequest.getEmail()).isEqualTo("panda");
+  }
 
-    @Test
-    void setEmail() {
-        EmailRequest emailRequest = new EmailRequest();
-        emailRequest.setEmail("bear");
+  @Test
+  void setEmail() {
+    EmailRequest emailRequest = new EmailRequest();
+    emailRequest.setEmail("bear");
 
-        assertThat(emailRequest.getEmail()).isEqualTo("bear");
-    }
+    assertThat(emailRequest.getEmail()).isEqualTo("bear");
+  }
 }

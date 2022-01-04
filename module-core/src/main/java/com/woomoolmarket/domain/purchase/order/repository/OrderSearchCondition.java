@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderSearchCondition {
 
-    private Long memberId;
+  private Long memberId;
 
-    private String email;
+  private String email;
 
-    private OrderStatus orderStatus;
+  private OrderStatus orderStatus;
 }

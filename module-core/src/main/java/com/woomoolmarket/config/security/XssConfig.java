@@ -13,16 +13,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class XssConfig implements WebMvcConfigurer {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    @Bean
-    public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
-        objectMapper.getFactory().setCharacterEscapes(new HTMLCharacterEscapes());
-        return new MappingJackson2HttpMessageConverter(objectMapper);
-    }
+  @Bean
+  public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
+    objectMapper.getFactory().setCharacterEscapes(new HTMLCharacterEscapes());
+    return new MappingJackson2HttpMessageConverter(objectMapper);
+  }
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(jsonEscapeConverter());
-    }
+  @Override
+  public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+    converters.add(jsonEscapeConverter());
+  }
 }

@@ -16,17 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String email) {
-        return memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
-            .map(this::createUserDetails)
-            .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public UserDetails loadUserByUsername(String email) {
+    return memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
+      .map(this::createUserDetails)
+      .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+  }
 
-    private UserPrincipal createUserDetails(Member member) {
-        return UserPrincipal.of(member);
-    }
+  private UserPrincipal createUserDetails(Member member) {
+    return UserPrincipal.of(member);
+  }
 }

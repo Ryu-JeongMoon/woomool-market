@@ -8,8 +8,8 @@ import org.springframework.util.StringUtils;
 @Component
 public class CustomKeyGenerator implements KeyGenerator {
 
-    @Override
-    public Object generate(Object target, Method method, Object... params) {
-        return method.getName() + "#" + StringUtils.arrayToDelimitedString(params, "_");
-    }
+  @Override
+  public Object generate(Object target, Method method, Object... params) {
+    return method.getName() + "#" + StringUtils.arrayToDelimitedString(params, "_");
+  }
 }

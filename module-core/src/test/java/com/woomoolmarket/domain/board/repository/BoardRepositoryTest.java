@@ -17,17 +17,17 @@ import org.springframework.context.annotation.Import;
 @Import(TestConfig.class)
 public class BoardRepositoryTest {
 
-    @Autowired
-    BoardRepository boardRepository;
+  @Autowired
+  BoardRepository boardRepository;
 
-    @Test
-    @DisplayName("Board 생성 시 기본으로 ACTIVE 들어간다")
-    void signUpTest() {
-        Board board = Board.builder()
-            .title("panda")
-            .content("bear")
-            .build();
+  @Test
+  @DisplayName("Board 생성 시 기본으로 ACTIVE 들어간다")
+  void signUpTest() {
+    Board board = Board.builder()
+      .title("panda")
+      .content("bear")
+      .build();
 
-        assertThat(board.getStatus()).isEqualTo(Status.ACTIVE);
-    }
+    assertThat(board.getStatus()).isEqualTo(Status.ACTIVE);
+  }
 }

@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberSearchCondition {
 
-    private String email;
-    private String nickname;
-    private String phone;
-    private String license;
+  private String email;
+  private String nickname;
+  private String phone;
+  private String license;
 
-    private Status status;
-    private Authority authority;
-    private AuthProvider provider;
+  private Status status;
+  private Authority authority;
+  private AuthProvider provider;
 
 }

@@ -11,16 +11,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DateTimeFormatConfig {
 
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
-        String dateFormat = "yyyy-MM-dd";
-        String datetimeFormat = "yyyy-MM-dd HH:mm:ss";
+  @Bean
+  public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+    String dateFormat = "yyyy-MM-dd";
+    String datetimeFormat = "yyyy-MM-dd HH:mm:ss";
 
-        return jacksonObjectMapperBuilder -> {
-            jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("Asia/Seoul"));
-            jacksonObjectMapperBuilder.simpleDateFormat(datetimeFormat);
-            jacksonObjectMapperBuilder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
-            jacksonObjectMapperBuilder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(datetimeFormat)));
-        };
-    }
+    return jacksonObjectMapperBuilder -> {
+      jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("Asia/Seoul"));
+      jacksonObjectMapperBuilder.simpleDateFormat(datetimeFormat);
+      jacksonObjectMapperBuilder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
+      jacksonObjectMapperBuilder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(datetimeFormat)));
+    };
+  }
 }

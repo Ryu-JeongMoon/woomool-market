@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
-    @Query("select i from Image i join fetch i.board where i.board.id = :boardId and i.status = :status")
-    List<Image> findByBoardIdAndStatus(Long boardId, Status status);
+  @Query("select i from Image i join fetch i.board where i.board.id = :boardId and i.status = :status")
+  List<Image> findByBoardIdAndStatus(Long boardId, Status status);
 
-    Optional<Image> findByIdAndStatus(Long id, Status status);
+  Optional<Image> findByIdAndStatus(Long id, Status status);
 }

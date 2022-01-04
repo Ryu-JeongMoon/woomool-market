@@ -16,26 +16,26 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final ImageRepository imageRepository;
-    private final ImageResponseMapper imageResponseMapper;
+  private final ImageRepository imageRepository;
+  private final ImageResponseMapper imageResponseMapper;
 
-    @Transactional(readOnly = true)
-    public List<ImageResponse> findByBoard(Long boardId) {
-        List<Image> images = imageRepository.findByBoardIdAndStatus(boardId, Status.ACTIVE);
-        return imageResponseMapper.toDtoList(images);
-    }
+  @Transactional(readOnly = true)
+  public List<ImageResponse> findByBoard(Long boardId) {
+    List<Image> images = imageRepository.findByBoardIdAndStatus(boardId, Status.ACTIVE);
+    return imageResponseMapper.toDtoList(images);
+  }
 
-    @Transactional
-    public void deleteByImageId(Long imageId) {
-        imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
-            .delete();
-    }
+  @Transactional
+  public void deleteByImageId(Long imageId) {
+    imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
+      .delete();
+  }
 
-    @Transactional
-    public void restoreByImageId(Long imageId) {
-        imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
-            .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
-            .restore();
-    }
+  @Transactional
+  public void restoreByImageId(Long imageId) {
+    imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
+      .restore();
+  }
 }

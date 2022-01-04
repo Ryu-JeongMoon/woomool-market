@@ -17,19 +17,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CartQueryResponse implements Serializable {
 
-    private Long id;
+  private Long id;
 
-    private MemberQueryResponse memberQueryResponse;
+  private MemberQueryResponse memberQueryResponse;
 
-    private ProductQueryResponse productQueryResponse;
+  private ProductQueryResponse productQueryResponse;
 
-    private int quantity;
+  private int quantity;
 
-    @QueryProjection
-    public CartQueryResponse(Long id, Member member, Product product, int quantity) {
-        this.id = id;
-        this.memberQueryResponse = MemberQueryResponse.of(member);
-        this.productQueryResponse = ProductQueryResponse.of(product);
-        this.quantity = quantity;
-    }
+  @QueryProjection
+  public CartQueryResponse(Long id, Member member, Product product, int quantity) {
+    this.id = id;
+    this.memberQueryResponse = MemberQueryResponse.of(member);
+    this.productQueryResponse = ProductQueryResponse.of(product);
+    this.quantity = quantity;
+  }
 }

@@ -16,28 +16,28 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    @Value("${spring.redis.port}")
-    public int port;
-    @Value("${spring.redis.host}")
-    public String host;
+  @Value("${spring.redis.port}")
+  public int port;
+  @Value("${spring.redis.host}")
+  public String host;
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+  @Bean
+  public RedisTemplate<String, Object> redisTemplate() {
+    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    redisTemplate.setKeySerializer(new StringRedisSerializer());
+    redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+    redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+    redisTemplate.setConnectionFactory(redisConnectionFactory());
 
-        return redisTemplate;
-    }
+    return redisTemplate;
+  }
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port));
-    }
+  @Bean
+  public RedisConnectionFactory redisConnectionFactory() {
+    return new LettuceConnectionFactory(new RedisStandaloneConfiguration(host, port));
+  }
 }
 

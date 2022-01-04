@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAccessDeniedExceptionHandler implements AccessDeniedHandler {
 
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) {
-        throw e;
-    }
+  @Override
+  public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) {
+    throw e;
+  }
 }

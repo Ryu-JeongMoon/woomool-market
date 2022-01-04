@@ -4,27 +4,27 @@ import org.junit.jupiter.api.Test;
 
 class HS512TokenFactoryTest {
 
-    @Test
-    void keySetUp() {
-    }
+  @Test
+  void keySetUp() {
+  }
 
-    @Test
-    void createAccessToken() {
-    }
+  @Test
+  void createAccessToken() {
+  }
 
-    @Test
-    void createRefreshToken() {
-    }
+  @Test
+  void createRefreshToken() {
+  }
 
-    @Test
-    void parseClaims() {
-    }
+  @Test
+  void parseClaims() {
+  }
 
-    @Test
-    void isBlocked() {
-    }
+  @Test
+  void isBlocked() {
+  }
 
-    @Test
-    void isValid() {
-    }
+  @Test
+  void isValid() {
+  }
 }

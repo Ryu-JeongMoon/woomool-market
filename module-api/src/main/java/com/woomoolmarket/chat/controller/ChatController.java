@@ -17,26 +17,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ChatController {
 
-    @GetMapping("/chat")
-    public String chat(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession();
-        Member loginMember = (Member) session.getAttribute("loginMember");
-        model.addAttribute("loginId", loginMember.getId());
-        return "chat";
-    }
+  @GetMapping("/chat")
+  public String chat(HttpServletRequest request, Model model) {
+    HttpSession session = request.getSession();
+    Member loginMember = (Member) session.getAttribute("loginMember");
+    model.addAttribute("loginId", loginMember.getId());
+    return "chat";
+  }
 
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        log.info("chatSender = {}, chatMessage = {}", chatMessage.getSender(), chatMessage.getContent());
-        return chatMessage;
-    }
+  @MessageMapping("/chat.sendMessage")
+  @SendTo("/topic/public")
+  public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+    log.info("chatSender = {}, chatMessage = {}", chatMessage.getSender(), chatMessage.getContent());
+    return chatMessage;
+  }
 
-    @MessageMapping("/chat.addUser")
-    @SendTo("/topic/public")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes()
-            .put("username", chatMessage.getSender());
-        return chatMessage;
-    }
+  @MessageMapping("/chat.addUser")
+  @SendTo("/topic/public")
+  public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    headerAccessor.getSessionAttributes()
+      .put("username", chatMessage.getSender());
+    return chatMessage;
+  }
 }

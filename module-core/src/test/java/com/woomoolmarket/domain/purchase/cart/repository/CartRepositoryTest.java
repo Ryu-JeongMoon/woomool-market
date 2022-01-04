@@ -23,85 +23,85 @@ import org.springframework.data.domain.Pageable;
 @Log4j2
 class CartRepositoryTest extends DataJpaTestConfig {
 
-    private Long CART_ID;
-    private Member member;
-    private Product product;
+  private Long CART_ID;
+  private Member member;
+  private Product product;
 
-    @Autowired
-    EntityManager em;
+  @Autowired
+  EntityManager em;
 
-    @BeforeEach
-    void init() {
-        member = Member.builder()
-            .email("pandabear")
-            .nickname("nickname")
-            .password("1234")
-            .build();
+  @BeforeEach
+  void init() {
+    member = Member.builder()
+      .email("pandabear")
+      .nickname("nickname")
+      .password("1234")
+      .build();
 
-        product = Product.builder()
-            .name("panda-bear-panda")
-            .description("panda")
-            .stock(5000)
-            .price(10000)
-            .region(Region.JEJUDO)
-            .productCategory(ProductCategory.MEAT)
-            .build();
+    product = Product.builder()
+      .name("panda-bear-panda")
+      .description("panda")
+      .stock(5000)
+      .price(10000)
+      .region(Region.JEJUDO)
+      .productCategory(ProductCategory.MEAT)
+      .build();
 
-        Cart cart = Cart.builder()
-            .member(member)
-            .product(product)
-            .quantity(300)
-            .build();
+    Cart cart = Cart.builder()
+      .member(member)
+      .product(product)
+      .quantity(300)
+      .build();
 
-        memberRepository.save(member);
-        productRepository.save(product);
-        CART_ID = cartRepository.save(cart).getId();
-    }
+    memberRepository.save(member);
+    productRepository.save(product);
+    CART_ID = cartRepository.save(cart).getId();
+  }
 
-    @Test
-    @DisplayName("회원 장바구니 찾기")
-    void findByMember() {
-        List<Cart> carts = cartRepository.findByMember(member);
-        assertThat(carts.get(0).getId()).isEqualTo(CART_ID);
-    }
+  @Test
+  @DisplayName("회원 장바구니 찾기")
+  void findByMember() {
+    List<Cart> carts = cartRepository.findByMember(member);
+    assertThat(carts.get(0).getId()).isEqualTo(CART_ID);
+  }
 
-    @Test
-    @DisplayName("장바구니 단건 삭제")
-    void deleteById() {
-        cartRepository.deleteById(CART_ID);
+  @Test
+  @DisplayName("장바구니 단건 삭제")
+  void deleteById() {
+    cartRepository.deleteById(CART_ID);
 
-        assertThat(cartRepository.findById(CART_ID)).isEqualTo(Optional.empty());
-    }
+    assertThat(cartRepository.findById(CART_ID)).isEqualTo(Optional.empty());
+  }
 
-    @Test
-    @DisplayName("특정 회원 장바구니 전체 삭제")
-    void deleteByMember() {
-        cartRepository.deleteByMember(member);
+  @Test
+  @DisplayName("특정 회원 장바구니 전체 삭제")
+  void deleteByMember() {
+    cartRepository.deleteByMember(member);
 
-        em.flush();
-        em.clear();
+    em.flush();
+    em.clear();
 
-        assertThat(cartRepository.findById(CART_ID)).isEqualTo(Optional.empty());
-    }
+    assertThat(cartRepository.findById(CART_ID)).isEqualTo(Optional.empty());
+  }
 
-    @Test
-    @DisplayName("회원 전용 본인 장바구니 조회")
-    void searchBy() {
-        Page<CartQueryResponse> cartQueryResponses = cartRepository.searchBy(member.getId(), Pageable.ofSize(10));
-        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
-    }
+  @Test
+  @DisplayName("회원 전용 본인 장바구니 조회")
+  void searchBy() {
+    Page<CartQueryResponse> cartQueryResponses = cartRepository.searchBy(member.getId(), Pageable.ofSize(10));
+    assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
+  }
 
-    @Test
-    @DisplayName("회원 전용 장바구니 조회 - 존재하지 않는 회원 번호")
-    void searchByNoResult() {
-        Page<CartQueryResponse> cartQueryResponses = cartRepository.searchBy(member.getId() + 1, Pageable.ofSize(10));
-        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
-    }
+  @Test
+  @DisplayName("회원 전용 장바구니 조회 - 존재하지 않는 회원 번호")
+  void searchByNoResult() {
+    Page<CartQueryResponse> cartQueryResponses = cartRepository.searchBy(member.getId() + 1, Pageable.ofSize(10));
+    assertThat(cartQueryResponses.getTotalElements()).isEqualTo(0);
+  }
 
-    @Test
-    @DisplayName("관리자 전용 장바구니 전체 조회")
-    void searchForAdminBy() {
-        Page<CartQueryResponse> cartQueryResponses = cartRepository.searchForAdminBy(Pageable.ofSize(10));
-        assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
-    }
+  @Test
+  @DisplayName("관리자 전용 장바구니 전체 조회")
+  void searchForAdminBy() {
+    Page<CartQueryResponse> cartQueryResponses = cartRepository.searchForAdminBy(Pageable.ofSize(10));
+    assertThat(cartQueryResponses.getTotalElements()).isEqualTo(1);
+  }
 }

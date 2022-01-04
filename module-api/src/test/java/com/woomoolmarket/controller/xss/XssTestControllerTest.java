@@ -21,16 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(classes = ModuleApiApplication.class)
 class XssTestControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired
+  MockMvc mockMvc;
 
-    @Test
-    @DisplayName("escape 처리된 문자가 반환된다")
-    void xssFilterTest() throws Exception {
-        mockMvc.perform(
-                get("/xss")
-                    .accept(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("htmlTdTag").value("&lt;td&gt;&lt;/td&gt;"))
-            .andExpect(jsonPath("htmlTableTag").value("&lt;table&gt;"));
-    }
+  @Test
+  @DisplayName("escape 처리된 문자가 반환된다")
+  void xssFilterTest() throws Exception {
+    mockMvc.perform(
+        get("/xss")
+          .accept(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("htmlTdTag").value("&lt;td&gt;&lt;/td&gt;"))
+      .andExpect(jsonPath("htmlTableTag").value("&lt;table&gt;"));
+  }
 }

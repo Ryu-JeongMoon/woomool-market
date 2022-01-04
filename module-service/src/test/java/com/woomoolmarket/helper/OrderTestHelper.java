@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderTestHelper {
 
-    private final OrderRepository orderRepository;
+  private final OrderRepository orderRepository;
 
-    public Order createOrder(Member member, OrderProduct orderProduct) {
-        Order order = Order.builder()
-            .member(member)
-            .orderProducts(List.of(orderProduct))
-            .delivery(new Delivery(member.getEmail(), member.getPhone(), member.getAddress()))
-            .build();
-        return orderRepository.save(order);
-    }
+  public Order createOrder(Member member, OrderProduct orderProduct) {
+    Order order = Order.builder()
+      .member(member)
+      .orderProducts(List.of(orderProduct))
+      .delivery(new Delivery(member.getEmail(), member.getPhone(), member.getAddress()))
+      .build();
+    return orderRepository.save(order);
+  }
 }

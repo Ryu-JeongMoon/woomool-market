@@ -36,104 +36,104 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class CacheConfig {
 
-    private static final int DEFAULT_EXPIRE_TIME = 10;
+  private static final int DEFAULT_EXPIRE_TIME = 10;
 
-    private final ObjectMapper objectMapper;
-    private final RedisConnectionFactory redisConnectionFactory;
+  private final ObjectMapper objectMapper;
+  private final RedisConnectionFactory redisConnectionFactory;
 
-    @Bean(name = "jdkCacheManager")
-    public RedisCacheManager jdkCacheManager() {
-        RedisCacheConfiguration configuration = RedisCacheConfiguration
-            .defaultCacheConfig()
-            .disableCachingNullValues()
-            .disableKeyPrefix()
-            .entryTtl(Duration.ofDays(1))
-            .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
-            .serializeValuesWith(SerializationPair.fromSerializer(new JdkSerializationRedisSerializer()));
+  @Bean(name = "jdkCacheManager")
+  public RedisCacheManager jdkCacheManager() {
+    RedisCacheConfiguration configuration = RedisCacheConfiguration
+      .defaultCacheConfig()
+      .disableCachingNullValues()
+      .disableKeyPrefix()
+      .entryTtl(Duration.ofDays(1))
+      .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
+      .serializeValuesWith(SerializationPair.fromSerializer(new JdkSerializationRedisSerializer()));
 
-        Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
+    Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
 
-        return RedisCacheManagerBuilder
-            .fromConnectionFactory(redisConnectionFactory)
-            .cacheDefaults(configuration)
-            .withInitialCacheConfigurations(cacheConfigurations)
-            .build();
-    }
+    return RedisCacheManagerBuilder
+      .fromConnectionFactory(redisConnectionFactory)
+      .cacheDefaults(configuration)
+      .withInitialCacheConfigurations(cacheConfigurations)
+      .build();
+  }
 
-    @Primary
-    @Bean(name = "gsonCacheManager")
-    public RedisCacheManager gsonCacheManager() {
-        RedisCacheConfiguration configuration = RedisCacheConfiguration
-            .defaultCacheConfig()
-            .disableCachingNullValues()
-            .entryTtl(Duration.ofSeconds(DEFAULT_EXPIRE_TIME))
-            .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
-            .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(customObjectMapper())));
+  @Primary
+  @Bean(name = "gsonCacheManager")
+  public RedisCacheManager gsonCacheManager() {
+    RedisCacheConfiguration configuration = RedisCacheConfiguration
+      .defaultCacheConfig()
+      .disableCachingNullValues()
+      .entryTtl(Duration.ofSeconds(DEFAULT_EXPIRE_TIME))
+      .serializeKeysWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
+      .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(customObjectMapper())));
 
-        Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
+    Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
 
-        return RedisCacheManagerBuilder
-            .fromConnectionFactory(redisConnectionFactory)
-            .cacheDefaults(configuration)
-            .withInitialCacheConfigurations(cacheConfigurations)
-            .build();
-    }
+    return RedisCacheManagerBuilder
+      .fromConnectionFactory(redisConnectionFactory)
+      .cacheDefaults(configuration)
+      .withInitialCacheConfigurations(cacheConfigurations)
+      .build();
+  }
 
-    @Bean(name = "jsonCacheManager")
-    public RedisCacheManager jsonCacheManager() {
-        ObjectMapper objectMapper = new ObjectMapper()
-            .findAndRegisterModules()
-            .registerModule(new ParameterNamesModule())
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .enable(Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .setVisibility(PropertyAccessor.ALL, Visibility.ANY)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, "@class");
+  @Bean(name = "jsonCacheManager")
+  public RedisCacheManager jsonCacheManager() {
+    ObjectMapper objectMapper = new ObjectMapper()
+      .findAndRegisterModules()
+      .registerModule(new ParameterNamesModule())
+      .enable(SerializationFeature.INDENT_OUTPUT)
+      .enable(Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+      .setVisibility(PropertyAccessor.ALL, Visibility.ANY)
+      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .enableDefaultTypingAsProperty(DefaultTyping.NON_FINAL, "@class");
 
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+    Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+    jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
 
-        RedisCacheConfiguration configuration = RedisCacheConfiguration
-            .defaultCacheConfig()
-            .disableCachingNullValues()
-            .disableKeyPrefix()
-            .entryTtl(Duration.ofDays(DEFAULT_EXPIRE_TIME))
-            .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
-            .serializeValuesWith(SerializationPair.fromSerializer(jackson2JsonRedisSerializer));
+    RedisCacheConfiguration configuration = RedisCacheConfiguration
+      .defaultCacheConfig()
+      .disableCachingNullValues()
+      .disableKeyPrefix()
+      .entryTtl(Duration.ofDays(DEFAULT_EXPIRE_TIME))
+      .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
+      .serializeValuesWith(SerializationPair.fromSerializer(jackson2JsonRedisSerializer));
 
-        Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
+    Map<String, RedisCacheConfiguration> cacheConfigurations = setCustomCacheConfigurations(configuration);
 
-        return RedisCacheManagerBuilder
-            .fromConnectionFactory(redisConnectionFactory)
-            .cacheDefaults(configuration)
-            .withInitialCacheConfigurations(cacheConfigurations)
-            .build();
-    }
+    return RedisCacheManagerBuilder
+      .fromConnectionFactory(redisConnectionFactory)
+      .cacheDefaults(configuration)
+      .withInitialCacheConfigurations(cacheConfigurations)
+      .build();
+  }
 
-    private Map<String, RedisCacheConfiguration> setCustomCacheConfigurations(RedisCacheConfiguration configuration) {
-        return Map.of(
-            "brief", configuration.entryTtl(Duration.ofSeconds(10)),
-            "medium", configuration.entryTtl(Duration.ofMinutes(1)),
-            "long", configuration.entryTtl(Duration.ofMinutes(10)),
-            "BoardService::boards", configuration.entryTtl(Duration.ofMinutes(5)),
-            "BoardService::boardsForAdmin", configuration.entryTtl(Duration.ofMinutes(5))
-        );
-    }
+  private Map<String, RedisCacheConfiguration> setCustomCacheConfigurations(RedisCacheConfiguration configuration) {
+    return Map.of(
+      "brief", configuration.entryTtl(Duration.ofSeconds(10)),
+      "medium", configuration.entryTtl(Duration.ofMinutes(1)),
+      "long", configuration.entryTtl(Duration.ofMinutes(10)),
+      "BoardService::boards", configuration.entryTtl(Duration.ofMinutes(5)),
+      "BoardService::boardsForAdmin", configuration.entryTtl(Duration.ofMinutes(5))
+    );
+  }
 
-    private ObjectMapper customObjectMapper() {
-        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-            .allowIfSubType(Object.class)
-            .build();
+  private ObjectMapper customObjectMapper() {
+    PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+      .allowIfSubType(Object.class)
+      .build();
 
-        return JsonMapper.builder()
-            .polymorphicTypeValidator(ptv)
-            .findAndAddModules()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .addModules(new JavaTimeModule(), new JsonBindingResultModule(), new DateTimeFormatModule())
-            .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL)
-            .build();
-    }
+    return JsonMapper.builder()
+      .polymorphicTypeValidator(ptv)
+      .findAndAddModules()
+      .enable(SerializationFeature.INDENT_OUTPUT)
+      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .addModules(new JavaTimeModule(), new JsonBindingResultModule(), new DateTimeFormatModule())
+      .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL)
+      .build();
+  }
 }

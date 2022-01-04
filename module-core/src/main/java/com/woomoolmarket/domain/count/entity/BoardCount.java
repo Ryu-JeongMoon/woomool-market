@@ -26,16 +26,16 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class BoardCount {
 
-    @Id
-    @Column(name = "board_count_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(name = "board_count_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private int hitCount;
+  private int hitCount;
 
-    private int likeCount;
+  private int likeCount;
 
-    @OneToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
+  @OneToOne
+  @JoinColumn(name = "board_id")
+  private Board board;
 }

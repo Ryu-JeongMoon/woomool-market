@@ -13,17 +13,17 @@ import org.springframework.core.env.Environment;
 @SpringBootTest
 class RedisConfigTest {
 
-    @Autowired
-    Environment env;
+  @Autowired
+  Environment env;
 
-    @Test
-    @DisplayName("application.yml의 속성을 가져온다")
-    void envTest() {
-        int port = Integer.parseInt(env.getProperty("spring.redis.port"));
-        String host = env.getProperty("spring.redis.host");
+  @Test
+  @DisplayName("application.yml의 속성을 가져온다")
+  void envTest() {
+    int port = Integer.parseInt(env.getProperty("spring.redis.port"));
+    String host = env.getProperty("spring.redis.host");
 
-        assertThat(port).isEqualTo(6379);
-        assertThat(host).isEqualTo("localhost");
-    }
+    assertThat(port).isEqualTo(6379);
+    assertThat(host).isEqualTo("localhost");
+  }
 
 }

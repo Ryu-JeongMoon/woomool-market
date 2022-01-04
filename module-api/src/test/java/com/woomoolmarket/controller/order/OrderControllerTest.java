@@ -24,144 +24,144 @@ import org.springframework.security.test.context.support.WithMockUser;
 @WithMockUser(username = "panda@naver.com", roles = "USER")
 class OrderControllerTest extends ApiControllerConfig {
 
-    @BeforeEach
-    void init() {
-        Member member = memberTestHelper.createMember();
-        MEMBER_ID = member.getId();
+  @BeforeEach
+  void init() {
+    Member member = memberTestHelper.createMember();
+    MEMBER_ID = member.getId();
 
-        Product product = productTestHelper.createProduct(member);
-        PRODUCT_ID = product.getId();
+    Product product = productTestHelper.createProduct(member);
+    PRODUCT_ID = product.getId();
 
-        OrderProduct orderProduct = OrderProduct.builder()
-            .product(product)
-            .quantity(500)
-            .build();
+    OrderProduct orderProduct = OrderProduct.builder()
+      .product(product)
+      .quantity(500)
+      .build();
 
-        Order order = orderTestHelper.createOrder(member, orderProduct);
-        ORDER_ID = order.getId();
+    Order order = orderTestHelper.createOrder(member, orderProduct);
+    ORDER_ID = order.getId();
 
-        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-    }
+    Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
+  }
 
-    @Test
-    @DisplayName("주문 조회 성공")
-    void getOrders() throws Exception {
-        mockMvc.perform(
-                get("/api/orders/" + MEMBER_ID)
-                    .accept(MediaType.ALL))
-            .andDo(print())
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].id").value(ORDER_ID))
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderStatus").value("ONGOING"))
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderProducts").exists())
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].delivery").exists())
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].email").exists())
-            .andExpect(jsonPath("_links").exists())
-            .andExpect(jsonPath("page").exists());
-    }
+  @Test
+  @DisplayName("주문 조회 성공")
+  void getOrders() throws Exception {
+    mockMvc.perform(
+        get("/api/orders/" + MEMBER_ID)
+          .accept(MediaType.ALL))
+      .andDo(print())
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].id").value(ORDER_ID))
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderStatus").value("ONGOING"))
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderProducts").exists())
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].delivery").exists())
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].email").exists())
+      .andExpect(jsonPath("_links").exists())
+      .andExpect(jsonPath("page").exists());
+  }
 
-    @Test
-    @DisplayName("주문 조회 실패 - 404 존재하지 않는 회원")
-    void getOrdersFail() throws Exception {
-        mockMvc.perform(
-                get("/api/orders/" + 0)
-                    .accept(MediaType.ALL))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
+  @Test
+  @DisplayName("주문 조회 실패 - 404 존재하지 않는 회원")
+  void getOrdersFail() throws Exception {
+    mockMvc.perform(
+        get("/api/orders/" + 0)
+          .accept(MediaType.ALL))
+      .andDo(print())
+      .andExpect(status().isNotFound());
+  }
 
-    @Test
-    @DisplayName("주문 성공")
-    void createOrder() throws Exception {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(600)
-            .build();
+  @Test
+  @DisplayName("주문 성공")
+  void createOrder() throws Exception {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(600)
+      .build();
 
-        mockMvc.perform(
-                post("/api/orders")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(orderRequest)))
-            .andDo(print())
-            .andExpect(status().isCreated());
-    }
+    mockMvc.perform(
+        post("/api/orders")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(orderRequest)))
+      .andDo(print())
+      .andExpect(status().isCreated());
+  }
 
-    @Test
-    @DisplayName("주문 실패 - 400 @Valid 작동")
-    void createOrderFail() throws Exception {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .build();
+  @Test
+  @DisplayName("주문 실패 - 400 @Valid 작동")
+  void createOrderFail() throws Exception {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .build();
 
-        System.out.println("orderRequest.getQuantity() = " + orderRequest.getQuantity());
+    System.out.println("orderRequest.getQuantity() = " + orderRequest.getQuantity());
 
-        mockMvc.perform(
-                post("/api/orders")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(orderRequest)))
-            .andDo(print())
-            .andExpect(status().isBadRequest());
-    }
+    mockMvc.perform(
+        post("/api/orders")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(orderRequest)))
+      .andDo(print())
+      .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    @DisplayName("주문 취소 성공")
-    void cancelOrder() throws Exception {
-        OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
-            .memberId(MEMBER_ID)
-            .orderId(ORDER_ID)
-            .build();
+  @Test
+  @DisplayName("주문 취소 성공")
+  void cancelOrder() throws Exception {
+    OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
+      .memberId(MEMBER_ID)
+      .orderId(ORDER_ID)
+      .build();
 
-        mockMvc.perform(
-                delete("/api/orders/" + MEMBER_ID)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(deleteRequest)))
-            .andDo(print())
-            .andExpect(status().isNoContent());
-    }
+    mockMvc.perform(
+        delete("/api/orders/" + MEMBER_ID)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(deleteRequest)))
+      .andDo(print())
+      .andExpect(status().isNoContent());
+  }
 
-    @Test
-    @DisplayName("주문 취소 실패 - 404 존재하지 않는 회원")
-    void cancelOrderFail() throws Exception {
-        OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
-            .memberId(0L)
-            .orderId(ORDER_ID)
-            .build();
+  @Test
+  @DisplayName("주문 취소 실패 - 404 존재하지 않는 회원")
+  void cancelOrderFail() throws Exception {
+    OrderDeleteRequest deleteRequest = OrderDeleteRequest.builder()
+      .memberId(0L)
+      .orderId(ORDER_ID)
+      .build();
 
-        mockMvc.perform(
-                delete("/api/orders/" + MEMBER_ID)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(deleteRequest)))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
+    mockMvc.perform(
+        delete("/api/orders/" + MEMBER_ID)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(deleteRequest)))
+      .andDo(print())
+      .andExpect(status().isNotFound());
+  }
 
-    @Test
-    @DisplayName("관리자 조회 성공")
-    @WithMockUser(roles = "ADMIN")
-    void getListBySearchConditionForAdmin() throws Exception {
-        mockMvc.perform(
-                get("/api/orders/admin")
-                    .contentType(MediaType.ALL))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].id").value(ORDER_ID))
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderStatus").value("ONGOING"))
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderProducts").exists())
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].delivery").exists())
-            .andExpect(jsonPath("_embedded.orderQueryResponseList[0].email").exists())
-            .andExpect(jsonPath("_links").exists())
-            .andExpect(jsonPath("page").exists());
-    }
+  @Test
+  @DisplayName("관리자 조회 성공")
+  @WithMockUser(roles = "ADMIN")
+  void getListBySearchConditionForAdmin() throws Exception {
+    mockMvc.perform(
+        get("/api/orders/admin")
+          .contentType(MediaType.ALL))
+      .andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].id").value(ORDER_ID))
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderStatus").value("ONGOING"))
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].orderProducts").exists())
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].delivery").exists())
+      .andExpect(jsonPath("_embedded.orderQueryResponseList[0].email").exists())
+      .andExpect(jsonPath("_links").exists())
+      .andExpect(jsonPath("page").exists());
+  }
 
-    @Test
-    @DisplayName("관리자 조회 실패 - 403 권한 없음")
-    @WithMockUser(roles = "USER")
-    void getListBySearchConditionForAdminFail() throws Exception {
-        mockMvc.perform(
-                get("/api/orders/admin")
-                    .contentType(MediaType.ALL))
-            .andDo(print())
-            .andExpect(status().isForbidden());
-    }
+  @Test
+  @DisplayName("관리자 조회 실패 - 403 권한 없음")
+  @WithMockUser(roles = "USER")
+  void getListBySearchConditionForAdminFail() throws Exception {
+    mockMvc.perform(
+        get("/api/orders/admin")
+          .contentType(MediaType.ALL))
+      .andDo(print())
+      .andExpect(status().isForbidden());
+  }
 }

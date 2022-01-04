@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface OrderRepositoryCustom {
 
-    Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable);
+  Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable);
 
-    Page<OrderQueryResponse> searchForAdminBy(OrderSearchCondition searchCondition, Pageable pageable);
+  Page<OrderQueryResponse> searchForAdminBy(OrderSearchCondition searchCondition, Pageable pageable);
 }

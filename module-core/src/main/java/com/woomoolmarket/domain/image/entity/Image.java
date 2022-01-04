@@ -30,66 +30,66 @@ import lombok.Setter;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Image extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "image_id")
+  private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "member_id")
+  private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    private Board board;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "board_id")
+  private Board board;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "product_id")
+  private Product product;
 
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String originalFileName;
+  @Size(max = 255)
+  @Column(nullable = false)
+  private String originalFileName;
 
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String fileName;
+  @Size(max = 255)
+  @Column(nullable = false)
+  private String fileName;
 
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String filePath;
+  @Size(max = 255)
+  @Column(nullable = false)
+  private String filePath;
 
-    private Long fileSize;
+  private Long fileSize;
 
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
+  @Column(nullable = false, length = 50)
+  @Enumerated(EnumType.STRING)
+  private Status status = Status.ACTIVE;
 
-    @Builder
-    public Image(String originalFileName, String fileName, String filePath, Long fileSize) {
-        this.originalFileName = originalFileName;
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
+  @Builder
+  public Image(String originalFileName, String fileName, String filePath, Long fileSize) {
+    this.originalFileName = originalFileName;
+    this.fileName = fileName;
+    this.filePath = filePath;
+    this.fileSize = fileSize;
+  }
+
+  public void setBoard(Board board) {
+    this.board = board;
+
+    if (!board.getImages().contains(this)) {
+      board.getImages().add(this);
     }
+  }
 
-    public void setBoard(Board board) {
-        this.board = board;
+  public void delete() {
+    changeStatus(Status.INACTIVE);
+  }
 
-        if (!board.getImages().contains(this)) {
-            board.getImages().add(this);
-        }
-    }
+  public void restore() {
+    changeStatus(Status.ACTIVE);
+  }
 
-    public void delete() {
-        changeStatus(Status.INACTIVE);
-    }
-
-    public void restore() {
-        changeStatus(Status.ACTIVE);
-    }
-
-    private void changeStatus(Status status) {
-        this.status = status;
-    }
+  private void changeStatus(Status status) {
+    this.status = status;
+  }
 }

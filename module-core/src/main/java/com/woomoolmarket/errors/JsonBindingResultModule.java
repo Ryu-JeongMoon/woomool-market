@@ -6,7 +6,7 @@ import org.springframework.validation.BindingResult;
 
 public class JsonBindingResultModule extends SimpleModule {
 
-    public JsonBindingResultModule() {
-        addSerializer(BindingResult.class, new BindingResultSerializer());
-    }
+  public JsonBindingResultModule() {
+    addSerializer(BindingResult.class, new BindingResultSerializer());
+  }
 }

@@ -14,22 +14,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RefreshToken {
 
-    @Id
-    @Column(name = "token_key")
-    private String key;
+  @Id
+  @Column(name = "token_key")
+  private String key;
 
-    @Lob
-    @Column(name = "token_value")
-    private String value;
+  @Lob
+  @Column(name = "token_value")
+  private String value;
 
-    @Builder
-    public RefreshToken(String key, String value) {
-        this.key = key;
-        this.value = value;
-    }
+  @Builder
+  public RefreshToken(String key, String value) {
+    this.key = key;
+    this.value = value;
+  }
 
-    public RefreshToken updateValue(String token) {
-        this.value = token;
-        return this;
-    }
+  public RefreshToken updateValue(String token) {
+    this.value = token;
+    return this;
+  }
 }

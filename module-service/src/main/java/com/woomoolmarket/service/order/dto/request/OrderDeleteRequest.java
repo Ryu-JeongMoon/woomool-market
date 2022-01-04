@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderDeleteRequest {
 
-    private Long memberId;
-    private Long orderId;
+  private Long memberId;
+  private Long orderId;
 }

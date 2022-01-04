@@ -27,117 +27,117 @@ import org.springframework.data.domain.Pageable;
 @Log4j2
 class OrderServiceTestTest extends ServiceTestConfig {
 
-    private static int PRODUCT_STOCK;
+  private static int PRODUCT_STOCK;
 
-    @Autowired
-    OrderResponseMapper orderResponseMapper;
+  @Autowired
+  OrderResponseMapper orderResponseMapper;
 
-    @BeforeEach
-    void init() {
-        Member member = memberTestHelper.createMember();
-        MEMBER_ID = member.getId();
+  @BeforeEach
+  void init() {
+    Member member = memberTestHelper.createMember();
+    MEMBER_ID = member.getId();
 
-        Product product = productTestHelper.createProduct(member);
-        PRODUCT_ID = product.getId();
-        PRODUCT_STOCK = product.getStock().intValue();
+    Product product = productTestHelper.createProduct(member);
+    PRODUCT_ID = product.getId();
+    PRODUCT_STOCK = product.getStock().intValue();
 
-        cartTestHelper.createCart(member, product);
-    }
+    cartTestHelper.createCart(member, product);
+  }
 
-    @AfterEach
-    void clear() {
-        em.createNativeQuery("ALTER TABLE ORDERS ALTER COLUMN `order_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
-        em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
-        Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
-    }
+  @AfterEach
+  void clear() {
+    em.createNativeQuery("ALTER TABLE ORDERS ALTER COLUMN `order_id` RESTART WITH 1").executeUpdate();
+    em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN `member_id` RESTART WITH 1").executeUpdate();
+    em.createNativeQuery("ALTER TABLE PRODUCT ALTER COLUMN `product_id` RESTART WITH 1").executeUpdate();
+    Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
+  }
 
-    @Test
-    @DisplayName("단건 주문")
-    void orderOneTest() {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(3).build();
-        orderService.orderOne(orderRequest);
-        assertThat(orderRepository.findById(1L)).isNotNull();
-    }
+  @Test
+  @DisplayName("단건 주문")
+  void orderOneTest() {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(3).build();
+    orderService.orderOne(orderRequest);
+    assertThat(orderRepository.findById(1L)).isNotNull();
+  }
 
-    @Test
-    @DisplayName("다건 주문")
-    void orderMultipleTest() {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .build();
-        orderService.orderMultiples(orderRequest);
-        assertThat(orderRepository.findById(1L)).isNotNull();
-    }
+  @Test
+  @DisplayName("다건 주문")
+  void orderMultipleTest() {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .build();
+    orderService.orderMultiples(orderRequest);
+    assertThat(orderRepository.findById(1L)).isNotNull();
+  }
 
-    @Test
-    @DisplayName("재고 이상 주문 불가")
-    void orderOverTheStockTest() {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(PRODUCT_STOCK + 1)
-            .build();
-        assertThrows(IllegalArgumentException.class, () -> orderService.orderOne(orderRequest));
-    }
+  @Test
+  @DisplayName("재고 이상 주문 불가")
+  void orderOverTheStockTest() {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(PRODUCT_STOCK + 1)
+      .build();
+    assertThrows(IllegalArgumentException.class, () -> orderService.orderOne(orderRequest));
+  }
 
-    @Test
-    @DisplayName("없는 상품 주문 불가")
-    void orderNonExistProductTest() {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(5L)
-            .quantity(3).build();
-        assertThrows(EntityNotFoundException.class, () -> orderService.orderOne(orderRequest));
-    }
+  @Test
+  @DisplayName("없는 상품 주문 불가")
+  void orderNonExistProductTest() {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(5L)
+      .quantity(3).build();
+    assertThrows(EntityNotFoundException.class, () -> orderService.orderOne(orderRequest));
+  }
 
-    @Test
-    @DisplayName("주문 내역 조회")
-    void findOrdersByMemberIdTest() {
-        assertThat(orderService.searchBy(MEMBER_ID, Pageable.ofSize(10))).isNotNull();
-    }
+  @Test
+  @DisplayName("주문 내역 조회")
+  void findOrdersByMemberIdTest() {
+    assertThat(orderService.searchBy(MEMBER_ID, Pageable.ofSize(10))).isNotNull();
+  }
 
-    @Test
-    @DisplayName("주문 검색")
-    void getListBySearchConditionForAdmin() {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(3).build();
-        orderService.orderOne(orderRequest);
+  @Test
+  @DisplayName("주문 검색")
+  void getListBySearchConditionForAdmin() {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(3).build();
+    orderService.orderOne(orderRequest);
 
-        OrderSearchCondition condition = OrderSearchCondition.builder()
-            .orderStatus(OrderStatus.ONGOING)
-            .build();
+    OrderSearchCondition condition = OrderSearchCondition.builder()
+      .orderStatus(OrderStatus.ONGOING)
+      .build();
 
-        Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, Pageable.ofSize(10));
-        assertThat(orderQueryResponses.getTotalElements()).isEqualTo(1);
-    }
+    Page<OrderQueryResponse> orderQueryResponses = orderService.searchForAdminBy(condition, Pageable.ofSize(10));
+    assertThat(orderQueryResponses.getTotalElements()).isEqualTo(1);
+  }
 
-    @Test
-    @DisplayName("응답값 변환 성공")
-    void transferToDto() {
-        OrderRequest orderRequest = OrderRequest.builder()
-            .memberId(MEMBER_ID)
-            .productId(PRODUCT_ID)
-            .quantity(3).build();
-        orderService.orderOne(orderRequest);
+  @Test
+  @DisplayName("응답값 변환 성공")
+  void transferToDto() {
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .productId(PRODUCT_ID)
+      .quantity(3).build();
+    orderService.orderOne(orderRequest);
 
-        Page<OrderQueryResponse> orderQueryResponses = orderService.searchBy(MEMBER_ID, Pageable.ofSize(10));
-        OrderQueryResponse orderQueryResponse = orderQueryResponses.getContent().get(0);
-        Order order = orderRepository.findById(orderQueryResponse.getId()).get();
+    Page<OrderQueryResponse> orderQueryResponses = orderService.searchBy(MEMBER_ID, Pageable.ofSize(10));
+    OrderQueryResponse orderQueryResponse = orderQueryResponses.getContent().get(0);
+    Order order = orderRepository.findById(orderQueryResponse.getId()).get();
 
-        OrderResponse orderResponse = orderResponseMapper.toDto(order);
+    OrderResponse orderResponse = orderResponseMapper.toDto(order);
 
-        assertThat(orderResponse.getId()).isEqualTo(order.getId());
-        assertThat(orderResponse.getDelivery()).isEqualTo(order.getDelivery());
-        assertThat(orderResponse.getOrderStatus()).isEqualTo(order.getOrderStatus());
-        assertThat(orderResponse.getOrderProducts()).isEqualTo(order.getOrderProducts());
-        assertThat(orderResponse.getMemberResponse().getId()).isEqualTo(order.getMember().getId());
-        assertThat(orderResponse.getMemberResponse().getEmail()).isEqualTo(order.getMember().getEmail());
-        assertThat(orderResponse.getMemberResponse().getPhone()).isEqualTo(order.getMember().getPhone());
-    }
+    assertThat(orderResponse.getId()).isEqualTo(order.getId());
+    assertThat(orderResponse.getDelivery()).isEqualTo(order.getDelivery());
+    assertThat(orderResponse.getOrderStatus()).isEqualTo(order.getOrderStatus());
+    assertThat(orderResponse.getOrderProducts()).isEqualTo(order.getOrderProducts());
+    assertThat(orderResponse.getMemberResponse().getId()).isEqualTo(order.getMember().getId());
+    assertThat(orderResponse.getMemberResponse().getEmail()).isEqualTo(order.getMember().getEmail());
+    assertThat(orderResponse.getMemberResponse().getPhone()).isEqualTo(order.getMember().getPhone());
+  }
 }

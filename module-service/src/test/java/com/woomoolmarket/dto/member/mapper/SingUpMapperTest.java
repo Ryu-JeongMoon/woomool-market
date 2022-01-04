@@ -13,23 +13,23 @@ import org.junit.jupiter.api.Test;
 @Log4j2
 class SingUpMapperTest {
 
-    private final SignupRequestMapperImpl signUpMemberRequestMapper = new SignupRequestMapperImpl();
+  private final SignupRequestMapperImpl signUpMemberRequestMapper = new SignupRequestMapperImpl();
 
-    @Test
-    @DisplayName("signUpMapper 올바르게 변환된다")
-    void signUpMapperTest() {
-        Member member = Member.builder()
-            .email("pandabear")
-            .nickname("horaaa")
-            .password("1234")
-            .address(new Address("seoul", "daegu", "busan"))
-            .build();
+  @Test
+  @DisplayName("signUpMapper 올바르게 변환된다")
+  void signUpMapperTest() {
+    Member member = Member.builder()
+      .email("pandabear")
+      .nickname("horaaa")
+      .password("1234")
+      .address(new Address("seoul", "daegu", "busan"))
+      .build();
 
-        SignupRequest signUpRequest = signUpMemberRequestMapper.toDto(member);
+    SignupRequest signUpRequest = signUpMemberRequestMapper.toDto(member);
 
-        assertEquals(signUpRequest.getNickname(), member.getNickname());
-        assertEquals(signUpRequest.getEmail(), member.getEmail());
-        assertEquals(signUpRequest.getPassword(), member.getPassword());
-        assertEquals(signUpRequest.getAddress(), member.getAddress());
-    }
+    assertEquals(signUpRequest.getNickname(), member.getNickname());
+    assertEquals(signUpRequest.getEmail(), member.getEmail());
+    assertEquals(signUpRequest.getPassword(), member.getPassword());
+    assertEquals(signUpRequest.getAddress(), member.getAddress());
+  }
 }

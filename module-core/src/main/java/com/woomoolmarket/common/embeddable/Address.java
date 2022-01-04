@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Address implements Serializable {
 
-    @Pattern(regexp = "^[\\w]{2,24}$")
-    private String city;
+  @Pattern(regexp = "^[\\w]{2,24}$")
+  private String city;
 
-    @Pattern(regexp = "^[\\w]{2,24}$")
-    private String street;
+  @Pattern(regexp = "^[\\w]{2,24}$")
+  private String street;
 
-    @Pattern(regexp = "^[\\d]{5,6}$")
-    private String zipcode;
+  @Pattern(regexp = "^[\\d]{5,6}$")
+  private String zipcode;
 }

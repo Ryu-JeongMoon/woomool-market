@@ -14,16 +14,16 @@ import org.springframework.context.annotation.Import;
 @Import(TestConfig.class)
 public class DataJpaTestConfig {
 
-    @Autowired
-    protected CartRepository cartRepository;
-    @Autowired
-    protected OrderRepository orderRepository;
-    @Autowired
-    protected BoardRepository boardRepository;
-    @Autowired
-    protected ImageRepository imageRepository;
-    @Autowired
-    protected MemberRepository memberRepository;
-    @Autowired
-    protected ProductRepository productRepository;
+  @Autowired
+  protected CartRepository cartRepository;
+  @Autowired
+  protected OrderRepository orderRepository;
+  @Autowired
+  protected BoardRepository boardRepository;
+  @Autowired
+  protected ImageRepository imageRepository;
+  @Autowired
+  protected MemberRepository memberRepository;
+  @Autowired
+  protected ProductRepository productRepository;
 }
