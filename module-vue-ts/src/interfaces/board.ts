@@ -39,9 +39,22 @@ export interface BoardResponse {
   _links: BoardResponseLinks;
 }
 
-export interface BoardResponseList {
+export interface BoardQueryResponse {
+  id: number;
+  title: string;
+  content: string;
+  hit: number;
+  boardCategory: string;
+  startDateTime: string;
+  endDateTime: string;
+  createdDateTime: string;
+  memberResponse: MemberModelResponse;
+  _links: BoardResponseLinks;
+}
+
+export interface BoardQueryResponseList {
   _embedded: {
-    boardQueryResponseList: BoardResponse[];
+    boardQueryResponseList: BoardQueryResponse[];
   };
   _links: Links;
   page: Page;

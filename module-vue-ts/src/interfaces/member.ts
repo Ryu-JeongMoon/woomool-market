@@ -40,6 +40,23 @@ export interface MemberModelResponse {
   _links: Links;
 }
 
+export interface MemberQueryResponse {
+  id: number;
+  email: string;
+  nickname: string;
+  profileImage: string;
+  phone: string;
+  license: string;
+  createdDateTime: string;
+  lastModifiedDateTime: string;
+  leaveDateTime: string;
+  authority: string;
+  address: Address;
+  authProvider: string;
+  status: string;
+  _links: Links;
+}
+
 export interface PagedMemberResponse {
   _embedded: {
     memberResponseList: MemberModelResponse[];

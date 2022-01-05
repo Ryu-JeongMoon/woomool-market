@@ -1,5 +1,6 @@
 import { RouteConfig } from "vue-router";
 import { PATH } from "@/router/routes_path";
+import { Pageable } from "@/interfaces/common/page";
 
 const routes: Array<RouteConfig> = [
   {
@@ -79,8 +80,12 @@ const routes: Array<RouteConfig> = [
 
   {
     name: "Carts",
-    path: PATH.CART.LIST,
-    component: () => import("@/views/cart/CartListPage.vue"),
+    path: PATH.CART.DETAIL,
+    component: () => import("@/views/cart/CartDetailPage.vue"),
+    props: (route) => ({
+      memberId: Number(route.params.memberId),
+      pageable: route.params.pageable,
+    }),
   },
   {
     name: "CreateCarts",
@@ -88,14 +93,12 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/cart/CartCreatePage.vue"),
   },
   {
-    name: "DetailCarts",
-    path: PATH.CART.DETAIL,
-    component: () => import("@/views/cart/CartDetailPage.vue"),
-  },
-  {
-    name: "ModifyCarts",
-    path: PATH.CART.MODIFY,
-    component: () => import("@/views/cart/CartModifyPage.vue"),
+    name: "CartsForAdmin",
+    path: PATH.CART.ADMIN,
+    component: () => import("@/views/cart/CartListPage.vue"),
+    props: (route) => ({
+      pageable: route.params.pageable,
+    }),
   },
 
   {

@@ -23,7 +23,7 @@ export default Vue.extend({
   },
 
   methods: {
-    moveToMainPage() {
+    goToMainPage() {
       routerHelper.goToBoardsPage();
     },
 
@@ -32,7 +32,7 @@ export default Vue.extend({
         .dispatch(BoardActionTypes.REQUEST_BOARD_CREATE, boardRequest)
         .then(() => {
           this.$store.dispatch(BoardActionTypes.REQUEST_BOARD_LIST);
-          this.moveToMainPage();
+          this.goToMainPage();
         });
     },
   },

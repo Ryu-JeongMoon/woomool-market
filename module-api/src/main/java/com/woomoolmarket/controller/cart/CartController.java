@@ -36,6 +36,19 @@ public class CartController {
   private final CartService cartService;
   private final PagedResourcesAssembler<CartQueryResponse> queryAssembler;
 
+  @GetMapping("/{memberId}/{cartId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<EntityModel<CartResponse>> getBy(@PathVariable Long memberId, @PathVariable Long cartId) {
+    CartResponse cartResponse = cartService.findBy(cartId);
+
+    EntityModel<CartResponse> responseModel = EntityModel.of(
+      cartResponse,
+      linkTo(methodOn(CartController.class).getBy(memberId, cartId)).withSelfRel(),
+      linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel(CartConstants.LIST));
+
+    return ResponseEntity.ok().body(responseModel);
+  }
+
   @GetMapping("/{memberId}")
   @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPageBy(
@@ -53,30 +66,17 @@ public class CartController {
     return ResponseEntity.created(createdUri).build();
   }
 
-  @DeleteMapping("/{memberId}")
-  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-  public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
-    cartService.removeAll(memberId);
-    return ResponseEntity.noContent().build();
-  }
-
-  @GetMapping("/{memberId}/{cartId}")
-  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-  public ResponseEntity<EntityModel<CartResponse>> getBy(@PathVariable Long memberId, @PathVariable Long cartId) {
-    CartResponse cartResponse = cartService.findBy(cartId);
-
-    EntityModel<CartResponse> responseModel = EntityModel.of(
-      cartResponse,
-      linkTo(methodOn(CartController.class).getBy(memberId, cartId)).withSelfRel(),
-      linkTo(methodOn(CartController.class).getPageBy(memberId, Pageable.unpaged())).withRel(CartConstants.LIST));
-
-    return ResponseEntity.ok().body(responseModel);
-  }
-
   @DeleteMapping("/{memberId}/{cartId}")
   @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> remove(@PathVariable Long memberId, @PathVariable Long cartId) {
     cartService.remove(cartId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
+    cartService.removeAll(memberId);
     return ResponseEntity.noContent().build();
   }
 

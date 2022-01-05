@@ -31,10 +31,9 @@ export const PATH = {
   },
 
   CART: {
-    LIST: "/carts",
+    ADMIN: "/carts/admin",
     CREATE: "/carts/create",
-    DETAIL: "/carts/:cartId",
-    MODIFY: "/carts/:cartId/modify",
+    DETAIL: "/carts/:memberId",
   },
 
   ORDER: {

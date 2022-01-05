@@ -12,27 +12,27 @@
         </thead>
         <tbody>
           <tr
-            v-for="boardResponse in boardResponseList"
-            v-bind:key="boardResponse.id"
+            v-for="boardQueryResponse in boardQueryResponseList"
+            v-bind:key="boardQueryResponse.id"
           >
-            <td>{{ boardResponse.id }}</td>
+            <td>{{ boardQueryResponse.id }}</td>
             <v-hover
               v-slot:default="{ hover }"
               open-delay="100"
               class="slide-enter-active slide-leave-active"
             >
               <td
-                @click="goToDetailBoard(boardResponse.id)"
+                @click="goToDetailBoard(boardQueryResponse.id)"
                 class="ui-state-hover"
                 :elevation="hover ? 12 : 2"
               >
-                <a>{{ boardResponse.title }}</a>
+                <a>{{ boardQueryResponse.title }}</a>
               </td>
             </v-hover>
-            <td>{{ boardResponse.memberResponse.email }}</td>
-            <td>{{ boardResponse.hit }}</td>
-            <td>{{ boardResponse.boardCategory }}</td>
-            <td>{{ getLocalDate(boardResponse.createdDateTime) }}</td>
+            <td>{{ boardQueryResponse.memberResponse.email }}</td>
+            <td>{{ boardQueryResponse.hit }}</td>
+            <td>{{ boardQueryResponse.boardCategory }}</td>
+            <td>{{ getLocalDate(boardQueryResponse.createdDateTime) }}</td>
           </tr>
         </tbody>
       </v-simple-table>
@@ -55,15 +55,15 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { BoardResponse } from "@/interfaces/board";
+import { BoardQueryResponse } from "@/interfaces/board";
 import { Page } from "@/interfaces/common/page";
 import { Links } from "@/interfaces/common/links";
 import { DateUtils } from "@/utils/date";
 
 export default Vue.extend({
   props: {
-    boardResponseList: {
-      type: [] as PropType<BoardResponse[]>,
+    boardQueryResponseList: {
+      type: [] as PropType<BoardQueryResponse[]>,
       required: true,
     },
     page: {

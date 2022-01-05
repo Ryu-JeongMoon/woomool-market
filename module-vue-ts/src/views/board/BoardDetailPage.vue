@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header>상세 페이지</header>
+    <header>게시글 상세 페이지</header>
     <v-main>
       <LoadingSpinner v-if="isLoading" />
       <BoardDetailForm
