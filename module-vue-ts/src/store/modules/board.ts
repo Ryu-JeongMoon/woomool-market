@@ -1,7 +1,7 @@
 import {
   BoardRequest,
   BoardResponse,
-  BoardResponseList,
+  BoardQueryResponseList,
 } from "@/interfaces/board";
 import StateInitializer from "@/store/utils/Initializer";
 import { Page } from "@/interfaces/common/page";
@@ -11,7 +11,7 @@ import boardApi from "@/api/BoardApi";
 export const state = {
   boardPage: StateInitializer.page() as Page,
   boardResponse: {} as BoardResponse,
-  boardResponseList: {} as BoardResponseList,
+  boardResponseList: {} as BoardQueryResponseList,
 };
 export type BoardState = typeof state;
 

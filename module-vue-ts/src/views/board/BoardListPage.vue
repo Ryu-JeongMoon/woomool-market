@@ -5,7 +5,7 @@
       <LoadingSpinner v-if="isLoading" />
       <BoardListForm
         v-else
-        :boardResponseList="boardResponseList"
+        :boardQueryResponseList="boardQueryResponseList"
         :page="page"
         :links="links"
         @movePage="movePage"
@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 import BoardListForm from "@/views/board/BoardListForm.vue";
-import { BoardResponse, BoardSearchCondition } from "@/interfaces/board";
+import { BoardQueryResponse, BoardSearchCondition } from "@/interfaces/board";
 import { Page, Pageable } from "@/interfaces/common/page";
 import { Links } from "@/interfaces/common/links";
 import boardApi from "@/api/BoardApi";
@@ -29,7 +29,7 @@ export default Vue.extend({
 
   data() {
     return {
-      boardResponseList: [] as BoardResponse[],
+      boardQueryResponseList: [] as BoardQueryResponse[],
       page: {} as Page,
       links: {} as Links,
       isLoading: false,
@@ -58,13 +58,13 @@ export default Vue.extend({
     ) {
       LoadingHelper.switchLoadingState(this.isLoading);
 
-      const boardResponses = await boardApi
+      const response = await boardApi
         .getBoardList(condition, pageable)
         .finally(() => LoadingHelper.switchLoadingState(this.isLoading));
 
-      this.boardResponseList = boardResponses._embedded.boardQueryResponseList;
-      this.page = boardResponses.page;
-      this.links = boardResponses._links;
+      this.boardQueryResponseList = response._embedded.boardQueryResponseList;
+      this.page = response.page;
+      this.links = response._links;
     },
 
     movePage(pageable: Pageable) {

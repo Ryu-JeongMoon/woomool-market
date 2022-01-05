@@ -1,4 +1,4 @@
-import { MemberModelResponse } from "@/interfaces/member";
+import { MemberModelResponse, MemberQueryResponse } from "@/interfaces/member";
 import { Links, ProductResponseLinks } from "@/interfaces/common/links";
 import { Page } from "@/interfaces/common/page";
 
@@ -33,6 +33,19 @@ export interface ProductResponse {
   createdDateTime: string;
   productCategory: string;
   region: string;
+  _links: ProductResponseLinks;
+}
+
+export interface ProductQueryResponse {
+  name: string;
+  description: string;
+  productImage: string;
+  price: number;
+  stock: number;
+  region: string;
+  createdDateTime: string;
+  productCategory: string;
+  memberQueryResponse: MemberQueryResponse;
   _links: ProductResponseLinks;
 }
 

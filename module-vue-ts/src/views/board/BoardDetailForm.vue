@@ -41,7 +41,7 @@ export default Vue.extend({
       required: true,
     },
     submitCallback: {
-      type: Function as PropType<() => Promise<void>>,
+      type: Function as PropType<() => void>,
       required: true,
     },
   },

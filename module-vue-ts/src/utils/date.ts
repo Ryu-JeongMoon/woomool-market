@@ -2,8 +2,8 @@ import moment from "moment";
 
 export class DateUtils {
   static getLocalDatetime(localDateTime: string): string {
-    const localDate = localDateTime.split("T")[0];
-    const localTime = localDateTime.split("T")[1];
+    const localDate = localDateTime.split(" ")[0];
+    const localTime = localDateTime.split(" ")[1];
 
     const dateToken = localDate.split("-");
     const timeToken = localTime.split(":");

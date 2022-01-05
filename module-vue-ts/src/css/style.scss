@@ -16,10 +16,6 @@
   opacity: 0;
 }
 
-a {
-  text-decoration: none;
-}
-
 .absolute-center {
   position: absolute;
   left: 50%;
@@ -107,3 +103,4 @@ div[aria-required=true].v-input .v-label::after {
   content: "*";
   color: red;
 }
+

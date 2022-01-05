@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { BoardResponseList } from "@/interfaces/board";
+import { BoardQueryResponseList } from "@/interfaces/board";
 
 export default class ResponseConverter {
   static retrieveData(response: AxiosResponse): any {
@@ -10,7 +10,9 @@ export default class ResponseConverter {
     return response && response.status;
   }
 
-  static convertBoardResponseList(data: BoardResponseList): BoardResponseList {
+  static convertBoardResponseList(
+    data: BoardQueryResponseList
+  ): BoardQueryResponseList {
     return {
       _embedded: data._embedded,
       page: data.page,

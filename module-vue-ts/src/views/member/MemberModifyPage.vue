@@ -49,7 +49,7 @@ export default Vue.extend({
         .finally(() => LoadingHelper.switchLoadingState(this.isLoading));
     },
 
-    moveToMainPage() {
+    goToMainPage() {
       routerHelper.goToMainPage();
     },
   },

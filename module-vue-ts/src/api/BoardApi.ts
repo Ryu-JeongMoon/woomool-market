@@ -2,7 +2,7 @@ import {
   BoardModifyRequest,
   BoardRequest,
   BoardResponse,
-  BoardResponseList,
+  BoardQueryResponseList,
   BoardSearchCondition,
 } from "@/interfaces/board";
 import { Pageable } from "@/interfaces/common/page";
@@ -19,12 +19,9 @@ const boardApi = {
   getBoardList(
     condition?: BoardSearchCondition,
     pageable?: Pageable
-  ): Promise<BoardResponseList> {
+  ): Promise<BoardQueryResponseList> {
     return publicAxios
-      .get(`/api/boards`, {
-        // params: { page: pageable?.page, size: pageable?.size },
-        params: { ...condition, ...pageable },
-      })
+      .get(`/api/boards`, { params: { ...condition, ...pageable } })
       .then(ResponseConverter.retrieveData);
   },
 
@@ -58,9 +55,9 @@ const boardApi = {
   getBoardListForAdmin(
     condition?: BoardSearchCondition,
     pageable?: Pageable
-  ): Promise<BoardResponseList> {
+  ): Promise<BoardQueryResponseList> {
     return privateAxios
-      .get(`/api/boards/admin`, { params: { condition, pageable } })
+      .get(`/api/boards/admin`, { params: { ...condition, ...pageable } })
       .then(ResponseConverter.retrieveData);
   },
 };
