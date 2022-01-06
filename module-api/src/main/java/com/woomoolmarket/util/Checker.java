@@ -13,7 +13,6 @@ import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,27 +26,24 @@ public class Checker {
   public boolean isSelf(Long memberId) {
     Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-
     return check(member.getEmail());
   }
 
   public boolean isSelfByBoardId(Long boardId) {
     Board board = boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
-
     return check(board.getMember().getEmail());
   }
 
   public boolean isSelfByProductId(Long productId) {
     Product product = productRepository.findByIdAndStatus(productId, Status.ACTIVE)
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
-
     return check(product.getMember().getEmail());
   }
 
   private boolean check(String email) {
-    UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return email.equals(principal.getUsername());
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    return email.equals(username);
   }
 
   public boolean isQnaOrFree(BoardRequest boardRequest) {

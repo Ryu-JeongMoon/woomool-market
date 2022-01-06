@@ -16,8 +16,9 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 @Profile("mysql")
 public class DataSourceConfig {
 
-  private static final String SLAVE_DATASOURCE = "slaveDataSource";
-  private static final String MASTER_DATASOURCE = "masterDataSource";
+  private final String SLAVE_DATASOURCE = "slaveDataSource";
+  private final String MASTER_DATASOURCE = "masterDataSource";
+  private final Map<Object, Object> targetDataSources = Map.of("master", masterDataSource(), "slave", slaveDataSource());
 
   @Bean(name = MASTER_DATASOURCE)
   @ConfigurationProperties(prefix = "spring.datasource.master.hikari")
@@ -39,7 +40,7 @@ public class DataSourceConfig {
   @DependsOn({MASTER_DATASOURCE, SLAVE_DATASOURCE})
   public DataSource routingDataSource() {
     DataSourceRouter dataSourceRouter = new DataSourceRouter();
-    dataSourceRouter.setTargetDataSources(Map.of("master", masterDataSource(), "slave", slaveDataSource()));
+    dataSourceRouter.setTargetDataSources(targetDataSources);
     dataSourceRouter.setDefaultTargetDataSource(masterDataSource());
     return dataSourceRouter;
   }

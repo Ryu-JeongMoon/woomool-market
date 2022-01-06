@@ -10,10 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @RequiredArgsConstructor
-public class UserPrincipal implements OAuth2User, UserDetails {
+public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
 
   private final String email;
   private final String password;
@@ -85,5 +88,20 @@ public class UserPrincipal implements OAuth2User, UserDetails {
   @Override
   public boolean isEnabled() {
     return Status.ACTIVE.equals(status);
+  }
+
+  @Override
+  public Map<String, Object> getClaims() {
+    return this.attributes;
+  }
+
+  @Override
+  public OidcUserInfo getUserInfo() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public OidcIdToken getIdToken() {
+    throw new UnsupportedOperationException();
   }
 }

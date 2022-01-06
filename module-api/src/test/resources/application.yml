@@ -91,6 +91,10 @@ custom:
 tinify:
   apiKey: bear
 
+app:
+  oauth2:
+    authorizedRedirectUris: https://www.naver.com
+
 jwt:
   header: Authorization
   secret: c3ByaW5nLWJvb3QtdnVlanMtd29vbW9vbC1tYXJrZXQtcHJvamVjdC1zcHJpbmctc2VjdXJpdHktanNvbi13ZWItdG9rZW4tc2VjcmV0LWtleQo=

@@ -1,6 +1,9 @@
 package com.woomoolmarket.controller.auth;
 
-import com.woomoolmarket.common.constants.TokenConstants;
+import static com.woomoolmarket.common.constants.TokenConstants.AUTHORIZATION_HEADER;
+import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN;
+import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
+
 import com.woomoolmarket.common.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
@@ -28,9 +31,8 @@ public class AuthController {
   @PreAuthorize("isAnonymous()")
   public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
     TokenResponse tokenResponse = authService.login(loginRequest);
-    CookieUtils.addCookie(
-      response, TokenConstants.REFRESH_TOKEN, tokenResponse.getRefreshToken(), TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS);
-    response.setHeader(TokenConstants.AUTHORIZATION_HEADER, tokenResponse.getAccessToken());
+    CookieUtils.addCookie(response, REFRESH_TOKEN, tokenResponse.getRefreshToken(), REFRESH_TOKEN_EXPIRE_SECONDS);
+    response.setHeader(AUTHORIZATION_HEADER, tokenResponse.getAccessToken());
     return ResponseEntity.ok(tokenResponse);
   }
 

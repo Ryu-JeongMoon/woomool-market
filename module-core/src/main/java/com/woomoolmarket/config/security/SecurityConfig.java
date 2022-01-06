@@ -1,11 +1,12 @@
 package com.woomoolmarket.config.security;
 
 
-import com.woomoolmarket.security.oauth2.CustomOAuth2UserService;
 import com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.woomoolmarket.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.woomoolmarket.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.woomoolmarket.security.service.CustomOidcUserService;
 import com.woomoolmarket.security.service.CustomUserDetailsService;
+import com.woomoolmarket.security.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
   private final JwtSecurityConfig jwtSecurityConfig;
+  private final CustomOidcUserService customOidcUserService;
   private final CustomOAuth2UserService customOAuth2UserService;
   private final CustomUserDetailsService customUserDetailsService;
   private final ClientRegistrationRepository clientRegistrationRepository;
@@ -76,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .and()
       .userInfoEndpoint()
       .userService(customOAuth2UserService)
+      .oidcUserService(customOidcUserService)
 
       .and()
       .successHandler(oAuth2AuthenticationSuccessHandler)

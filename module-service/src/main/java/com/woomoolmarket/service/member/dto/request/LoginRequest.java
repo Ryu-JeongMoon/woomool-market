@@ -26,7 +26,7 @@ public class LoginRequest {
   @Pattern(regexp = "^[\\w]{4,24}$")
   private String password;
 
-  public UsernamePasswordAuthenticationToken toAuthentication() {
+  public UsernamePasswordAuthenticationToken toAuthenticationToken() {
     return new UsernamePasswordAuthenticationToken(email, password);
   }
 }
