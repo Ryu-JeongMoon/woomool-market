@@ -23,9 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
   private final JwtSecurityConfig jwtSecurityConfig;
-  private final ClientRegistrationRepository clientRegistrationRepository;
-  private final CustomUserDetailsService customUserDetailsService;
   private final CustomOAuth2UserService customOAuth2UserService;
+  private final CustomUserDetailsService customUserDetailsService;
+  private final ClientRegistrationRepository clientRegistrationRepository;
   private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
   private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
   private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;

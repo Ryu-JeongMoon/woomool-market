@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.oauth2;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.woomoolmarket.common.util.CookieUtils;
+import io.jsonwebtoken.lang.Strings;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 public class HttpCookieOAuth2AuthorizationRequestRepository implements
   AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
-  public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
   public static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
+  public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
   private static final int cookieExpireSeconds = 180;
 
   @Override
   public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
     return CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
       .map(cookie -> CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class))
-      .orElseGet(null);
+      .orElseGet(() -> null);
   }
 
   @Override
@@ -32,9 +32,9 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements
     }
 
     CookieUtils.addCookie(res, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, CookieUtils.serialize(authReq), cookieExpireSeconds);
-    String redirectUriAfterLogin = req.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
 
-    if (StringUtils.isNotBlank(redirectUriAfterLogin)) {
+    String redirectUriAfterLogin = req.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
+    if (Strings.hasText(redirectUriAfterLogin)) {
       CookieUtils.addCookie(res, REDIRECT_URI_PARAM_COOKIE_NAME, redirectUriAfterLogin, cookieExpireSeconds);
     }
   }

@@ -86,7 +86,7 @@ public enum CustomOAuth2Provider {
     ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(registrationId);
     builder.clientAuthenticationMethod(method);
     builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE);
-    builder.redirectUri(CustomOAuth2Provider.DEFAULT_REDIRECT_URL);
+    builder.redirectUri(DEFAULT_REDIRECT_URL);
     return builder;
   }
 

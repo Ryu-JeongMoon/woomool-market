@@ -42,7 +42,7 @@ public class Member extends BaseEntity {
   @Column(nullable = false)
   private String email;
 
-  @Size(min = 4, max = 24)
+  @Size(min = 2, max = 24)
   @Column(nullable = false)
   private String nickname;
 
@@ -73,7 +73,7 @@ public class Member extends BaseEntity {
 
   @Column(nullable = false, length = 50)
   @Enumerated(EnumType.STRING)
-  private Authority authority = Authority.ROLE_USER;
+  private Authority authority;
 
   @Column(nullable = false, length = 50)
   @Enumerated(EnumType.STRING)
