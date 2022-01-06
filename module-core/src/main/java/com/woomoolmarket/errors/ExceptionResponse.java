@@ -1,6 +1,5 @@
 package com.woomoolmarket.errors;
 
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ public class ExceptionResponse {
   private final String exception;
   private final String message;
 
-  public static Optional<ExceptionResponse> of(String exception, String message) {
-    return Optional.of(new ExceptionResponse(exception, message));
+  public static ExceptionResponse of(String exception, String message) {
+    return new ExceptionResponse(exception, message);
   }
 }

@@ -2,13 +2,11 @@ package com.woomoolmarket.exception.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.woomoolmarket.aop.annotation.LogForException;
 import com.woomoolmarket.errors.ExceptionResponse;
-import com.woomoolmarket.errors.JsonBindingResultModule;
-import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -25,56 +23,58 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @ResponseBody
 @LogForException
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+  private final ObjectMapper objectMapper;
 
   private static String getExceptionClass(Exception e) {
     return e != null ? e.getClass().getSimpleName() : "";
   }
 
   @ExceptionHandler(value = IllegalArgumentException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> illegalArgumentExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> illegalArgumentExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = IllegalStateException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> illegalStateExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> illegalStateExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = AuthenticationException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> authenticationExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> authenticationExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = EntityNotFoundException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> entityNotFoundExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> entityNotFoundExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = UsernameNotFoundException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> usernameNotFoundExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> usernameNotFoundExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = JsonProcessingException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> jsonProcessingExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> jsonProcessingExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = AccessDeniedException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> accessDeniedExceptionHandler(Exception e) {
+  public ResponseEntity<ExceptionResponse> accessDeniedExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @ExceptionHandler(value = ConstraintViolationException.class)
-  public ResponseEntity<Optional<ExceptionResponse>> constraintViolationExceptionHandler(ConstraintViolationException e) {
+  public ResponseEntity<ExceptionResponse> constraintViolationExceptionHandler(ConstraintViolationException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
   }
 
   @SneakyThrows(value = JsonProcessingException.class)
   @ExceptionHandler(value = MethodArgumentNotValidException.class)
   public ResponseEntity<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-    ObjectMapper objectMapper = new ObjectMapper().registerModules(new JsonBindingResultModule(), new JavaTimeModule());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectMapper.writeValueAsString(e.getBindingResult()));
   }
 }
