@@ -49,6 +49,7 @@ public abstract class TokenFactory {
       .accessToken(accessToken)
       .refreshToken(refreshToken)
       .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_MILLIS)
+      .refreshTokenExpiresIn(REFRESH_TOKEN_EXPIRE_MILLIS)
       .build();
   }
 

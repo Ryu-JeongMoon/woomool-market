@@ -11,8 +11,12 @@ import lombok.Getter;
 public class TokenResponse implements Serializable {
 
   private String grantType;
+
   private String accessToken;
+
   private String refreshToken;
+
   private long accessTokenExpiresIn;
 
+  private long refreshTokenExpiresIn;
 }

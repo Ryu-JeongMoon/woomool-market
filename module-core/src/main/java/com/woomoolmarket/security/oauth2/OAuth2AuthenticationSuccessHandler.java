@@ -1,8 +1,17 @@
 package com.woomoolmarket.security.oauth2;
 
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
+import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.common.constants.TokenConstants.AUTHORIZATION_HEADER;
+import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN;
+import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
+import com.woomoolmarket.cache.CacheService;
+import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.util.CookieUtils;
+import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.factory.TokenFactory;
 import java.io.IOException;
 import java.net.URI;
@@ -12,34 +21,43 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
   private final TokenFactory tokenFactory;
+  private final CacheService cacheService;
   private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-  @Value("{app.oauth2.authorizedRedirectUris}")
+  @Value("${app.oauth2.authorizedRedirectUris}")
   private List<String> authorizedRedirectUris;
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-    throws IOException {
-
-    String targetUrl = determineTargetUrl(request, response, authentication);
-    if (response.isCommitted()) {
-      logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+  public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication auth) throws IOException {
+    String targetUrl = determineTargetUrl(req, resp, auth);
+    if (resp.isCommitted()) {
+      log.info("[WOOMOOL-INFO] :: Response has already been committed. Unable to redirect to {}", targetUrl);
       return;
     }
 
-    clearAuthenticationAttributes(request, response);
-    getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    sendTokenToClient(resp, auth);
+    saveAuthToContextHolder(auth);
+
+    clearAuthenticationAttributes(req, resp);
+    getRedirectStrategy().sendRedirect(req, resp, targetUrl);
+  }
+
+  private void saveAuthToContextHolder(Authentication oAuth2AuthenticationToken) {
+    SecurityContextHolder.getContext().setAuthentication(oAuth2AuthenticationToken);
   }
 
   protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -48,16 +66,27 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
       .map(Cookie::getValue);
 
     if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-      throw new RuntimeException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+      throw new AccessDeniedException(ExceptionConstants.UNAUTHORIZED_URI);
     }
 
-    String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-    String token = tokenFactory.createToken(authentication).getAccessToken();
+    return redirectUri.orElseGet(this::getDefaultTargetUrl);
+  }
 
-    return UriComponentsBuilder.fromUriString(targetUrl)
-      .queryParam("token", token)
-      .build()
-      .toUriString();
+  private void sendTokenToClient(HttpServletResponse resp, Authentication auth) {
+    TokenResponse tokenResponse = tokenFactory.createToken(auth);
+
+    String username = auth.getName();
+    String accessToken = tokenResponse.getAccessToken();
+    String refreshToken = tokenResponse.getRefreshToken();
+    saveTokensToRedis(accessToken, refreshToken, username);
+
+    CookieUtils.addCookie(resp, REFRESH_TOKEN, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
+    resp.setHeader(AUTHORIZATION_HEADER, accessToken);
+  }
+
+  private void saveTokensToRedis(String accessToken, String refreshToken, String username) {
+    cacheService.setDataAndExpiration(LOGIN_ACCESS_TOKEN_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
+    cacheService.setDataAndExpiration(LOGIN_REFRESH_TOKEN_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
   }
 
   protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
@@ -71,7 +100,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     return authorizedRedirectUris
       .stream()
       .anyMatch(authorizedRedirectUri -> {
-        // Only validate host and port. Let the clients use different paths if they want to
         URI authorizedURI = URI.create(authorizedRedirectUri);
         return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
           && authorizedURI.getPort() == clientRedirectUri.getPort();

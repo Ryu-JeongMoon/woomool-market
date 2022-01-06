@@ -34,4 +34,6 @@ public class ExceptionConstants {
   public static final String NOT_ENOUGH_BALANCE = "문자를 전송할 수 없는 상태입니다";
 
   public static final String CONVERT_FAILED = "File 형식의 문제가 있어 전환이 어렵습니다";
+
+  public static final String UNAUTHORIZED_URI = "접근할 수 없는 경로입니다";
 }

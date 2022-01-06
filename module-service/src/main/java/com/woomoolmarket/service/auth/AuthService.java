@@ -1,7 +1,8 @@
 package com.woomoolmarket.service.auth;
 
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
 import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_KEY_PREFIX;
+import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
 import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFIX;
 import static com.woomoolmarket.common.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
 import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
@@ -44,17 +45,19 @@ public class AuthService {
   public TokenResponse login(LoginRequest loginRequest) {
     checkFailureCount(loginRequest);
 
-    UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
+    UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthenticationToken();
     Authentication authentication = authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    TokenResponse tokenResponse = tokenFactory.createToken(authentication);
 
-    String username = authentication.getName();
-    String accessToken = tokenResponse.getAccessToken();
-    String refreshToken = tokenResponse.getRefreshToken();
-    cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
-    cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
+    TokenResponse tokenResponse = tokenFactory.createToken(authentication);
+    saveTokensToCache(authentication.getName(), tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+
     return tokenResponse;
+  }
+
+  private void saveTokensToCache(String username, String accessToken, String refreshToken) {
+    cacheService.setDataAndExpiration(LOGIN_ACCESS_TOKEN_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
+    cacheService.setDataAndExpiration(LOGIN_REFRESH_TOKEN_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
   }
 
   private void checkFailureCount(LoginRequest loginRequest) {
@@ -97,13 +100,14 @@ public class AuthService {
     Authentication authentication = tokenFactory.getAuthentication(tokenRequest.getAccessToken());
     String username = authentication.getName();
 
-    if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(cacheService.getData(LOGIN_KEY_PREFIX + username))) {
+    if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(
+      cacheService.getData(LOGIN_REFRESH_TOKEN_PREFIX + username))) {
       throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_VALID);
     }
 
     TokenResponse tokenResponse = tokenFactory.createToken(authentication);
     String reissuedRefreshToken = tokenResponse.getRefreshToken();
-    cacheService.setDataAndExpiration(LOGIN_KEY_PREFIX + username, reissuedRefreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
+    cacheService.setDataAndExpiration(LOGIN_REFRESH_TOKEN_PREFIX + username, reissuedRefreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
     return tokenResponse;
   }
 }

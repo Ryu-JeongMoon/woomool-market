@@ -63,7 +63,7 @@ class AuthServiceTest extends ServiceTestConfig {
   @Test
   @DisplayName("로그인 검증 성공")
   void authenticate() {
-    UsernamePasswordAuthenticationToken token = createRightLoginRequest().toAuthentication();
+    UsernamePasswordAuthenticationToken token = createRightLoginRequest().toAuthenticationToken();
     Authentication authentication = authService.authenticate(token);
 
     assertThat(authentication).isNotNull();
@@ -98,7 +98,7 @@ class AuthServiceTest extends ServiceTestConfig {
   @Test
   @DisplayName("로그인 실패 - 비밀번호 틀릴 시 AuthenticationException 발생")
   void authenticateFail() {
-    UsernamePasswordAuthenticationToken token = createWrongLoginRequest().toAuthentication();
+    UsernamePasswordAuthenticationToken token = createWrongLoginRequest().toAuthenticationToken();
 
     assertThrows(AuthenticationException.class, () -> authService.authenticate(token));
   }

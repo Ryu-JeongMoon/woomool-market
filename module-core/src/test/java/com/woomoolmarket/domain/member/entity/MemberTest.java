@@ -6,14 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.helper.ImageTestHelper;
-import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Log4j2
 class MemberTest {
 
   private static final String EMAIL = "panda@naver.com";
@@ -36,14 +34,8 @@ class MemberTest {
   }
 
   @Test
-  @DisplayName("기본 상태 ACTIVE 초기화")
-  public void statusTest() {
-    assertThat(member.getStatus()).isEqualTo(Status.ACTIVE);
-  }
-
-  @Test
   @DisplayName("비밀번호 변경 성공")
-  public void changePasswordTest() {
+  void changePasswordTest() {
     String newPassword = "1234";
     String newEncodedPassword = passwordEncoder.encode(newPassword);
     member.changePassword(newEncodedPassword);
@@ -52,14 +44,26 @@ class MemberTest {
   }
 
   @Test
-  @DisplayName("기본 상태 ROLE_USER 초기화")
-  public void basicAuthorityTest() {
+  @DisplayName("Status 기본 상태 ACTIVE 초기화")
+  void initialStatusTest() {
+    assertThat(member.getStatus()).isEqualTo(Status.ACTIVE);
+  }
+
+  @Test
+  @DisplayName("Authority 기본 상태 ROLE_USER 초기화")
+  void initialAuthorityTest() {
     assertThat(member.getAuthority()).isEqualTo(Authority.ROLE_USER);
   }
 
   @Test
+  @DisplayName("AuthProvider 기본 상태 Local")
+  void initialAuthProvider() {
+      assertThat(member.getAuthProvider()).isEqualTo(AuthProvider.LOCAL);
+  }
+
+  @Test
   @DisplayName("Authority 변경 성공")
-  public void assignAuthorityTest() {
+  void assignAuthorityTest() {
     member.assignAuthority(Authority.ROLE_ADMIN);
     assertThat(member.getAuthority()).isEqualTo(Authority.ROLE_ADMIN);
   }
@@ -98,10 +102,11 @@ class MemberTest {
   @Test
   @DisplayName("SOCIAL 로그인 사용자 정보 수정")
   void editNicknameAndProfileTest() {
-    Member result = member.editNicknameAndProfileImage("white", "tiger");
+    Member result = member.editByOAuth2("white", "tiger", AuthProvider.FACEBOOK);
 
     assertThat(member.getNickname()).isEqualTo(result.getNickname());
     assertThat(member.getProfileImage()).isEqualTo(result.getProfileImage());
+    assertThat(member.getAuthProvider()).isEqualTo(AuthProvider.FACEBOOK);
   }
 
   @Test

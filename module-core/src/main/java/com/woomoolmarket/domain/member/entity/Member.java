@@ -23,7 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.util.StringUtils;
 
 @Setter
 @Getter
@@ -83,15 +82,15 @@ public class Member extends BaseEntity {
   public Member(String email, String nickname, String password, Image image, String profileImage,
     String phone, String license, Address address, AuthProvider authProvider, Authority authority) {
     this.email = email;
+    this.image = image;
+    this.phone = phone;
+    this.address = address;
+    this.license = license;
     this.nickname = nickname;
     this.password = password;
-    this.image = image;
     this.profileImage = profileImage;
-    this.phone = phone;
-    this.license = license;
-    this.address = address;
-    this.authProvider = authProvider != null ? authProvider : AuthProvider.LOCAL;
     this.authority = authority != null ? authority : Authority.ROLE_USER;
+    this.authProvider = authProvider != null ? authProvider : AuthProvider.LOCAL;
   }
 
   public void changePassword(String password) {
@@ -119,9 +118,10 @@ public class Member extends BaseEntity {
     return this.authority.getKey();
   }
 
-  public Member editNicknameAndProfileImage(String nickname, String profileImage) {
-    this.nickname = StringUtils.hasText(nickname) ? nickname : this.nickname;
-    this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
+  public Member editByOAuth2(String nickname, String profileImage, AuthProvider authProvider) {
+    this.nickname = nickname;
+    this.profileImage = profileImage;
+    this.authProvider = authProvider;
     return this;
   }
 

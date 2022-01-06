@@ -88,7 +88,7 @@ class AuthControllerTest extends ApiControllerConfig {
       .password(MEMBER_PASSWORD)
       .build();
 
-    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = loginRequest.toAuthentication();
+    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = loginRequest.toAuthenticationToken();
     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
     TokenResponse tokenResponse = authService.login(loginRequest);
