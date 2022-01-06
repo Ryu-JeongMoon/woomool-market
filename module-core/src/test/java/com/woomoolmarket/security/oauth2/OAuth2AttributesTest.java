@@ -11,14 +11,16 @@ import org.junit.jupiter.api.Test;
 class OAuth2AttributesTest {
 
   private static OAuth2Attributes oAuth2Attributes;
+  private static final String EMAIL = "panda-email";
+  private static final String NICKNAME = "panda-nickname";
   private static final String REGISTRATION_ID = "facebook";
+  private static final String PROFILE_IMAGE = "panda-image";
   private static final String NAME_ATTRIBUTE_KEY = "panda-attribute-key";
   private static final String USERNAME_ATTRIBUTE_NAME = "panda-attribute-name";
-  private static final String NICKNAME = "panda-nickname";
-  private static final String EMAIL = "panda-email";
-  private static final String PROFILE_IMAGE = "panda-image";
+
   private static final Map<String, BiFunction<String, Map<String, Object>, OAuth2Attributes>> attributesMap = Map.of(
     "facebook", OAuth2AttributesTest::ofFacebook);
+
   private static final Map<String, Object> ATTRIBUTES =
     Map.of("panda", "bear", "email", EMAIL, "name", NICKNAME, "profile_image", PROFILE_IMAGE);
 
@@ -33,8 +35,8 @@ class OAuth2AttributesTest {
   }
 
   @BeforeEach
-  void init() {
-    oAuth2Attributes = new OAuth2Attributes(ATTRIBUTES, NAME_ATTRIBUTE_KEY, NICKNAME, EMAIL, PROFILE_IMAGE);
+  void setUp() {
+    oAuth2Attributes = new OAuth2Attributes(EMAIL, NICKNAME, ATTRIBUTES, PROFILE_IMAGE, NAME_ATTRIBUTE_KEY);
   }
 
   @Test
@@ -63,19 +65,19 @@ class OAuth2AttributesTest {
   }
 
   @Test
-  @DisplayName("OAuth2Attributes 생성")
+  @DisplayName("Nickname 생성")
   void getNickname() {
     assertThat(oAuth2Attributes.getNickname()).isEqualTo(NICKNAME);
   }
 
   @Test
-  @DisplayName("OAuth2Attributes 생성")
+  @DisplayName("Email 생성")
   void getEmail() {
     assertThat(oAuth2Attributes.getEmail()).isEqualTo(EMAIL);
   }
 
   @Test
-  @DisplayName("OAuth2Attributes 생성")
+  @DisplayName("ProfileImage 생성")
   void getProfileImage() {
     assertThat(oAuth2Attributes.getProfileImage()).isEqualTo(PROFILE_IMAGE);
   }
@@ -86,6 +88,7 @@ class OAuth2AttributesTest {
     OAuth2Attributes oAuth2Attributes = OAuth2Attributes.builder()
       .email("yahoo")
       .build();
+
     assertThat(oAuth2Attributes.getEmail()).isNotNull();
     assertThat(oAuth2Attributes.getAttributes()).isNull();
     assertThat(oAuth2Attributes.getNickname()).isNull();

@@ -29,7 +29,6 @@ public class CookieUtils {
     cookie.setSecure(true);
     cookie.setHttpOnly(true);
     cookie.setMaxAge(maxAge);
-    cookie.setDomain("woomool-market");
     response.addCookie(cookie);
   }
 
