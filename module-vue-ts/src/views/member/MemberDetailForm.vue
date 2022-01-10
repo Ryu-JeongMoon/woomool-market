@@ -40,6 +40,7 @@ import Vue, { PropType } from "vue";
 import { MemberModelResponse } from "@/interfaces/member";
 import ReadonlyField from "@/components/common/ReadonlyField.vue";
 import { WoomoolVueRefs } from "@/types";
+import { ROUTES_NAME } from "@/router/routes_name";
 
 export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
   components: { ReadonlyField },
@@ -58,7 +59,7 @@ export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
   methods: {
     goToEditPage() {
       this.$router.push({
-        name: "ModifyMembers",
+        name: ROUTES_NAME.MEMBER.MODIFY,
         params: { memberId: String(this.memberResponse.id) },
       });
     },

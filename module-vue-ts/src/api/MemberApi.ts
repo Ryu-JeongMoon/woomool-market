@@ -7,8 +7,15 @@ import { privateAxios, publicAxios } from "@/api/index";
 import ResponseConverter from "@/api/converter/ResponseConverter";
 import { BoardSearchCondition } from "@/interfaces/board";
 import { Pageable } from "@/interfaces/common/page";
+import { PATH } from "@/router/routes_path";
 
 const memberApi = {
+  getIdBy(username: string): Promise<number> {
+    return privateAxios
+      .get("/api/members", { params: { email: username } })
+      .then(ResponseConverter.retrieveData);
+  },
+
   signup(memberRequest: MemberRequest): Promise<MemberModelResponse> {
     return publicAxios
       .post("/api/members", memberRequest)

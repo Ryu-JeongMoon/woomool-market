@@ -55,6 +55,12 @@ public class MemberService {
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
   }
 
+  @Transactional(readOnly = true)
+  public Long findIdByEmail(String email) {
+    return memberRepository.findIdByEmail(email)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+  }
+
   @Transactional
   @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
   public MemberResponse joinAsMember(SignupRequest signUpRequest) {
