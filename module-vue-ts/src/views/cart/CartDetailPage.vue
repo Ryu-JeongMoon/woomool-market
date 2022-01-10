@@ -10,9 +10,14 @@
               .cartQueryResponseList"
             :key="cartQueryResponse.id"
             :cartQueryResponse="cartQueryResponse"
-            :submitCallBack="goToProductPage"
+            :goToProductPage="goToProductPage"
           />
         </ul>
+      </div>
+      <div class="cart-order">
+        <v-btn @click="goToOrderPage" color="info" class="mt-2" large>
+          <v-icon>shop</v-icon>
+        </v-btn>
       </div>
     </v-container>
   </div>
@@ -27,8 +32,8 @@ import { LoadingHelper } from "@/utils/loading";
 import cartApi from "@/api/CartApi";
 import CartDetailForm from "@/views/cart/CartDetailForm.vue";
 import { Pageable } from "@/interfaces/common/page";
-import CommonHeader from "@/components/header/CommonHeader.vue";
-import MenuHeader from "@/components/header/MenuHeader.vue";
+import { PATH } from "@/router/routes_path";
+import { ROUTES_NAME } from "@/router/routes_name";
 
 export default Vue.extend({
   components: { CartDetailForm, LoadingSpinner },
@@ -36,6 +41,7 @@ export default Vue.extend({
   data: () => ({
     isLoading: false,
     cartResponsePage: {} as CartResponsePage,
+    cartIds: {} as number[],
   }),
 
   props: {
@@ -66,8 +72,15 @@ export default Vue.extend({
       routerHelper.goToMainPage();
     },
 
-    goToProductPage() {
-      //TODO
+    goToProductPage(productId: number) {
+      this.$router.push({
+        name: ROUTES_NAME.PRODUCT.DETAIL,
+        params: { productId: productId.toString() },
+      });
+    },
+
+    goToOrderPage() {
+      this.$router.push({ path: PATH.ORDER.CREATE, params: {} });
     },
   },
 });

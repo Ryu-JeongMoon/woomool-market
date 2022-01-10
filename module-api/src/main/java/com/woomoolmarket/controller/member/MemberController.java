@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,6 +43,24 @@ public class MemberController {
 
   private final MemberService memberService;
   private final PagedResourcesAssembler<MemberQueryResponse> assembler;
+
+  @GetMapping
+  @PreAuthorize("@checker.isSelfByEmail(#email) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Long> getIdBy(@RequestParam String email) {
+    return ResponseEntity.ok(memberService.findIdByEmail(email));
+  }
+
+  @PostMapping
+  @PreAuthorize("isAnonymous()")
+  public ResponseEntity<EntityModel<MemberResponse>> join(@Valid @RequestBody SignupRequest signUpRequest) {
+    MemberResponse memberResponse = StringUtils.hasText(signUpRequest.getLicense()) ?
+      memberService.joinAsSeller(signUpRequest) : memberService.joinAsMember(signUpRequest);
+
+    EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
+      linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(memberModel);
+  }
 
   @GetMapping("/{id}")
   @PreAuthorize("@checker.isSelf(#id) or hasRole('ROLE_ADMIN')")
@@ -56,18 +75,6 @@ public class MemberController {
     );
 
     return ResponseEntity.ok(responseModel);
-  }
-
-  @PostMapping
-  @PreAuthorize("isAnonymous()")
-  public ResponseEntity<EntityModel<MemberResponse>> join(@Valid @RequestBody SignupRequest signUpRequest) {
-    MemberResponse memberResponse = StringUtils.hasText(signUpRequest.getLicense()) ?
-      memberService.joinAsSeller(signUpRequest) : memberService.joinAsMember(signUpRequest);
-
-    EntityModel<MemberResponse> memberModel = EntityModel.of(memberResponse,
-      linkTo(methodOn(MemberController.class).getBy(memberResponse.getId())).withSelfRel());
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(memberModel);
   }
 
   @PatchMapping("/{id}")
@@ -94,6 +101,15 @@ public class MemberController {
 
 
   /* FOR ADMIN */
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<PagedModel<EntityModel<MemberQueryResponse>>> getPageForAdminBy(
+    MemberSearchCondition condition, @PageableDefault Pageable pageable) {
+
+    Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, pageable);
+    return ResponseEntity.ok(assembler.toModel(queryResponsePage));
+  }
+
   @GetMapping("/admin/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<EntityModel<MemberResponse>> getForAdminBy(@PathVariable Long id) {
@@ -108,14 +124,5 @@ public class MemberController {
       linkTo(methodOn(MemberController.class).getBy(id)).withRel(MemberConstants.MODIFY));
 
     return ResponseEntity.ok().body(responseModel);
-  }
-
-  @GetMapping("/admin")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<PagedModel<EntityModel<MemberQueryResponse>>> getPageForAdminBy(
-    MemberSearchCondition condition, @PageableDefault Pageable pageable) {
-
-    Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, pageable);
-    return ResponseEntity.ok(assembler.toModel(queryResponsePage));
   }
 }

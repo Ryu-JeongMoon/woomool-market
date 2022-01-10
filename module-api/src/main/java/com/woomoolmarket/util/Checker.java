@@ -19,12 +19,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Checker {
 
-  private final MemberRepository memberRepository;
   private final BoardRepository boardRepository;
+  private final MemberRepository memberRepository;
   private final ProductRepository productRepository;
 
   public boolean isSelf(Long memberId) {
     Member member = memberRepository.findByIdAndStatus(memberId, Status.ACTIVE)
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+    return check(member.getEmail());
+  }
+
+  public boolean isSelfByEmail(String email) {
+    Member member = memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
     return check(member.getEmail());
   }

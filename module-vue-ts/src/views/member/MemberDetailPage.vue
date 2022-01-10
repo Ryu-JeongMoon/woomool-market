@@ -4,7 +4,7 @@
     <v-main>
       <LoadingSpinner v-if="isLoading" />
       <MemberDetailForm
-        :submitCallback="moveToMainPage"
+        :submitCallback="goToMainPage"
         :memberResponse="memberResponse"
       ></MemberDetailForm>
     </v-main>
