@@ -47,6 +47,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
+    "material-design-icons": "^3.0.1",
     "material-design-icons-iconfont": "^6.1.1",
     "mdi-vue": "^3.0.12",
     "moment": "^2.29.1",

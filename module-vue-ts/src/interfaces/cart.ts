@@ -3,6 +3,10 @@ import { ProductQueryResponse, ProductResponse } from "@/interfaces/product";
 import { CartResponseLinks, Links } from "@/interfaces/common/links";
 import { Page } from "@/interfaces/common/page";
 
+export interface CartIdRequest {
+  cartIds: number[];
+}
+
 export interface CartRequest {
   memberId: number;
   productId: number;
@@ -23,14 +27,6 @@ export interface CartQueryResponse {
   memberQueryResponse: MemberQueryResponse;
   productQueryResponse: ProductQueryResponse;
   _links: CartResponseLinks;
-}
-
-export interface CartResponseList {
-  _embedded: {
-    cartResponseList: CartResponse[];
-  };
-  _links: Links;
-  page: Page;
 }
 
 export interface CartResponsePage {

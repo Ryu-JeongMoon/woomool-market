@@ -12,7 +12,7 @@ export class CookieUtils {
 
   static getAccessTokenFromCookie(): string {
     return document.cookie.replace(
-      /(?:(?:^|.*;\s*)accessToken\s*=\s*([^;]*).*$)|^.*$/,
+      /(?:^|.*;\s*)accessToken\s*=\s*([^;]*).*$|^.*$/,
       "$1"
     );
   }

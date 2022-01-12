@@ -4,10 +4,21 @@ import { ProductResponse } from "@/interfaces/product";
 import { Delivery } from "@/interfaces/common/address";
 import { MemberModelResponse } from "@/interfaces/member";
 
+export interface OrderSearchCondition {
+  email: string;
+  memberId: number;
+  orderStatus: string;
+}
+
 export interface OrderRequest {
   memberId: number;
   productId: number;
   quantity: number;
+}
+
+export interface OrderDeleteRequest {
+  memberId: number;
+  orderId: number;
 }
 
 export interface OrderResponse {
@@ -18,14 +29,6 @@ export interface OrderResponse {
   delivery: Delivery;
 }
 
-export interface OrderResponseList {
-  _embedded: {
-    orderResponseList: OrderResponse[];
-  };
-  _links: Links;
-  page: Page;
-}
-
 export interface OrderProductResponse {
   id: number;
   product: ProductResponse;
@@ -33,4 +36,21 @@ export interface OrderProductResponse {
   totalPrice: number;
   createdDateTime: string;
   lastModifiedDateTime: string;
+}
+
+export interface OrderQueryResponse {
+  id: number;
+  quantity: number;
+  totalPrice: number;
+  createdDateTime: string;
+  lastModifiedDateTime: string;
+  orderProducts: OrderProductResponse[];
+}
+
+export interface OrderResponsePage {
+  _embedded: {
+    orderQueryResponseList: OrderQueryResponse[];
+  };
+  _links: Links;
+  page: Page;
 }
