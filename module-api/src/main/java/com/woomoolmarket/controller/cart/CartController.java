@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.service.cart.CartService;
+import com.woomoolmarket.service.cart.dto.request.CartIdRequest;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import com.woomoolmarket.util.constant.CartConstants;
@@ -66,6 +67,13 @@ public class CartController {
     return ResponseEntity.created(createdUri).build();
   }
 
+  @DeleteMapping("/{memberId}")
+  @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
+    cartService.removeAll(memberId);
+    return ResponseEntity.noContent().build();
+  }
+
   @DeleteMapping("/{memberId}/{cartId}")
   @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> remove(@PathVariable Long memberId, @PathVariable Long cartId) {
@@ -73,11 +81,13 @@ public class CartController {
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping("/{memberId}")
+  @PostMapping("/{memberId}/picked")
   @PreAuthorize("@checker.isSelf(#memberId) or hasRole('ROLE_ADMIN')")
-  public ResponseEntity<Void> removeAll(@PathVariable Long memberId) {
-    cartService.removeAll(memberId);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<PagedModel<EntityModel<CartQueryResponse>>> getPickedBy(
+    @PathVariable Long memberId, @RequestBody CartIdRequest cartIdRequest, @PageableDefault Pageable pageable) {
+
+    Page<CartQueryResponse> queryResponsePage = cartService.findPickedBy(cartIdRequest.getCartIds(), pageable);
+    return ResponseEntity.ok(queryAssembler.toModel(queryResponsePage));
   }
 
 

@@ -12,6 +12,7 @@ import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import com.woomoolmarket.service.cart.mapper.CartResponseMapper;
+import java.util.Collection;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,11 @@ public class CartService {
     return cartRepository.findById(cartId)
       .map(cartResponseMapper::toDto)
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
+  }
+
+  @Transactional(readOnly = true)
+  public Page<CartQueryResponse> findPickedBy(Collection<Long> cartIds, Pageable pageable) {
+    return cartRepository.findPickedBy(cartIds, pageable);
   }
 
   @Transactional(readOnly = true)
