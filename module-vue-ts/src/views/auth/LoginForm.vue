@@ -1,15 +1,26 @@
 <template>
   <div>
-    <div>
-      <input type="text" v-model="email" placeholder="email" />
-      <br />
-      <input type="password" v-model="password" placeholder="password" />
-      <br />
-      <v-btn @click="login">Login</v-btn>
-    </div>
-    <div>
-      <v-btn @click="gotToOauth2Login">Social Login</v-btn>
-    </div>
+    <v-container>
+      <v-form @submit.prevent="login" class="form" lazy-validation>
+        <v-text-field type="text" v-model="email" placeholder="email" />
+        <br />
+        <v-text-field
+          type="password"
+          v-model="password"
+          placeholder="password"
+        />
+        <br />
+        <div>
+          <v-btn type="submit">Login <v-icon>login</v-icon></v-btn>
+        </div>
+        <div>
+          <v-btn @click="gotToOauth2Login" class="mt-4"
+            >Social Login <v-icon>group</v-icon></v-btn
+          >
+        </div>
+      </v-form>
+    </v-container>
+
     <Modal v-if="showModal" @close="showModal = false">
       <h3 slot="header">
         삐빅
@@ -51,16 +62,16 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-input {
-  display: flow;
-  margin: 10px 0;
-  width: 20%;
-  padding: 15px;
-}
-
-button {
-  margin-top: 20px;
-  width: 10%;
-  cursor: pointer;
-}
+//input {
+//  display: flow;
+//  margin: 10px 0;
+//  width: 20%;
+//  padding: 15px;
+//}
+//
+//button {
+//  margin-top: 20px;
+//  width: 10%;
+//  cursor: pointer;
+//}
 </style>

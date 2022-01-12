@@ -40,17 +40,19 @@ export const actions = {
     context: AuthActionContext,
     loginRequest: LoginRequest
   ): Promise<void> {
-    const response = await authApi.login(loginRequest);
-    LocalStorageUtils.setUsernameToLocalStorage(loginRequest.email);
-    CookieUtils.setAccessTokenToCookie(response.accessToken);
-    CookieUtils.setRefreshTokenToCookie(response.refreshToken);
+    await authApi.login(loginRequest).then((response) => {
+      LocalStorageUtils.setUsernameToLocalStorage(loginRequest.email);
+      CookieUtils.setAccessTokenToCookie(response.accessToken);
+      CookieUtils.setRefreshTokenToCookie(response.refreshToken);
+    });
   },
 
   async LOGOUT(): Promise<void> {
-    await authApi.logout();
-    LocalStorageUtils.removeUsernameFromLocalStorage();
-    CookieUtils.deleteCookie(ACCESS_TOKEN_KEY);
-    CookieUtils.deleteCookie(REFRESH_TOKEN_KEY);
+    await authApi.logout().finally(() => {
+      LocalStorageUtils.removeUsernameFromLocalStorage();
+      CookieUtils.deleteCookie(ACCESS_TOKEN_KEY);
+      CookieUtils.deleteCookie(REFRESH_TOKEN_KEY);
+    });
   },
 };
 export type AuthActions = typeof actions;

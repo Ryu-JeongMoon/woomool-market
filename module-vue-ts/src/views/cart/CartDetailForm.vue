@@ -1,16 +1,25 @@
 <template>
   <li>
+    <v-flex>
+      <v-checkbox
+        label="pick"
+        @click="submitCallback(cartId)"
+        hide-details
+        input-value="true"
+      />
+    </v-flex>
     <div class="cart-id">
       주문상품 :
-      <a @onclick="submitCallBack">{{ productName }}</a>
+      <v-btn @click="goToProductPage(productId)">{{ productName }}</v-btn>
     </div>
     <div class="cart-products">
+      YAHO: {{ productId }}<br />
       가격: {{ price }}<br />
-      주문수량 : {{ cartQueryResponse.quantity }}<br />
+      주문수량 : {{ quantity }}<br />
       총 가격 : {{ price * quantity }}
     </div>
     <div class="cart-trash">
-      <v-btn @click="deleteCart" color="info" class="mt-2" small>
+      <v-btn @click="deleteCart" color="pink" class="mt-2" small>
         <v-icon>delete_outline</v-icon>
       </v-btn>
     </div>
@@ -19,31 +28,31 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import {
-  CartQueryResponse,
-  CartResponse,
-  CartResponsePage,
-} from "@/interfaces/cart";
-import { Page } from "@/interfaces/common/page";
-import { Links } from "@/interfaces/common/links";
+import { CartQueryResponse } from "@/interfaces/cart";
 import cartApi from "@/api/CartApi";
 
 export default Vue.extend({
   data() {
     return {
-      productName: this.cartQueryResponse.productQueryResponse.name,
-      price: this.cartQueryResponse.productQueryResponse.price,
+      cartId: this.cartQueryResponse.id,
       quantity: this.cartQueryResponse.quantity,
+      price: this.cartQueryResponse.productQueryResponse.price,
+      productId: this.cartQueryResponse.productQueryResponse.id,
+      productName: this.cartQueryResponse.productQueryResponse.name,
     };
   },
 
   props: {
     cartQueryResponse: {
-      type: {} as PropType<CartQueryResponse>,
+      type: Object as PropType<CartQueryResponse>,
       required: true,
     },
-    submitCallBack: {
-      type: Function as PropType<() => void>,
+    goToProductPage: {
+      type: Function as PropType<(productId: number) => void>,
+      required: true,
+    },
+    submitCallback: {
+      type: Function as PropType<(id: number) => void>,
       required: true,
     },
   },

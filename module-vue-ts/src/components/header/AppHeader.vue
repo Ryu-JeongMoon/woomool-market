@@ -1,22 +1,42 @@
 <template>
   <header>
     <div>
-      <router-link to="/"><v-icon>home</v-icon></router-link> |
-      <router-link to="/about">About</router-link>
+      <template>
+        <router-link to="/">
+          <v-icon>home</v-icon>
+        </router-link>
+        |
+        <router-link to="/about">
+          <v-icon>info</v-icon>
+        </router-link>
+        |
+
+        <router-link to="#">
+          <v-icon>light_mode</v-icon>
+        </router-link>
+        |
+        <router-link to="#">
+          <v-icon>bedtime</v-icon>
+        </router-link>
+      </template>
     </div>
     <div class="navigations">
       <template v-if="isLogin">
-        <span>{{ $store.state.member.username }}</span> |
-        <a href="#" @click="logout">Logout</a>
+        <router-link to="/chat">Chat <v-icon>message</v-icon></router-link> |
+        <a @click="goToMemberDetailPage">{{ $store.state.member.username }} </a>
+        <v-icon>account_circle</v-icon> |
+        <a href="#" @click="logout">Logout <v-icon>logout</v-icon></a> |
       </template>
       <template v-else>
-        <router-link to="/login">Login<v-icon>login</v-icon></router-link> |
-        <router-link to="/signup">Signup<v-icon>3p</v-icon></router-link> |
-        <router-link to="/chat">Chat<v-icon>message</v-icon></router-link>
-      </template>
-      <template>
-        <router-link to="#">Day<v-icon>light_mode</v-icon></router-link>
-        <router-link to="#">Night<v-icon>bedtime</v-icon></router-link>
+        <router-link to="/login"
+          >Login
+          <v-icon>login</v-icon>
+        </router-link>
+        |
+        <router-link to="/signup"
+          >Signup
+          <v-icon>3p</v-icon>
+        </router-link>
       </template>
     </div>
   </header>
@@ -24,6 +44,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+import memberApi from "@/api/MemberApi";
+import { ROUTES_NAME } from "@/router/routes_name";
 
 export default Vue.extend({
   computed: {
@@ -31,10 +53,22 @@ export default Vue.extend({
       return this.$store.getters.isLogin;
     },
   },
+
   methods: {
     logout() {
       this.$store.dispatch("LOGOUT");
-      this.$router.push("/login");
+      this.$router.push(ROUTES_NAME.AUTH.LOGIN);
+    },
+
+    async goToMemberDetailPage() {
+      await memberApi
+        .getIdBy(this.$store.state.member.username)
+        .then((memberId) => {
+          this.$router.push({
+            name: ROUTES_NAME.MEMBER.DETAIL,
+            params: { memberId: memberId.toString() },
+          });
+        });
     },
   },
 });
@@ -50,6 +84,7 @@ header {
   z-index: 2;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.05);
 }
+
 .fixed {
   position: fixed;
   top: 0;

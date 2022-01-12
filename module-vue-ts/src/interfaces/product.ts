@@ -37,6 +37,7 @@ export interface ProductResponse {
 }
 
 export interface ProductQueryResponse {
+  id: number;
   name: string;
   description: string;
   productImage: string;

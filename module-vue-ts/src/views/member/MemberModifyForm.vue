@@ -70,7 +70,7 @@
         />
         <v-btn @click="submitCallback" color="info" class="mt-2 mr-4">
           <v-icon>arrow_back</v-icon>
-          Main
+          Back
         </v-btn>
         <v-btn @click="modify" color="green" class="mt-2">
           <v-icon>send</v-icon>
@@ -88,6 +88,7 @@ import ReadonlyField from "@/components/common/ReadonlyField.vue";
 import { RULES } from "@/utils/constant/rules";
 import { WoomoolVueRefs } from "@/types";
 import { Address } from "@/interfaces/common/address";
+import { ROUTES_NAME } from "@/router/routes_name";
 
 export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
   components: { ReadonlyField },
@@ -136,7 +137,7 @@ export default (Vue as WoomoolVueRefs<{ form: HTMLFormElement }>).extend({
 
     goToDetailPage() {
       this.$router.push({
-        name: "DetailMembers",
+        name: ROUTES_NAME.MEMBER.DETAIL,
         params: { memberId: String(this.memberResponse.id) },
       });
     },

@@ -4,7 +4,7 @@
     <v-main>
       <LoadingSpinner v-if="isLoading" />
       <MemberModifyForm
-        :submitCallback="moveToMainPage"
+        :submitCallback="goToBackPage"
         :memberResponse="memberResponse"
       ></MemberModifyForm>
     </v-main>
@@ -49,8 +49,8 @@ export default Vue.extend({
         .finally(() => LoadingHelper.switchLoadingState(this.isLoading));
     },
 
-    goToMainPage() {
-      routerHelper.goToMainPage();
+    goToBackPage() {
+      routerHelper.goToBackPage();
     },
   },
 });

@@ -2,6 +2,7 @@ import { AuthUtils } from "@/utils/auth";
 import { Dictionary } from "vue-router/types/router";
 import { PATH } from "@/router/routes_path";
 import router from "@/router/index";
+import { ROUTES_NAME } from "@/router/routes_name";
 
 class RouterHelper {
   cartId = (): number => parseInt(getParams().cartId, 10);
@@ -36,6 +37,27 @@ class RouterHelper {
 
   goToMainPage() {
     return router.push(PATH.ROOT);
+  }
+
+  goToBackPage() {
+    return router.go(-1);
+  }
+
+  goToProductPage(productId: number) {
+    return router.push({
+      name: ROUTES_NAME.PRODUCT.DETAIL,
+      params: { productId: productId.toString() },
+    });
+  }
+
+  goToOrderPage(memberId: number, cartIds: Set<number>) {
+    return router.push({
+      name: ROUTES_NAME.ORDER.CREATE,
+      params: {
+        memberId: memberId.toString(),
+        cartIds: [...cartIds].toString(),
+      },
+    });
   }
 }
 

@@ -1,4 +1,9 @@
-import { CartRequest, CartResponse, CartResponsePage } from "@/interfaces/cart";
+import {
+  CartIdRequest,
+  CartRequest,
+  CartResponse,
+  CartResponsePage,
+} from "@/interfaces/cart";
 import { privateAxios } from "@/api/index";
 import ResponseConverter from "@/api/converter/ResponseConverter";
 import { Pageable } from "@/interfaces/common/page";
@@ -13,6 +18,18 @@ const cartApi = {
   getPageBy(memberId: number, pageable?: Pageable): Promise<CartResponsePage> {
     return privateAxios
       .get(`/api/carts/${memberId}`, { params: { ...pageable } })
+      .then(ResponseConverter.retrieveData);
+  },
+
+  getPickedBy(
+    memberId: number,
+    cartIdRequest: CartIdRequest,
+    pageable?: Pageable
+  ): Promise<CartResponsePage> {
+    return privateAxios
+      .post(`/api/carts/${memberId}/picked`, cartIdRequest, {
+        params: { ...pageable },
+      })
       .then(ResponseConverter.retrieveData);
   },
 
