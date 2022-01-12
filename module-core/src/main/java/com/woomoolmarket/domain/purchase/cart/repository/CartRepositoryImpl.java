@@ -9,6 +9,7 @@ import com.woomoolmarket.common.util.CustomPageImpl;
 import com.woomoolmarket.common.util.QueryDslUtils;
 import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
 import com.woomoolmarket.domain.purchase.cart.query.QCartQueryResponse;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,21 @@ import org.springframework.stereotype.Repository;
 public class CartRepositoryImpl implements CartRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
+
+  @Override
+  public Page<CartQueryResponse> findPickedBy(Collection<Long> cartIds, Pageable pageable) {
+    return searchTemplateBy(cartIdIn(cartIds), pageable);
+  }
+
+  @Override
+  public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
+    return searchTemplateBy(memberIdEquals(memberId), pageable);
+  }
+
+  @Override
+  public Page<CartQueryResponse> searchForAdminBy(Pageable pageable) {
+    return searchTemplateBy(null, pageable);
+  }
 
   private Page<CartQueryResponse> searchTemplateBy(BooleanBuilder booleanBuilder, Pageable pageable) {
     QueryResults<CartQueryResponse> results = queryFactory
@@ -35,14 +51,8 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
     return new CustomPageImpl<>(results.getResults(), pageable.getPageNumber(), pageable.getPageSize(), results.getTotal());
   }
 
-  @Override
-  public Page<CartQueryResponse> searchBy(Long memberId, Pageable pageable) {
-    return searchTemplateBy(memberIdEquals(memberId), pageable);
-  }
-
-  @Override
-  public Page<CartQueryResponse> searchForAdminBy(Pageable pageable) {
-    return searchTemplateBy(null, pageable);
+  private BooleanBuilder cartIdIn(Collection<Long> cartIds) {
+    return QueryDslUtils.nullSafeBuilder(() -> cart.id.in(cartIds));
   }
 
   private BooleanBuilder memberIdEquals(Long memberId) {
