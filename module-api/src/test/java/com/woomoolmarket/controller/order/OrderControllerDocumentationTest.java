@@ -11,11 +11,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
+import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,10 +37,13 @@ class OrderControllerDocumentationTest extends ApiDocumentationConfig {
     Product product = productTestHelper.createProduct(member);
     PRODUCT_ID = product.getId();
 
-    OrderProduct orderProduct = OrderProduct.createOrderProduct(product, 500);
+    OrderProduct orderProduct = OrderProduct.createBy(product, 500);
 
     Order order = orderTestHelper.createOrder(member, orderProduct);
     ORDER_ID = order.getId();
+
+    Cart cart = cartTestHelper.get(member, product);
+    CART_IDS = List.of(cart.getId());
 
     Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
   }
@@ -70,8 +75,7 @@ class OrderControllerDocumentationTest extends ApiDocumentationConfig {
   void createOrder() throws Exception {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
-      .quantity(30)
+      .cartIds(CART_IDS)
       .build();
 
     mockMvc.perform(
@@ -81,9 +85,8 @@ class OrderControllerDocumentationTest extends ApiDocumentationConfig {
           .content(objectMapper.writeValueAsString(orderRequest)))
       .andDo(document("order/create-order",
         requestFields(
-          fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
-          fieldWithPath("productId").type(JsonFieldType.NUMBER).description("상품 고유 번호").optional(),
-          fieldWithPath("quantity").type(JsonFieldType.NUMBER).description("주문 수량").optional()
+          fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
+          fieldWithPath("cartIds").type(JsonFieldType.ARRAY).description("장바구니 식별 번호")
         )
       ));
   }
@@ -103,7 +106,7 @@ class OrderControllerDocumentationTest extends ApiDocumentationConfig {
           .accept(MediaType.ALL))
       .andDo(document("order/delete-order",
         requestFields(
-          fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 고유 번호"),
+          fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
           fieldWithPath("orderId").type(JsonFieldType.NUMBER).description("주문 번호")
         )));
   }

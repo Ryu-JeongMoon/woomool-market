@@ -31,7 +31,7 @@ class CartControllerTest extends ApiControllerConfig {
     Product product = productTestHelper.createProduct(member);
     PRODUCT_ID = product.getId();
 
-    Cart cart = cartTestHelper.createCart(member, product);
+    Cart cart = cartTestHelper.get(member, product);
     CART_ID = cart.getId();
 
     Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));

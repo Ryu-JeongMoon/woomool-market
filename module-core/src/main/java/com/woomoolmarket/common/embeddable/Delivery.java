@@ -1,5 +1,6 @@
 package com.woomoolmarket.common.embeddable;
 
+import com.woomoolmarket.domain.member.entity.Member;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import lombok.AllArgsConstructor;
@@ -21,4 +22,11 @@ public class Delivery {
   @Embedded
   private Address address;
 
+  public static Delivery createBy(Member member) {
+    return Delivery.builder()
+      .receiver(member.getEmail())
+      .address(member.getAddress())
+      .phone(member.getPhone())
+      .build();
+  }
 }

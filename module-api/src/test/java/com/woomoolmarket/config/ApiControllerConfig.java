@@ -16,6 +16,7 @@ import com.woomoolmarket.helper.MultipartFileTestHelper;
 import com.woomoolmarket.helper.OrderTestHelper;
 import com.woomoolmarket.helper.ProductTestHelper;
 import com.woomoolmarket.service.member.MemberService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +36,8 @@ public abstract class ApiControllerConfig {
   protected static Long ORDER_ID;
   protected static Long BOARD_ID;
   protected static Long IMAGE_ID;
+  protected static List<Long> CART_IDS;
+  protected static List<Long> CART_IDS_TO_BE_FAILED;
 
   @Autowired
   protected MockMvc mockMvc;

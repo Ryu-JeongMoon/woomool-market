@@ -10,11 +10,9 @@ import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
-import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +29,6 @@ public class OrderService {
   private final CartRepository cartRepository;
   private final OrderRepository orderRepository;
   private final MemberRepository memberRepository;
-  private final ProductRepository productRepository;
-  private final OrderResponseMapper orderResponseMapper;
 
   @Transactional(readOnly = true)
   public Page<OrderQueryResponse> searchBy(Long memberId, Pageable pageable) {
@@ -41,53 +37,16 @@ public class OrderService {
 
   @Transactional
   public void order(OrderRequest orderRequest) {
-    if (orderRequest.getProductId() == null) {
-      orderMultiples(orderRequest);
-    } else {
-      orderOne(orderRequest);
-    }
-  }
-
-  @Transactional
-  public void orderOne(OrderRequest orderRequest) {
     Member member = memberRepository.findById(orderRequest.getMemberId())
       .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-    Product product = productRepository.findById(orderRequest.getProductId())
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
-
-    Delivery delivery = Delivery.builder()
-      .receiver(member.getEmail())
-      .address(member.getAddress())
-      .phone(member.getPhone())
-      .build();
-
-    OrderProduct orderProduct = OrderProduct.createOrderProduct(product, orderRequest.getQuantity());
-
-    Order order = Order.builder()
-      .member(member)
-      .delivery(delivery)
-      .orderProducts(List.of(orderProduct))
-      .build();
-
-    orderRepository.save(order);
-  }
-
-  @Transactional
-  public void orderMultiples(OrderRequest orderRequest) {
-    Member member = memberRepository.findById(orderRequest.getMemberId())
-      .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-
-    Delivery delivery = Delivery.builder()
-      .receiver(member.getEmail())
-      .address(member.getAddress())
-      .phone(member.getPhone())
-      .build();
-
-    List<OrderProduct> orderProducts = cartRepository.findByMember(member)
-      .parallelStream()
-      .map(cart -> OrderProduct.createOrderProduct(cart.getProduct(), cart.getQuantity()))
+    List<OrderProduct> orderProducts = cartRepository.findByIds(orderRequest.getCartIds())
+      .stream()
+      .filter(Objects::nonNull)
+      .map(cart -> OrderProduct.createBy(cart.getProduct(), cart.getQuantity()))
       .collect(Collectors.toList());
+
+    Delivery delivery = Delivery.createBy(member);
 
     Order order = Order.builder()
       .member(member)
@@ -97,7 +56,7 @@ public class OrderService {
 
     orderRepository.save(order);
 
-    cartRepository.deleteByMember(member);
+    cartRepository.deleteByIds(orderRequest.getCartIds());
   }
 
   @Transactional

@@ -5,14 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
 import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
+import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
@@ -27,7 +30,8 @@ import org.springframework.data.domain.Pageable;
 @Log4j2
 class OrderServiceTestTest extends ServiceTestConfig {
 
-  private static int PRODUCT_STOCK;
+  private static List<Long> normalCartIds;
+  private static List<Long> overStockCartIds;
 
   @Autowired
   OrderResponseMapper orderResponseMapper;
@@ -39,9 +43,14 @@ class OrderServiceTestTest extends ServiceTestConfig {
 
     Product product = productTestHelper.createProduct(member);
     PRODUCT_ID = product.getId();
-    PRODUCT_STOCK = product.getStock().intValue();
+    int stock = product.getStock().intValue();
 
-    cartTestHelper.createCart(member, product);
+    Cart cart1 = cartTestHelper.get(member, product);
+    Cart cart2 = cartTestHelper.get(member, product);
+    normalCartIds = List.of(cart1.getId(), cart2.getId());
+
+    Cart cartOverStock = cartTestHelper.create(member, product, stock + 1);
+    overStockCartIds = List.of(cartOverStock.getId());
   }
 
   @AfterEach
@@ -53,24 +62,28 @@ class OrderServiceTestTest extends ServiceTestConfig {
   }
 
   @Test
-  @DisplayName("단건 주문")
+  @DisplayName("장바구니 상품 단건 주문")
   void orderOneTest() {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
-      .quantity(3).build();
-    orderService.orderOne(orderRequest);
-    assertThat(orderRepository.findById(1L)).isNotNull();
+      .cartIds(List.of(normalCartIds.get(0)))
+      .build();
+    orderService.order(orderRequest);
+    assertThat(orderRepository.findByMemberId(MEMBER_ID).size()).isEqualTo(1);
   }
 
   @Test
-  @DisplayName("다건 주문")
+  @DisplayName("장바구니 상품 다건 주문")
   void orderMultipleTest() {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
+      .cartIds(normalCartIds)
       .build();
-    orderService.orderMultiples(orderRequest);
-    assertThat(orderRepository.findById(1L)).isNotNull();
+    orderService.order(orderRequest);
+
+    List<OrderProduct> orderProducts = orderRepository.findByMemberId(MEMBER_ID).get(0).getOrderProducts();
+
+    assertThat(orderProducts.size()).isEqualTo(2);
   }
 
   @Test
@@ -78,10 +91,9 @@ class OrderServiceTestTest extends ServiceTestConfig {
   void orderOverTheStockTest() {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
-      .quantity(PRODUCT_STOCK + 1)
+      .cartIds(overStockCartIds)
       .build();
-    assertThrows(IllegalArgumentException.class, () -> orderService.orderOne(orderRequest));
+    assertThrows(IllegalArgumentException.class, () -> orderService.order(orderRequest));
   }
 
   @Test
@@ -89,15 +101,19 @@ class OrderServiceTestTest extends ServiceTestConfig {
   void orderNonExistProductTest() {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(5L)
-      .quantity(3).build();
-    assertThrows(EntityNotFoundException.class, () -> orderService.orderOne(orderRequest));
+      .build();
+    assertThrows(EntityNotFoundException.class, () -> orderService.order(orderRequest));
   }
 
   @Test
   @DisplayName("주문 내역 조회")
   void findOrdersByMemberIdTest() {
-    assertThat(orderService.searchBy(MEMBER_ID, Pageable.ofSize(10))).isNotNull();
+    OrderRequest orderRequest = OrderRequest.builder()
+      .memberId(MEMBER_ID)
+      .cartIds(normalCartIds)
+      .build();
+    orderService.order(orderRequest);
+    assertThat(orderService.searchBy(MEMBER_ID, Pageable.ofSize(10)).getTotalElements()).isEqualTo(1);
   }
 
   @Test
@@ -105,9 +121,9 @@ class OrderServiceTestTest extends ServiceTestConfig {
   void getListBySearchConditionForAdmin() {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
-      .quantity(3).build();
-    orderService.orderOne(orderRequest);
+      .cartIds(normalCartIds)
+      .build();
+    orderService.order(orderRequest);
 
     OrderSearchCondition condition = OrderSearchCondition.builder()
       .orderStatus(OrderStatus.ONGOING)
@@ -122,9 +138,9 @@ class OrderServiceTestTest extends ServiceTestConfig {
   void transferToDto() {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
-      .quantity(3).build();
-    orderService.orderOne(orderRequest);
+      .cartIds(normalCartIds)
+      .build();
+    orderService.order(orderRequest);
 
     Page<OrderQueryResponse> orderQueryResponses = orderService.searchBy(MEMBER_ID, Pageable.ofSize(10));
     OrderQueryResponse orderQueryResponse = orderQueryResponses.getContent().get(0);

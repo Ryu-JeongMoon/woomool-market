@@ -18,6 +18,7 @@ import com.woomoolmarket.service.cart.CartService;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.order.OrderService;
 import com.woomoolmarket.service.product.ProductService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,6 +43,8 @@ public class ApiDocumentationConfig {
   protected static Long CART_ID;
   protected static Long ORDER_ID;
   protected static Long BOARD_ID;
+  protected static List<Long> CART_IDS;
+  protected static List<Long> CART_IDS_TO_BE_FAILED;
 
   @Autowired
   protected MockMvc mockMvc;

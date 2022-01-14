@@ -29,7 +29,7 @@ class CartServiceTest extends ServiceTestConfig {
     Product product = productTestHelper.createProduct(member);
     PRODUCT_ID = productRepository.save(product).getId();
 
-    Cart cart = cartTestHelper.createCart(member, product);
+    Cart cart = cartTestHelper.get(member, product);
     CART_ID = cartRepository.save(cart).getId();
   }
 

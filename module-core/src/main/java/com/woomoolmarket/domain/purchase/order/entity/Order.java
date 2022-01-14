@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -65,7 +66,7 @@ public class Order extends BaseTimeEntity {
 
   public void addOrderProducts(List<OrderProduct> orderProducts) {
     if (orderProducts == null || orderProducts.isEmpty()) {
-      return;
+      throw new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND);
     }
 
     this.orderProducts.addAll(orderProducts);
