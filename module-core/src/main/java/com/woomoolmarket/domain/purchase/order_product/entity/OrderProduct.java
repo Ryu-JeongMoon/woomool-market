@@ -3,6 +3,7 @@ package com.woomoolmarket.domain.purchase.order_product.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
+import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import javax.persistence.Column;
@@ -57,7 +58,7 @@ public class OrderProduct extends BaseTimeEntity {
     this.totalPrice = product.getPrice() * quantity;
   }
 
-  public static OrderProduct createOrderProduct(Product product, int quantity) {
+  public static OrderProduct createBy(Product product, int quantity) {
     product.decreaseStock(quantity);
 
     return OrderProduct.builder()

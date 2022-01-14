@@ -9,11 +9,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
+import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +25,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 @WithMockUser(username = "panda@naver.com", roles = "USER")
 class OrderControllerTest extends ApiControllerConfig {
+
 
   @BeforeEach
   void init() {
@@ -39,6 +42,9 @@ class OrderControllerTest extends ApiControllerConfig {
 
     Order order = orderTestHelper.createOrder(member, orderProduct);
     ORDER_ID = order.getId();
+
+    Cart cart = cartTestHelper.get(member, product);
+    CART_IDS = List.of(cart.getId());
 
     Objects.requireNonNull(stringRedisTemplate.keys("*")).forEach(k -> stringRedisTemplate.delete(k));
   }
@@ -74,8 +80,7 @@ class OrderControllerTest extends ApiControllerConfig {
   void createOrder() throws Exception {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
-      .quantity(600)
+      .cartIds(CART_IDS)
       .build();
 
     mockMvc.perform(
@@ -91,10 +96,7 @@ class OrderControllerTest extends ApiControllerConfig {
   void createOrderFail() throws Exception {
     OrderRequest orderRequest = OrderRequest.builder()
       .memberId(MEMBER_ID)
-      .productId(PRODUCT_ID)
       .build();
-
-    System.out.println("orderRequest.getQuantity() = " + orderRequest.getQuantity());
 
     mockMvc.perform(
         post("/api/orders")

@@ -54,8 +54,8 @@ class OrderRepositoryTest extends DataJpaTestConfig {
     Product product = ProductTestHelper.createProduct(member);
     productRepository.save(product);
 
-    OrderProduct orderProduct1 = OrderProduct.createOrderProduct(product, 5000);
-    OrderProduct orderProduct2 = OrderProduct.createOrderProduct(product, 3000);
+    OrderProduct orderProduct1 = OrderProduct.createBy(product, 5000);
+    OrderProduct orderProduct2 = OrderProduct.createBy(product, 3000);
 
     Order order = Order.builder()
       .member(member)

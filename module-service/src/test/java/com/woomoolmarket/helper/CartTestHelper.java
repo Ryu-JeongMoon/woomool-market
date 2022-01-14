@@ -11,15 +11,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CartTestHelper {
 
-  public static final Integer CART_QUANTITY = 500;
+  public static final int CART_QUANTITY = 500;
 
   private final CartRepository cartRepository;
 
-  public Cart createCart(Member member, Product product) {
+  public Cart get(Member member, Product product) {
+    return create(member, product, CART_QUANTITY);
+  }
+
+  public Cart create(Member member, Product product, int quantity) {
     Cart cart = Cart.builder()
       .member(member)
       .product(product)
-      .quantity(CART_QUANTITY)
+      .quantity(quantity)
       .build();
     return cartRepository.save(cart);
   }
