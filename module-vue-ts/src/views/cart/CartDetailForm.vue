@@ -30,6 +30,7 @@
 import Vue, { PropType } from "vue";
 import { CartQueryResponse } from "@/interfaces/cart";
 import cartApi from "@/api/CartApi";
+import { MESSAGE } from "@/utils/common/messages";
 
 export default Vue.extend({
   data() {
@@ -66,9 +67,9 @@ export default Vue.extend({
         )
         .then((status) => {
           if (status === 204) {
-            alert("삭제되었습니다");
+            alert(MESSAGE.DELETE_ACCEPTED);
           } else {
-            alert("잘못된 요청입니다");
+            alert(MESSAGE.INVALID_REQUEST);
           }
         });
     },

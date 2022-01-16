@@ -2,6 +2,7 @@ package com.woomoolmarket.domain.purchase.order_product.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.woomoolmarket.common.auditing.BaseEntity;
 import com.woomoolmarket.common.auditing.BaseTimeEntity;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
@@ -29,7 +30,7 @@ import lombok.ToString;
 @Table(name = "ORDER_PRODUCT")
 @ToString(exclude = "order")
 @EqualsAndHashCode(of = "id", callSuper = false)
-public class OrderProduct extends BaseTimeEntity {
+public class OrderProduct extends BaseEntity {
 
   @Id
   @Column(name = "order_product_id")

@@ -12,8 +12,7 @@ export interface OrderSearchCondition {
 
 export interface OrderRequest {
   memberId: number;
-  productId: number;
-  quantity: number;
+  cartIds: number[];
 }
 
 export interface OrderDeleteRequest {

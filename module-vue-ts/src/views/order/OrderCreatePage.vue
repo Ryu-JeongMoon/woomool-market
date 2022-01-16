@@ -15,8 +15,8 @@
       </ul>
     </div>
     <div class="cart-order">
-      <v-btn @click="pay(cartIdsToBeOrdered)" color="info" class="mt-2" large>
-        <v-icon>paid</v-icon>
+      <v-btn @click="order" color="info" class="mt-2" large>
+        <v-icon>paid</v-icon> 결제하기
       </v-btn>
     </div>
   </div>
@@ -34,6 +34,9 @@ import {
 } from "@/interfaces/cart";
 import CartDetailForm from "@/views/cart/CartDetailForm.vue";
 import routerHelper from "@/router/RouterHelper";
+import orderApi from "@/api/OrderApi";
+import { MESSAGE } from "@/utils/common/messages";
+import { OrderRequest } from "@/interfaces/order";
 
 export default Vue.extend({
   components: { CartDetailForm, LoadingSpinner },
@@ -41,14 +44,14 @@ export default Vue.extend({
   data: () => ({
     isLoading: false,
     convertedCartIds: {} as Set<number>,
-    cartIdsToBeOrdered: {} as Set<number>,
+    cartIdsToBePaid: {} as Set<number>,
     cartResponsePage: {} as CartResponsePage,
     cartQueryResponseList: {} as CartQueryResponse[],
   }),
 
   props: {
     memberId: {
-      type: String,
+      type: Number,
       required: true,
     },
     cartIds: {
@@ -73,7 +76,7 @@ export default Vue.extend({
       LoadingHelper.switchLoadingState(this.isLoading);
 
       const cartIdRequest: CartIdRequest = {
-        cartIds: [...this.convertedCartIds],
+        cartIds: Array.from(this.convertedCartIds),
       };
       this.cartResponsePage = await cartApi
         .getPickedBy(Number(this.memberId), cartIdRequest)
@@ -82,14 +85,14 @@ export default Vue.extend({
       this.cartQueryResponseList =
         this.cartResponsePage._embedded.cartQueryResponseList;
 
-      this.cartIdsToBeOrdered = this.convertedCartIds;
+      this.cartIdsToBePaid = this.convertedCartIds;
     },
 
-    handleOrderExclusion(toBeExcluded: number) {
-      if (this.cartIdsToBeOrdered.has(toBeExcluded)) {
-        this.cartIdsToBeOrdered.delete(toBeExcluded);
+    handleOrderExclusion(toBeInOrOut: number) {
+      if (this.cartIdsToBePaid.has(toBeInOrOut)) {
+        this.cartIdsToBePaid.delete(toBeInOrOut);
       } else {
-        this.cartIdsToBeOrdered.add(toBeExcluded);
+        this.cartIdsToBePaid.add(toBeInOrOut);
       }
     },
 
@@ -97,8 +100,24 @@ export default Vue.extend({
       routerHelper.goToProductPage(productId);
     },
 
-    async pay(cartIds: Set<number>) {
-      // TODO();
+    async order() {
+      if (this.cartIdsToBePaid.size === 0) {
+        return alert(MESSAGE.INVALID_REQUEST);
+      }
+
+      const orderRequest: OrderRequest = {
+        memberId: this.memberId,
+        cartIds: Array.from(this.cartIdsToBePaid),
+      };
+
+      await orderApi.order(orderRequest).then((status) => {
+        if (status === 201) {
+          alert(MESSAGE.ORDER.COMPLETED);
+          // TODO, 주문 완료 화면으로 이동
+        } else {
+          alert(MESSAGE.INVALID_REQUEST);
+        }
+      });
     },
   },
 });

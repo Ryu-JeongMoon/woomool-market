@@ -89,7 +89,7 @@ const routes: Array<RouteConfig> = [
     name: ROUTES_NAME.CART.ADMIN,
     path: PATH.CART.ADMIN,
     props: true,
-    component: () => import("@/views/cart/CartListPage.vue"),
+    component: () => import("@/views/cart/CartAdminPage.vue"),
   },
 
   {
@@ -123,7 +123,10 @@ const routes: Array<RouteConfig> = [
     name: ROUTES_NAME.ORDER.CREATE,
     path: PATH.ORDER.CREATE,
     component: () => import("@/views/order/OrderCreatePage.vue"),
-    props: true,
+    props: (route) => ({
+      memberId: Number(route.params.memberId),
+      cartIds: route.params.cartIds,
+    }),
   },
   {
     name: ROUTES_NAME.ORDER.DETAIL,
