@@ -55,7 +55,7 @@ class RouterHelper {
       name: ROUTES_NAME.ORDER.CREATE,
       params: {
         memberId: memberId.toString(),
-        cartIds: [...cartIds].toString(),
+        cartIds: Array.from(cartIds).toString(),
       },
     });
   }

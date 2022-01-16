@@ -19,7 +19,7 @@ const orderApi = {
       .then(ResponseConverter.retrieveData);
   },
 
-  create(orderRequest: OrderRequest): Promise<number> {
+  order(orderRequest: OrderRequest): Promise<number> {
     return privateAxios
       .post("/api/orders", orderRequest)
       .then(ResponseConverter.retrieveStatus);
