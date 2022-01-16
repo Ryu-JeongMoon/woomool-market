@@ -86,11 +86,6 @@ const routes: Array<RouteConfig> = [
     }),
   },
   {
-    name: ROUTES_NAME.CART.CREATE,
-    path: PATH.CART.CREATE,
-    component: () => import("@/views/cart/CartCreatePage.vue"),
-  },
-  {
     name: ROUTES_NAME.CART.ADMIN,
     path: PATH.CART.ADMIN,
     props: true,

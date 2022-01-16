@@ -29,7 +29,6 @@ export const ROUTES_NAME = {
   },
 
   CART: {
-    CREATE: "CreateCarts",
     DETAIL: "Carts",
     ADMIN: "CartsForAdmin",
   },

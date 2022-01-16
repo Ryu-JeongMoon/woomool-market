@@ -32,7 +32,6 @@ export const PATH = {
 
   CART: {
     ADMIN: "/carts/admin",
-    CREATE: "/carts/create",
     DETAIL: "/carts/:memberId",
   },
 
