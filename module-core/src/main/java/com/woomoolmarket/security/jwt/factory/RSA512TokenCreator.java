@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
 @Primary
 @Component
 @RequiredArgsConstructor
-public class RSA512TokenFactory extends TokenFactory {
+public class RSA512TokenCreator extends TokenCreator {
 
   private final CacheService cacheService;
 
@@ -49,12 +49,12 @@ public class RSA512TokenFactory extends TokenFactory {
     byte[] publicKeyBytes = Base64.decode(publicKeyPlainText);
     byte[] privateKeyBytes = Base64.decode(privateKeyPlainText);
 
-    PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
     X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+    PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
 
     KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-    privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
     publicKey = (RSAPublicKey) keyFactory.generatePublic(publicKeySpec);
+    privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
   }
 
   @Override

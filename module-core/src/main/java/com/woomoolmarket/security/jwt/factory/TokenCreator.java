@@ -19,7 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-public abstract class TokenFactory {
+public abstract class TokenCreator {
 
   protected abstract String createAccessToken(Authentication authentication, String authorities, Date accessTokenExpireDate);
 

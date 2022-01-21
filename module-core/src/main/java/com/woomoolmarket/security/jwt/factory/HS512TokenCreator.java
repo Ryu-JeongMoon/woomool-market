@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class HS512TokenFactory extends TokenFactory {
+public class HS512TokenCreator extends TokenCreator {
 
   private final CacheService cacheService;
 
@@ -35,7 +35,6 @@ public class HS512TokenFactory extends TokenFactory {
 
   @Value("${jwt.secret}")
   private String secretKey;
-
 
   @PostConstruct
   public void keySetUp() {

@@ -32,6 +32,11 @@ public class GlobalExceptionHandler {
     return e != null ? e.getClass().getSimpleName() : "";
   }
 
+  @ExceptionHandler(value = NullPointerException.class)
+  public ResponseEntity<ExceptionResponse> nullPointerExceptionHandler(Exception e) {
+    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));
+  }
+
   @ExceptionHandler(value = IllegalArgumentException.class)
   public ResponseEntity<ExceptionResponse> illegalArgumentExceptionHandler(Exception e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionResponse.of(getExceptionClass(e), e.getMessage()));

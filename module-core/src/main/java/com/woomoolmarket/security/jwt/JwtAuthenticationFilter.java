@@ -2,7 +2,7 @@ package com.woomoolmarket.security.jwt;
 
 import com.woomoolmarket.common.constants.TokenConstants;
 import com.woomoolmarket.common.util.TokenUtils;
-import com.woomoolmarket.security.jwt.factory.TokenFactory;
+import com.woomoolmarket.security.jwt.factory.TokenCreator;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,24 +19,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final TokenFactory tokenFactory;
+  private final TokenCreator tokenCreator;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
     throws ServletException, IOException {
 
     String accessToken = TokenUtils.resolveAccessTokenFrom(request);
-    if (StringUtils.hasText(accessToken) && tokenFactory.validate(accessToken)) {
-      Authentication authentication = tokenFactory.getAuthentication(accessToken);
+    if (StringUtils.hasText(accessToken) && tokenCreator.validate(accessToken)) {
+      Authentication authentication = tokenCreator.getAuthentication(accessToken);
       SecurityContextHolder.getContext().setAuthentication(authentication);
       filterChain.doFilter(request, response);
       return;
     }
 
     String refreshToken = TokenUtils.resolveRefreshTokenFrom(request);
-    if (StringUtils.hasText(accessToken) && !tokenFactory.validate(accessToken) && tokenFactory.validate(refreshToken)) {
-      Authentication authentication = tokenFactory.getAuthentication(accessToken);
-      accessToken = tokenFactory.reissueAccessToken(authentication);
+    if (StringUtils.hasText(accessToken) && !tokenCreator.validate(accessToken) && tokenCreator.validate(refreshToken)) {
+      Authentication authentication = tokenCreator.getAuthentication(accessToken);
+      accessToken = tokenCreator.reissueAccessToken(authentication);
       response.setHeader(TokenConstants.AUTHORIZATION_HEADER, accessToken);
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }

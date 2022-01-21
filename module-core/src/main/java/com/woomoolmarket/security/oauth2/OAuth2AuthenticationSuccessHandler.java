@@ -12,7 +12,7 @@ import com.woomoolmarket.cache.CacheService;
 import com.woomoolmarket.common.constants.ExceptionConstants;
 import com.woomoolmarket.common.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.security.jwt.factory.TokenFactory;
+import com.woomoolmarket.security.jwt.factory.TokenCreator;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  private final TokenFactory tokenFactory;
+  private final TokenCreator tokenCreator;
   private final CacheService cacheService;
   private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
@@ -73,7 +73,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
   }
 
   private void sendTokenToClient(HttpServletResponse resp, Authentication auth) {
-    TokenResponse tokenResponse = tokenFactory.createToken(auth);
+    TokenResponse tokenResponse = tokenCreator.createToken(auth);
 
     String username = auth.getName();
     String accessToken = tokenResponse.getAccessToken();
