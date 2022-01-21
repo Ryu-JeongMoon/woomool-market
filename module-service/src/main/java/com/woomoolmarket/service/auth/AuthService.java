@@ -15,7 +15,7 @@ import com.woomoolmarket.common.util.TokenUtils;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.security.jwt.factory.TokenFactory;
+import com.woomoolmarket.security.jwt.factory.TokenCreator;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
 public class AuthService {
 
   private final CacheService cacheService;
-  private final TokenFactory tokenFactory;
+  private final TokenCreator tokenCreator;
   private final MemberRepository memberRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -49,7 +49,7 @@ public class AuthService {
     Authentication authentication = authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    TokenResponse tokenResponse = tokenFactory.createToken(authentication);
+    TokenResponse tokenResponse = tokenCreator.createToken(authentication);
     saveTokensToCache(authentication.getName(), tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
 
     return tokenResponse;
@@ -87,7 +87,7 @@ public class AuthService {
   @Transactional
   public void logout(HttpServletRequest request) {
     String accessToken = TokenUtils.resolveAccessTokenFrom(request);
-    if (!tokenFactory.validate(accessToken)) {
+    if (!tokenCreator.validate(accessToken)) {
       throw new IllegalArgumentException(ExceptionConstants.ACCESS_TOKEN_NOT_VALID);
     }
     cacheService.setDataAndExpiration(LOGOUT_KEY_PREFIX + accessToken, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
@@ -97,15 +97,15 @@ public class AuthService {
   @Transactional
   public TokenResponse reissue(TokenRequest tokenRequest) {
     String refreshToken = tokenRequest.getRefreshToken();
-    Authentication authentication = tokenFactory.getAuthentication(tokenRequest.getAccessToken());
+    Authentication authentication = tokenCreator.getAuthentication(tokenRequest.getAccessToken());
     String username = authentication.getName();
 
-    if (!tokenFactory.validate(refreshToken) || !StringUtils.hasText(
+    if (!tokenCreator.validate(refreshToken) || !StringUtils.hasText(
       cacheService.getData(LOGIN_REFRESH_TOKEN_PREFIX + username))) {
       throw new AccessDeniedException(ExceptionConstants.REFRESH_TOKEN_NOT_VALID);
     }
 
-    TokenResponse tokenResponse = tokenFactory.createToken(authentication);
+    TokenResponse tokenResponse = tokenCreator.createToken(authentication);
     String reissuedRefreshToken = tokenResponse.getRefreshToken();
     cacheService.setDataAndExpiration(LOGIN_REFRESH_TOKEN_PREFIX + username, reissuedRefreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
     return tokenResponse;

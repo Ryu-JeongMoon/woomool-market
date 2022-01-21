@@ -2,7 +2,7 @@ package com.woomoolmarket.security.jwt.factory;
 
 import org.junit.jupiter.api.Test;
 
-class HS512TokenFactoryTest {
+class HS512TokenCreatorTest {
 
   @Test
   void keySetUp() {

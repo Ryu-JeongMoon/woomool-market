@@ -93,7 +93,7 @@ public class AuthFindService {
 
     CompletableFuture
       .supplyAsync(this::checkBalance, woomoolTaskExecutor)
-      .thenAcceptAsync(FunctionalWrapperUtils.consumerWrapper(balance -> {
+      .thenAcceptAsync(FunctionalWrapperUtils.wrapConsumer(balance -> {
         if (balance < 20) {
           throw new RuntimeException(ExceptionConstants.NOT_ENOUGH_BALANCE);
         }
