@@ -58,7 +58,7 @@ class MemberTest {
   @Test
   @DisplayName("AuthProvider 기본 상태 Local")
   void initialAuthProvider() {
-      assertThat(member.getAuthProvider()).isEqualTo(AuthProvider.LOCAL);
+    assertThat(member.getAuthProvider()).isEqualTo(AuthProvider.LOCAL);
   }
 
   @Test
