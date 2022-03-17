@@ -1,6 +1,8 @@
 package com.woomoolmarket.domain.member.entity;
 
 import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.common.constants.Columns;
+import com.woomoolmarket.common.constants.Lengths;
 import com.woomoolmarket.common.embeddable.Address;
 import com.woomoolmarket.common.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
@@ -24,41 +26,42 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
-@Getter
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id", "email"}, callSuper = false)
-@Table(uniqueConstraints = {@UniqueConstraint(name = "unique_email", columnNames = "email")})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@Table(uniqueConstraints = {
+  @UniqueConstraint(name = Columns.Member.UNIQUE_EMAIL, columnNames = Columns.Member.EMAIL)
+})
 public class Member extends BaseEntity {
 
   @Id
-  @Column(name = "member_id", updatable = false)
+  @Column(name = Columns.Member.MEMBER_ID, updatable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Size(min = 9, max = 64)
-  @Column(nullable = false)
+  @EqualsAndHashCode.Include
+  @Column(nullable = false, length = Lengths.Member.EMAIL_MAX)
   private String email;
 
-  @Size(min = 2, max = 24)
-  @Column(nullable = false)
+  @EqualsAndHashCode.Include
+  @Column(nullable = false, length = Lengths.Member.NICKNAME_MAX)
   private String nickname;
 
-  @Size(min = 4, max = 255)
   @Column(nullable = false)
   private String password;
 
   @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   private Image image;
 
-  @Size(max = 255)
+  @Column(name = Columns.Member.PROFILE_IMAGE)
   private String profileImage;
 
-  @Size(max = 11)
+  @Size(max = Lengths.Member.PHONE)
   private String phone;
 
-  @Size(max = 10)
+  @Size(max = Lengths.Member.LICENSE)
   private String license;
 
   private LocalDateTime leaveDateTime;
@@ -66,16 +69,16 @@ public class Member extends BaseEntity {
   @Embedded
   private Address address;
 
-  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = Columns.Member.AUTH_PROVIDER, nullable = false)
   private AuthProvider authProvider;
 
-  @Column(nullable = false, length = 50)
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = Lengths.FIFTY)
   private Authority authority;
 
-  @Column(nullable = false, length = 50)
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = Lengths.FIFTY)
   private Status status = Status.ACTIVE;
 
   @Builder
@@ -93,29 +96,26 @@ public class Member extends BaseEntity {
     this.authProvider = authProvider != null ? authProvider : AuthProvider.LOCAL;
   }
 
+  public String getAuthorityKey() {
+    return this.authority.getKey();
+  }
+
   public void changePassword(String password) {
     this.password = password;
   }
 
-  public void assignAuthority(Authority authority) {
+  public void changeAuthority(Authority authority) {
     this.authority = authority;
   }
 
   public void leave() {
-    changeStatusAndLeaveDateTime(Status.INACTIVE, LocalDateTime.now());
+    this.status = Status.INACTIVE;
+    this.leaveDateTime = LocalDateTime.now();
   }
 
   public void restore() {
-    changeStatusAndLeaveDateTime(Status.ACTIVE, null);
-  }
-
-  public void changeStatusAndLeaveDateTime(Status memberStatus, LocalDateTime leaveDateTime) {
-    this.status = memberStatus;
-    this.leaveDateTime = leaveDateTime;
-  }
-
-  public String getAuthorityKey() {
-    return this.authority.getKey();
+    this.status = Status.ACTIVE;
+    this.leaveDateTime = null;
   }
 
   public Member editByOAuth2(String nickname, String profileImage, AuthProvider authProvider) {
@@ -126,9 +126,8 @@ public class Member extends BaseEntity {
   }
 
   public void addImage(Image image) {
-    if (image == null) {
+    if (image == null)
       return;
-    }
 
     this.image = image;
     image.setMember(this);

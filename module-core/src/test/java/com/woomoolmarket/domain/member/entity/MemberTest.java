@@ -64,7 +64,7 @@ class MemberTest {
   @Test
   @DisplayName("Authority 변경 성공")
   void assignAuthorityTest() {
-    member.assignAuthority(Authority.ROLE_ADMIN);
+    member.changeAuthority(Authority.ROLE_ADMIN);
     assertThat(member.getAuthority()).isEqualTo(Authority.ROLE_ADMIN);
   }
 
@@ -135,6 +135,7 @@ class MemberTest {
   void equalsAndHashCodeTest() {
     Member newMember = Member.builder()
       .email(EMAIL)
+      .nickname(NICKNAME)
       .build();
 
     assertThat(newMember.equals(member)).isTrue();
