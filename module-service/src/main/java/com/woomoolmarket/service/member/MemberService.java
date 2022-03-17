@@ -85,7 +85,7 @@ public class MemberService {
 
     Member member = signupRequestMapper.toEntity(signUpRequest);
     member.changePassword(passwordEncoder.encode(member.getPassword()));
-    member.assignAuthority(authority);
+    member.changeAuthority(authority);
     member.addImage(image);
     return memberRepository.save(member);
   }
