@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,22 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 @Service
 @RequiredArgsConstructor
+@EnableConfigurationProperties(CoolSmsProperties.class)
 public class AuthFindService {
 
   private final Executor woomoolTaskExecutor;
   private final JavaMailSender javaMailSender;
   private final PasswordEncoder passwordEncoder;
   private final MemberRepository memberRepository;
+  private final CoolSmsProperties coolSmsProperties;
   private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
-
-  @Value("${coolsms.api-key}")
-  private String COOL_SMS_KEY;
-  @Value("${coolsms.api-secret}")
-  private String COOL_SMS_SECRET;
-  @Value("${mail.smtp.username}")
-  private String WOOMOOL_MARKET_EMAIL;
-  @Value("${coolsms.phone-number}")
-  private String WOOMOOL_MARKET_PHONE;
 
   @Transactional
   public void sendEmailForFinding(String email) {
@@ -70,7 +63,7 @@ public class AuthFindService {
   private void sendAuthStringToEmail(String email, String subject, String text) {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(email);
-    message.setFrom(WOOMOOL_MARKET_EMAIL);
+    message.setFrom(coolSmsProperties.getEmail());
     message.setSubject(subject);
     message.setText(text);
 
@@ -82,11 +75,11 @@ public class AuthFindService {
     Member member = memberRepository.findByPhoneAndStatus(phone, Status.ACTIVE)
       .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
 
-    Message message = new Message(COOL_SMS_KEY, COOL_SMS_SECRET);
+    Message message = createMessage();
 
     HashMap<String, String> smsParams = new HashMap<>();
     smsParams.put("to", phone);
-    smsParams.put("from", WOOMOOL_MARKET_PHONE);
+    smsParams.put("from", coolSmsProperties.getPhoneNumber());
     smsParams.put("type", "SMS");
     smsParams.put("text", "아이디 - " + member.getEmail());
     smsParams.put("app_version", "woomool-market-v1.0");
@@ -102,7 +95,7 @@ public class AuthFindService {
   }
 
   public int checkBalance() {
-    Message message = new Message(COOL_SMS_KEY, COOL_SMS_SECRET);
+    Message message = createMessage();
 
     try {
       return Integer.parseInt(message.balance().get("point").toString());
@@ -110,5 +103,9 @@ public class AuthFindService {
       log.info(e);
       return 0;
     }
+  }
+
+  private Message createMessage() {
+    return new Message(coolSmsProperties.getApiKey(), coolSmsProperties.getApiSecret());
   }
 }

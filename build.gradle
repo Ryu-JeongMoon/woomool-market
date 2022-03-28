@@ -84,6 +84,7 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
         annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
         annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
         testCompileOnly 'org.projectlombok:lombok:1.18.20'
         testAnnotationProcessor 'org.projectlombok:lombok'
