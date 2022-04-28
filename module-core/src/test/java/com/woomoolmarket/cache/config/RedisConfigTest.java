@@ -2,28 +2,26 @@ package com.woomoolmarket.cache.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
 
-@Log4j2
 @SpringBootTest
+@TestPropertySource("classpath:application.yml")
 class RedisConfigTest {
 
   @Autowired
-  Environment env;
+  private RedisProperties redisProperties;
 
   @Test
-  @DisplayName("application.yml의 속성을 가져온다")
+  @DisplayName("application.yml 속성 반환")
   void envTest() {
-    int port = Integer.parseInt(env.getProperty("spring.redis.port"));
-    String host = env.getProperty("spring.redis.host");
+    int port = redisProperties.getPort();
+    String host = redisProperties.getHost();
 
     assertThat(port).isEqualTo(6379);
     assertThat(host).isEqualTo("localhost");
   }
-
 }
