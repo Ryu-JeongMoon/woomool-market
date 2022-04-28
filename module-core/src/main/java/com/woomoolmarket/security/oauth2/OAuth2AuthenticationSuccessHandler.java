@@ -1,16 +1,16 @@
 package com.woomoolmarket.security.oauth2;
 
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
-import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
-import static com.woomoolmarket.common.constants.TokenConstants.AUTHORIZATION_HEADER;
-import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN;
-import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
+import static com.woomoolmarket.util.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.util.constants.TokenConstants.AUTHORIZATION_HEADER;
+import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN;
+import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.util.CookieUtils;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.jwt.factory.TokenCreator;
 import java.io.IOException;

@@ -2,6 +2,7 @@ package com.woomoolmarket.common.constants;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.woomoolmarket.util.constants.CacheConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

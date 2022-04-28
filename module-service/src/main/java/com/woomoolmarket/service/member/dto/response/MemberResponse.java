@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.member.dto.response;
 
-import com.woomoolmarket.common.embeddable.Address;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.embeddable.Address;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import java.time.LocalDateTime;

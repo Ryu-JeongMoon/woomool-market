@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.purchase.order_product.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.woomoolmarket.common.auditing.BaseEntity;
+import com.woomoolmarket.domain.auditing.BaseEntity;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import javax.persistence.Column;

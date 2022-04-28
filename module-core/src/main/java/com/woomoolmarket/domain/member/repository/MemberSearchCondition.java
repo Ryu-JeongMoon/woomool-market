@@ -1,6 +1,6 @@
 package com.woomoolmarket.domain.member.repository;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.AuthProvider;
 import com.woomoolmarket.domain.member.entity.Authority;
 import lombok.AllArgsConstructor;

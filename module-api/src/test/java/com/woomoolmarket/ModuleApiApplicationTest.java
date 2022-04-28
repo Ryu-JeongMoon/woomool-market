@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.woomoolmarket.config.format.DateTimeFormatModule;
-import com.woomoolmarket.errors.JsonBindingResultModule;
+import com.woomoolmarket.util.errors.JsonBindingResultModule;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDateTime;

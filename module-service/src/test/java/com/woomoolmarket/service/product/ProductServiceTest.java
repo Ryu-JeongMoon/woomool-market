@@ -2,8 +2,8 @@ package com.woomoolmarket.service.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.common.enumeration.Region;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Region;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;

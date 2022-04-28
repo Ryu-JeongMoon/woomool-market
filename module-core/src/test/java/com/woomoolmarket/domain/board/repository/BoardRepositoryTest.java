@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.board.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.config.TestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import lombok.extern.log4j.Log4j2;

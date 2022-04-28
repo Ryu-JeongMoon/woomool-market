@@ -1,11 +1,11 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_MILLIS;
-import static com.woomoolmarket.common.constants.TokenConstants.AUTHORITIES_KEY;
-import static com.woomoolmarket.common.constants.TokenConstants.BEARER_TYPE;
-import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_MILLIS;
+import static com.woomoolmarket.util.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_MILLIS;
+import static com.woomoolmarket.util.constants.TokenConstants.AUTHORITIES_KEY;
+import static com.woomoolmarket.util.constants.TokenConstants.BEARER_TYPE;
+import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_MILLIS;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.security.dto.UserPrincipal;
 import io.jsonwebtoken.Claims;

@@ -1,7 +1,7 @@
 package com.woomoolmarket.util;
 
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;
 import com.woomoolmarket.domain.board.repository.BoardRepository;

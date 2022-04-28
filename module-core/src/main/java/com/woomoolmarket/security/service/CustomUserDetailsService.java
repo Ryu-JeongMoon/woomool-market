@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.service;
 
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.security.dto.UserPrincipal;

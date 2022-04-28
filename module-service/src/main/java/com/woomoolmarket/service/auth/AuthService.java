@@ -1,17 +1,17 @@
 package com.woomoolmarket.service.auth;
 
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
-import static com.woomoolmarket.common.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
-import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.util.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
+import static com.woomoolmarket.util.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 
 import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
-import com.woomoolmarket.common.util.TokenUtils;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
+import com.woomoolmarket.util.TokenUtils;
 import com.woomoolmarket.domain.member.repository.MemberRepository;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;

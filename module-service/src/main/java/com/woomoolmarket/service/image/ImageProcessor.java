@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.common.constants.ExceptionConstants;
+import com.woomoolmarket.util.constants.ExceptionConstants;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.io.File;
 import java.time.LocalDateTime;

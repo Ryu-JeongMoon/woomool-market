@@ -1,8 +1,8 @@
 package com.woomoolmarket.service.product.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.woomoolmarket.common.constants.RegexpConstants;
-import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.util.constants.RegexpConstants;
+import com.woomoolmarket.domain.enumeration.Region;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
 import java.util.List;
 import javax.persistence.Lob;

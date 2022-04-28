@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.woomoolmarket.config.format.DateTimeFormatModule;
-import com.woomoolmarket.errors.JsonBindingResultModule;
+import com.woomoolmarket.util.errors.JsonBindingResultModule;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

@@ -2,8 +2,8 @@ package com.woomoolmarket.domain.purchase.order.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.common.embeddable.Address;
-import com.woomoolmarket.common.embeddable.Delivery;
+import com.woomoolmarket.domain.embeddable.Address;
+import com.woomoolmarket.domain.embeddable.Delivery;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;

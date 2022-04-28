@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.image;
 
 import com.tinify.Tinify;
-import com.woomoolmarket.common.constants.ExceptionConstants;
+import com.woomoolmarket.util.constants.ExceptionConstants;
 import java.io.File;
 import java.io.IOException;
 import javax.annotation.PostConstruct;

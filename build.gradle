@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.5.3.RELEASE'
+        springBootVersion = '2.6.7.RELEASE'
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}'
@@ -64,6 +64,7 @@ subprojects {
 
         implementation 'org.springframework.boot:spring-boot-starter-mail'
         implementation 'org.springframework.boot:spring-boot-starter-cache'
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
         implementation 'org.springframework.boot:spring-boot-starter-log4j2:2.6.1'

@@ -5,8 +5,8 @@ import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_PHONE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import java.security.SecureRandom;
 import java.util.concurrent.CompletableFuture;

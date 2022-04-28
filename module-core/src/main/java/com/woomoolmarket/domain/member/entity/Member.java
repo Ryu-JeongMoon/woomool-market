@@ -1,10 +1,10 @@
 package com.woomoolmarket.domain.member.entity;
 
-import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.constants.Columns;
-import com.woomoolmarket.common.constants.Lengths;
-import com.woomoolmarket.common.embeddable.Address;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.auditing.BaseEntity;
+import com.woomoolmarket.util.constants.Columns;
+import com.woomoolmarket.util.constants.Lengths;
+import com.woomoolmarket.domain.embeddable.Address;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;

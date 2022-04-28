@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.order.dto.response;
 
-import com.woomoolmarket.common.embeddable.Delivery;
+import com.woomoolmarket.domain.embeddable.Delivery;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;

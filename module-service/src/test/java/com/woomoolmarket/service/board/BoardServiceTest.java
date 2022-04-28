@@ -2,7 +2,7 @@ package com.woomoolmarket.service.board;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.entity.BoardCategory;

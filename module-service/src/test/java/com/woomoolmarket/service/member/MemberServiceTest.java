@@ -3,8 +3,8 @@ package com.woomoolmarket.service.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.woomoolmarket.common.embeddable.Address;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.embeddable.Address;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
