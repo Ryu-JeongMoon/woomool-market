@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.async;
+package com.woomoolmarket.config;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;

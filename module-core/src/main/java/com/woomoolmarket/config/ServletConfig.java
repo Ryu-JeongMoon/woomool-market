@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.servlet;
+package com.woomoolmarket.config;
 
 import io.undertow.servlet.api.SecurityConstraint;
 import io.undertow.servlet.api.SecurityInfo;

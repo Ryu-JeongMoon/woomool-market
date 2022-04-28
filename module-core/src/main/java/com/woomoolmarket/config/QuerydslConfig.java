@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.querydsl;
+package com.woomoolmarket.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;
