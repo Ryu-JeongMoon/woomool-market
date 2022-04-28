@@ -1,6 +1,6 @@
 package com.woomoolmarket.security.oauth2;
 
-import com.woomoolmarket.common.util.CookieUtils;
+import com.woomoolmarket.util.CookieUtils;
 import io.jsonwebtoken.lang.Strings;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

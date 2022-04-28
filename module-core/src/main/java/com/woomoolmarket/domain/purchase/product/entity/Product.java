@@ -1,11 +1,11 @@
 package com.woomoolmarket.domain.purchase.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.converter.AtomicIntegerConverter;
-import com.woomoolmarket.common.enumeration.Region;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.auditing.BaseEntity;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.util.converter.AtomicIntegerConverter;
+import com.woomoolmarket.domain.enumeration.Region;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.count.entity.ProductCount;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;

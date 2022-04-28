@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.board.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

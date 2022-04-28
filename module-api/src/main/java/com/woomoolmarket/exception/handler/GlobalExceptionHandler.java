@@ -3,7 +3,7 @@ package com.woomoolmarket.exception.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.aop.annotation.LogForException;
-import com.woomoolmarket.errors.ExceptionResponse;
+import com.woomoolmarket.util.errors.ExceptionResponse;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.woomoolmarket.domain.board.entity;
 
-import com.woomoolmarket.common.auditing.BaseEntity;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.auditing.BaseEntity;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.count.entity.BoardCount;
 import com.woomoolmarket.domain.image.entity.Image;
 import com.woomoolmarket.domain.member.entity.Member;

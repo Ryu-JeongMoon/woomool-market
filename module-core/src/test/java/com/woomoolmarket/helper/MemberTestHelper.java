@@ -1,6 +1,6 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.common.embeddable.Address;
+import com.woomoolmarket.domain.embeddable.Address;
 import com.woomoolmarket.domain.member.entity.Authority;
 import com.woomoolmarket.domain.member.entity.Member;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;

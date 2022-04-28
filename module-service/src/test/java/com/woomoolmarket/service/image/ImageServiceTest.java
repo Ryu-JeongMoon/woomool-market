@@ -3,7 +3,7 @@ package com.woomoolmarket.service.image;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.config.ServiceTestConfig;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.image.entity.Image;

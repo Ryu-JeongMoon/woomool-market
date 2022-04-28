@@ -1,6 +1,6 @@
 package com.woomoolmarket.security.dto;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.member.entity.Member;
 import java.util.Collection;
 import java.util.Collections;

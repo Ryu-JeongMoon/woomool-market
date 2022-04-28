@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.domain.enumeration.Region;
 import com.woomoolmarket.config.ApiControllerConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;

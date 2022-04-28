@@ -1,11 +1,11 @@
 package com.woomoolmarket.service.board;
 
-import static com.woomoolmarket.common.constants.CacheConstants.BOARDS;
-import static com.woomoolmarket.common.constants.CacheConstants.BOARDS_FOR_ADMIN;
+import static com.woomoolmarket.util.constants.CacheConstants.BOARDS;
+import static com.woomoolmarket.util.constants.CacheConstants.BOARDS_FOR_ADMIN;
 
 import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
 import com.woomoolmarket.domain.board.repository.BoardRepository;

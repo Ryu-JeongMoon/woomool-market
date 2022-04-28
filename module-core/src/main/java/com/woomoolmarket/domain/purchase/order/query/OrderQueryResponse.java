@@ -1,7 +1,7 @@
 package com.woomoolmarket.domain.purchase.order.query;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.woomoolmarket.common.embeddable.Delivery;
+import com.woomoolmarket.domain.embeddable.Delivery;
 import com.woomoolmarket.domain.purchase.order.entity.Order;
 import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
 import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;

@@ -3,7 +3,7 @@ package com.woomoolmarket.security.oauth2;
 
 import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import com.woomoolmarket.common.util.CookieUtils;
+import com.woomoolmarket.util.CookieUtils;
 import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

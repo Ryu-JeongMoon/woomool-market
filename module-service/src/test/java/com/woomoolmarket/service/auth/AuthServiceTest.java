@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.auth;
 
-import static com.woomoolmarket.common.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
-import static com.woomoolmarket.common.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_FAILED_KEY_PREFIX;
+import static com.woomoolmarket.util.constants.CacheConstants.MAXIMAL_NUMBER_OF_WRONG_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

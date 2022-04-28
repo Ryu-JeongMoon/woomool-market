@@ -1,6 +1,6 @@
 package com.woomoolmarket.domain.image.repository;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.image.entity.Image;
 import java.util.List;
 import java.util.Optional;

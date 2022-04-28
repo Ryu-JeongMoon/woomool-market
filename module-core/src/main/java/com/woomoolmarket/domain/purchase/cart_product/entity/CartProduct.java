@@ -1,7 +1,7 @@
 package com.woomoolmarket.domain.purchase.cart_product.entity;
 
 
-import com.woomoolmarket.common.auditing.BaseTimeEntity;
+import com.woomoolmarket.domain.auditing.BaseTimeEntity;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import javax.persistence.Column;

@@ -1,10 +1,10 @@
 package com.woomoolmarket.controller.auth;
 
-import static com.woomoolmarket.common.constants.TokenConstants.AUTHORIZATION_HEADER;
-import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN;
-import static com.woomoolmarket.common.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
+import static com.woomoolmarket.util.constants.TokenConstants.AUTHORIZATION_HEADER;
+import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN;
+import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 
-import com.woomoolmarket.common.util.CookieUtils;
+import com.woomoolmarket.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.service.auth.AuthService;

@@ -1,9 +1,9 @@
 package com.woomoolmarket.service.board;
 
 import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.common.constants.CacheConstants;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.util.constants.CacheConstants;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.board.repository.BoardRepository;
 import com.woomoolmarket.domain.count.repository.BoardCountRepository;
 import javax.persistence.EntityNotFoundException;

@@ -3,7 +3,7 @@ package com.woomoolmarket.controller.board;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.board.query.BoardQueryResponse;
 import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
 import com.woomoolmarket.service.board.BoardCountService;

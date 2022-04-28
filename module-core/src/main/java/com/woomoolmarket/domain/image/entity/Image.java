@@ -1,7 +1,7 @@
 package com.woomoolmarket.domain.image.entity;
 
-import com.woomoolmarket.common.auditing.BaseTimeEntity;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.auditing.BaseTimeEntity;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.board.entity.Board;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;

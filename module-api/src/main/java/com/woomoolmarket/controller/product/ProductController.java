@@ -3,7 +3,7 @@ package com.woomoolmarket.controller.product;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
 import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
 import com.woomoolmarket.service.product.ProductService;

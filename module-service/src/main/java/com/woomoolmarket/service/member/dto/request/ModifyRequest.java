@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.woomoolmarket.common.embeddable.Address;
+import com.woomoolmarket.domain.embeddable.Address;
 import javax.persistence.Embedded;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

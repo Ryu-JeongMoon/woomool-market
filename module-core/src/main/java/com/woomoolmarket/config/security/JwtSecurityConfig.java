@@ -1,6 +1,6 @@
 package com.woomoolmarket.config.security;
 
-import com.woomoolmarket.exception.JwtAccessDeniedExceptionHandler;
+import com.woomoolmarket.util.exception.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;
 import com.woomoolmarket.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;

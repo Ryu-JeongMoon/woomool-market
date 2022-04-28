@@ -2,7 +2,7 @@ package com.woomoolmarket.domain.purchase.cart.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.domain.enumeration.Region;
 import com.woomoolmarket.config.DataJpaTestConfig;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.cart.entity.Cart;

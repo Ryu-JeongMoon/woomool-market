@@ -1,6 +1,6 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.common.enumeration.Region;
+import com.woomoolmarket.domain.enumeration.Region;
 import com.woomoolmarket.domain.member.entity.Member;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;

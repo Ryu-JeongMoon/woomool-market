@@ -1,8 +1,8 @@
 package com.woomoolmarket.domain.purchase.product.query;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.woomoolmarket.common.enumeration.Region;
-import com.woomoolmarket.common.enumeration.Status;
+import com.woomoolmarket.domain.enumeration.Region;
+import com.woomoolmarket.domain.enumeration.Status;
 import com.woomoolmarket.domain.member.query.MemberQueryResponse;
 import com.woomoolmarket.domain.purchase.product.entity.Product;
 import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;

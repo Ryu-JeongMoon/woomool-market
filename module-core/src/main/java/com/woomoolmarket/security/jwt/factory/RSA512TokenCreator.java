@@ -1,12 +1,12 @@
 package com.woomoolmarket.security.jwt.factory;
 
-import static com.woomoolmarket.common.constants.CacheConstants.LOGOUT_KEY_PREFIX;
-import static com.woomoolmarket.common.constants.TokenConstants.AUTHORITIES_KEY;
+import static com.woomoolmarket.util.constants.CacheConstants.LOGOUT_KEY_PREFIX;
+import static com.woomoolmarket.util.constants.TokenConstants.AUTHORITIES_KEY;
 
 import com.amazonaws.util.Base64;
 import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.common.constants.ExceptionConstants;
-import com.woomoolmarket.common.util.TokenUtils;
+import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.util.TokenUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

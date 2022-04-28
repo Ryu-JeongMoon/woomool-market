@@ -1,7 +1,7 @@
 package com.woomoolmarket.security.jwt;
 
-import com.woomoolmarket.common.constants.TokenConstants;
-import com.woomoolmarket.common.util.TokenUtils;
+import com.woomoolmarket.util.constants.TokenConstants;
+import com.woomoolmarket.util.TokenUtils;
 import com.woomoolmarket.security.jwt.factory.TokenCreator;
 import java.io.IOException;
 import javax.servlet.FilterChain;
