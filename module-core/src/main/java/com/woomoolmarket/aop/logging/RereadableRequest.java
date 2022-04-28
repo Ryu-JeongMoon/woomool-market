@@ -17,7 +17,7 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
@@ -25,14 +25,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-@Log4j2
-public class ReadableRequestWrapper extends HttpServletRequestWrapper {
+@Slf4j
+public class RereadableRequest extends HttpServletRequestWrapper {
 
+  private byte[] rawData;
   private final Charset encoding;
   private final Map<String, String[]> params = new HashMap<>();
-  private byte[] rawData;
 
-  public ReadableRequestWrapper(HttpServletRequest request) {
+  public RereadableRequest(HttpServletRequest request) {
     super(request);
     this.params.putAll(request.getParameterMap()); // 원래의 파라미터를 저장
 
@@ -73,11 +73,9 @@ public class ReadableRequestWrapper extends HttpServletRequestWrapper {
   @Override
   public String getParameter(String name) {
     String[] paramArray = getParameterValues(name);
-    if (paramArray != null && paramArray.length > 0) {
-      return paramArray[0];
-    } else {
-      return null;
-    }
+    return paramArray != null && paramArray.length > 0
+      ? paramArray[0]
+      : null;
   }
 
   @Override
@@ -103,7 +101,7 @@ public class ReadableRequestWrapper extends HttpServletRequestWrapper {
   }
 
   public void setParameter(String name, String value) {
-    String[] param = {value};
+    String[] param = { value };
     setParameter(name, param);
   }
 
