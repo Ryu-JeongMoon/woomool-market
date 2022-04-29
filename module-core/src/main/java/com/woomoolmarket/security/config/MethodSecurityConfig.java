@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.security;
+package com.woomoolmarket.security.config;
 
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

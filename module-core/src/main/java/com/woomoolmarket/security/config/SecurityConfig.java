@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.security;
+package com.woomoolmarket.security.config;
 
 
 import com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;

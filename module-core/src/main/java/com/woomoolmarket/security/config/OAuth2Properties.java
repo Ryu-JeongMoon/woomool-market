@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.security;
+package com.woomoolmarket.security.config;
 
 import java.util.Map;
 import lombok.Getter;
