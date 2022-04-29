@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.auditing;
+package com.woomoolmarket.config;
 
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;

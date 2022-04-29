@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.encrypt;
+package com.woomoolmarket.config;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

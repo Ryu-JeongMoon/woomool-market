@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.mail;
+package com.woomoolmarket.config;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
