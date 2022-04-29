@@ -1,4 +1,4 @@
-package com.woomoolmarket.config.security;
+package com.woomoolmarket.security.config;
 
 import com.woomoolmarket.util.exception.JwtAccessDeniedExceptionHandler;
 import com.woomoolmarket.security.jwt.JwtAuthenticationEntryPoint;

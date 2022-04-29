@@ -1,11 +1,11 @@
-package com.woomoolmarket.config.security;
+package com.woomoolmarket.security.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.woomoolmarket.config.security.OAuth2Properties.Client;
-import com.woomoolmarket.config.security.OAuth2Properties.Resource;
+import com.woomoolmarket.security.config.OAuth2Properties.Client;
+import com.woomoolmarket.security.config.OAuth2Properties.Resource;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
