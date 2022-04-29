@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
   @Bean
-  public FilterRegistrationBean<XssEscapeServletFilter> filterFilterRegistrationBean() {
+  public FilterRegistrationBean<XssEscapeServletFilter> filterRegistrationBean() {
     FilterRegistrationBean<XssEscapeServletFilter> filterRegistration = new FilterRegistrationBean<>();
     filterRegistration.addUrlPatterns("/*");
     filterRegistration.setFilter(new XssEscapeServletFilter());
