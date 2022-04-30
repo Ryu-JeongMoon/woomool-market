@@ -1,44 +1,38 @@
 package com.woomoolmarket.security.dto;
 
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.Role;
+import com.woomoolmarket.domain.entity.enumeration.Status;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import lombok.ToString;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
+@Getter
+@ToString
 @RequiredArgsConstructor
-public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
+public class UserPrincipal implements UserDetails {
 
+  private final Long id;
   private final String email;
   private final String password;
   private final Status status;
-  private final Collection<? extends GrantedAuthority> authorities;
-  private Map<String, Object> attributes;
+  private final Collection<Role> authorities;
 
-  public static UserPrincipal of(Member member) {
-    List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(member.getAuthorityKey()));
-
-    return new UserPrincipal(
-      member.getEmail(),
-      member.getPassword(),
-      member.getStatus(),
-      authorities
-    );
+  public static UserPrincipal from(Member member) {
+    return UserPrincipal.of(member.getId(), member.getEmail(), member.getPassword(), Collections.singletonList(member.getRole()));
   }
 
-  public static UserPrincipal of(Member member, Map<String, Object> attributes) {
-    UserPrincipal userPrincipal = UserPrincipal.of(member);
-    userPrincipal.setAttributes(attributes);
-    return userPrincipal;
+  public static UserPrincipal of(Long id, String email, String password, Collection<Role> authorities) {
+    return new UserPrincipal(id, email, password, Status.ACTIVE, authorities);
+  }
+
+  public Authentication toAuthentication() {
+    return new UsernamePasswordAuthenticationToken(this, this.password, this.authorities);
   }
 
   @Override
@@ -52,56 +46,27 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
   }
 
   @Override
-  public String getName() {
-    return email;
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
+  public Collection<Role> getAuthorities() {
     return authorities;
   }
 
   @Override
-  public Map<String, Object> getAttributes() {
-    return attributes;
-  }
-
-  public void setAttributes(Map<String, Object> attributes) {
-    this.attributes = attributes;
+  public boolean isEnabled() {
+    return Status.ACTIVE == status;
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    return Status.ACTIVE.equals(status);
+    return isEnabled();
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return Status.ACTIVE.equals(status);
+    return isEnabled();
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return Status.ACTIVE.equals(status);
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return Status.ACTIVE.equals(status);
-  }
-
-  @Override
-  public Map<String, Object> getClaims() {
-    return this.attributes;
-  }
-
-  @Override
-  public OidcUserInfo getUserInfo() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public OidcIdToken getIdToken() {
-    throw new UnsupportedOperationException();
+    return isEnabled();
   }
 }

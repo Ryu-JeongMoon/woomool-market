@@ -3,25 +3,25 @@ package com.woomoolmarket.service.cache;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woomoolmarket.cache.CacheService;
+import com.woomoolmarket.domain.port.CacheTokenPort;
 import java.time.Duration;
 import java.util.Objects;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-@Log4j2
+@Slf4j
 @Service
-public class RedisService implements CacheService {
+public class RedisTokenPort implements CacheTokenPort {
 
   private final ObjectMapper objectMapper;
   private final StringRedisTemplate stringRedisTemplate;
   private final ValueOperations<String, String> stringValueOperations;
   private final HashOperations<String, String, String> hashValueOperations;
 
-  public RedisService(ObjectMapper objectMapper, StringRedisTemplate stringRedisTemplate) {
+  public RedisTokenPort(ObjectMapper objectMapper, StringRedisTemplate stringRedisTemplate) {
     this.objectMapper = objectMapper;
     this.stringRedisTemplate = stringRedisTemplate;
     this.hashValueOperations = stringRedisTemplate.opsForHash();

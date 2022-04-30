@@ -2,107 +2,64 @@ package com.woomoolmarket.security.oauth2;
 
 import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_ACCESS_TOKEN_PREFIX;
 import static com.woomoolmarket.util.constants.CacheConstants.LOGIN_REFRESH_TOKEN_PREFIX;
-import static com.woomoolmarket.util.constants.TokenConstants.ACCESS_TOKEN_EXPIRE_SECONDS;
-import static com.woomoolmarket.util.constants.TokenConstants.AUTHORIZATION_HEADER;
-import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN;
-import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
-import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
-import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.domain.entity.enumeration.Role;
+import com.woomoolmarket.domain.port.CacheTokenPort;
+import com.woomoolmarket.security.dto.OAuth2TokenResponse;
+import com.woomoolmarket.security.dto.OAuth2UserPrincipal;
+import com.woomoolmarket.security.dto.UserPrincipal;
 import com.woomoolmarket.util.CookieUtils;
-import com.woomoolmarket.security.dto.TokenResponse;
-import com.woomoolmarket.security.jwt.factory.TokenCreator;
+import com.woomoolmarket.util.SecurityUtils;
+import com.woomoolmarket.util.constants.Times;
+import com.woomoolmarket.util.constants.UriConstants;
 import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-@Log4j2
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  private final TokenCreator tokenCreator;
-  private final CacheService cacheService;
+  private final CacheTokenPort cacheTokenPort;
   private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-  @Value("${app.oauth2.authorizedRedirectUris}")
-  private List<String> authorizedRedirectUris;
-
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication auth) throws IOException {
-    String targetUrl = determineTargetUrl(req, resp, auth);
-    if (resp.isCommitted()) {
-      log.info("[WOOMOOL-INFO] :: Response has already been committed. Unable to redirect to {}", targetUrl);
-      return;
-    }
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
-    sendTokenToClient(resp, auth);
-    saveAuthToContextHolder(auth);
+    OAuth2UserPrincipal principal = (OAuth2UserPrincipal) authentication.getPrincipal();
+    OAuth2TokenResponse oAuth2TokenResponse = OAuth2TokenResponse.builder()
+      .accessToken(principal.getOAuth2Token().getTokenValue())
+      .oidcIdToken(principal.getIdToken().getTokenValue())
+      .build();
 
-    clearAuthenticationAttributes(req, resp);
-    getRedirectStrategy().sendRedirect(req, resp, targetUrl);
+    SecurityUtils.setAuthentication(authentication);
+    CookieUtils.addOAuth2TokenToBrowser(response, oAuth2TokenResponse);
+
+    String targetUri = getUriByRole(principal);
+    response.sendRedirect(targetUri);
   }
 
-  private void saveAuthToContextHolder(Authentication oAuth2AuthenticationToken) {
-    SecurityContextHolder.getContext().setAuthentication(oAuth2AuthenticationToken);
+  private String getUriByRole(UserPrincipal principal) {
+    return isUser(principal)
+      ? UriConstants.Mapping.POSTS
+      : UriConstants.Mapping.MEMBERS;
   }
 
-  protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-    Optional<String> redirectUri = CookieUtils
-      .getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-      .map(Cookie::getValue);
-
-    if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-      throw new AccessDeniedException(ExceptionConstants.UNAUTHORIZED_URI);
-    }
-
-    return redirectUri.orElseGet(this::getDefaultTargetUrl);
-  }
-
-  private void sendTokenToClient(HttpServletResponse resp, Authentication auth) {
-    TokenResponse tokenResponse = tokenCreator.createToken(auth);
-
-    String username = auth.getName();
-    String accessToken = tokenResponse.getAccessToken();
-    String refreshToken = tokenResponse.getRefreshToken();
-    saveTokensToRedis(accessToken, refreshToken, username);
-
-    CookieUtils.addCookie(resp, REFRESH_TOKEN, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
-    resp.setHeader(AUTHORIZATION_HEADER, accessToken);
+  private boolean isUser(UserPrincipal principal) {
+    return principal.getAuthorities()
+      .stream()
+      .anyMatch(Role.USER::equals);
   }
 
   private void saveTokensToRedis(String accessToken, String refreshToken, String username) {
-    cacheService.setDataAndExpiration(LOGIN_ACCESS_TOKEN_PREFIX + username, accessToken, ACCESS_TOKEN_EXPIRE_SECONDS);
-    cacheService.setDataAndExpiration(LOGIN_REFRESH_TOKEN_PREFIX + username, refreshToken, REFRESH_TOKEN_EXPIRE_SECONDS);
-  }
-
-  protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
-    super.clearAuthenticationAttributes(request);
-    httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-  }
-
-  private boolean isAuthorizedRedirectUri(String uri) {
-    URI clientRedirectUri = URI.create(uri);
-
-    return authorizedRedirectUris
-      .stream()
-      .anyMatch(authorizedRedirectUri -> {
-        URI authorizedURI = URI.create(authorizedRedirectUri);
-        return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
-          && authorizedURI.getPort() == clientRedirectUri.getPort();
-      });
+    cacheTokenPort.setDataAndExpiration(LOGIN_ACCESS_TOKEN_PREFIX + username, accessToken, Times.ACCESS_TOKEN_EXPIRATION_SECONDS.getValue());
+    cacheTokenPort.setDataAndExpiration(LOGIN_REFRESH_TOKEN_PREFIX + username, refreshToken, Times.REFRESH_TOKEN_EXPIRATION_SECONDS.getValue());
   }
 }

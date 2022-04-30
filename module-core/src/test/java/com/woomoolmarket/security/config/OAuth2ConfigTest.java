@@ -13,29 +13,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OAuth2SecurityConfigTest {
+class OAuth2ConfigTest {
 
   @Autowired
   OAuth2Properties oAuth2Properties;
   @Autowired
-  OAuth2SecurityConfig oAuth2SecurityConfig;
+  OAuth2Config oAuth2Config;
 
   @Test
   @DisplayName("properties binding 성공")
   void oAuth2Properties() {
-    Map<Client, Resource> registration = oAuth2Properties.getRegistration();
+    Map<Client, Resource> registration = oAuth2Properties.registration();
 
     registration.keySet()
       .forEach(client -> assertAll(
-        () -> assertThat(registration.get(client).getClientId()).isNotBlank(),
-        () -> assertThat(registration.get(client).getClientName()).isNotBlank(),
-        () -> assertThat(registration.get(client).getClientSecret()).isNotBlank()
+        () -> assertThat(registration.get(client).clientId()).isNotBlank(),
+        () -> assertThat(registration.get(client).clientName()).isNotBlank(),
+        () -> assertThat(registration.get(client).clientSecret()).isNotBlank()
       ));
   }
 
   @Test
   @DisplayName("OAuth2SecurityConfig 설정 성공")
   void oAuth2SecurityConfig() {
-    assertNotNull(oAuth2SecurityConfig.clientRegistrationRepository());
+    assertNotNull(oAuth2Config.clientRegistrationRepository());
   }
 }

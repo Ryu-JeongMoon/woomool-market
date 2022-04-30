@@ -2,7 +2,7 @@ package com.woomoolmarket.config;
 
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.Step;
@@ -15,7 +15,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Log4j2
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class DeciderJobConfiguration {
