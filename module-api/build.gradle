@@ -10,7 +10,6 @@ dependencies {
     implementation project(':module-core')
     implementation project(':module-service')
 
-    implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'

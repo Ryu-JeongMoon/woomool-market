@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.5.3'
+    id 'org.springframework.boot' version '2.6.7'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
     id "com.github.node-gradle.node" version "3.1.0"
@@ -23,8 +23,6 @@ repositories {
 
 group = 'com.woomool-market'
 version = '1.0'
-sourceCompatibility = '11'
-targetCompatibility = '11'
 
 subprojects {
     apply plugin: 'java'
@@ -37,23 +35,30 @@ subprojects {
         mavenCentral()
     }
 
+    java {
+        sourceCompatibility = '17'
+        targetCompatibility = '17'
+    }
+
     configurations {
         compileOnly {
             extendsFrom annotationProcessor
         }
         all {
             exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            exclude group: 'ch.qos.logback', module: 'logback-classic'
             exclude module: 'spring-boot-starter-tomcat'
-            resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+
+            resolutionStrategy.eachDependency { details ->
                 if (details.requested.group == 'org.apache.logging.log4j') {
-                    details.useVersion '2.15.0'
+                    details.useVersion '2.17.1'
                 }
             }
         }
     }
 
     ext {
-        set('springCloudVersion', "2020.0.3")
+        set('springCloudVersion', "2021.0.2")
     }
 
     dependencies {
@@ -67,7 +72,7 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-webflux'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-        implementation 'org.springframework.boot:spring-boot-starter-log4j2:2.6.1'
+        implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
         implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -87,7 +92,7 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-        testCompileOnly 'org.projectlombok:lombok:1.18.20'
+        testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.security:spring-security-test'
@@ -143,5 +148,5 @@ task buildVue(type: YarnTask, dependsOn: setUp) {
 processResources.dependsOn 'buildVue'
 
 bootJar {
-    mainClassName = 'com.woomoolmarket.ModuleApiApplication'
+    mainClass = 'com.woomoolmarket.ModuleApiApplication'
 }
