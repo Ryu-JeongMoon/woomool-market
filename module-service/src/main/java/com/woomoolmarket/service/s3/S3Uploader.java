@@ -3,7 +3,7 @@ package com.woomoolmarket.service.s3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.woomoolmarket.util.constants.ExceptionConstants;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import com.woomoolmarket.util.constants.LogConstants;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-@Log4j2
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class S3Uploader {
@@ -28,7 +28,7 @@ public class S3Uploader {
 
   public String upload(MultipartFile multipartFile, String dirName) throws IOException {
     File uploadFile = convert(multipartFile)
-      .orElseThrow(() -> new IllegalArgumentException(ExceptionConstants.CONVERT_FAILED));
+      .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.File.CONVERT_FAILED));
 
     return upload(uploadFile, dirName);
   }

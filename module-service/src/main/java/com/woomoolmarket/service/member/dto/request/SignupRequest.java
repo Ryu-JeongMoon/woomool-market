@@ -2,7 +2,7 @@ package com.woomoolmarket.service.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.woomoolmarket.util.constants.RegexpConstants;
-import com.woomoolmarket.domain.embeddable.Address;
+import com.woomoolmarket.domain.entity.embeddable.Address;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.StopWatch;
 
-@Log4j2
-class Util {
+@Slf4j
+class UtilTest {
 
   @Test
   @DisplayName("log4j2 주입이 올바르게 된다")
@@ -53,7 +53,7 @@ class Util {
 
     String nowStr = objectMapper.writeValueAsString(now);
     Object obj = objectMapper.readValue(nowStr, Object.class);
-    log.info(obj);
+    log.info("obj = {}", obj);
     assertEquals(nowStr.replace("\"", ""), obj);
   }
 
@@ -70,7 +70,7 @@ class Util {
 
     StopWatch stopWatch2 = new StopWatch();
     stopWatch2.start();
-    integers.stream().map(i -> i + 1).collect(Collectors.toUnmodifiableList());
+    integers.stream().map(i -> i + 1).toList();
     stopWatch2.stop();
     log.info(stopWatch2.prettyPrint());
 

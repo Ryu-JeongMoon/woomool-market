@@ -2,15 +2,15 @@ package com.woomoolmarket.dto.member.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.woomoolmarket.domain.embeddable.Address;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.embeddable.Address;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.mapper.SignupRequestMapperImpl;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@Log4j2
+@Slf4j
 class SingUpMapperTest {
 
   private final SignupRequestMapperImpl signUpMemberRequestMapper = new SignupRequestMapperImpl();
