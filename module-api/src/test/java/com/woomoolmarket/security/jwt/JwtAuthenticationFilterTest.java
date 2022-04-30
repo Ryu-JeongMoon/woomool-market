@@ -8,10 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.ModuleApiApplication;
+import com.woomoolmarket.domain.entity.enumeration.Role;
 import com.woomoolmarket.util.constants.TokenConstants;
-import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.repository.MemberRepository;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,7 +54,7 @@ class JwtAuthenticationFilterTest {
       .email(EMAIL)
       .nickname(NICKNAME)
       .password(passwordEncoder.encode(PASSWORD))
-      .authority(Authority.ROLE_USER)
+      .role(Role.USER)
       .build();
     memberRepository.save(member);
   }

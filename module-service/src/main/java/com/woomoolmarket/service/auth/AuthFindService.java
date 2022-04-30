@@ -1,17 +1,17 @@
 package com.woomoolmarket.service.auth;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.util.FunctionalWrapperUtils;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.repository.MemberRepository;
+import com.woomoolmarket.util.constants.ExceptionMessages;
+import com.woomoolmarket.util.wrapper.ThrowingConsumer;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @EnableConfigurationProperties(CoolSmsProperties.class)
@@ -37,7 +37,7 @@ public class AuthFindService {
   @Transactional
   public void sendEmailForFinding(String email) {
     Member member = memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
 
     SecureRandom secureRandom = new SecureRandom();
     String temporaryPassword = String.valueOf(secureRandom.nextInt());
@@ -73,7 +73,7 @@ public class AuthFindService {
   @Transactional(readOnly = true)
   public void sendAuthStringToPhone(String phone) {
     Member member = memberRepository.findByPhoneAndStatus(phone, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
 
     Message message = createMessage();
 
@@ -86,9 +86,9 @@ public class AuthFindService {
 
     CompletableFuture
       .supplyAsync(this::checkBalance, woomoolTaskExecutor)
-      .thenAcceptAsync(FunctionalWrapperUtils.wrapConsumer(balance -> {
+      .thenAcceptAsync(ThrowingConsumer.unchecked(balance -> {
         if (balance < 20) {
-          throw new RuntimeException(ExceptionConstants.NOT_ENOUGH_BALANCE);
+          throw new RuntimeException(ExceptionMessages.CoolSms.NOT_ENOUGH_BALANCE);
         }
         message.send(smsParams);
       }), woomoolTaskExecutor);
@@ -100,7 +100,7 @@ public class AuthFindService {
     try {
       return Integer.parseInt(message.balance().get("point").toString());
     } catch (CoolsmsException e) {
-      log.info(e);
+      log.info("", e);
       return 0;
     }
   }

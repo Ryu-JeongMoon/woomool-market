@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.image.entity.Image;
+import com.woomoolmarket.domain.entity.Image;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,14 +12,14 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-@Log4j2
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ImageProcessor {
@@ -96,7 +96,7 @@ public class ImageProcessor {
 
       if (!wasSuccessful) {
         log.info("[WOOMOOL-ERROR] :: Can't Create a directory");
-        throw new IllegalStateException(ExceptionConstants.IMAGE_FOLDER_NOT_FOUND);
+        throw new IllegalStateException(ExceptionMessages.Image.FOLDER_NOT_FOUND);
       }
     }
   }
@@ -104,7 +104,7 @@ public class ImageProcessor {
   private void checkFileExtension(String originalFilename, String contentType) {
     if (!StringUtils.hasText(contentType)) {
       log.info("[WOOMOOL-ERROR] :: {} has no file extension", originalFilename);
-      throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
+      throw new IllegalArgumentException(ExceptionMessages.Image.NOT_PROPER_EXTENSION);
     }
   }
 
@@ -115,7 +115,7 @@ public class ImageProcessor {
       return ".png";
     } else {
       log.info("[WOOMOOL-ERROR] :: {} is unsupported file extension", contentType);
-      throw new IllegalArgumentException(ExceptionConstants.IMAGE_NOT_PROPER_EXTENSION);
+      throw new IllegalArgumentException(ExceptionMessages.Image.NOT_PROPER_EXTENSION);
     }
   }
 

@@ -1,8 +1,8 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Product;
 
 public class CartTestHelper {
 

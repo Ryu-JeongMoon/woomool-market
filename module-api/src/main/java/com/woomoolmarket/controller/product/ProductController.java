@@ -3,9 +3,9 @@ package com.woomoolmarket.controller.product;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
-import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.repository.querydto.ProductQueryResponse;
+import com.woomoolmarket.domain.repository.querydto.ProductSearchCondition;
 import com.woomoolmarket.service.product.ProductService;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;

@@ -5,19 +5,21 @@ import static com.woomoolmarket.helper.MemberTestHelper.MEMBER_PHONE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.config.ServiceTestConfig;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import java.security.SecureRandom;
 import java.util.concurrent.CompletableFuture;
 import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.SimpleMailMessage;
 
-class AuthFindServiceTest extends ServiceTestConfig {
+@Disabled
+class AuthFindServiceTest extends AbstractServiceTest {
 
   ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
@@ -94,7 +96,7 @@ class AuthFindServiceTest extends ServiceTestConfig {
   void sendAuthStringToPhoneFail() {
     assertThrows(EntityNotFoundException.class,
       () -> memberRepository.findByPhoneAndStatus(MEMBER_PHONE + 1, Status.ACTIVE)
-        .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND)));
+        .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND)));
   }
 
   @Test
@@ -103,7 +105,7 @@ class AuthFindServiceTest extends ServiceTestConfig {
     CompletableFuture.supplyAsync(() -> 25)
       .thenAccept(balance -> {
         if (balance < 20) {
-          throw new RuntimeException(ExceptionConstants.NOT_ENOUGH_BALANCE);
+          throw new RuntimeException(ExceptionMessages.CoolSms.NOT_ENOUGH_BALANCE);
         }
         System.out.println("Success");
       })
@@ -116,7 +118,7 @@ class AuthFindServiceTest extends ServiceTestConfig {
     assertThrows(RuntimeException.class, () -> CompletableFuture.supplyAsync(() -> 15)
       .thenAccept(balance -> {
         if (balance < 20) {
-          throw new RuntimeException(ExceptionConstants.NOT_ENOUGH_BALANCE);
+          throw new RuntimeException(ExceptionMessages.CoolSms.NOT_ENOUGH_BALANCE);
         }
       })
       .join());

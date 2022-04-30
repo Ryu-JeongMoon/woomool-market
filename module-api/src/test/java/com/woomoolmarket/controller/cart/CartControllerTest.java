@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.config.ApiControllerConfig;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.entity.Product;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;

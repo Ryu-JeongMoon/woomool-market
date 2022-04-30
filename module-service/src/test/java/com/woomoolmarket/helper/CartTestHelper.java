@@ -1,9 +1,9 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.repository.CartRepository;
+import com.woomoolmarket.domain.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

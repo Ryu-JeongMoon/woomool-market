@@ -1,17 +1,17 @@
 package com.woomoolmarket.service.cart;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
-import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.repository.MemberRepository;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.repository.querydto.CartQueryResponse;
+import com.woomoolmarket.domain.repository.CartRepository;
+import com.woomoolmarket.domain.entity.Product;
+import com.woomoolmarket.domain.repository.ProductRepository;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import com.woomoolmarket.service.cart.mapper.CartResponseMapper;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import java.util.Collection;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class CartService {
   public CartResponse findBy(Long cartId) {
     return cartRepository.findById(cartId)
       .map(cartResponseMapper::toDto)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Cart.NOT_FOUND));
   }
 
   @Transactional(readOnly = true)
@@ -49,10 +49,10 @@ public class CartService {
   @Transactional
   public Long add(CartRequest cartRequest) {
     Member member = memberRepository.findByIdAndStatus(cartRequest.getMemberId(), Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
 
     Product product = productRepository.findByIdAndStatus(cartRequest.getProductId(), Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.PRODUCT_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Product.NOT_FOUND));
 
     Cart cart = Cart.builder()
       .member(member)
@@ -66,7 +66,7 @@ public class CartService {
   @Transactional
   public void remove(Long cartId) {
     cartRepository.findById(cartId)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.CART_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Cart.NOT_FOUND));
 
     cartRepository.deleteById(cartId);
   }
@@ -74,7 +74,7 @@ public class CartService {
   @Transactional
   public void removeAll(Long memberId) {
     Member member = memberRepository.findById(memberId)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
 
     cartRepository.deleteByMember(member);
   }

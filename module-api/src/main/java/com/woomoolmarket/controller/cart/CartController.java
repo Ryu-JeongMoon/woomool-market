@@ -3,7 +3,7 @@ package com.woomoolmarket.controller.cart;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
+import com.woomoolmarket.domain.repository.querydto.CartQueryResponse;
 import com.woomoolmarket.service.cart.CartService;
 import com.woomoolmarket.service.cart.dto.request.CartIdRequest;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;

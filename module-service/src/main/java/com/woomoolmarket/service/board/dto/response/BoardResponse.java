@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.board.dto.response;
 
-import com.woomoolmarket.domain.board.entity.BoardCategory;
-import com.woomoolmarket.domain.count.entity.BoardCount;
+import com.woomoolmarket.domain.entity.enumeration.BoardCategory;
+import com.woomoolmarket.domain.entity.BoardCount;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.io.Serializable;
 import java.time.LocalDateTime;

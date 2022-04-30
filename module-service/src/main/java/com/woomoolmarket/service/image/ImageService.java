@@ -1,11 +1,11 @@
 package com.woomoolmarket.service.image;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.image.entity.Image;
-import com.woomoolmarket.domain.image.repository.ImageRepository;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.entity.Image;
+import com.woomoolmarket.domain.repository.ImageRepository;
 import com.woomoolmarket.service.image.dto.response.ImageResponse;
 import com.woomoolmarket.service.image.mapper.ImageResponseMapper;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +28,14 @@ public class ImageService {
   @Transactional
   public void deleteByImageId(Long imageId) {
     imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Image.NOT_FOUND))
       .delete();
   }
 
   @Transactional
   public void restoreByImageId(Long imageId) {
     imageRepository.findByIdAndStatus(imageId, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.IMAGE_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Image.NOT_FOUND))
       .restore();
   }
 }

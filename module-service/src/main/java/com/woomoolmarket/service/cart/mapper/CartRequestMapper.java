@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.cart.mapper;
 
 import com.woomoolmarket.common.mapper.GenericMapper;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
+import com.woomoolmarket.domain.entity.Cart;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

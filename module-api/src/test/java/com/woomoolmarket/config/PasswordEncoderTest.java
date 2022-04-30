@@ -3,13 +3,13 @@ package com.woomoolmarket.config;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Log4j2
+@Slf4j
 class PasswordEncoderTest {
 
   PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();

@@ -24,6 +24,17 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Profile(value = { "local", "mysql", "ec2" })
 public class LogAspect {
 
+  private static JSONObject getParams(HttpServletRequest request) {
+    JSONObject jsonObject = new JSONObject();
+    Enumeration<String> params = request.getParameterNames();
+    while (params.hasMoreElements()) {
+      String param = params.nextElement();
+      String replaceParam = param.replaceAll("\\.", "-");
+      jsonObject.put(replaceParam, request.getParameter(param));
+    }
+    return jsonObject;
+  }
+
   @Around(value = "bean(*Controller)")
   public Object logForRequest(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
     Object result = proceedingJoinPoint.proceed();
@@ -42,17 +53,6 @@ public class LogAspect {
 
     log.info("[WOOMOOL-REQUEST] :: {}", params);
     return result;
-  }
-
-  private static JSONObject getParams(HttpServletRequest request) {
-    JSONObject jsonObject = new JSONObject();
-    Enumeration<String> params = request.getParameterNames();
-    while (params.hasMoreElements()) {
-      String param = params.nextElement();
-      String replaceParam = param.replaceAll("\\.", "-");
-      jsonObject.put(replaceParam, request.getParameter(param));
-    }
-    return jsonObject;
   }
 
   @Around(value = "bean(*Controller)")

@@ -1,8 +1,8 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.board.entity.BoardCategory;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.entity.Board;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.BoardCategory;
 import java.time.LocalDateTime;
 
 public class BoardTestHelper {

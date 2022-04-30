@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woomoolmarket.domain.embeddable.Address;
+import com.woomoolmarket.domain.entity.embeddable.Address;
 import com.woomoolmarket.config.ApiDocumentationConfig;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;

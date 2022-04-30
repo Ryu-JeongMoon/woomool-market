@@ -1,9 +1,9 @@
 package com.woomoolmarket.service.member.dto.response;
 
-import com.woomoolmarket.domain.embeddable.Address;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.member.entity.AuthProvider;
-import com.woomoolmarket.domain.member.entity.Authority;
+import com.woomoolmarket.domain.entity.embeddable.Address;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.entity.enumeration.AuthProvider;
+import com.woomoolmarket.domain.entity.enumeration.Role;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ public class MemberResponse {
   private LocalDateTime lastModifiedDateTime;
   private LocalDateTime leaveDateTime;
 
-  private Authority authority;
+  private Role role;
   private Address address;
   private AuthProvider authProvider;
   private Status status;

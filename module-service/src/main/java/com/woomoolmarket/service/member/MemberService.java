@@ -1,13 +1,12 @@
 package com.woomoolmarket.service.member;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.image.entity.Image;
-import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.query.MemberQueryResponse;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.entity.Image;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.Role;
+import com.woomoolmarket.domain.repository.querydto.MemberQueryResponse;
+import com.woomoolmarket.domain.repository.MemberRepository;
+import com.woomoolmarket.domain.repository.querydto.MemberSearchCondition;
 import com.woomoolmarket.service.image.ImageProcessor;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
@@ -15,6 +14,7 @@ import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.MemberResponseMapper;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import com.woomoolmarket.service.member.mapper.SignupRequestMapper;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -52,40 +52,40 @@ public class MemberService {
   public MemberResponse findMemberById(Long id) {
     return memberRepository.findById(id)
       .map(memberResponseMapper::toDto)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
   }
 
   @Transactional(readOnly = true)
   public Long findIdByEmail(String email) {
     return memberRepository.findIdByEmail(email)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
   }
 
   @Transactional
   @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
   public MemberResponse joinAsMember(SignupRequest signUpRequest) {
-    Member member = join(signUpRequest, Authority.ROLE_USER);
+    Member member = join(signUpRequest, Role.USER);
     return memberResponseMapper.toDto(member);
   }
 
   @Transactional
   @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
   public MemberResponse joinAsSeller(SignupRequest signUpRequest) {
-    Member member = join(signUpRequest, Authority.ROLE_SELLER);
+    Member member = join(signUpRequest, Role.SELLER);
     return memberResponseMapper.toDto(member);
   }
 
   @Transactional
-  public Member join(SignupRequest signUpRequest, Authority authority) {
+  public Member join(SignupRequest signUpRequest, Role role) {
     if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
-      throw new IllegalArgumentException(ExceptionConstants.MEMBER_EMAIL_DUPLICATED);
+      throw new IllegalArgumentException(ExceptionMessages.Member.EMAIL_DUPLICATED);
     }
 
     Image image = imageProcessor.parse(signUpRequest.getMultipartFile());
 
     Member member = signupRequestMapper.toEntity(signUpRequest);
     member.changePassword(passwordEncoder.encode(member.getPassword()));
-    member.changeAuthority(authority);
+    member.changeAuthority(role);
     member.addImage(image);
     return memberRepository.save(member);
   }
@@ -94,7 +94,7 @@ public class MemberService {
   @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
   public void edit(Long id, ModifyRequest modifyRequest) {
     Member member = memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
 
     Image image = imageProcessor.parse(modifyRequest.getMultipartFile());
     member.addImage(image);
@@ -107,7 +107,7 @@ public class MemberService {
   @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
   public void leaveSoftly(Long id) {
     memberRepository.findByIdAndStatus(id, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND))
       .leave();
   }
 
@@ -115,7 +115,7 @@ public class MemberService {
   @CacheEvict(keyGenerator = "customKeyGenerator", value = "medium", allEntries = true)
   public void restore(Long id) {
     memberRepository.findByIdAndStatus(id, Status.INACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND))
       .restore();
   }
 

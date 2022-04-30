@@ -1,6 +1,6 @@
 package com.woomoolmarket.service.board.dto.request;
 
-import com.woomoolmarket.domain.board.entity.BoardCategory;
+import com.woomoolmarket.domain.entity.enumeration.BoardCategory;
 import java.time.LocalDateTime;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;

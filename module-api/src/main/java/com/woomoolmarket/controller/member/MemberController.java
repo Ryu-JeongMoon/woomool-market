@@ -3,8 +3,8 @@ package com.woomoolmarket.controller.member;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.woomoolmarket.domain.member.query.MemberQueryResponse;
-import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
+import com.woomoolmarket.domain.repository.querydto.MemberQueryResponse;
+import com.woomoolmarket.domain.repository.querydto.MemberSearchCondition;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/members", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/api/members", produces = { MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
 public class MemberController {
 
   private final MemberService memberService;

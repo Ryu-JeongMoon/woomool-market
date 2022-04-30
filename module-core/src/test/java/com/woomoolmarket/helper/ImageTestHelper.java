@@ -1,6 +1,6 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.image.entity.Image;
+import com.woomoolmarket.domain.entity.Image;
 
 public class ImageTestHelper {
 

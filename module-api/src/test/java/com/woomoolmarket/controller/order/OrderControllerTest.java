@@ -8,11 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.config.ApiControllerConfig;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
-import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.entity.Order;
+import com.woomoolmarket.domain.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.Product;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import java.util.List;

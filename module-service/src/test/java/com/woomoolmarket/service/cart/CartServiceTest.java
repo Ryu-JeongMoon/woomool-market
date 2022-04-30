@@ -2,11 +2,11 @@ package com.woomoolmarket.service.cart;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.cart.query.CartQueryResponse;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.repository.querydto.CartQueryResponse;
+import com.woomoolmarket.domain.entity.Product;
 import com.woomoolmarket.service.cart.dto.request.CartRequest;
 import com.woomoolmarket.service.cart.dto.response.CartResponse;
 import java.util.Objects;
@@ -19,7 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 @Slf4j
-class CartServiceTest extends ServiceTestConfig {
+class CartServiceTest extends AbstractServiceTest {
 
   @BeforeEach
   void init() {

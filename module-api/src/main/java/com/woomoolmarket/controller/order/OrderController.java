@@ -1,8 +1,8 @@
 package com.woomoolmarket.controller.order;
 
 
-import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
-import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
+import com.woomoolmarket.domain.repository.querydto.OrderQueryResponse;
+import com.woomoolmarket.domain.repository.querydto.OrderSearchCondition;
 import com.woomoolmarket.service.order.OrderService;
 import com.woomoolmarket.service.order.dto.request.OrderDeleteRequest;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/orders", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/orders", produces = { MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
 public class OrderController {
 
   private final OrderService orderService;

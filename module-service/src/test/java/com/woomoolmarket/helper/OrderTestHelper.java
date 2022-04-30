@@ -1,10 +1,10 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.embeddable.Delivery;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
-import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
-import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.embeddable.Delivery;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Order;
+import com.woomoolmarket.domain.repository.OrderRepository;
+import com.woomoolmarket.domain.entity.OrderProduct;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

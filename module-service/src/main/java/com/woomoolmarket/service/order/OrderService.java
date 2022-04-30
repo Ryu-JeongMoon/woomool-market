@@ -1,19 +1,18 @@
 package com.woomoolmarket.service.order;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.embeddable.Delivery;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
-import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
-import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
-import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
-import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.embeddable.Delivery;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.repository.MemberRepository;
+import com.woomoolmarket.domain.repository.CartRepository;
+import com.woomoolmarket.domain.entity.Order;
+import com.woomoolmarket.domain.repository.querydto.OrderQueryResponse;
+import com.woomoolmarket.domain.repository.OrderRepository;
+import com.woomoolmarket.domain.repository.querydto.OrderSearchCondition;
+import com.woomoolmarket.domain.entity.OrderProduct;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,13 +37,13 @@ public class OrderService {
   @Transactional
   public void order(OrderRequest orderRequest) {
     Member member = memberRepository.findById(orderRequest.getMemberId())
-      .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new UsernameNotFoundException(ExceptionMessages.Member.NOT_FOUND));
 
     List<OrderProduct> orderProducts = cartRepository.findByIds(orderRequest.getCartIds())
       .stream()
       .filter(Objects::nonNull)
       .map(cart -> OrderProduct.createBy(cart.getProduct(), cart.getQuantity()))
-      .collect(Collectors.toList());
+      .toList();
 
     Delivery delivery = Delivery.createBy(member);
 
@@ -62,7 +61,7 @@ public class OrderService {
   @Transactional
   public void cancel(Long orderId) {
     orderRepository.findById(orderId)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.ORDER_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Order.NOT_FOUND))
       .cancel();
   }
 

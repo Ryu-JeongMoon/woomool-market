@@ -12,9 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.config.ApiControllerConfig;
-import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.board.entity.BoardCategory;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.entity.Board;
+import com.woomoolmarket.domain.entity.enumeration.BoardCategory;
+import com.woomoolmarket.domain.entity.Member;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import java.time.LocalDateTime;

@@ -1,8 +1,8 @@
 package com.woomoolmarket.service.order.dto.response;
 
-import com.woomoolmarket.domain.embeddable.Delivery;
-import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
-import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.embeddable.Delivery;
+import com.woomoolmarket.domain.entity.enumeration.OrderStatus;
+import com.woomoolmarket.domain.entity.OrderProduct;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
