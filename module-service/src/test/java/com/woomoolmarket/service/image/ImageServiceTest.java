@@ -3,23 +3,23 @@ package com.woomoolmarket.service.image;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.image.entity.Image;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.Board;
+import com.woomoolmarket.domain.entity.Image;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.Status;
 import com.woomoolmarket.service.image.dto.response.ImageResponse;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@Log4j2
-class ImageServiceTest extends ServiceTestConfig {
+@Slf4j
+class ImageServiceTest extends AbstractServiceTest {
 
   @BeforeEach
   void init() {

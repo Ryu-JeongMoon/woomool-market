@@ -3,22 +3,22 @@ package com.woomoolmarket.service.order;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.cart.entity.Cart;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
-import com.woomoolmarket.domain.purchase.order.entity.OrderStatus;
-import com.woomoolmarket.domain.purchase.order.query.OrderQueryResponse;
-import com.woomoolmarket.domain.purchase.order.repository.OrderSearchCondition;
-import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.Cart;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Order;
+import com.woomoolmarket.domain.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.Product;
+import com.woomoolmarket.domain.entity.enumeration.OrderStatus;
+import com.woomoolmarket.domain.repository.querydto.OrderSearchCondition;
+import com.woomoolmarket.domain.repository.querydto.OrderQueryResponse;
 import com.woomoolmarket.service.order.dto.request.OrderRequest;
 import com.woomoolmarket.service.order.dto.response.OrderResponse;
 import com.woomoolmarket.service.order.mapper.OrderResponseMapper;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,8 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-@Log4j2
-class OrderServiceTestTest extends ServiceTestConfig {
+@Slf4j
+class OrderServiceTestTest extends AbstractServiceTest {
 
   private static List<Long> normalCartIds;
   private static List<Long> overStockCartIds;

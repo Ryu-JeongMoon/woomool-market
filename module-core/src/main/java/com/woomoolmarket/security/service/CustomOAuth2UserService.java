@@ -18,6 +18,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService implements
   @Transactional
   public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
     OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-    return getUserPrincipal(oAuth2UserRequest, oAuth2MemberService, oAuth2User);
+    return getOAuth2UserPrincipal(oAuth2UserRequest, oAuth2MemberService, oAuth2User);
   }
 }

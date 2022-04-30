@@ -2,13 +2,13 @@ package com.woomoolmarket.service.member.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.Role;
+import com.woomoolmarket.domain.repository.MemberRepository;
 import com.woomoolmarket.service.member.MemberService;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import javax.persistence.EntityManager;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-@Log4j2
+@Slf4j
 @Transactional
 @SpringBootTest
 class ModifyRequestMapperTest {
@@ -41,7 +41,7 @@ class ModifyRequestMapperTest {
       .profileImage("panda")
       .phone("1234")
       .license("1234")
-      .authority(Authority.ROLE_ADMIN)
+      .role(Role.ADMIN)
       .build();
 
     memberRepository.save(member);

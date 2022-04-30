@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woomoolmarket.config.ApiControllerConfig;
-import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.image.entity.Image;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.entity.Board;
+import com.woomoolmarket.domain.entity.Image;
+import com.woomoolmarket.domain.entity.Member;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;

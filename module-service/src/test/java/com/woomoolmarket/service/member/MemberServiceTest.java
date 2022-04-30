@@ -3,20 +3,20 @@ package com.woomoolmarket.service.member;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.woomoolmarket.domain.embeddable.Address;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.query.MemberQueryResponse;
-import com.woomoolmarket.domain.member.repository.MemberSearchCondition;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.embeddable.Address;
+import com.woomoolmarket.domain.entity.enumeration.Role;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.repository.querydto.MemberSearchCondition;
+import com.woomoolmarket.domain.repository.querydto.MemberQueryResponse;
 import com.woomoolmarket.service.member.dto.request.ModifyRequest;
 import com.woomoolmarket.service.member.dto.request.SignupRequest;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import com.woomoolmarket.service.member.mapper.ModifyRequestMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +31,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-@Log4j2
+@Slf4j
 @Execution(ExecutionMode.CONCURRENT)
-class MemberServiceTest extends ServiceTestConfig {
+class MemberServiceTest extends AbstractServiceTest {
 
   private static Long SELLER_ID;
   private static String MEMBER_EMAIL;
@@ -64,14 +64,14 @@ class MemberServiceTest extends ServiceTestConfig {
   void joinMember() {
     MemberResponse memberResponse = memberService.findMemberById(MEMBER_ID);
     assertThat(MEMBER_EMAIL).isEqualTo(memberResponse.getEmail());
-    assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_USER);
+    assertThat(memberResponse.getRole()).isEqualTo(Role.USER);
   }
 
   @Test
   @DisplayName("판매자 가입 시 SELLER 권한")
   void joinSeller() {
     MemberResponse memberResponse = memberService.findMemberById(SELLER_ID);
-    assertThat(memberResponse.getAuthority()).isEqualTo(Authority.ROLE_SELLER);
+    assertThat(memberResponse.getRole()).isEqualTo(Role.SELLER);
   }
 
   @Test
@@ -90,7 +90,7 @@ class MemberServiceTest extends ServiceTestConfig {
       .password("1234")
       .multipartFile(multipartFile)
       .build();
-    Member member = memberService.join(signupRequest, Authority.ROLE_USER);
+    Member member = memberService.join(signupRequest, Role.USER);
     assertThat(member.getImage()).isNotNull();
   }
 
@@ -225,7 +225,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
   @Test
   @DisplayName("어드민 - 전체 조회")
-  @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
+  @ResourceLocks(value = { @ResourceLock(value = "member"), @ResourceLock(value = "seller") })
   void getListByAll() {
     MemberSearchCondition condition = MemberSearchCondition
       .builder()
@@ -236,11 +236,11 @@ class MemberServiceTest extends ServiceTestConfig {
 
   @Test
   @DisplayName("어드민 - 권한으로 검색")
-  @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
+  @ResourceLocks(value = { @ResourceLock(value = "member"), @ResourceLock(value = "seller") })
   void getListByAuthority() {
     MemberSearchCondition condition = MemberSearchCondition
       .builder()
-      .authority(Authority.ROLE_USER)
+      .role(Role.USER)
       .build();
     Page<MemberQueryResponse> queryResponsePage = memberService.searchForAdminBy(condition, Pageable.ofSize(10));
     assertThat(queryResponsePage.getTotalElements()).isEqualTo(1);
@@ -248,7 +248,7 @@ class MemberServiceTest extends ServiceTestConfig {
 
   @Test
   @DisplayName("어드민 - 이메일로 검색")
-  @ResourceLocks(value = {@ResourceLock(value = "member"), @ResourceLock(value = "seller")})
+  @ResourceLocks(value = { @ResourceLock(value = "member"), @ResourceLock(value = "seller") })
   void getListByEmail() {
     MemberSearchCondition condition = MemberSearchCondition
       .builder()

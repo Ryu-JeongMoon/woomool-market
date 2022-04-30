@@ -2,8 +2,8 @@ package com.woomoolmarket.service.product.dto.response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.domain.enumeration.Region;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import com.woomoolmarket.domain.entity.enumeration.Region;
+import com.woomoolmarket.domain.entity.enumeration.ProductCategory;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;

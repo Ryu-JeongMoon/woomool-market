@@ -18,6 +18,6 @@ public class CustomOidcUserService extends OidcUserService implements OAuth2Serv
   @Transactional
   public OidcUser loadUser(OidcUserRequest oidcUserRequest) throws OAuth2AuthenticationException {
     OidcUser oidcUser = super.loadUser(oidcUserRequest);
-    return getUserPrincipal(oidcUserRequest, oAuth2MemberService, oidcUser);
+    return getOAuth2UserPrincipal(oidcUserRequest, oAuth2MemberService, oidcUser);
   }
 }

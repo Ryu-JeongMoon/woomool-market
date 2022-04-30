@@ -1,10 +1,10 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.enumeration.Region;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.domain.entity.enumeration.Region;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Product;
+import com.woomoolmarket.domain.entity.enumeration.ProductCategory;
+import com.woomoolmarket.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

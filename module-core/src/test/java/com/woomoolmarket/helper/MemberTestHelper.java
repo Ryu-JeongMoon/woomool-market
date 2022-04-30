@@ -1,8 +1,8 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.embeddable.Address;
-import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.embeddable.Address;
+import com.woomoolmarket.domain.entity.enumeration.Role;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -20,7 +20,7 @@ public class MemberTestHelper {
     return Member.builder()
       .email(MEMBER_EMAIL)
       .nickname(MEMBER_NICKNAME)
-      .authority(Authority.ROLE_USER)
+      .role(Role.USER)
       .password(passwordEncoder.encode(MEMBER_PASSWORD))
       .address(MEMBER_ADDRESS)
       .phone(MEMBER_PHONE)
@@ -31,7 +31,7 @@ public class MemberTestHelper {
     return Member.builder()
       .email(MEMBER_EMAIL)
       .nickname(MEMBER_NICKNAME)
-      .authority(Authority.ROLE_SELLER)
+      .role(Role.SELLER)
       .password(passwordEncoder.encode(MEMBER_PASSWORD))
       .phone(MEMBER_PHONE)
       .address(MEMBER_ADDRESS)

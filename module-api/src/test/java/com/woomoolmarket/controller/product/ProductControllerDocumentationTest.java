@@ -13,11 +13,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woomoolmarket.domain.enumeration.Region;
+import com.woomoolmarket.domain.entity.enumeration.Region;
 import com.woomoolmarket.config.ApiDocumentationConfig;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Product;
+import com.woomoolmarket.domain.entity.enumeration.ProductCategory;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import java.util.Objects;

@@ -1,11 +1,11 @@
 package com.woomoolmarket.service.board;
 
-import com.woomoolmarket.cache.CacheService;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.port.CacheTokenPort;
+import com.woomoolmarket.domain.repository.BoardCountRepository;
+import com.woomoolmarket.domain.repository.BoardRepository;
 import com.woomoolmarket.util.constants.CacheConstants;
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.board.repository.BoardRepository;
-import com.woomoolmarket.domain.count.repository.BoardCountRepository;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BoardCountService {
 
-  private final CacheService cacheService;
+  private final CacheTokenPort cacheTokenPort;
   private final BoardRepository boardRepository;
   private final BoardCountRepository boardCountRepository;
 
@@ -24,21 +24,21 @@ public class BoardCountService {
   @Cacheable(key = "customKeyGenerator", cacheManager = "gsonCacheManager")
   public int getHit(Long boardId) {
     return boardCountRepository.findByBoardId(boardId)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND))
       .getHitCount();
   }
 
   @Transactional
   public void increaseHit(Long boardId) {
-    cacheService.increment(CacheConstants.BOARD_HIT_COUNT + boardId);
+    cacheTokenPort.increment(CacheConstants.BOARD_HIT_COUNT + boardId);
   }
 
   @Transactional
   public void synchronizeHit(Long boardId) {
-    int hit = cacheService.getDataAsInt(CacheConstants.BOARD_HIT_COUNT + boardId);
+    int hit = cacheTokenPort.getDataAsInt(CacheConstants.BOARD_HIT_COUNT + boardId);
 
     boardRepository.findByIdAndStatus(boardId, Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND))
       .changeHit(hit);
   }
 }

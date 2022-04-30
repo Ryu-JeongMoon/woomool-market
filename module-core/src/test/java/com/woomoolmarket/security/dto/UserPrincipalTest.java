@@ -3,18 +3,16 @@ package com.woomoolmarket.security.dto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woomoolmarket.config.TestConfig;
-import com.woomoolmarket.domain.member.entity.Authority;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.Role;
+import com.woomoolmarket.domain.repository.MemberRepository;
 import java.util.Collection;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -37,11 +35,11 @@ class UserPrincipalTest {
       .email(MEMBER_EMAIL)
       .password(passwordEncoder.encode(MEMBER_PASSWORD))
       .nickname(MEMBER_NICKNAME)
-      .authority(Authority.ROLE_USER)
+      .role(Role.USER)
       .build();
     memberRepository.save(member).getId();
 
-    principal = UserPrincipal.of(member);
+    principal = UserPrincipal.from(member);
   }
 
   @Test
@@ -57,30 +55,16 @@ class UserPrincipalTest {
   }
 
   @Test
-  @DisplayName("UserPrincipal 비밀번호, 회원 비밀번호와 일치")
-  void getPassword() {
-    assertThat(passwordEncoder.matches(MEMBER_PASSWORD, principal.getPassword())).isTrue();
-  }
-
-  @Test
   @DisplayName("UserPrincipal 에서 회원 이메일 반환")
   void getName() {
-    assertThat(principal.getName()).isEqualTo(MEMBER_EMAIL);
+    assertThat(principal.getEmail()).isEqualTo(MEMBER_EMAIL);
   }
 
   @Test
   @DisplayName("UserPrincipal 에서 권한 반환")
   void getAuthorities() {
-    Collection<? extends GrantedAuthority> authorities = principal.getAuthorities();
+    Collection<Role> authorities = principal.getAuthorities();
     assertThat(authorities.size()).isEqualTo(1);
-  }
-
-  @Test
-  @DisplayName("attributes 할당과 반환")
-  void getAndSetAttributes() {
-    Map<String, Object> attributes = Map.of("panda", "bear");
-    principal.setAttributes(attributes);
-    assertThat(principal.getAttributes().get("panda")).isEqualTo("bear");
   }
 
   @Test

@@ -3,9 +3,9 @@ package com.woomoolmarket.controller.board;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.board.query.BoardQueryResponse;
-import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.repository.querydto.BoardQueryResponse;
+import com.woomoolmarket.domain.repository.querydto.BoardSearchCondition;
 import com.woomoolmarket.service.board.BoardCountService;
 import com.woomoolmarket.service.board.BoardService;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
@@ -39,7 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/boards", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/boards", produces = { MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
 public class BoardController {
 
   private final BoardService boardService;

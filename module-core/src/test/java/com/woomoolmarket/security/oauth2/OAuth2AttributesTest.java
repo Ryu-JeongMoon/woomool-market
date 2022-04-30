@@ -10,19 +10,15 @@ import org.junit.jupiter.api.Test;
 
 class OAuth2AttributesTest {
 
-  private static OAuth2Attributes oAuth2Attributes;
   private static final String EMAIL = "panda-email";
   private static final String NICKNAME = "panda-nickname";
   private static final String REGISTRATION_ID = "facebook";
   private static final String PROFILE_IMAGE = "panda-image";
-  private static final String NAME_ATTRIBUTE_KEY = "panda-attribute-key";
-  private static final String USERNAME_ATTRIBUTE_NAME = "panda-attribute-name";
-
   private static final Map<String, BiFunction<String, Map<String, Object>, OAuth2Attributes>> attributesMap = Map.of(
     "facebook", OAuth2AttributesTest::ofFacebook);
-
   private static final Map<String, Object> ATTRIBUTES =
     Map.of("panda", "bear", "email", EMAIL, "name", NICKNAME, "profile_image", PROFILE_IMAGE);
+  private static OAuth2Attributes oAuth2Attributes;
 
   private static OAuth2Attributes ofFacebook(String userNameAttributeName, Map<String, Object> attributes) {
     return OAuth2Attributes.builder()
@@ -30,38 +26,31 @@ class OAuth2AttributesTest {
       .email((String) attributes.get("email"))
       .profileImage((String) attributes.get("picture"))
       .attributes(attributes)
-      .nameAttributeKey(userNameAttributeName)
       .build();
   }
 
   @BeforeEach
   void setUp() {
-    oAuth2Attributes = new OAuth2Attributes(EMAIL, NICKNAME, ATTRIBUTES, PROFILE_IMAGE, NAME_ATTRIBUTE_KEY);
+    oAuth2Attributes = new OAuth2Attributes(EMAIL, NICKNAME, PROFILE_IMAGE, ATTRIBUTES);
   }
 
   @Test
   @DisplayName("of 통한 OAuth2Attributes 생성")
   void of() {
-    OAuth2Attributes oAuth2Attributes = OAuth2Attributes.of(REGISTRATION_ID, USERNAME_ATTRIBUTE_NAME, ATTRIBUTES);
+    OAuth2Attributes oAuth2Attributes = OAuth2Attributes.of(REGISTRATION_ID, ATTRIBUTES);
     assertThat(oAuth2Attributes.getAttributes().get("panda")).isEqualTo("bear");
   }
 
   @Test
   @DisplayName("Member 변환")
   void toEntity() {
-    assertThat(oAuth2Attributes.toEntity().getEmail()).isEqualTo(EMAIL);
+    assertThat(oAuth2Attributes.toMember(REGISTRATION_ID).getEmail()).isEqualTo(EMAIL);
   }
 
   @Test
   @DisplayName("attributes 반환")
   void getAttributes() {
     assertThat(oAuth2Attributes.getAttributes().get("panda")).isEqualTo(ATTRIBUTES.get("panda"));
-  }
-
-  @Test
-  @DisplayName("nameAttributeKey 반환")
-  void getNameAttributeKey() {
-    assertThat(oAuth2Attributes.getNameAttributeKey()).isEqualTo(NAME_ATTRIBUTE_KEY);
   }
 
   @Test

@@ -3,16 +3,15 @@ package com.woomoolmarket.service.board;
 import static com.woomoolmarket.util.constants.CacheConstants.BOARDS;
 import static com.woomoolmarket.util.constants.CacheConstants.BOARDS_FOR_ADMIN;
 
-import com.woomoolmarket.cache.CacheService;
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.board.query.BoardQueryResponse;
-import com.woomoolmarket.domain.board.repository.BoardRepository;
-import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
-import com.woomoolmarket.domain.image.entity.Image;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.port.CacheTokenPort;
+import com.woomoolmarket.domain.entity.Board;
+import com.woomoolmarket.domain.repository.querydto.BoardQueryResponse;
+import com.woomoolmarket.domain.repository.BoardRepository;
+import com.woomoolmarket.domain.repository.querydto.BoardSearchCondition;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.entity.Image;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.repository.MemberRepository;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
@@ -20,6 +19,7 @@ import com.woomoolmarket.service.board.mapper.BoardModifyMapper;
 import com.woomoolmarket.service.board.mapper.BoardRequestMapper;
 import com.woomoolmarket.service.board.mapper.BoardResponseMapper;
 import com.woomoolmarket.service.image.ImageProcessor;
+import com.woomoolmarket.util.constants.ExceptionMessages;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BoardService {
 
-  private final CacheService cacheService;
+  private final CacheTokenPort cacheTokenPort;
   private final ImageProcessor imageProcessor;
   private final MemberRepository memberRepository;
 
@@ -54,16 +54,16 @@ public class BoardService {
   public BoardResponse findBy(Long id, Status status) {
     return boardRepository.findByIdAndStatus(id, status)
       .map(boardResponseMapper::toDto)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND));
   }
 
   @Transactional
-  @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
+  @CacheEvict(cacheNames = { BOARDS, BOARDS_FOR_ADMIN }, allEntries = true)
   public void write(BoardRequest boardRequest, List<MultipartFile> files) {
     Board board = boardRequestMapper.toEntity(boardRequest);
 
     Member member = memberRepository.findByEmailAndStatus(boardRequest.getEmail(), Status.ACTIVE)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Member.NOT_FOUND));
     board.registerMember(member);
 
     List<Image> images = imageProcessor.parse(files);
@@ -75,39 +75,39 @@ public class BoardService {
   @Transactional
   public void increaseHitByDB(Long id) {
     boardRepository.findById(id)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND))
       .increaseHit();
   }
 
   @Transactional
   public void increaseHitByRedis(Long id) {
     // TODO, redis 에서 조회수 증가
-    cacheService.increment("panda");
+    cacheTokenPort.increment("panda");
   }
 
   @Transactional
-  @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
+  @CacheEvict(cacheNames = { BOARDS, BOARDS_FOR_ADMIN }, allEntries = true)
   public BoardResponse edit(Long id, BoardModifyRequest modifyRequest) {
     Board board = boardRepository.findById(id)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND));
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND));
 
     boardModifyMapper.updateFromDto(modifyRequest, board);
     return boardResponseMapper.toDto(board);
   }
 
   @Transactional
-  @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
+  @CacheEvict(cacheNames = { BOARDS, BOARDS_FOR_ADMIN }, allEntries = true)
   public void delete(Long id) {
     boardRepository.findById(id)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND))
       .delete();
   }
 
   @Transactional
-  @CacheEvict(cacheNames = {BOARDS, BOARDS_FOR_ADMIN}, allEntries = true)
+  @CacheEvict(cacheNames = { BOARDS, BOARDS_FOR_ADMIN }, allEntries = true)
   public void restore(Long id) {
     boardRepository.findById(id)
-      .orElseThrow(() -> new EntityNotFoundException(ExceptionConstants.BOARD_NOT_FOUND))
+      .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.Board.NOT_FOUND))
       .restore();
   }
 

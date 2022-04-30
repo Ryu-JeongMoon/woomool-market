@@ -2,13 +2,13 @@ package com.woomoolmarket.controller.auth;
 
 import static com.woomoolmarket.util.constants.TokenConstants.AUTHORIZATION_HEADER;
 import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN;
-import static com.woomoolmarket.util.constants.TokenConstants.REFRESH_TOKEN_EXPIRE_SECONDS;
 
-import com.woomoolmarket.util.CookieUtils;
 import com.woomoolmarket.security.dto.TokenRequest;
 import com.woomoolmarket.security.dto.TokenResponse;
 import com.woomoolmarket.service.auth.AuthService;
 import com.woomoolmarket.service.member.dto.request.LoginRequest;
+import com.woomoolmarket.util.CookieUtils;
+import com.woomoolmarket.util.constants.Times;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -31,7 +31,7 @@ public class AuthController {
   @PreAuthorize("isAnonymous()")
   public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
     TokenResponse tokenResponse = authService.login(loginRequest);
-    CookieUtils.addCookie(response, REFRESH_TOKEN, tokenResponse.getRefreshToken(), REFRESH_TOKEN_EXPIRE_SECONDS);
+    CookieUtils.addCookie(response, REFRESH_TOKEN, tokenResponse.getRefreshToken(), Times.REFRESH_TOKEN_EXPIRATION_SECONDS.getValue());
     response.setHeader(AUTHORIZATION_HEADER, tokenResponse.getAccessToken());
     return ResponseEntity.ok(tokenResponse);
   }

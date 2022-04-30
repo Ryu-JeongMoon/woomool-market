@@ -10,7 +10,6 @@ dependencies {
     implementation project(':module-core')
     implementation project(':module-service')
 
-    implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
@@ -39,11 +38,11 @@ asciidoctor {
     dependsOn test
 }
 
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from "${asciidoctor.outputDir}"
-    into 'src/main/resources/static/docs'
-}
+//task copyDocument(type: Copy) {
+//    dependsOn asciidoctor
+//    from "${asciidoctor.outputDir}"
+//    into 'src/main/resources/static/docs'
+//}
 
 jar {
     enabled = false
@@ -51,11 +50,11 @@ jar {
 
 bootJar {
     enabled = true
-    dependsOn copyDocument
+//    dependsOn copyDocument
 
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into 'src/main/resources/static/docs'
-    }
+//    dependsOn asciidoctor
+//    copy {
+//        from "${asciidoctor.outputDir}"
+//        into 'src/main/resources/static/docs'
+//    }
 }

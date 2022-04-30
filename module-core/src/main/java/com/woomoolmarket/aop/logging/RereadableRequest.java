@@ -28,9 +28,9 @@ import org.json.simple.parser.JSONParser;
 @Slf4j
 public class RereadableRequest extends HttpServletRequestWrapper {
 
-  private byte[] rawData;
   private final Charset encoding;
   private final Map<String, String[]> params = new HashMap<>();
+  private byte[] rawData;
 
   public RereadableRequest(HttpServletRequest request) {
     super(request);

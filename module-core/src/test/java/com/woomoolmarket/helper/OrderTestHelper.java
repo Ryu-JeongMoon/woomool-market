@@ -1,9 +1,9 @@
 package com.woomoolmarket.helper;
 
-import com.woomoolmarket.domain.embeddable.Delivery;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.order.entity.Order;
-import com.woomoolmarket.domain.purchase.order_product.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Order;
+import com.woomoolmarket.domain.entity.OrderProduct;
+import com.woomoolmarket.domain.entity.embeddable.Delivery;
 import java.util.List;
 
 public class OrderTestHelper {

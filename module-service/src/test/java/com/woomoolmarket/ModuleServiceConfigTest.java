@@ -2,10 +2,7 @@ package com.woomoolmarket;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.woomoolmarket")
 class ModuleServiceConfigTest {
 
-  void contextLoads() {
-
-  }
 }

@@ -2,12 +2,12 @@ package com.woomoolmarket.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woomoolmarket.ModuleApiApplication;
-import com.woomoolmarket.domain.board.repository.BoardRepository;
-import com.woomoolmarket.domain.image.repository.ImageRepository;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
-import com.woomoolmarket.domain.purchase.cart.repository.CartRepository;
-import com.woomoolmarket.domain.purchase.order.repository.OrderRepository;
-import com.woomoolmarket.domain.purchase.product.repository.ProductRepository;
+import com.woomoolmarket.domain.repository.BoardRepository;
+import com.woomoolmarket.domain.repository.ImageRepository;
+import com.woomoolmarket.domain.repository.MemberRepository;
+import com.woomoolmarket.domain.repository.CartRepository;
+import com.woomoolmarket.domain.repository.OrderRepository;
+import com.woomoolmarket.domain.repository.ProductRepository;
 import com.woomoolmarket.helper.BoardTestHelper;
 import com.woomoolmarket.helper.CartTestHelper;
 import com.woomoolmarket.helper.ImageTestHelper;

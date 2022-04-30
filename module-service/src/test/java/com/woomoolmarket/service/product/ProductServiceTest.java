@@ -2,20 +2,20 @@ package com.woomoolmarket.service.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.domain.enumeration.Region;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.purchase.product.entity.Product;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
-import com.woomoolmarket.domain.purchase.product.query.ProductQueryResponse;
-import com.woomoolmarket.domain.purchase.product.repository.ProductSearchCondition;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.Product;
+import com.woomoolmarket.domain.entity.enumeration.ProductCategory;
+import com.woomoolmarket.domain.entity.enumeration.Region;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.repository.querydto.ProductSearchCondition;
+import com.woomoolmarket.domain.repository.querydto.ProductQueryResponse;
 import com.woomoolmarket.service.product.dto.request.ProductModifyRequest;
 import com.woomoolmarket.service.product.dto.request.ProductRequest;
 import com.woomoolmarket.service.product.dto.response.ProductResponse;
 import com.woomoolmarket.service.product.mapper.ProductResponseMapper;
 import java.util.Objects;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-@Log4j2
-class ProductServiceTest extends ServiceTestConfig {
+@Slf4j
+class ProductServiceTest extends AbstractServiceTest {
 
   private static Long PRODUCT1_ID;
   private static Long PRODUCT2_ID;

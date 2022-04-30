@@ -1,10 +1,11 @@
 package com.woomoolmarket.security.service;
 
-import com.woomoolmarket.util.constants.ExceptionConstants;
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.domain.member.entity.Member;
-import com.woomoolmarket.domain.member.repository.MemberRepository;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.AuthProvider;
+import com.woomoolmarket.domain.repository.MemberRepository;
 import com.woomoolmarket.security.dto.UserPrincipal;
+import com.woomoolmarket.util.constants.ExceptionMessages;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,12 +22,11 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Override
   @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String email) {
-    return memberRepository.findByEmailAndStatus(email, Status.ACTIVE)
-      .map(this::createUserDetails)
-      .orElseThrow(() -> new UsernameNotFoundException(ExceptionConstants.MEMBER_NOT_FOUND));
-  }
+    Optional<Member> probableMember = memberRepository.findActiveByEmail(email);
+    probableMember.ifPresent(member -> member.changeLatestAuthProvider(AuthProvider.LOCAL));
 
-  private UserPrincipal createUserDetails(Member member) {
-    return UserPrincipal.of(member);
+    return probableMember
+      .map(UserPrincipal::from)
+      .orElseThrow(() -> new UsernameNotFoundException(ExceptionMessages.Member.NOT_FOUND));
   }
 }

@@ -1,21 +1,21 @@
 package com.woomoolmarket.security.oauth2;
 
 
-import static com.woomoolmarket.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-
 import com.woomoolmarket.util.CookieUtils;
+import com.woomoolmarket.util.constants.TokenConstants;
+import com.woomoolmarket.util.constants.UriConstants;
 import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Log4j2
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
@@ -23,20 +23,19 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
   private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
   @Override
-  public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
-    throws IOException {
-    log.info("[WOOMOOL-FAILED] :: Can't Login By OAuth2 => {}", exception.getMessage());
+  public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException {
+    log.info("[WOOMOOL-FAILED] :: Can't Login By OAuth2 => {}", e.getMessage());
 
-    String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+    String targetUrl = CookieUtils.getCookie(req, TokenConstants.REDIRECT_URI)
       .map(Cookie::getValue)
-      .orElseGet(() -> "/");
+      .orElseGet(() -> UriConstants.Mapping.ROOT);
 
     targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
-      .queryParam("error", exception.getLocalizedMessage())
+      .queryParam("error", e.getLocalizedMessage())
       .build()
       .toUriString();
 
-    httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-    getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(req, resp);
+    getRedirectStrategy().sendRedirect(req, resp, targetUrl);
   }
 }

@@ -2,19 +2,19 @@ package com.woomoolmarket.service.board;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woomoolmarket.domain.enumeration.Status;
-import com.woomoolmarket.config.ServiceTestConfig;
-import com.woomoolmarket.domain.board.entity.Board;
-import com.woomoolmarket.domain.board.entity.BoardCategory;
-import com.woomoolmarket.domain.board.query.BoardQueryResponse;
-import com.woomoolmarket.domain.board.repository.BoardSearchCondition;
-import com.woomoolmarket.domain.member.entity.Member;
+import com.woomoolmarket.config.AbstractServiceTest;
+import com.woomoolmarket.domain.entity.Board;
+import com.woomoolmarket.domain.entity.Member;
+import com.woomoolmarket.domain.entity.enumeration.BoardCategory;
+import com.woomoolmarket.domain.entity.enumeration.Status;
+import com.woomoolmarket.domain.repository.querydto.BoardSearchCondition;
+import com.woomoolmarket.domain.repository.querydto.BoardQueryResponse;
 import com.woomoolmarket.service.board.dto.request.BoardModifyRequest;
 import com.woomoolmarket.service.board.dto.request.BoardRequest;
 import com.woomoolmarket.service.board.dto.response.BoardResponse;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-@Log4j2
-class BoardServiceTest extends ServiceTestConfig {
+@Slf4j
+class BoardServiceTest extends AbstractServiceTest {
 
   private static Long BOARD_1_ID;
   private static Long BOARD_2_ID;

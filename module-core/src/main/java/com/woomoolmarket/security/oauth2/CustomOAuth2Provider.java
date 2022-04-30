@@ -1,5 +1,6 @@
 package com.woomoolmarket.security.oauth2;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistration.Builder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -81,6 +82,10 @@ public enum CustomOAuth2Provider {
   };
 
   private static final String DEFAULT_REDIRECT_URL = "{baseUrl}/{action}/oauth2/code/{registrationId}";
+
+  public static CustomOAuth2Provider valueOfCaseInsensitively(String name) {
+    return valueOf(StringUtils.upperCase(name));
+  }
 
   protected final ClientRegistration.Builder getBuilder(String registrationId, ClientAuthenticationMethod method) {
     ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(registrationId);

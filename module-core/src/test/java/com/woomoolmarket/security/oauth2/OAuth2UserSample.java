@@ -1,16 +1,15 @@
 package com.woomoolmarket.security.oauth2;
 
-import com.woomoolmarket.domain.member.entity.Authority;
+import com.woomoolmarket.domain.entity.enumeration.Role;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public class OAuth2UserSample {
 
   public static final OAuth2User GOOGLE_USER = new DefaultOAuth2User(
-    Set.of(new SimpleGrantedAuthority(Authority.ROLE_USER.getKey())),
+    Set.of(Role.USER),
     Map.of(
       "name", "PANDA",
       "sub", "113976141374150070219",
@@ -20,7 +19,7 @@ public class OAuth2UserSample {
 
 
   public static final OAuth2User FACEBOOK_USER = new DefaultOAuth2User(
-    Set.of(new SimpleGrantedAuthority(Authority.ROLE_USER.getKey())),
+    Set.of(Role.USER),
     Map.of(
       "id", "4000026893357972",
       "name", "FACEBOOK_PANDA",
@@ -28,7 +27,7 @@ public class OAuth2UserSample {
     ), "id");
 
   public static final OAuth2User NAVER_USER = new DefaultOAuth2User(
-    Set.of(new SimpleGrantedAuthority(Authority.ROLE_USER.getKey())),
+    Set.of(Role.USER),
     Map.of(
       "response", Map.of(
         "id", "18997705",
@@ -40,7 +39,7 @@ public class OAuth2UserSample {
     ), "response");
 
   public static final OAuth2User KAKAO_USER = new DefaultOAuth2User(
-    Set.of(new SimpleGrantedAuthority(Authority.ROLE_USER.getKey())),
+    Set.of(Role.USER),
     Map.of(
       "id", 1534230750,
       "kakao_account", Map.of(

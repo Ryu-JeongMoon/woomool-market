@@ -1,7 +1,7 @@
 package com.woomoolmarket.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -10,7 +10,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Log4j2
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class StepNextConditionalJobConfiguration {
@@ -44,9 +44,7 @@ public class StepNextConditionalJobConfiguration {
       .tasklet((contribution, chunkContext) -> {
         log.info(">>>>> This is stepNextConditionalJob Step1");
 
-        /**
-         on에 mapping 되는 것이 ExitStatus이므로 ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다.
-         */
+        /** on에 mapping 되는 것이 ExitStatus이므로 ExitStatus를 FAILED로 지정한다. 해당 status를 보고 flow가 진행된다. */
         //contribution.setExitStatus(ExitStatus.FAILED);
 
         return RepeatStatus.FINISHED;
@@ -74,4 +72,3 @@ public class StepNextConditionalJobConfiguration {
       .build();
   }
 }
-

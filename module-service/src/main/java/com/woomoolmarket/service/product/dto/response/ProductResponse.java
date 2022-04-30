@@ -1,7 +1,7 @@
 package com.woomoolmarket.service.product.dto.response;
 
-import com.woomoolmarket.domain.enumeration.Region;
-import com.woomoolmarket.domain.purchase.product.entity.ProductCategory;
+import com.woomoolmarket.domain.entity.enumeration.Region;
+import com.woomoolmarket.domain.entity.enumeration.ProductCategory;
 import com.woomoolmarket.service.member.dto.response.MemberResponse;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
